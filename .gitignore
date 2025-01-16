@@ -1,0 +1,11 @@
+.DS_STORE
+.idea
+.env
+claude
+shell-scripts
+db.sqlite3
+aides-agri/settings/production.py
+yarn.lock
+node_modules/*
+static/vendor
+static/vendor/*
