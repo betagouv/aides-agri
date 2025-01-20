@@ -36,6 +36,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "widget_tweaks",
     "dsfr",
+    "apps.questionnaire",
+    "apps.pages",
+    "apps.catalog"
 ]
 
 MIDDLEWARE = [
