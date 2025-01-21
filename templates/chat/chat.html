@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="fr-container">
+        <div class="fr-grid-row">
+            <div class="fr-col">
+                <div class="fr-chat">
+                    <div class="fr-chat-message fr-chat-message--user">
+                        <p>Bonjour, je suis un jeune agriculteur. Quelles aides sont disponibles pour m’installer ?</p>
+                    </div>
+                    <div class="fr-chat-message fr-chat-message--bot">
+                        <p>Bonjour ! Il existe plusieurs dispositifs d’aides pour les jeunes agriculteurs. Par exemple
+                            :</p>
+                        <ul>
+                            <li>La Dotation Jeune Agriculteur (DJA)</li>
+                            <li>Les aides à l’investissement pour moderniser vos équipements</li>
+                            <li>Les aides spécifiques aux régions</li>
+                        </ul>
+                        <p>Pourriez-vous me donner plus de détails sur votre projet, comme la région où vous êtes
+                            installé ?</p>
+                    </div>
+                    <div class="fr-chat-message fr-chat-message--user">
+                        <p>Je suis dans le Lot-et-Garonne, près de Tonneins, et je cultive du blé.</p>
+                    </div>
+                    <div class="fr-chat-message fr-chat-message--bot">
+                        <p>Merci pour ces précisions. Dans votre région, vous pouvez également bénéficier des aides
+                            proposées par le Conseil Régional de Nouvelle-Aquitaine et de certains dispositifs locaux.
+                            Souhaitez-vous plus d'informations sur ces aides ?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <div class="fr-container">
+        <div class="fr-grid-row ">
+            <div class="flex-grow-1">
+                <textarea class="fr-input" aria-required="true" aria-describedby="" rows="10" name="message" type="text"
+                          id="message"></textarea>
+            </div>
+            <div class="">
+                <div class="fr-grid-row" style="height: 100%;">
+                    <button class="fr-btn" id="send_message">Valider</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block extra_js %}
+    <script>
+        $(document).ready(function () {
+            $("#send_message").click(function () {
+                var message = $("#message").val();
+                console.log(message);
+                if (message) {
+                    $.post("{% url "chat:send_message" %}", {
+                        message: message,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'  // Add CSRF token for Django
+                    }).then(function (data) {
+                        console.log(data);
+                    })
+                }
+            });
+        })
+    </script>
+{% endblock %}
+
+{% block extra_css %}
+    <style>
+        /* A titre d'exemple, en règle général , à mettre dans custom.scss */
+
+        .fr-chat {
+            padding: 1rem 0; /* Ajout d'un espacement vertical pour l'aération */
+        }
+
+        /* Message utilisateur */
+        .fr-chat-message--user {
+            background-color: transparent; /* Suppression du fond coloré */
+            color: var(--text-default-grey); /* Texte gris classique */
+            padding: 0.5rem 0; /* Espacement interne réduit */
+            margin-bottom: 0.5rem; /* Espacement entre les messages */
+            max-width: 80%;
+            margin-left: auto; /* Alignement à droite */
+            text-align: left;
+            word-wrap: break-word;
+            border-left: 4px solid var(--background-action-high-blue-france); /* Ajout d'une bordure pour différencier */
+            padding-left: 1rem; /* Espacement interne pour la bordure */
+        }
+
+        /* Message du chatbot */
+        .fr-chat-message--bot {
+            background-color: transparent; /* Suppression du fond coloré */
+            color: var(--text-default-grey); /* Texte gris classique */
+            padding: 0.5rem 0;
+            margin-bottom: 0.5rem;
+            max-width: 80%;
+            margin-right: auto; /* Alignement à gauche */
+            text-align: left;
+            word-wrap: break-word;
+            border-left: 4px solid var(--background-alt-grey); /* Bordure différente pour le bot */
+            padding-left: 1rem;
+        }
+
+        /* Liste dans les messages */
+        .fr-chat-message--bot ul {
+            padding-left: 1.5rem;
+            margin: 0.5rem 0;
+        }
+
+        /* Style des paragraphes dans les messages */
+        .fr-chat-message--bot p,
+        .fr-chat-message--user p {
+            margin: 0; /* Pas d'espacement supplémentaire autour des paragraphes */
+        }
+
+    </style>
+{% endblock %}
