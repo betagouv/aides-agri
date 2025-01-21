@@ -17,3 +17,9 @@ DATABASES = {
         'PORT': env('DB_PORT', default='5432'),
     }
 }
+
+
+if DEBUG:
+    INSTALLED_APPS += ['debug_toolbar', 'django_dump_die']
+    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware', 'django_dump_die.middleware.DumpAndDieMiddleware']
+    INTERNAL_IPS = ['127.0.0.1']

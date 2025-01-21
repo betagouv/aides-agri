@@ -9,6 +9,8 @@ django-environ = "*"
 pymysql = "*"
 django-dsfr = "*"
 psycopg2-binary = "*"
+django-debug-toolbar = "*"
+django-dump-die = "*"
 
 [dev-packages]
 black = "*"
