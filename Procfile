@@ -1,0 +1,1 @@
+web: gunicorn aides-agri.wsgi --log-file -
