@@ -1,10 +1,14 @@
 from .base import *
 
 DEBUG = False
-ALLOWED_HOSTS = ['.osc-fr1.scalingo.io']
 
 # Static files
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
 
 # Database - Scalingo injecte automatiquement DATABASE_URL
 import dj_database_url
