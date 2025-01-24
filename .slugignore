@@ -1,0 +1,8 @@
+/node_modules
+*.log
+.git
+.env
+.env.*
+/static/css/*.scss
+/static/js/*.js
+!/static/js/main.js
