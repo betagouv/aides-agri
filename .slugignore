@@ -1,7 +1,4 @@
 /node_modules
-*.log
-.git
-.env
 .env.example
 /static/css/custom.scss
 /static/js/main.js

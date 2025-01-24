@@ -3,7 +3,7 @@ from .base import *
 DEBUG = False
 
 # Static files
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = str(BASE_DIR / 'staticfiles')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
