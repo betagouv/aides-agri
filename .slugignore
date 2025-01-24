@@ -3,6 +3,6 @@
 .git
 .env
 .env.*
-/static/css/*.scss
-/static/js/*.js
-!/static/js/main.js
+#/static/css/*.scss
+#/static/js/*.js
+#!/static/js/main.js
