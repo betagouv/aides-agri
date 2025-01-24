@@ -2,6 +2,9 @@
   "name": "aides-agri",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "copy:jquery": "mkdir -p static/vendor/js && cp node_modules/jquery/dist/jquery.min.js static/vendor/js/",
     "build:css": "sass static/css/custom.scss static/vendor/css/custom.min.css --style compressed",
@@ -9,7 +12,8 @@
     "build": "yarn copy:jquery && yarn build:css && yarn build:js",
     "watch:css": "sass --watch static/css/custom.scss:static/vendor/css/custom.min.css --style compressed",
     "watch:js": "yarn build:js --watch",
-    "watch": "yarn watch:css & yarn watch:js"
+    "watch": "yarn watch:css & yarn watch:js",
+    "heroku-postbuild": "yarn build"
   },
   "dependencies": {
     "jquery": "^3.7.1"
