@@ -13,6 +13,7 @@ django-debug-toolbar = "*"
 django-dump-die = "*"
 gunicorn = "*"
 dj-database-url = "*"
+dj-static = "*"
 
 [dev-packages]
 black = "*"
