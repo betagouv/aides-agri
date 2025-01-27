@@ -3,8 +3,8 @@
 ## Prérequis
 
 ### Python
-- Python 3.13
-- pipenv (`pip install pipenv`)
+- `uv`: https://docs.astral.sh/uv/
+- `just`: https://just.systems/
 
 ### Base de données
 - PostgreSQL
@@ -47,18 +47,15 @@ brew install yarn
 ### 3. Installation des dépendances Python
 
 ```bash
-# Installation des dépendances Python avec pipenv
-pipenv install 
-
-# Installation des dépendances de développement (optionnel)
-pipenv install --dev
+# Installation des dépendances Python avec uv, via just
+just install-python
 ```
 
-### 4. Installation des dépendances Node.js
+### 4. Installation des dépendances Javascript
 
 ```bash
-# Installation des dépendances Node.js
-yarn install
+# Installation des dépendances yarn, via just
+just install-js
 ```
 
 ### 5. Configuration de la base de données
@@ -82,27 +79,21 @@ yarn build
 
 ## Lancement du projet en local
 
-### 1. Activation de l'environnement virtuel Python
+### 1. Migrations de la base de données
 
 ```bash
-pipenv shell
+just migrate
 ```
 
-### 2. Migrations de la base de données
+### 2. Lancement du serveur de développement
 
 ```bash
-python manage.py migrate
-```
-
-### 3. Lancement du serveur de développement
-
-```bash
-python manage.py runserver
+just runserver
 ```
 
 Le site sera accessible à l'adresse : http://localhost:8000
 
-### 4. Développement des assets (optionnel)
+### 3. Développement des assets (optionnel)
 
 Pour travailler sur le CSS et le JS avec rechargement automatique :
 
@@ -130,9 +121,10 @@ static/
 ## Commandes disponibles
 
 ### Django
-- `python manage.py migrate` : Applique les migrations
-- `python manage.py runserver` : Lance le serveur de développement
-- `python manage.py createsuperuser` : Crée un compte administrateur
+- `just migrate` : Applique les migrations
+- `just makemigrations` : Crée les migrations selon les changements dans les modèles
+- `just runserver` : Lance le serveur de développement
+- `just manage createsuperuser` : Crée un compte administrateur
 
 ### Yarn
 - `yarn build` : Compile tous les assets

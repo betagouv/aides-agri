@@ -1,0 +1,18 @@
+[project]
+requires-python = ">=3.13"
+name = "aides-agri"
+version = "0.1.0"
+dependencies = [
+  "django ~=5.1",
+  "django-dsfr ~=2.0",
+  "psycopg[binary] ~=3.0",
+]
+
+[dependency-groups]
+dev = [
+  "djade",
+  "django-browser-reload",
+  "django-debug-toolbar",
+  "django-dump-die",
+  "ruff",
+]
