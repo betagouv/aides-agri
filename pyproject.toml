@@ -18,4 +18,5 @@ dev = [
 ]
 scalingo = [
   "gunicorn ~=23.0",
+  "whitenoise ~=6.8",
 ]

@@ -5,6 +5,9 @@ __pycache__/
 
 # Javascript
 /node_modules/
+
+# Django
+/staticfiles
 static/vendor
 static/vendor/*
 
