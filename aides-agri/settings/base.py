@@ -22,7 +22,7 @@ SECRET_KEY = environ.get("SECRET_KEY")
 
 DEBUG = True
 
-ALLOWED_HOSTS = environ.get("ALLOWED_HOSTS", ["127.0.0.1", "localhost"])
+ALLOWED_HOSTS = environ.get("ALLOWED_HOSTS", "127.0.0.1 localhost").split(" ")
 
 # Application definition
 INSTALLED_APPS = [
