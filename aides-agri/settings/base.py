@@ -9,12 +9,8 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+from os import environ
 from pathlib import Path
-
-import dj_database_url
-import environ
-env = environ.Env()
-environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -22,13 +18,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY", default="django-random")
+SECRET_KEY = environ.get("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DEBUG", default=False)
+DEBUG = True
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["127.0.0.1", "localhost"])
+ALLOWED_HOSTS = environ.get("ALLOWED_HOSTS", ["127.0.0.1", "localhost"])
 
 # Application definition
 INSTALLED_APPS = [
@@ -84,9 +78,14 @@ WSGI_APPLICATION = "aides-agri.wsgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3')
-    )
+    "default": {
+        "ENGINE": 'django.db.backends.postgresql',
+        "NAME": environ.get("DB_NAME", "postgres"),
+        "USER": environ.get("DB_USER", "postgres"),
+        "PASSWORD": environ.get("DB_PASSWORD", "root"),
+        "HOST": environ.get("DB_HOST", "localhost"),
+        "PORT": environ.get("DB_PORT", "5432"),
+    }
 }
 
 
@@ -112,7 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "fr-fr"
 
 TIME_ZONE = "UTC"
 
@@ -128,7 +127,6 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-
 
 
 # Default primary key field type
