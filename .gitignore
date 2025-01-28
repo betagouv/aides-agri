@@ -1,10 +1,23 @@
-.DS_STORE
-.idea
-.env
-claude
-shell-scripts
-db.sqlite3
-yarn.lock
-node_modules/*
+# Python
+__pycache__/
+*.pyc
+/.venv/
+
+# Javascript
+/node_modules/
 static/vendor
 static/vendor/*
+
+# App
+.env
+
+# IDE
+.idea
+
+# OS
+.DS_STORE
+
+# Custom
+claude/
+shell-scripts/
+db.sqlite3
