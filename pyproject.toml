@@ -5,6 +5,7 @@ version = "0.1.0"
 dependencies = [
   "django ~=5.1",
   "django-dsfr ~=2.1",
+  "django-tree-queries ~=0.19",
   "psycopg[binary] ~=3.0",
 ]
 

@@ -1,0 +1,18 @@
+{% extends "ui/base.html" %}
+
+{% load dsfr_tags %}
+
+{% block content %}
+<div class="fr-container">
+  <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center">
+    <div class="fr-grid-col">
+      <h1>{{ question.texte }}</h1>
+      <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        {% dsfr_button label="Envoyer" %}
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}
