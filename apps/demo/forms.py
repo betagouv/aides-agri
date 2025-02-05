@@ -22,11 +22,15 @@ class ReponseForm(ModelForm, DsfrBaseForm):
         if self.question.is_choix_unique:
             del self.fields["choix_multiples"]
             del self.fields["reponse_libre"]
-            self.fields["choix"].choices = self.question.choix_set.values_list("pk", "texte")
+            self.fields["choix"].choices = self.question.choix_set.values_list(
+                "pk", "texte"
+            )
         elif self.question.is_choix_multiple:
             del self.fields["choix"]
             del self.fields["reponse_libre"]
-            self.fields["choix_multiples"].choices = self.question.choix_set.values_list("pk", "texte")
+            self.fields[
+                "choix_multiples"
+            ].choices = self.question.choix_set.values_list("pk", "texte")
         elif self.question.is_libre:
             del self.fields["choix_multiples"]
             del self.fields["choix"]

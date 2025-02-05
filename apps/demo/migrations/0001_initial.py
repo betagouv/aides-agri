@@ -5,61 +5,144 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Choix',
+            name="Choix",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('texte', models.CharField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("texte", models.CharField()),
             ],
             options={
-                'verbose_name': 'Choix',
-                'verbose_name_plural': 'Choix',
+                "verbose_name": "Choix",
+                "verbose_name_plural": "Choix",
             },
         ),
         migrations.CreateModel(
-            name='Parcours',
+            name="Parcours",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('session_id', models.CharField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("session_id", models.CharField()),
             ],
         ),
         migrations.CreateModel(
-            name='Question',
+            name="Question",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('position', models.IntegerField()),
-                ('format', models.CharField(choices=[('UNIQUE', 'Choix unique'), ('MULTIPLE', 'Choix multiples'), ('LIBRE', 'Texte libre')])),
-                ('texte', models.CharField()),
-                ('parent', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='demo.question')),
-                ('parent_choix', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='question_declencheuse', to='demo.choix')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("position", models.IntegerField()),
+                (
+                    "format",
+                    models.CharField(
+                        choices=[
+                            ("UNIQUE", "Choix unique"),
+                            ("MULTIPLE", "Choix multiples"),
+                            ("LIBRE", "Texte libre"),
+                        ]
+                    ),
+                ),
+                ("texte", models.CharField()),
+                (
+                    "parent",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="demo.question",
+                    ),
+                ),
+                (
+                    "parent_choix",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="question_declencheuse",
+                        to="demo.choix",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Question',
-                'verbose_name_plural': 'Questions',
-                'unique_together': {('parent', 'position')},
+                "verbose_name": "Question",
+                "verbose_name_plural": "Questions",
+                "unique_together": {("parent", "position")},
             },
         ),
         migrations.AddField(
-            model_name='choix',
-            name='question',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='demo.question'),
+            model_name="choix",
+            name="question",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="demo.question"
+            ),
         ),
         migrations.CreateModel(
-            name='Reponse',
+            name="Reponse",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('reponse_libre', models.CharField(blank=True)),
-                ('choix', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='demo.choix')),
-                ('choix_multiples', models.ManyToManyField(blank=True, related_name='reponse_par_choix_multiples', to='demo.choix')),
-                ('parcours', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='demo.parcours')),
-                ('question', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='demo.question')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("reponse_libre", models.CharField(blank=True)),
+                (
+                    "choix",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="demo.choix",
+                    ),
+                ),
+                (
+                    "choix_multiples",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="reponse_par_choix_multiples",
+                        to="demo.choix",
+                    ),
+                ),
+                (
+                    "parcours",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="demo.parcours"
+                    ),
+                ),
+                (
+                    "question",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="demo.question"
+                    ),
+                ),
             ],
         ),
     ]

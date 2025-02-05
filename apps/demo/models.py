@@ -21,7 +21,11 @@ class Question(TreeNode):
         "Question", on_delete=models.CASCADE, null=True, blank=True
     )
     parent_choix = models.ForeignKey(
-        "Choix", on_delete=models.CASCADE, null=True, blank=True, related_name="question_declencheuse"
+        "Choix",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="question_declencheuse",
     )
     position = models.IntegerField()
     format = models.CharField(choices=Format)
@@ -72,4 +76,6 @@ class Reponse(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     reponse_libre = models.CharField(blank=True)
     choix = models.ForeignKey(Choix, null=True, blank=True, on_delete=models.CASCADE)
-    choix_multiples = models.ManyToManyField(Choix, blank=True, related_name="reponse_par_choix_multiples")
+    choix_multiples = models.ManyToManyField(
+        Choix, blank=True, related_name="reponse_par_choix_multiples"
+    )

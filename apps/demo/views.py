@@ -52,7 +52,10 @@ class QuestionView(CreateView):
     def get_success_url(self):
         try:
             next_question = self.questions[self.questions.index(self.question) + 1]
-            while next_question.parent_choix and next_question.parent_choix != self.object.choix:
+            while (
+                next_question.parent_choix
+                and next_question.parent_choix != self.object.choix
+            ):
                 next_question = self.questions[self.questions.index(next_question) + 1]
             return reverse("demo:question", kwargs={"pk": next_question.pk})
         except IndexError:
