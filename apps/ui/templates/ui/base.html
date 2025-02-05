@@ -1,5 +1,11 @@
 {% extends "dsfr/base.html" %}
 
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'ui/base.css' %}">
+{% endblock extra_css %}
+
 {% block header %}
-  {% include "dsfr/header.html" %}
+  {% include "ui/blocks/header.html" %}
 {% endblock header %}
