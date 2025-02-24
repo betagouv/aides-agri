@@ -1,0 +1,66 @@
+body {
+  background-color: var(--background-contrast-info);
+}
+
+body > header, body > footer {
+  background-color: var(--background-raised-grey);
+}
+
+#baseline {
+  background-image: url("images/home/illustration_baseline.svg"),
+                    url("images/home/illustration_baseline_bg.svg");
+  background-repeat: no-repeat, no-repeat;
+  background-size: 230px 193px, 266px 246px;
+  background-position: top right -80px;
+  text-wrap: balance;
+}
+
+#baseline h1 {
+  font-size: 32px;
+  line-height: 40px;
+  color:var(--text-title-grey);
+}
+
+#baseline h2 {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 400;
+}
+
+#proposition {
+  background-color: var(--background-default-grey);
+  box-shadow: var(--lifted-shadow);
+}
+
+#starter {
+  background-color: var(--background-default-grey);
+}
+
+#proposition h3, #starter h3, #starter h4 {
+  text-align: center;
+}
+
+#conseillers-entreprise .illustration {
+  background-image: url("images/home/illustration_conseillers_entreprise.svg");
+  background-repeat: no-repeat;
+  height: 301px;
+}
+
+@media (min-width:62em) {
+  #baseline {
+    background-size: auto;
+    background-position: top 53px right 120px, bottom right;
+    min-height: 737px;
+  }
+
+  #baseline h1 {
+    font-size: 56px;
+    line-height: 64px;
+    color:var(--text-title-grey);
+  }
+
+  #baseline > div {
+    padding-left: 7.5rem !important;
+    padding-top: 7.5rem !important;
+  }
+}
