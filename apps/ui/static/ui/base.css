@@ -1,3 +1,13 @@
 .fr-grid-row.fr-grid-row--space-between {
   justify-content: space-between;
 }
+
+.fr-grid-row.fr-grid-row--space-around {
+  justify-content: space-around;
+}
+
+@media (min-width:62em) {
+  .fr-mt-md-n12w {
+    margin-top: -6rem !important;
+  }
+}

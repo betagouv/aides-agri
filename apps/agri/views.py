@@ -1,4 +1,5 @@
 from django.http.request import QueryDict
+from django.templatetags.static import static
 from django.urls import reverse
 from django.views.generic import TemplateView
 from django.views.generic.base import ContextMixin
@@ -12,6 +13,74 @@ STEPS = [
     "Précisions",
     "Approfondissement",
 ]
+
+
+class Step1Mixin:
+    extra_context = {
+        "themes": [
+            {
+                "title": "Thème 1",
+                "description": "Description",
+                "detail": "Détail",
+            },
+            {
+                "title": "Thème 2",
+                "description": "Description",
+                "detail": "Détail",
+            },
+            {
+                "title": "Thème 3",
+                "description": "Description",
+                "detail": "Détail",
+            },
+            {
+                "title": "Thème 4",
+                "description": "Description",
+                "detail": "Détail",
+            },
+        ],
+    }
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        for theme in context_data["themes"]:
+            theme["link"] = (
+                reverse("agri:step-2")
+                + "?"
+                + QueryDict.fromkeys(("theme",), theme["title"]).urlencode()
+            )
+        return context_data
+
+
+class HomeView(Step1Mixin, TemplateView):
+    template_name = "agri/home.html"
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data.update(
+            {
+                "conseillers_entreprises_card": {
+                    "heading_tag": "h4",
+                    "extra_classes": "fr-card--horizontal fr-border-default--red-marianne",
+                    "title": "Conseillers Entreprises",
+                    "description": "Le service public d’accompagnement des entreprises. Échangez avec les conseillers de proximité qui peuvent vous aider dans vos projets, vos difficultés ou les transformations nécessaires à la réussite de votre entreprise.",
+                    "image_url": static(
+                        "agri/images/home/illustration_conseillers_entreprise.svg"
+                    ),
+                    "media_badges": [
+                        {"extra_classes": "fr-badge--green-emeraude", "label": "En cours"}
+                    ],
+                    "top_detail": {
+                        "detail": {
+                            "icon_class": "fr-icon-arrow-right-line",
+                            "text": "Ministère de l’Économie x Ministère du Travail",
+                        },
+                        "tags": [{"label": "Conseil"}, {"label": "France"}],
+                    },
+                }
+            }
+        )
+        return context_data
 
 
 class AgriMixin(ContextMixin):
@@ -57,44 +126,9 @@ class AgriMixin(ContextMixin):
         return context_data
 
 
-class Step1View(AgriMixin, TemplateView):
+class Step1View(AgriMixin, Step1Mixin, TemplateView):
     template_name = "agri/step-1.html"
     STEP = 1
-
-    extra_context = {
-        "themes": [
-            {
-                "title": "Thème 1",
-                "description": "Description",
-                "detail": "Détail",
-            },
-            {
-                "title": "Thème 2",
-                "description": "Description",
-                "detail": "Détail",
-            },
-            {
-                "title": "Thème 3",
-                "description": "Description",
-                "detail": "Détail",
-            },
-            {
-                "title": "Thème 4",
-                "description": "Description",
-                "detail": "Détail",
-            },
-        ],
-    }
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        for theme in context_data["themes"]:
-            theme["link"] = (
-                reverse("agri:step-2")
-                + "?"
-                + QueryDict.fromkeys(("theme",), theme["title"]).urlencode()
-            )
-        return context_data
 
 
 class Step2View(AgriMixin, TemplateView):
