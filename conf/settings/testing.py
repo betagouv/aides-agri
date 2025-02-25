@@ -9,3 +9,6 @@ LOGGING = {}
 STORAGES["staticfiles"]["BACKEND"] = (  # noqa: F405
     "django.contrib.staticfiles.storage.StaticFilesStorage"
 )
+
+# Apps specific
+AIDES_MATCHING_PATH_DATA = "tests/data"
