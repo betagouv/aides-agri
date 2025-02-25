@@ -1,0 +1,12 @@
+{% extends "dsfr/footer.html" %}
+
+{% block footer_links %}
+  {{ block.super }}
+  <li class="fr-footer__bottom-item">
+    <button aria-controls="fr-theme-modal" data-fr-opened="false"
+            class="fr-icon-theme-fill fr-link--icon-left fr-footer__bottom-link"
+    >
+      Paramètres d'affichage
+    </button>
+  </li>
+{% endblock footer_links %}
