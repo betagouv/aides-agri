@@ -17,6 +17,7 @@ dev = [
   "ruff",
   "pytest",
   "pytest-django",
+  "requests-mock",
 ]
 scalingo = [
   "gunicorn ~=23.0",
