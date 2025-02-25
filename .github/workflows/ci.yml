@@ -35,11 +35,11 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras --dev
       - name: Run Ruff
-        run: uv run ruff check --output-format=github .
+        run: uv run --no-sync ruff check --output-format=github .
       - name: Check migrations
-        run: python manage.py makemigrations --check --dry-run
+        run: uv run --no-sync manage.py makemigrations --check --dry-run
       - name: Run tests
-        run: uv run pytest --cov
+        run: uv run --no-sync pytest --cov
         env:
           DJANGO_SETTINGS_MODULE: conf.settings.testing
           SECRET_KEY: notsecret
