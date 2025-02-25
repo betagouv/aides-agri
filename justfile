@@ -36,4 +36,4 @@ makemigrations: (manage "makemigrations")
 
 # Testing
 test:
-    DJANGO_SETTINGS_MODULE=conf.settings.testing uv run pytest
+    DJANGO_SETTINGS_MODULE=conf.settings.testing uv run pytest --cov

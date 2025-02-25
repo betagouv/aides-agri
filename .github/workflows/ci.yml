@@ -37,7 +37,7 @@ jobs:
       - name: Run Ruff
         run: uv run ruff check --output-format=github .
       - name: Run tests
-        run: uv run pytest
+        run: uv run pytest --cov
         env:
           DJANGO_SETTINGS_MODULE: conf.settings.testing
           SECRET_KEY: notsecret

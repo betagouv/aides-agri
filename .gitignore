@@ -3,6 +3,7 @@
 __pycache__/
 /.env
 /staticfiles
+.coverage
 
 # Javascript
 /node_modules

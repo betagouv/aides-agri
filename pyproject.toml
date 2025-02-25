@@ -16,6 +16,7 @@ dev = [
   "django-debug-toolbar",
   "ruff",
   "pytest",
+  "pytest-cov",
   "pytest-django",
   "requests-mock",
 ]
@@ -23,3 +24,9 @@ scalingo = [
   "gunicorn ~=23.0",
   "whitenoise ~=6.8",
 ]
+
+[tool.coverage.run]
+omit = ["**/tests/*"]
+
+[tool.coverage.report]
+show_missing = true
