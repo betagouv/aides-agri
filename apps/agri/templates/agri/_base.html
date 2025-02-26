@@ -4,12 +4,12 @@
 
 {% block extra_css %}
   {{ block.super }}
-  <link rel="stylesheet" href="{% static 'aides_matching/base.css' %}">
+  <link rel="stylesheet" href="{% static 'agri/base.css' %}">
   <script type="importmap">
   {
     "imports": {
       "@hotwired/stimulus": "{% static 'vendor/stimulus.js' %}",
-      "summary-mobile": "{% static 'aides_matching/summary-mobile.js' %}",
+      "summary-mobile": "{% static 'agri/summary-mobile.js' %}",
       "suggest": "{% static 'ui/components/suggest.js' %}"
     }
   }
@@ -56,7 +56,7 @@
             {% endfor %}
             </ul>
           </div>
-          <a class="fr-link fr-link--sm" href="{% url 'aides_matching:step-2' %}">Explorer d'autres sous-thèmes</a>
+          <a class="fr-link fr-link--sm" href="{% url 'agri:step-2' %}">Explorer d'autres sous-thèmes</a>
         {% endif %}
         {% if summary_siret %}
           <br><br>

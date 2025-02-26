@@ -11,4 +11,4 @@ STORAGES["staticfiles"]["BACKEND"] = (  # noqa: F405
 )
 
 # Apps specific
-AIDES_MATCHING_PATH_DATA = "tests/data"
+AGRI_PATH_DATA = "tests/data"

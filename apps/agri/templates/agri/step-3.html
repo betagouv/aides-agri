@@ -1,4 +1,4 @@
-{% extends "aides_matching/_form.html" %}
+{% extends "agri/_form.html" %}
 
 {% load dsfr_tags static ui_tags %}
 
@@ -17,7 +17,7 @@
 {% block h2 %}Afin de vous proposer des aides adéquates, nous avons besoin d’en savoir un peu plus sur votre
   exploitation.{% endblock %}
 
-{% block action %}{% url 'aides_matching:step-4' %}{% endblock action %}
+{% block action %}{% url 'agri:step-4' %}{% endblock action %}
 
 {% block form %}
 <div class="fr-grid-row fr-grid-row--gutters">
@@ -36,7 +36,7 @@
                    aria-describedby="siret-messages"
             >
             <button class="fr-btn" title="Rechercher"
-                    hx-get="{% url 'aides_matching:find-company' %}"
+                    hx-get="{% url 'agri:find-company' %}"
                     hx-target="#siret-messages"
                     hx-include="#siret-search"
                     onclick="this.disabled = true"

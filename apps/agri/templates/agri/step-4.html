@@ -1,4 +1,4 @@
-{% extends "aides_matching/_form.html" %}
+{% extends "agri/_form.html" %}
 
 {% load dsfr_tags static ui_tags %}
 
@@ -20,7 +20,7 @@
 {% block h2 %}Afin de vous proposer des aides adéquates, nous avons besoin d’en savoir un peu plus sur votre
   exploitation.{% endblock h2 %}
 
-{% block action %}{% url 'aides_matching:step-5' %}{% endblock action %}
+{% block action %}{% url 'agri:step-5' %}{% endblock action %}
 
 {% block form %}
 <div class="fr-grid-row">

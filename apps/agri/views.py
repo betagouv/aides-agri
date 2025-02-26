@@ -14,7 +14,7 @@ STEPS = [
 ]
 
 
-class aides_matchingMixin(ContextMixin):
+class AgriMixin(ContextMixin):
     STEP = None
 
     def get_context_data(self, **kwargs):
@@ -57,8 +57,8 @@ class aides_matchingMixin(ContextMixin):
         return context_data
 
 
-class Step1View(aides_matchingMixin, TemplateView):
-    template_name = "aides_matching/step-1.html"
+class Step1View(AgriMixin, TemplateView):
+    template_name = "agri/step-1.html"
     STEP = 1
 
     extra_context = {
@@ -90,15 +90,15 @@ class Step1View(aides_matchingMixin, TemplateView):
         context_data = super().get_context_data(**kwargs)
         for theme in context_data["themes"]:
             theme["link"] = (
-                reverse("aides_matching:step-2")
+                reverse("agri:step-2")
                 + "?"
                 + QueryDict.fromkeys(("theme",), theme["title"]).urlencode()
             )
         return context_data
 
 
-class Step2View(aides_matchingMixin, TemplateView):
-    template_name = "aides_matching/step-2.html"
+class Step2View(AgriMixin, TemplateView):
+    template_name = "agri/step-2.html"
     STEP = 2
 
     extra_context = {
@@ -111,13 +111,13 @@ class Step2View(aides_matchingMixin, TemplateView):
     }
 
 
-class Step3View(aides_matchingMixin, TemplateView):
-    template_name = "aides_matching/step-3.html"
+class Step3View(AgriMixin, TemplateView):
+    template_name = "agri/step-3.html"
     STEP = 3
 
 
-class Step4View(aides_matchingMixin, TemplateView):
-    template_name = "aides_matching/step-4.html"
+class Step4View(AgriMixin, TemplateView):
+    template_name = "agri/step-4.html"
     STEP = 4
 
     @property
@@ -136,18 +136,18 @@ class Step4View(aides_matchingMixin, TemplateView):
         return extra_context
 
 
-class Step5View(aides_matchingMixin, TemplateView):
-    template_name = "aides_matching/step-5.html"
+class Step5View(AgriMixin, TemplateView):
+    template_name = "agri/step-5.html"
     STEP = 5
 
 
-class ResultsView(aides_matchingMixin, TemplateView):
-    template_name = "aides_matching/results.html"
+class ResultsView(AgriMixin, TemplateView):
+    template_name = "agri/results.html"
 
     extra_context = {
         "main_cards_data": {
             "title": "Intitulé dispositif",
-            "image_url": "/static/aides_matching/images/placeholder.1x1.svg",
+            "image_url": "/static/agri/images/placeholder.1x1.svg",
             "ratio_class": "fr-ratio-1x1",
             "media_badges": [
                 {
@@ -168,7 +168,7 @@ class ResultsView(aides_matchingMixin, TemplateView):
         },
         "closed_cards_data": {
             "title": "Intitulé dispositif",
-            "image_url": "/static/aides_matching/images/placeholder.1x1.svg",
+            "image_url": "/static/agri/images/placeholder.1x1.svg",
             "ratio_class": "fr-ratio-1x1",
             "media_badges": [
                 {
@@ -191,7 +191,7 @@ class ResultsView(aides_matchingMixin, TemplateView):
 
 
 class SearchCompanyView(TemplateView):
-    template_name = "aides_matching/_partials/search_company.html"
+    template_name = "agri/_partials/search_company.html"
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)

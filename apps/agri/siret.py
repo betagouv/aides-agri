@@ -12,7 +12,7 @@ mapping_tranche_effectif_salarie = dict()
 _here = os.path.dirname(__file__)
 
 # /!\ this code block is expensive, please make sure it's executed at application startup
-with open(f"{_here}/{settings.AIDES_MATCHING_PATH_DATA}/mapping_codes_naf.csv") as f:
+with open(f"{_here}/{settings.AGRI_PATH_DATA}/mapping_codes_naf.csv") as f:
     reader = csv.reader(f)
     for row in reader:
         mapping_naf_short[row[0]] = row[3]
@@ -27,7 +27,7 @@ mapping_naf_complete_unique = {
 
 # /!\ this code block is expensive, please make sure it's executed at application startup
 with open(
-    f"{_here}/{settings.AIDES_MATCHING_PATH_DATA}/mapping_tranche_effectif_salarie.csv"
+    f"{_here}/{settings.AGRI_PATH_DATA}/mapping_tranche_effectif_salarie.csv"
 ) as f:
     reader = csv.reader(f)
     for row in reader:

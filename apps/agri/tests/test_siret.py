@@ -1,7 +1,7 @@
 import pytest
 import requests
 
-from aides_matching import siret
+from agri import siret
 
 from .common import (
     fake_siret,

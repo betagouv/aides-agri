@@ -11,7 +11,7 @@ from .views import (
 )
 
 
-app_name = "aides_matching"
+app_name = "agri"
 urlpatterns = [
     path("", Step1View.as_view(), name="step-1"),
     path("etape-2", Step2View.as_view(), name="step-2"),
