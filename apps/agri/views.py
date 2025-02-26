@@ -14,6 +14,47 @@ STEPS = [
 ]
 
 
+class Step1Mixin:
+    extra_context = {
+        "themes": [
+            {
+                "title": "Thème 1",
+                "description": "Description",
+                "detail": "Détail",
+            },
+            {
+                "title": "Thème 2",
+                "description": "Description",
+                "detail": "Détail",
+            },
+            {
+                "title": "Thème 3",
+                "description": "Description",
+                "detail": "Détail",
+            },
+            {
+                "title": "Thème 4",
+                "description": "Description",
+                "detail": "Détail",
+            },
+        ],
+    }
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        for theme in context_data["themes"]:
+            theme["link"] = (
+                reverse("agri:step-2")
+                + "?"
+                + QueryDict.fromkeys(("theme",), theme["title"]).urlencode()
+            )
+        return context_data
+
+
+class HomeView(Step1Mixin, TemplateView):
+    template_name = "agri/home.html"
+
+
 class AgriMixin(ContextMixin):
     STEP = None
 
@@ -57,44 +98,9 @@ class AgriMixin(ContextMixin):
         return context_data
 
 
-class Step1View(AgriMixin, TemplateView):
+class Step1View(AgriMixin, Step1Mixin, TemplateView):
     template_name = "agri/step-1.html"
     STEP = 1
-
-    extra_context = {
-        "themes": [
-            {
-                "title": "Thème 1",
-                "description": "Description",
-                "detail": "Détail",
-            },
-            {
-                "title": "Thème 2",
-                "description": "Description",
-                "detail": "Détail",
-            },
-            {
-                "title": "Thème 3",
-                "description": "Description",
-                "detail": "Détail",
-            },
-            {
-                "title": "Thème 4",
-                "description": "Description",
-                "detail": "Détail",
-            },
-        ],
-    }
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        for theme in context_data["themes"]:
-            theme["link"] = (
-                reverse("agri:step-2")
-                + "?"
-                + QueryDict.fromkeys(("theme",), theme["title"]).urlencode()
-            )
-        return context_data
 
 
 class Step2View(AgriMixin, TemplateView):

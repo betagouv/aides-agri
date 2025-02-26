@@ -1,0 +1,103 @@
+{% load i18n static dsfr_tags %}
+
+<!DOCTYPE html>
+<html lang="fr"
+      data-fr-scheme="system"
+      {% if SITE_CONFIG.mourning %}data-fr-mourning{% endif %}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    {% dsfr_css %}
+    {% dsfr_favicon %}
+
+    <link rel="stylesheet" href="{% static 'ui/base.css' %}">
+    <link rel="stylesheet" href="{% static 'agri/home.css' %}">
+
+    <title>
+      {% if title and SITE_CONFIG.site_title %}
+        {{ title }} — {{ SITE_CONFIG.site_title }}
+      {% elif title %}
+        {{ title }}
+      {% elif SITE_CONFIG.site_title %}
+        {{ SITE_CONFIG.site_title }}
+      {% else %}
+        {% translate "Untitled page" %}
+      {% endif %}
+    </title>
+    <meta name="format-detection"
+          content="telephone=no,date=no,address=no,email=no,url=no">
+  </head>
+  <body>
+    {% dsfr_skiplinks skiplinks %}
+
+    {% include 'ui/blocks/header.html' %}
+
+    {% dsfr_theme_modale %}
+
+    {% if SITE_CONFIG.notice_title or SITE_CONFIG.notice_description %}
+      {% dsfr_notice title=SITE_CONFIG.notice_title description=SITE_CONFIG.notice_description link=SITE_CONFIG.notice_link type=SITE_CONFIG.notice_type icon=SITE_CONFIG.notice_icon_class is_collapsible=SITE_CONFIG.notice_is_collapsible %}
+    {% endif %}
+
+    <div class="fr-container--fluid fr-mb-6w">
+      <main id="content" role="main">
+
+        <section class="fr-grid-row fr-mt-n1w" id="baseline">
+          <div class="fr-col fr-col-lg-6 fr-p-4w fr-pl-lg-15w fr-pt-lg-15w">
+            <h1 class="fr-mb-md-6w">Agriculteurs : un projet, une difficulté ?</h1>
+            <h2 class="fr-mb-md-6w">Mes Aides Agri vous permet d'identifier les aides et interlocuteurs pertinents.</h2>
+            <a class="fr-btn fr-btn--lg fr-mb-3w fr-mb-md-6w" href="{% url 'agri:step-1' %}">Racontez-nous !</a>
+          </div>
+        </section>
+
+        <section id="proposition" class="fr-container fr-mt-n4w fr-mb-6w fr-py-3w">
+          <h3 class="fr-text-title--blue-france">Mes Aides Agri, c'est :</h3>
+
+          <div class="fr-grid-row fr-grid-row--space-around">
+            <div class="fr-col-12 fr-col-md-3 fr-px-3w fr-py-3w">
+              <strong>Un outil d’aide à la décision :</strong>
+              accédez rapidement à une pré-sélection personnalisée de fiches d’aide synthétiques.
+            </div>
+            <div class="fr-col-12 fr-col-md-3 fr-px-3w fr-py-3w">
+              <strong>Une centralisation des aides publiques</strong>
+              à destination des agriculteurs mis à jour en continu.
+            </div>
+            <div class="fr-col-12 fr-col-md-3 fr-px-3w fr-py-3w">
+              <strong>Une orientation</strong>
+              vers les organismes pertinents : déposez votre dossier ou rentrez en contact avec un conseiller.
+            </div>
+          </div>
+        </section>
+
+        <section id="starter" class="fr-px-3w fr-py-5w fr-px-md-15w">
+          <h3>Votre projet.</h3>
+          <h4>Parmi ces thèmes lequel correspond le mieux à votre besoin ?</h4>
+          <section class="fr-container--fluid">
+            <div class="fr-grid-row fr-grid-row--gutters">
+            {% for theme in themes %}
+              <div class="fr-col-12 fr-col-sm-6 fr-col-lg-3">
+                {% dsfr_tile title=theme.title description=theme.description detail=theme.detail url=theme.link extra_classes="fr-tile--sm" svg_path="/static/dsfr/dist/artwork/pictograms/buildings/city-hall.svg" %}
+              </div>
+            {% endfor %}
+            </div>
+          </section>
+        </section>
+
+        <section id="conseillers-entreprise" class="fr-container fr-px-3w fr-py-5w fr-px-md-15w">
+          <div class="fr-grid-row">
+            <div class="fr-col-12 fr-col-md-6 fr-mb-3w fr-mb-md-0 illustration"></div>
+            <div class="fr-col-12 fr-col-md-6">
+              <h3>Vous souhaitez parler directement à un conseiller ?</h3>
+              <p>Nous transmettons votre projet, difficulté ou question à un conseiller de proximité compétent sur votre sujet. Il vous rappelle pour échanger avec vous sur la meilleure manière de vous accompagner.</p>
+              <a href="#" class="fr-btn">Échanger avec un conseiller</a>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    {% include "ui/blocks/footer.html" %}
+
+    {% dsfr_js nonce=request.csp_nonce %}
+  </body>
+</html>
