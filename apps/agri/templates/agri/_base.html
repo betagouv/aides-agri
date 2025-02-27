@@ -48,14 +48,14 @@
         <div class="fr-h6">Votre projet</div>
         <div class="fr-mb-2v">
           <span>Thème :</span>
-          {% dsfr_tag label=summary_theme extra_classes="fr-tag--sm" %}
+          {% dsfr_tag label=summary_theme.nom extra_classes="fr-tag--sm" %}
         </div>
         {% if summary_sujets %}
           <div class="fr-mb-2v">
             <span>Sous-thèmes :</span>
             <ul class="fr-tags-group">
             {% for sujet in summary_sujets %}
-              <li>{% dsfr_tag label=sujet extra_classes="fr-tag--sm" %}</li>
+              <li>{% dsfr_tag label=sujet.nom extra_classes="fr-tag--sm" %}</li>
             {% endfor %}
             </ul>
           </div>

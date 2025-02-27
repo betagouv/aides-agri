@@ -80,6 +80,6 @@ def get(query: str) -> dict:
     matching_etablissements = societe.pop("matching_etablissements")
     etablissement = matching_etablissements[0]
     etablissement["societe"] = societe
-    etablissement["nom"] = societe["nom_complet"] if etablissement.get("est_siege", False) else etablissement["nom_commercial"]
+    etablissement["nom"] = etablissement["nom_commercial"] if etablissement["nom_commercial"] else societe["nom_complet"]
     etablissement["departement"] = departement_from_commune(etablissement["commune"])
     return etablissement

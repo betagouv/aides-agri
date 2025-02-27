@@ -4,9 +4,9 @@
 <form action="{% block action %}{% endblock action %}" {% block extra_form_attributes %}{% endblock extra_form_attributes %}>
 
   {# previous steps fields hidden #}
-  <input type="hidden" name="theme" value="{{ summary_theme }}">
+  <input type="hidden" name="theme" value="{{ summary_theme.pk }}">
   {% for sujet in summary_sujets %}
-    <input type="hidden" name="sujets[]" value="{{ sujet }}">
+    <input type="hidden" name="sujets[]" value="{{ sujet.pk }}">
   {% endfor %}
   {% if summary_siret %}
     <input type="hidden" name="siret" value="{{ summary_siret }}">
