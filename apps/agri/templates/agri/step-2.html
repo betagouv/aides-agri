@@ -13,9 +13,9 @@
 
 {% block form %}
 <div class="fr-grid-row fr-grid-row--gutters">
-  {% for option in options %}
+  {% for id, sujet in sujets.items %}
   <div class="fr-col">
-    {% ui_tile_checkbox id=option.id name=option.name value=option.value title="Lorem Ipsum" description="Description" extra_classes="fr-tile--horizontal fr-tile--sm" svg_path="/static/dsfr/dist/artwork/pictograms/buildings/city-hall.svg" %}
+    {% ui_tile_checkbox id=id name="sujets[]" value=sujet.pk title=sujet.nom description="Description" extra_classes="fr-tile--horizontal fr-tile--sm" svg_path="/static/dsfr/dist/artwork/pictograms/buildings/city-hall.svg" %}
   </div>
   {% endfor %}
 </div>

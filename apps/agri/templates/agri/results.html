@@ -30,15 +30,11 @@
 
   <div class="fr-container fr-p-0 fr-mb-4v">
     <div class="fr-grid-row fr-grid-row--gutters">
+      {% for aide in aides|slice:":3" %}
       <div class="fr-col fr-col-12 fr-col-md-4">
-        {% dsfr_card main_cards_data extra_classes="fr-card--no-icon" %}
+        {% dsfr_card aide extra_classes="fr-card--no-icon" %}
       </div>
-      <div class="fr-col fr-col-12 fr-col-md-4">
-        {% dsfr_card main_cards_data extra_classes="fr-card--no-icon" %}
-      </div>
-      <div class="fr-col fr-col-12 fr-col-md-4">
-        {% dsfr_card main_cards_data extra_classes="fr-card--no-icon" %}
-      </div>
+      {% endfor %}
     </div>
   </div>
 
@@ -54,24 +50,11 @@
 
   <div class="fr-container fr-p-0 fr-mb-4v">
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-6w">
+      {% for aide in aides|slice:"3:" %}
       <div class="fr-col fr-col-12 fr-col-md-6">
-        {% dsfr_card main_cards_data extra_classes="fr-card--horizontal fr-card--no-icon" %}
+        {% dsfr_card aide extra_classes="fr-card--horizontal fr-card--no-icon" %}
       </div>
-      <div class="fr-col fr-col-12 fr-col-md-6">
-        {% dsfr_card main_cards_data extra_classes="fr-card--horizontal fr-card--no-icon" %}
-      </div>
-      <div class="fr-col fr-col-12 fr-col-md-6">
-        {% dsfr_card main_cards_data extra_classes="fr-card--horizontal fr-card--no-icon" %}
-      </div>
-      <div class="fr-col fr-col-12 fr-col-md-6">
-        {% dsfr_card main_cards_data extra_classes="fr-card--horizontal fr-card--no-icon" %}
-      </div>
-      <div class="fr-col fr-col-12 fr-col-md-6">
-        {% dsfr_card closed_cards_data extra_classes="fr-card--horizontal fr-card--no-icon" %}
-      </div>
-      <div class="fr-col fr-col-12 fr-col-md-6">
-        {% dsfr_card closed_cards_data extra_classes="fr-card--horizontal fr-card--no-icon" %}
-      </div>
+      {% endfor %}
     </div>
   </div>
 

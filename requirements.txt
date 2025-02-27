@@ -106,6 +106,9 @@ psycopg-binary==3.2.4 ; implementation_name != 'pypy' \
     --hash=sha256:f702f36204127984dd212eb57bb328676abdfe8a56f179e408a806d5e520aa11 \
     --hash=sha256:f8dc8f4de5130c6278dd5e34b18ad8324a74658a7adb72d4e67ca97f9aeaaf3c \
     --hash=sha256:fa4acea9ca20a567c3872a5afab2084751530bb57b8fb6b52820d5c54e7c8c3b
+pygrister==0.5.0 \
+    --hash=sha256:7de3d2d9f950788bc60f97b9dae9aa2d2831dd62445b87f3d602cd45cc5d1d16 \
+    --hash=sha256:c1e34a514171b2a4c611a58f6a7e2e8e14326ed7c3041c458b9d250f73f43d20
 requests==2.32.3 \
     --hash=sha256:55365417734eb18255590a9ff9eb97e9e1da868d4ccd6402399eaf68af20a760 \
     --hash=sha256:70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6

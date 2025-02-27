@@ -1,8 +1,10 @@
 from django.http.request import QueryDict
 from django.urls import reverse
+from django.utils.timezone import now
 from django.views.generic import TemplateView
 from django.views.generic.base import ContextMixin
 
+from aides.models import Theme, Sujet, Aide, ZoneGeographique
 from . import siret
 
 STEPS = [
@@ -18,25 +20,12 @@ class Step1Mixin:
     extra_context = {
         "themes": [
             {
-                "title": "Thème 1",
+                "id": theme.pk,
+                "title": theme.nom,
                 "description": "Description",
                 "detail": "Détail",
-            },
-            {
-                "title": "Thème 2",
-                "description": "Description",
-                "detail": "Détail",
-            },
-            {
-                "title": "Thème 3",
-                "description": "Description",
-                "detail": "Détail",
-            },
-            {
-                "title": "Thème 4",
-                "description": "Description",
-                "detail": "Détail",
-            },
+            }
+            for theme in Theme.objects.all()
         ],
     }
 
@@ -46,7 +35,7 @@ class Step1Mixin:
             theme["link"] = (
                 reverse("agri:step-2")
                 + "?"
-                + QueryDict.fromkeys(("theme",), theme["title"]).urlencode()
+                + QueryDict.fromkeys(("theme",), theme["id"]).urlencode()
             )
         return context_data
 
@@ -57,6 +46,24 @@ class HomeView(Step1Mixin, TemplateView):
 
 class AgriMixin(ContextMixin):
     STEP = None
+    theme = None
+    sujets = []
+    departement = None
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        theme_id = request.GET.get("theme", None)
+        if theme_id:
+            self.theme = Theme.objects.get(pk=theme_id)
+        sujets_ids = request.GET.getlist("sujets[]", [])
+        if sujets_ids:
+            self.sujets = Sujet.objects.filter(pk__in=sujets_ids)
+        cp = request.GET.get("cp", None)
+        if cp:
+            if cp.startswith("9") and not cp.startswith("90"):
+                self.departement = cp[:3]
+            else:
+                self.departement = cp[:2]
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -64,8 +71,8 @@ class AgriMixin(ContextMixin):
         code_effectif = self.request.GET.get("tranche_effectif_salarie", None)
         context_data.update(
             {
-                "summary_theme": self.request.GET.get("theme", None),
-                "summary_sujets": self.request.GET.getlist("sujets[]", []),
+                "summary_theme": self.theme,
+                "summary_sujets": self.sujets,
                 "summary_siret": self.request.GET.get("siret", None),
                 "codes_naf": codes_naf,
                 "summary_naf": [
@@ -107,14 +114,17 @@ class Step2View(AgriMixin, TemplateView):
     template_name = "agri/step-2.html"
     STEP = 2
 
-    extra_context = {
-        "options": [
-            {"id": "subject1", "name": "sujets[]", "value": "Sous-thème 1"},
-            {"id": "subject2", "name": "sujets[]", "value": "Sous-thème 2"},
-            {"id": "subject3", "name": "sujets[]", "value": "Sous-thème 3"},
-            {"id": "subject4", "name": "sujets[]", "value": "Sous-thème 4"},
-        ],
-    }
+    def get_context_data(self, **kwargs):
+        extra_context = super().get_context_data(**kwargs)
+        extra_context.update(
+            {
+                "sujets": {
+                    f"subject-{sujet.pk}": sujet
+                    for sujet in Sujet.objects.filter(themes=self.theme)
+                }
+            }
+        )
+        return extra_context
 
 
 class Step3View(AgriMixin, TemplateView):
@@ -150,50 +160,54 @@ class Step5View(AgriMixin, TemplateView):
 class ResultsView(AgriMixin, TemplateView):
     template_name = "agri/results.html"
 
-    extra_context = {
-        "main_cards_data": {
-            "title": "Intitulé dispositif",
-            "image_url": "/static/agri/images/placeholder.1x1.svg",
-            "ratio_class": "fr-ratio-1x1",
-            "media_badges": [
-                {
-                    "extra_classes": "fr-badge--green-emeraude",
-                    "label": "En cours",
-                }
-            ],
-            "top_detail": {
-                "tags": [
-                    {"label": "Type d'aide", "extra_classes": "fr-tag--sm"},
-                    {"label": "Zone géographique", "extra_classes": "fr-tag--sm"},
+    def get_context_data(self, **kwargs):
+        extra_context = super().get_context_data(**kwargs)
+        extra_context.update(
+            {
+                "aides": [
+                    {
+                        "title": aide.nom,
+                        "image_url": "/static/agri/images/placeholder.1x1.svg",
+                        "ratio_class": "fr-ratio-1x1",
+                        "media_badges": [
+                            {
+                                "extra_classes": "fr-badge--green-emeraude",
+                                "label": "En cours",
+                            }
+                            if aide.date_fin is None or aide.date_fin > now().date()
+                            else {
+                                "extra_classes": "fr-badge--pink-tuile",
+                                "label": "Clôturé",
+                            }
+                        ],
+                        "top_detail": {
+                            "tags": [
+                                {
+                                    "label": aide.nature.nom,
+                                    "extra_classes": "fr-tag--sm",
+                                },
+                                {
+                                    "label": aide.couverture_geographique.nom,
+                                    "extra_classes": "fr-tag--sm",
+                                }
+                                if aide.couverture_geographique
+                                else {},
+                            ],
+                            "detail": {
+                                "icon_class": "fr-icon-arrow-right-line",
+                                "text": aide.operateur.nom,
+                            },
+                        },
+                    }
+                    for aide in Aide.objects.filter(
+                        zones_geographiques=ZoneGeographique.objects.get(
+                            numero=self.departement
+                        ).parent
+                    )
                 ],
-                "detail": {
-                    "icon_class": "fr-icon-arrow-right-line",
-                    "text": "Guichet",
-                },
-            },
-        },
-        "closed_cards_data": {
-            "title": "Intitulé dispositif",
-            "image_url": "/static/agri/images/placeholder.1x1.svg",
-            "ratio_class": "fr-ratio-1x1",
-            "media_badges": [
-                {
-                    "extra_classes": "fr-badge--pink-tuile",
-                    "label": "Clôturé",
-                }
-            ],
-            "top_detail": {
-                "tags": [
-                    {"label": "Type d'aide"},
-                    {"label": "Zone géographique"},
-                ],
-                "detail": {
-                    "icon_class": "fr-icon-arrow-right-line",
-                    "text": "Guichet",
-                },
-            },
-        },
-    }
+            }
+        )
+        return extra_context
 
 
 class SearchCompanyView(TemplateView):
