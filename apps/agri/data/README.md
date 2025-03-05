@@ -18,3 +18,10 @@
   - Mise au format CSV
   - Simplification des libellés
 - Utilisation : le fichier est lu lors de la phase de démarrage du projet Django et monté en mémoire sous la forme d'un dictionnaire qui pourra être interrogé facilement et rapidement
+
+## Mapping des catégories juridiques d'entreprises
+
+- Source : https://www.insee.fr/fr/information/2028129
+- Transformations apportées :
+  - Mise au format CSV
+- Utilisation : le fichier est lu lors de la phase de démarrage du projet Django et monté en mémoire sous la forme d'un dictionnaire qui pourra être interrogé facilement et rapidement

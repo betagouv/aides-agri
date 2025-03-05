@@ -5,17 +5,27 @@
 {% block extra_css %}
   {{ block.super }}
   <link rel="stylesheet" href="{% static 'ui/components/tile_checkbox.css' %}">
+  <link rel="stylesheet" href="{% static 'agri/step-2.css' %}">
+  <script type="module">
+    import { Application } from "@hotwired/stimulus"
+    import { Step2 } from "step-2"
+    window.Stimulus ??= Application.start()
+
+    Stimulus.register("step2", Step2)
+  </script>
 {% endblock extra_css %}
 
-{% block h2 %}Quels sont les sous-thèmes qui correspond à votre projet ?{% endblock %}
+{% block h2 %}Quels sont les sous-thèmes qui correspondent à votre projet ?{% endblock %}
 
 {% block action %}{% url 'agri:step-3' %}{% endblock action %}
+
+{% block extra_form_attributes %}data-controller="step2" data-action="change->step2#change"{% endblock extra_form_attributes %}
 
 {% block form %}
 <div class="fr-grid-row fr-grid-row--gutters">
   {% for option in options %}
-  <div class="fr-col">
-    {% ui_tile_checkbox id=option.id name=option.name value=option.value title="Lorem Ipsum" description="Description" extra_classes="fr-tile--horizontal fr-tile--sm" svg_path="/static/dsfr/dist/artwork/pictograms/buildings/city-hall.svg" %}
+  <div class="fr-col fr-col-12">
+    {% ui_tile_checkbox id=option.id name=option.name value=option.value title="Lorem Ipsum" description="Description" extra_classes="fr-tile--horizontal fr-tile--sm" %}
   </div>
   {% endfor %}
 </div>

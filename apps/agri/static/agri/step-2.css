@@ -1,0 +1,28 @@
+.fr-tile--checkbox .fr-tile__detail .fr-label {
+  font-size: .5rem;
+  line-height: 1rem;
+}
+
+.fr-tile--checkbox.fr-checkbox-group input[type="checkbox"] {
+  height: 1rem;
+  width: 1rem;
+}
+
+.fr-tile--horizontal .fr-tile__img {
+  width: 0;
+  margin: 0;
+}
+
+.fr-tile--horizontal .fr-tile__content {
+  padding-bottom: 0;
+}
+
+.fr-tile--horizontal .fr-tile__link::after {
+  content: none;
+}
+
+@media (min-width:62em) {
+  h2.fr-h6 {
+    text-wrap: nowrap;
+  }
+}

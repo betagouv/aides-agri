@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
-class SummaryMobile extends Controller {
+export class SummaryMobile extends Controller {
   toggle(evt) {
     evt.target.disabled = true
 
@@ -17,5 +17,3 @@ class SummaryMobile extends Controller {
     }, 300)
   }
 }
-
-export { SummaryMobile }
