@@ -2,20 +2,7 @@
 
 {% load dsfr_tags static ui_tags %}
 
-{% block extra_css %}
-  {{ block.super }}
-  <link rel="stylesheet" href="{% static 'ui/components/dropdown.css' %}">
-
-  <script type="module">
-    import { Application } from "@hotwired/stimulus"
-    import { Suggest } from "suggest"
-    window.Stimulus ??= Application.start()
-
-    Stimulus.register("suggest", Suggest)
-  </script>
-{% endblock extra_css %}
-
-{% block h1 %}Votre exploitation{% endblock %}
+{% block h1 %}Votre exploitation.{% endblock %}
 
 {% block h2 %}Afin de vous proposer des aides adéquates, nous avons besoin d’en savoir un peu plus sur votre
   exploitation.{% endblock h2 %}
@@ -23,27 +10,37 @@
 {% block action %}{% url 'agri:step-5' %}{% endblock action %}
 
 {% block form %}
+<p class="fr-text--xs fr-text-mention--grey">Toutes les questions ci-dessous nécessitent une réponse afin de vous proposer des dispositifs pertinents.</p>
+<h3 class="fr-h6 fr-icon-identity-fill fr-heading--soft fr-btn--icon-left">Identité de l'exploitation</h3>
 <div class="fr-grid-row">
   <fieldset class="fr-fieldset fr-col">
     <div class="fr-fieldset__element">
-      <span class="fr-label">Vos activités</span>
-      {% if not naf %}
-        <span class="fr-error-text">Nous n'avons pas pu trouver l'activité de votre établissement, veuillez sélectionner au moins une activité ici :</span>
-      {% endif %}
-      {% ui_searchbar_autocomplete options=mapping_naf initials=naf %}
+      <span class="fr-label">Nom de l'exploitation</span>
+      {% dsfr_tag label=etablissement.nom is_dismissable=True onclick="history.back()" %}
     </div>
     <div class="fr-fieldset__element">
-      <label for="input-cp" class="fr-label">Code postal</label>
-      <input id="input-cp" class="fr-input" type="text" maxlength="5" minlength="4" pattern="[0-9]?[0-9]{4}"
-             name="cp" value="{{ etablissement.code_postal }}">
+      <span class="fr-label">Siret</span>
+      {% dsfr_tag label=etablissement.siret is_dismissable=True onclick="history.back()" %}
     </div>
     <div class="fr-fieldset__element">
-      <label for="input-effectif" class="fr-label">Effectif</label>
-      <select id="input-effectif" class="fr-select" name="tranche_effectif_salarie">
-        {% for code, label in mapping_tranches_effectif.items %}
-        <option value="{{ code }}" {% if code == etablissement.tranche_effectif_salarie %}selected{% endif %}>{{ label }}</option>
+      <label for="input-departement" class="fr-label">Département</label>
+      <select id="input-departement" name="departement" class="fr-select">
+        {% for code, label in departements.items %}
+          <option value="{{ code }}" {% if code == etablissement.departement %}selected{% endif %}>{{ label }}</option>
         {% endfor %}
       </select>
+    </div>
+    <div class="fr-fieldset__element">
+      <label for="input-forme-juridique" class="fr-label">Forme juridique</label>
+      <select id="input-forme-juridique" class="fr-select" disabled>
+        <option value="{{ etablissement.societe.nature_juridique }}">{{ etablissement.societe.libelle_nature_juridique }}</option>
+      </select>
+    </div>
+    <div class="fr-fieldset__element">
+      <label for="input-date-installation" class="fr-label">Date d'installation</label>
+      <input class="fr-input" type="date" id="input-date-installation"
+             name="date_installation"
+             value="{{ etablissement.date_debut_activite }}">
     </div>
   </fieldset>
 </div>

@@ -1,0 +1,18 @@
+.fr-tile--horizontal .fr-tile__img {
+  width: 0;
+  margin: 0;
+}
+
+.fr-tile--horizontal .fr-tile__content {
+  padding-bottom: 0;
+}
+
+.fr-tile--horizontal .fr-tile__link::after {
+  content: none;
+}
+
+@media (min-width:62em) {
+  h2.fr-h6 {
+    text-wrap: nowrap;
+  }
+}

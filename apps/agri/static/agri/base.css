@@ -1,3 +1,11 @@
+.fr-h6.fr-btn--icon-left::before {
+  --icon-size: 1.5rem;
+}
+
+.fr-heading--soft {
+  color: #6a6af4 !important;
+}
+
 @media screen and (max-width: 576px) {
   body > div.fr-container {
     margin-top: 0 !important;

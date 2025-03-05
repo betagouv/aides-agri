@@ -1,6 +1,11 @@
 {% extends "agri/_base.html" %}
 
-{% load dsfr_tags %}
+{% load dsfr_tags static %}
+
+{% block extra_css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'agri/step-1.css' %}">
+{% endblock extra_css %}
 
 {% block h2 %}Parmi ces thèmes, lequel correspond le mieux à votre projet ?{% endblock %}
 
@@ -8,8 +13,8 @@
 <section class="fr-container--fluid">
   <div class="fr-grid-row fr-grid-row--gutters">
   {% for theme in themes %}
-    <div class="fr-col">
-      {% dsfr_tile title=theme.title description=theme.description detail=theme.detail url=theme.link extra_classes="fr-tile--horizontal fr-tile--sm" svg_path="/static/dsfr/dist/artwork/pictograms/buildings/city-hall.svg" %}
+    <div class="fr-col fr-col-12 fr-col-md-6">
+      {% dsfr_tile title=theme.title description=theme.description url=theme.link extra_classes="fr-tile--horizontal fr-tile--sm" %}
     </div>
   {% endfor %}
   </div>

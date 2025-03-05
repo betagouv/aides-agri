@@ -4,7 +4,7 @@
     <li class="fr-dropdown__item">
       <button type="button" class="fr-dropdown__entry fr-btn fr-btn--tertiary-no-outline"
               data-siret="{{ etablissement.siret }}"
-              onclick="document.getElementById('siret-search').value = this.dataset.siret; this.parentElement.parentElement.remove()"
+              data-action="click->step3#chooseSiret"
       >
         <strong>{{ hit.nom_complet }}</strong>
         <span>
@@ -25,6 +25,10 @@
       </button>
     </li>
   {% endfor %}
+{% empty %}
+  <li class="fr-dropdown__item">
+    <div class="fr-p-2w fr-icon-error-line">Votre recherche n'a donné aucun résultat. Veuillez réessayer ou visiter <a href="https://annuaire-entreprises.data.gouv.fr/">https://annuaire-entreprises.data.gouv.fr/</a> pour trouver votre exploitation.</div>
+  </li>
 {% endfor %}
 </ul>
 

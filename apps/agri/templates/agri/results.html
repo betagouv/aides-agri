@@ -2,75 +2,64 @@
 
 {% load dsfr_tags %}
 
-{% block headline %}
-<div class="fr-grid-row fr-grid-row--gutters">
-  {# main column, nothing in left column #}
-  <div class="fr-col fr-col-0 fr-col-md-3"></div>
-  <div class="fr-col fr-col-12 fr-col-md-6">
-    <h1>Résultats pour votre projet</h1>
-  </div>
-  <div class="fr-col fr-col-0 fr-col-md-3">
-    <button type="button" class="fr-btn fr-btn--icon-left fr-btn--sm fr-btn--tertiary-no-outline fr-icon-file-pdf-line">Enregistrer en PDF</button>
-    <button type="button" class="fr-btn fr-btn--icon-left fr-btn--sm fr-btn--tertiary-no-outline fr-icon-mail-line">M'envoyer la recherche</button>
-  </div>
-</div>
-{% endblock headline %}
+{% block aside_tools %}
+  <button type="button"
+          class="fr-btn fr-btn--icon-left fr-btn--sm fr-pl-0 fr-btn--tertiary-no-outline fr-icon-file-pdf-line"
+  >
+    Enregistrer en PDF
+  </button>
+  <button type="button"
+          class="fr-btn fr-btn--icon-left fr-btn--sm fr-pl-0 fr-btn--tertiary-no-outline fr-icon-mail-line"
+  >
+    M'envoyer la recherche
+  </button>
+{% endblock aside_tools %}
+
+{% block h1 %}Résultats pour votre projet.{% endblock h1 %}
 
 {% block main_col %}
 <div class="fr-col fr-col-12 fr-col-md-9">
-  <h2 class="fr-h5">Dispositifs recommandés selon votre besoin.</h2>
-
-  <p>Nos recommandations s’appuient sur les informations que vous nous avez partagé sur votre exploitation et votre projet. Nous avons à coeur de vous proposer dans un 1er temps les dispositifs qui semblent les plus pertinents afin de vous faciliter la prise de décision.</p>
   <div class="fr-highlight">
     <p>
-      <strong>Dispositifs complémentaires</strong>&nbsp;:
-      vous pouvez soumettre votre candidature pour ces dispositifs en parallèle afin de recevoir un accompagnement complet pour votre projet.
+      La sélection de ces dispositifs se base sur les informations que vous nous avez fournies en amont. Elle n’assure pas votre éligibilité.
     </p>
+  </div>
+
+  <div class="fr-tags-group fr-mb-3w">
+    {% for label in natures_aides %}
+      {# TODO replace with dsfr_tag when is_selected option will be available #}
+      <button class="fr-tag" aria-pressed="true">{{ label }}</button>
+    {% endfor %}
   </div>
 
   <div class="fr-container fr-p-0 fr-mb-4v">
     <div class="fr-grid-row fr-grid-row--gutters">
-      <div class="fr-col fr-col-12 fr-col-md-4">
-        {% dsfr_card main_cards_data extra_classes="fr-card--no-icon" %}
+      <div class="fr-col fr-col-12">
+        {% dsfr_card open_cards_data %}
       </div>
-      <div class="fr-col fr-col-12 fr-col-md-4">
-        {% dsfr_card main_cards_data extra_classes="fr-card--no-icon" %}
+      <div class="fr-col fr-col-12">
+        {% dsfr_card open_cards_data %}
       </div>
-      <div class="fr-col fr-col-12 fr-col-md-4">
-        {% dsfr_card main_cards_data extra_classes="fr-card--no-icon" %}
+      <div class="fr-col fr-col-12">
+        {% dsfr_card conseillers_entreprises_card_data %}
       </div>
-    </div>
-  </div>
-
-  <div class="fr-callout">
-    <p class="fr-callout__title">Vous n’êtes pas sûr de la meilleure option ? Demandez à être contacté par un conseiller.</p>
-    <p class="fr-callout__text">
-      Nous transmettons votre projet et vos informations au sujet de votre exploitation à plusieurs susceptibles de pouvoir vous aider. Un conseiller vous appellera pour discuter de votre projet en profondeur et confirmer si leurs aides peuvent correspondre à votre besoin.
-    </p>
-    <button class="fr-btn fr-btn--primary">Être contacté</button>
-  </div>
-
-  <h2 class="fr-h5">D’autres dispositifs qui pourraient vous intéresser.</h2>
-
-  <div class="fr-container fr-p-0 fr-mb-4v">
-    <div class="fr-grid-row fr-grid-row--gutters fr-mb-6w">
-      <div class="fr-col fr-col-12 fr-col-md-6">
-        {% dsfr_card main_cards_data extra_classes="fr-card--horizontal fr-card--no-icon" %}
+      <div class="fr-col fr-col-12">
+        {% dsfr_card open_cards_data %}
       </div>
-      <div class="fr-col fr-col-12 fr-col-md-6">
-        {% dsfr_card main_cards_data extra_classes="fr-card--horizontal fr-card--no-icon" %}
+      <div class="fr-col fr-col-12">
+        {% dsfr_card open_cards_data %}
       </div>
-      <div class="fr-col fr-col-12 fr-col-md-6">
-        {% dsfr_card main_cards_data extra_classes="fr-card--horizontal fr-card--no-icon" %}
+      <div class="fr-col fr-col-12">
+        {% dsfr_card open_cards_data %}
       </div>
-      <div class="fr-col fr-col-12 fr-col-md-6">
-        {% dsfr_card main_cards_data extra_classes="fr-card--horizontal fr-card--no-icon" %}
+      <div class="fr-col fr-col-12">
+        {% dsfr_card open_cards_data %}
       </div>
-      <div class="fr-col fr-col-12 fr-col-md-6">
-        {% dsfr_card closed_cards_data extra_classes="fr-card--horizontal fr-card--no-icon" %}
+      <div class="fr-col fr-col-12">
+        {% dsfr_card closed_cards_data %}
       </div>
-      <div class="fr-col fr-col-12 fr-col-md-6">
-        {% dsfr_card closed_cards_data extra_classes="fr-card--horizontal fr-card--no-icon" %}
+      <div class="fr-col fr-col-12">
+        {% dsfr_card closed_cards_data %}
       </div>
     </div>
   </div>

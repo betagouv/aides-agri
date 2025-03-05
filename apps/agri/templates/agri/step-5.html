@@ -2,9 +2,61 @@
 
 {% load dsfr_tags static ui_tags %}
 
-{% block h2 %}Dites-nous en plus sur votre projet et votre besoin.{% endblock %}
+{% block extra_css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'ui/components/dropdown.css' %}">
+
+  <script type="module">
+    import { Application } from "@hotwired/stimulus"
+    import { Suggest } from "suggest"
+    import { Step5 } from "step-5"
+    window.Stimulus ??= Application.start()
+
+    Stimulus.register("suggest", Suggest)
+    Stimulus.register("step5", Step5)
+  </script>
+{% endblock extra_css %}
+
+{% block h1 %}Votre exploitation.{% endblock %}
+
+{% block h2 %}Afin de vous proposer des aides adéquates, nous avons besoin d’en savoir un peu plus sur votre
+  exploitation.{% endblock h2 %}
 
 {% block action %}{% url 'agri:results' %}{% endblock action %}
 
+{% block extra_form_attributes %}data-controller="step5" data-action="change->step5#change"{% endblock extra_form_attributes %}
+
 {% block form %}
+<p class="fr-text--xs fr-text-mention--grey">Toutes les questions ci-dessous nécessitent une réponse afin de vous proposer des dispositifs pertinents.</p>
+<h3 class="fr-h6 fr-icon-seedling-fill fr-heading--soft fr-btn--icon-left">Votre activité</h3>
+<div class="fr-grid-row">
+  <fieldset class="fr-fieldset fr-col">
+    <div class="fr-fieldset__element fr-mb-3w">
+      <div class="fr-label fr-mb-2v">Filières</div>
+      {% if not naf %}
+        <span class="fr-error-text">Nous n'avons pas pu trouver l'activité de votre établissement, veuillez sélectionner au moins une activité ici :</span>
+      {% endif %}
+      {% ui_searchbar_autocomplete options=mapping_naf initials=naf %}
+    </div>
+    <div class="fr-fieldset__element fr-mb-3w">
+      <label for="input-effectif" class="fr-label">Effectif de l'exploitation</label>
+      <select id="input-effectif" class="fr-select" name="tranche_effectif_salarie">
+        {% for code, label in mapping_tranches_effectif.items %}
+        <option value="{{ code }}" {% if code == etablissement.tranche_effectif_salarie %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="fr-fieldset__element fr-container--fluid fr-mb-3w">
+      <p class="fr-label">Faites-vous partie d'un ou plusieurs regroupements ?</p>
+      <div class="fr-checkbox-group fr-grid-row">
+        {% for code, label in regroupements.items %}
+        <div class="fr-col fr-col-12 fr-col-md-4 fr-mb-2w">
+          <input id="checkbox-regroupements-{{ code }}" type="checkbox" name="regroupements" value="{{ code }}">
+          <label for="checkbox-regroupements-{{ code }}" class="fr-label">{{ label }}</label>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </fieldset>
+</div>
 {% endblock form %}

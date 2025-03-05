@@ -5,6 +5,13 @@
 {% block extra_css %}
   {{ block.super }}
   <link rel="stylesheet" href="{% static 'ui/components/dropdown.css' %}">
+  <script type="module">
+    import { Application } from "@hotwired/stimulus"
+    import { Step3 } from "step-3"
+    window.Stimulus ??= Application.start()
+
+    Stimulus.register("step3", Step3)
+  </script>
 {% endblock extra_css %}
 
 {% block extra_js %}
@@ -12,12 +19,14 @@
   <script type="module" src="{% static 'vendor/htmx.esm.js' %}"></script>
 {% endblock extra_js %}
 
-{% block h1 %}Votre exploitation{% endblock %}
+{% block h1 %}Votre exploitation.{% endblock %}
 
 {% block h2 %}Afin de vous proposer des aides adéquates, nous avons besoin d’en savoir un peu plus sur votre
   exploitation.{% endblock %}
 
 {% block action %}{% url 'agri:step-4' %}{% endblock action %}
+
+{% block extra_form_attributes %}data-controller="step3" data-action=""{% endblock extra_form_attributes %}
 
 {% block form %}
 <div class="fr-grid-row fr-grid-row--gutters">
@@ -31,9 +40,14 @@
           </label>
           <div class="fr-search-bar" role="search">
             <label class="fr-label" for="siret-search">Recherche</label>
-            <input id="siret-search" class="fr-input" name="siret"
+            <input type="hidden" name="siret"
+                   data-step3-target="siret"
+                   data-action="change->step3#change"
+            >
+            <input id="siret-search" class="fr-input" name="siret-search"
                    placeholder="Rechercher" type="search"
                    aria-describedby="siret-messages"
+                   data-step3-target="siretSearch"
             >
             <button class="fr-btn" title="Rechercher"
                     hx-get="{% url 'agri:find-company' %}"

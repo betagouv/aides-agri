@@ -7,10 +7,16 @@
   list-style: none;
   padding: 0;
   z-index: 1000;
+  border: 1px solid var(--border-default-grey);
+  margin-block-start: 0;
 }
 
 .fr-dropdown__item {
   border-bottom: 2px solid var(--border-default-grey);
+}
+
+.fr-dropdown__item:last-of-type {
+  border-bottom: none;
 }
 
 .fr-dropdown__entry {
