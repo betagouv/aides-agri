@@ -1,7 +1,7 @@
 {% load dsfr_tags %}
 
 <div data-controller="suggest">
-  <div class="fr-tags-group" data-suggest-target="tags">
+  <div class="fr-tags-group fr-mb-2v" data-suggest-target="tags">
   {% for value, label in self.initials.items %}
     <input type="hidden" name="naf[]" value="{{ value }}">
     {% dsfr_tag label=label is_dismissable=True %}

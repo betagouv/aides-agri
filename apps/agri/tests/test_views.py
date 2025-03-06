@@ -77,9 +77,19 @@ def test_step_4(requests_mock, client):
 
 
 @pytest.mark.django_db
-def test_step_5(client):
+def test_step_5(requests_mock, client):
+    # GIVEN the official companies API returns a result for a given Siret
+    requests_mock.get(
+        f"https://recherche-entreprises.api.gouv.fr/search?q={fake_siret}&minimal=true&include=matching_etablissements",
+        text=fake_api_response_one_hit,
+    )
+
     # WHEN requesting step 5
-    url = reverse("agri:step-5")
+    url = (
+        reverse("agri:step-5")
+        + "?"
+        + urlencode({"theme": "Thème 1", "subject": "Sujet 1", "siret": fake_siret})
+    )
     response = client.get(url)
 
     # THEN it's a 200

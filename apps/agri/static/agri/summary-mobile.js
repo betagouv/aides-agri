@@ -1,13 +1,13 @@
 import { Controller } from "@hotwired/stimulus"
 
-class SummaryMobile extends Controller {
+export class SummaryMobile extends Controller {
   toggle(evt) {
     evt.target.disabled = true
 
     if (this.element.style.left) {
       this.element.style.left = ""
     } else {
-      this.element.style.left = "0px"
+      this.element.style.left = "-8px"
     }
 
     setTimeout(() => {
@@ -17,5 +17,3 @@ class SummaryMobile extends Controller {
     }, 300)
   }
 }
-
-export { SummaryMobile }

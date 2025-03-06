@@ -4,10 +4,13 @@ import os
 from django.conf import settings
 import requests
 
+from .utils import departement_from_commune
+
 
 mapping_naf_short = dict()
 mapping_naf_complete = dict()
 mapping_tranche_effectif_salarie = dict()
+mapping_categories_juridiques = dict()
 
 _here = os.path.dirname(__file__)
 
@@ -32,6 +35,16 @@ with open(
     reader = csv.reader(f)
     for row in reader:
         mapping_tranche_effectif_salarie[row[0]] = row[1]
+
+
+
+# /!\ this code block is expensive, please make sure it's executed at application startup
+with open(
+    f"{_here}/{settings.AGRI_PATH_DATA}/mapping_categories_juridiques.csv"
+) as f:
+    reader = csv.reader(f)
+    for row in reader:
+        mapping_categories_juridiques[row[0]] = row[1]
 
 
 class SearchUnavailable(RuntimeError):
@@ -62,4 +75,11 @@ def search(query: str) -> list[dict]:
 
 
 def get(query: str) -> dict:
-    return search(query)[0]["matching_etablissements"][0]
+    societe = search(query)[0]
+    societe["libelle_nature_juridique"] = mapping_categories_juridiques.get(societe["nature_juridique"], "n/a")
+    matching_etablissements = societe.pop("matching_etablissements")
+    etablissement = matching_etablissements[0]
+    etablissement["societe"] = societe
+    etablissement["nom"] = societe["nom_complet"] if etablissement.get("est_siege", False) else etablissement["nom_commercial"]
+    etablissement["departement"] = departement_from_commune(etablissement["commune"])
+    return etablissement

@@ -1,7 +1,7 @@
 {% extends "agri/_base.html" %}
 
 {% block main_col_content %}
-<form action="{% block action %}{% endblock action %}">
+<form action="{% block action %}{% endblock action %}" {% block extra_form_attributes %}{% endblock extra_form_attributes %}>
 
   {# previous steps fields hidden #}
   <input type="hidden" name="theme" value="{{ summary_theme }}">
@@ -11,8 +11,8 @@
   {% if summary_siret %}
     <input type="hidden" name="siret" value="{{ summary_siret }}">
   {% endif %}
-  {% if summary_cp %}
-    <input type="hidden" name="cp" value="{{ summary_cp }}">
+  {% if summary_departement %}
+    <input type="hidden" name="departement" value="{{ summary_departement }}">
   {% endif %}
   {% for naf in codes_naf %}
     <input type="hidden" name="naf[]" value="{{ naf }}">
