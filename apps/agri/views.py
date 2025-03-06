@@ -97,7 +97,7 @@ class AgriMixin(ContextMixin):
         "coop": "Coopérative",
         "giee": "GIEE",
         "cuma": "CUMA",
-        None: "Non",
+        "": "Non",
     }
 
     def get_context_data(self, **kwargs):
