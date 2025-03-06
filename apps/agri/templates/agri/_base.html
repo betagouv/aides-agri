@@ -40,7 +40,7 @@
     {# left column #}
     <div id="left-column" class="fr-col fr-col-0 fr-col-md-3">
       {% if summary_theme or summary_sujets %}
-      <aside id="summary" class="fr-card--shadow fr-p-3w fr-text--sm"
+      <aside id="summary" class="fr-text--sm"
              data-controller="summary-mobile"
       >
         {% block aside_tools %}{% endblock aside_tools %}
@@ -106,7 +106,7 @@
           </div>
           {% endif %}
         {% endif %}
-        <button class="fr-btn fr-btn--tertiary fr-icon-arrow-right-line fr-hidden-sm"
+        <button class="fr-btn fr-btn--tertiary-no-outline fr-icon-arrow-right-line fr-hidden-sm"
                 id="btn-toggle-summary" aria-controls="summary"
                 data-action="click->summary-mobile#toggle"
         >

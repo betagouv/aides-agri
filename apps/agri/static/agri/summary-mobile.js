@@ -7,7 +7,7 @@ export class SummaryMobile extends Controller {
     if (this.element.style.left) {
       this.element.style.left = ""
     } else {
-      this.element.style.left = "0px"
+      this.element.style.left = "-8px"
     }
 
     setTimeout(() => {
