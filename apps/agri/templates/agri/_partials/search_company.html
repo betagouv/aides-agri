@@ -1,33 +1,13 @@
 <ul class="fr-dropdown">
 {% for hit in hits %}
   {% for etablissement in hit.matching_etablissements %}
-    <li class="fr-dropdown__item">
-      <button type="button" class="fr-dropdown__entry fr-btn fr-btn--tertiary-no-outline"
-              data-siret="{{ etablissement.siret }}"
-              data-action="click->step3#chooseSiret"
-      >
-        <strong>{{ hit.nom_complet }}</strong>
-        <span>
-          SIRET&nbsp;{{ etablissement.siret }},
-          à {{ etablissement.libelle_commune }} ({{ etablissement.code_postal }})
-        </span>
-        <span class="fr-icon-briefcase-line">
-          {{ etablissement.activite_principale }}
-          {% if etablissement.libelle_activite_principale %}
-            : {{ etablissement.libelle_activite_principale }}
-          {% endif %}
-        </span>
-        {% if etablissement.nom_commercial %}
-          <span>{{ etablissement.nom_commercial }}</span>
-        {% elif etablissement.liste_enseignes %}
-          <span>{{ etablissement.liste_enseignes.0 }}</span>
-        {% endif %}
-      </button>
-    </li>
+    {% include "agri/blocks/search_company/etablissement.html" with hit=hit etablissement=etablissement only %}
+  {% empty %}
+    {% include "agri/blocks/search_company/etablissement.html" with hit=hit etablissement=hit.siege only %}
   {% endfor %}
 {% empty %}
   <li class="fr-dropdown__item">
-    <div class="fr-p-2w fr-icon-error-line">Votre recherche n'a donné aucun résultat. Veuillez réessayer ou visiter <a href="https://annuaire-entreprises.data.gouv.fr/">https://annuaire-entreprises.data.gouv.fr/</a> pour trouver votre exploitation.</div>
+    <div class="fr-p-2w fr-icon-error-line">Votre recherche n'a donné aucun résultat. Veuillez réessayer ou visiter <a href="https://annuaire-entreprises.data.gouv.fr/" target="_blank">https://annuaire-entreprises.data.gouv.fr/</a> pour trouver votre exploitation.</div>
   </li>
 {% endfor %}
 </ul>

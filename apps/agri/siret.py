@@ -54,7 +54,7 @@ class SearchUnavailable(RuntimeError):
 def search(query: str) -> list[dict]:
     try:
         r = requests.get(
-            f"https://recherche-entreprises.api.gouv.fr/search?q={query}&minimal=true&include=matching_etablissements",
+            f"https://recherche-entreprises.api.gouv.fr/search?q={query}",
             timeout=3,
         )
         r.raise_for_status()

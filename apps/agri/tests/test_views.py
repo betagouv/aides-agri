@@ -44,7 +44,7 @@ def test_step_3(client):
 def test_search_company(requests_mock, client):
     # GIVEN the official companies API returns a result for a given Siret
     requests_mock.get(
-        "https://recherche-entreprises.api.gouv.fr/search?q=entreprise&minimal=true&include=matching_etablissements",
+        "https://recherche-entreprises.api.gouv.fr/search?q=entreprise",
         text=fake_api_response_one_hit,
     )
 
@@ -60,7 +60,7 @@ def test_search_company(requests_mock, client):
 def test_step_4(requests_mock, client):
     # GIVEN the official companies API returns a result for a given Siret
     requests_mock.get(
-        f"https://recherche-entreprises.api.gouv.fr/search?q={fake_siret}&minimal=true&include=matching_etablissements",
+        f"https://recherche-entreprises.api.gouv.fr/search?q={fake_siret}",
         text=fake_api_response_one_hit,
     )
 
@@ -80,7 +80,7 @@ def test_step_4(requests_mock, client):
 def test_step_5(requests_mock, client):
     # GIVEN the official companies API returns a result for a given Siret
     requests_mock.get(
-        f"https://recherche-entreprises.api.gouv.fr/search?q={fake_siret}&minimal=true&include=matching_etablissements",
+        f"https://recherche-entreprises.api.gouv.fr/search?q={fake_siret}",
         text=fake_api_response_one_hit,
     )
 

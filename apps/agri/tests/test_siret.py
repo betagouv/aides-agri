@@ -84,7 +84,7 @@ def test_search(requests_mock):
     # GIVEN the official company API returning results for a query
     query = "mon entreprise"
     requests_mock.get(
-        f"https://recherche-entreprises.api.gouv.fr/search?q={query}&minimal=true&include=matching_etablissements",
+        f"https://recherche-entreprises.api.gouv.fr/search?q={query}",
         text=fake_api_response_one_hit,
     )
 
@@ -116,7 +116,7 @@ def test_search_no_match(requests_mock):
     # GIVEN the official company API returning no results
     query = "mon entreprise"
     requests_mock.get(
-        f"https://recherche-entreprises.api.gouv.fr/search?q={query}&minimal=true&include=matching_etablissements",
+        f"https://recherche-entreprises.api.gouv.fr/search?q={query}",
         text=fake_api_response_no_hit,
     )
 
@@ -131,7 +131,7 @@ def test_search_api_unavailable(requests_mock):
     # GIVEN the official company API does not respond
     query = "mon entreprise"
     requests_mock.get(
-        f"https://recherche-entreprises.api.gouv.fr/search?q={query}&minimal=true&include=matching_etablissements",
+        f"https://recherche-entreprises.api.gouv.fr/search?q={query}",
         exc=requests.exceptions.ConnectTimeout,
     )
 
@@ -143,7 +143,7 @@ def test_search_api_unavailable(requests_mock):
 def test_get(requests_mock):
     # GIVEN the official company API returning results for a query
     requests_mock.get(
-        f"https://recherche-entreprises.api.gouv.fr/search?q={fake_siret}&minimal=true&include=matching_etablissements",
+        f"https://recherche-entreprises.api.gouv.fr/search?q={fake_siret}",
         text=fake_api_response_one_hit,
     )
 
