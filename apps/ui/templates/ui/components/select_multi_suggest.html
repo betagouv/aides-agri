@@ -1,10 +1,9 @@
 {% load dsfr_tags %}
 
-<div class="fr-searchbar-suggest" data-controller="suggest">
+<div class="fr-searchbar-suggest" id="select-multi-suggest-{{ self.id }}" data-controller="suggest">
   <div class="fr-tags-group fr-mb-2v" data-suggest-target="tags">
   {% for value, label in self.initials.items %}
-    <input type="hidden" name="naf[]" value="{{ value }}">
-    {% dsfr_tag label=label is_dismissable=True %}
+    {% include "ui/components/blocks/select_multi_suggest_option.html" with name=self.name value=value label=label only %}
   {% endfor %}
   </div>
 
@@ -13,9 +12,9 @@
       {{ self.label }}
     </label>
     <input type="search" id="suggest-{{ self.id }}-input"
-           class="fr-input fr-icon-search-line" placeholder="élevage, légumes, etc."
+           class="fr-input fr-icon-search-line" placeholder="{{ self.placeholder }}"
            data-suggest-target="search"
-           data-action="input->suggest#search"
+           data-action="input->suggest#search focus->suggest#focus"
     >
   </div>
   <ul class="fr-dropdown fr-hidden" data-suggest-target="options">
@@ -27,8 +26,7 @@
         {{ labels.long }}
       </button>
       <div class="fr-hidden">
-        <input type="hidden" name="naf[]" value="{{ value }}" disabled>
-        {% dsfr_tag label=labels.short is_dismissable=True %}
+        {% include "ui/components/blocks/select_multi_suggest_option.html" with name=self.name value=value label=labels.short disabled=True only %}
       </div>
     </li>
   {% endfor %}

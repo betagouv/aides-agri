@@ -1,4 +1,4 @@
-{% load i18n static dsfr_tags %}
+{% load i18n static dsfr_tags agri_tags %}
 
 <!DOCTYPE html>
 <html lang="fr"
@@ -85,7 +85,7 @@
                 <div class="fr-grid-row fr-grid-row--gutters">
                 {% for theme in themes %}
                   <div class="fr-col-12 fr-col-sm-6">
-                    {% dsfr_tile heading_tag="h4" title=theme.title description=theme.description url=theme.link extra_classes="fr-tile--horizontal" %}
+                    {% dsfr_tile heading_tag="h4" title=theme.nom url=theme.pk|agri_theme_to_step2_link extra_classes="fr-tile--horizontal" %}
                   </div>
                 {% endfor %}
                 </div>

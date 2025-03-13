@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "dsfr",
     "ui",
     "agri",
+    "aides",
 ]
 
 MIDDLEWARE = [

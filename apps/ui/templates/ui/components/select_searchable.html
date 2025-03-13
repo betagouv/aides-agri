@@ -1,0 +1,29 @@
+{% load dsfr_tags %}
+
+<div id="select-searchable-{{ self.id }}" data-controller="search-suggest">
+  <label for="select-searchable-input-{{ self.id }}" class="fr-label">{{ self.label }}</label>
+  <div class="fr-tags-group" data-search-suggest-target="tags">
+  {% for value, label in self.initials.items %}
+    {% include "ui/components/blocks/select_multi_suggest_option.html" with name=self.name value=value label=label only %}
+  {% endfor %}
+  </div>
+  <div class="fr-search-bar fr-hidden" role="search" data-search-suggest-target="searchbar">
+    <label class="fr-label" for="select-searchable-input-{{ self.id }}">Recherche</label>
+    <input type="search" id="select-searchable-input-{{ self.id }}"
+           name="{{ self.search_field_name }}"
+           class="fr-input fr-icon-search-line"
+           placeholder="Rechercher"
+           autocomplete="false"
+           data-search-suggest-target="search"
+    >
+    <button type="button" class="fr-btn"
+            title="Rechercher"
+            hx-get="{% url self.search_url %}"
+            hx-target="#select-searchable-hits-{{ self.id }}"
+            hx-include="#select-searchable-input-{{ self.id }}"
+            onclick="this.disabled = true"
+            hx-on::after-request="this.disabled = false"
+    >Rechercher</button>
+  </div>
+  <ul id="select-searchable-hits-{{ self.id }}" class="fr-dropdown fr-hidden" data-search-suggest-target="options"></ul>
+</div>

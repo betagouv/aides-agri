@@ -2,12 +2,34 @@
 
 {% load dsfr_tags static ui_tags %}
 
+{% block extra_css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'ui/components/dropdown.css' %}">
+
+  <script type="module">
+    import { Application } from "@hotwired/stimulus"
+    import { SearchSuggest } from "search-suggest"
+    import { Step4 } from "step-4"
+    window.Stimulus ??= Application.start()
+
+    Stimulus.register("search-suggest", SearchSuggest)
+    Stimulus.register("step4", Step4)
+  </script>
+{% endblock extra_css %}
+
+{% block extra_js %}
+  {{ block.super }}
+  <script type="module" src="{% static 'vendor/htmx.esm.js' %}"></script>
+{% endblock extra_js %}
+
 {% block h1 %}Votre exploitation.{% endblock %}
 
 {% block h2 %}Afin de vous proposer des aides adéquates, nous avons besoin d’en savoir un peu plus sur votre
   exploitation.{% endblock h2 %}
 
 {% block action %}{% url 'agri:step-5' %}{% endblock action %}
+
+{% block extra_form_attributes %}data-controller="step4"{% endblock extra_form_attributes %}
 
 {% block form %}
 <div class="fr-highlight fr-mb-4w">
@@ -19,26 +41,26 @@
   <fieldset class="fr-fieldset fr-col">
     <div class="fr-fieldset__element fr-mt-2v">
       <span class="fr-label fr-mb-2v">Nom de l'exploitation</span>
+      {% comment %}
+      TODO reenable when https://github.com/numerique-gouv/django-dsfr/pull/213 is merged
       {% dsfr_tag label=etablissement.nom|default_if_none:etablissement.societe.nom_complet is_dismissable=True onclick="history.back()" %}
+      {% endcomment %}
+      <button type="button" class="fr-tag fr-tag--dismiss" aria-label="Retirer le filtre Label of the tag item" onclick="history.back()">
+        {{ etablissement.nom|default_if_none:etablissement.societe.nom_complet }}
+      </button>
     </div>
     <div class="fr-fieldset__element fr-mt-2v">
       <span class="fr-label fr-mb-2v">Siret</span>
+      {% comment %}
+      TODO reenable when https://github.com/numerique-gouv/django-dsfr/pull/213 is merged
       {% dsfr_tag label=etablissement.siret is_dismissable=True onclick="history.back()" %}
+      {% endcomment %}
+      <button type="button" class="fr-tag fr-tag--dismiss" aria-label="Retirer le filtre Label of the tag item" onclick="history.back()">
+        {{ etablissement.siret }}
+      </button>
     </div>
-    <div class="fr-fieldset__element fr-mt-2v">
-      <label for="input-departement" class="fr-label fr-mb-2v">Département</label>
-      {% for code, label in departements.items %}
-        {% if code == etablissement.departement %}
-          {% dsfr_tag label=label is_dismissable=True onclick="this.nextElementSibling.classList.remove('fr-hidden')" %}
-        {% endif %}
-      {% endfor %}
-      <select id="input-departement" name="departement" class="fr-select fr-hidden">
-        {% for code, label in departements.items %}
-          <option value="{{ code }}" {% if code == etablissement.departement %}selected{% endif %}>
-            {{ code }} - {{ label }}
-          </option>
-        {% endfor %}
-      </select>
+    <div class="fr-fieldset__element" data-step4-target="commune">
+      {% ui_select_searchable label="Commune" name="commune" search_url="agri:search-commune" search_field_name="commune-search" initials=commune_initials %}
     </div>
     <div class="fr-fieldset__element fr-mt-2v">
       <label for="input-forme-juridique" class="fr-label fr-mb-2v">Forme juridique</label>

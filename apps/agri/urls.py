@@ -8,7 +8,8 @@ from .views import (
     Step4View,
     Step5View,
     ResultsView,
-    SearchCompanyView,
+    SearchEtablissementView,
+    SearchCommuneView,
 )
 
 
@@ -21,5 +22,8 @@ urlpatterns = [
     path("etape-4", Step4View.as_view(), name="step-4"),
     path("etape-5", Step5View.as_view(), name="step-5"),
     path("resultats", ResultsView.as_view(), name="results"),
-    path("trouver-mon-entreprise", SearchCompanyView.as_view(), name="find-company"),
+    path(
+        "trouver-mon-entreprise", SearchEtablissementView.as_view(), name="search-etablissement"
+    ),
+    path("trouver-ma-commune", SearchCommuneView.as_view(), name="search-commune"),
 ]

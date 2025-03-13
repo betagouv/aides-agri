@@ -11,8 +11,10 @@
       "@hotwired/stimulus": "{% static 'vendor/stimulus.js' %}",
       "summary-mobile": "{% static 'agri/summary-mobile.js' %}",
       "suggest": "{% static 'ui/components/suggest.js' %}",
+      "search-suggest": "{% static 'ui/components/search-suggest.js' %}",
       "step-2": "{% static 'agri/step-2.js' %}",
       "step-3": "{% static 'agri/step-3.js' %}",
+      "step-4": "{% static 'agri/step-4.js' %}",
       "step-5": "{% static 'agri/step-5.js' %}"
     }
   }
@@ -48,19 +50,19 @@
         <div class="fr-h6 fr-mb-3v">Votre projet</div>
         <div class="fr-mb-3v">
           <span>Thème :</span>
-          {% dsfr_tag label=summary_theme extra_classes="fr-tag--sm" %}
+          {% dsfr_tag label=summary_theme.nom extra_classes="fr-tag--sm" %}
         </div>
         {% if summary_sujets %}
           <div class="fr-mb-3v">
             <span class="fr-tags-group fr-px-1v">
               Sujets :
               {% for sujet in summary_sujets %}
-                {% dsfr_tag label=sujet extra_classes="fr-tag--sm" %}
+                {% dsfr_tag label=sujet.nom extra_classes="fr-tag--sm" %}
               {% endfor %}
             </span>
           </div>
           <div class="fr-mb-3v">
-            <a class="fr-link fr-link--sm" href="{% url 'agri:step-2' %}{% querystring sujets=None siret=None departement=None regroupements=None nafs=None tranche_effectif_salarie=None %}">
+            <a class="fr-link fr-link--sm" href="{% url 'agri:step-2' %}{% querystring sujets=None siret=None commune=None date_installation=None regroupements=None nafs=None tranche_effectif_salarie=None %}">
               Explorer d'autres sujets
             </a>
           </div>
@@ -71,10 +73,10 @@
             <span>Siret :</span>
             {% dsfr_tag label=summary_siret extra_classes="fr-tag--sm" %}
           </div>
-          {% if summary_departement %}
+          {% if summary_commune %}
           <div class="fr-mb-3v">
-            <span>Département :</span>
-            {% dsfr_tag label=summary_departement extra_classes="fr-tag--sm" %}
+            <span>Commune :</span>
+            {% dsfr_tag label=summary_commune.nom extra_classes="fr-tag--sm" %}
           </div>
           {% endif %}
           {% if summary_naf %}
@@ -110,7 +112,7 @@
           </div>
           {% endif %}
           <div>
-            <a class="fr-link fr-link--sm" href="{% url 'agri:step-3' %}{% querystring siret=None departement=None regroupements=None nafs=None tranche_effectif_salarie=None %}">
+            <a class="fr-link fr-link--sm" href="{% url 'agri:step-3' %}{% querystring siret=None commune=None date_installation=None regroupements=None nafs=None tranche_effectif_salarie=None %}">
               Modifier
             </a>
           </div>
