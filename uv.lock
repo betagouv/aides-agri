@@ -10,6 +10,7 @@ dependencies = [
     { name = "django" },
     { name = "django-dsfr" },
     { name = "psycopg", extra = ["binary"] },
+    { name = "pygrister" },
     { name = "requests" },
 ]
 
@@ -34,6 +35,7 @@ requires-dist = [
     { name = "django", specifier = "~=5.1" },
     { name = "django-dsfr", specifier = "~=2.1" },
     { name = "psycopg", extras = ["binary"], specifier = "~=3.0" },
+    { name = "pygrister", specifier = "~=0.5" },
     { name = "requests", specifier = "~=2.32" },
 ]
 
@@ -381,6 +383,18 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/81/a3/29f4993a239d6a3fb18ef8681d9990c007f5f73bdd2e21f65f07ac55ad6f/psycopg_binary-3.2.4-cp313-cp313-musllinux_1_2_ppc64le.whl", hash = "sha256:fa4acea9ca20a567c3872a5afab2084751530bb57b8fb6b52820d5c54e7c8c3b", size = 3399388 },
     { url = "https://files.pythonhosted.org/packages/25/5b/925171cbfa2e3d1ccb7f4c005d0d5db609ba796c1d08a23c42825b09c554/psycopg_binary-3.2.4-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:5c487f35a1905bb15da927c1fc05f70f3d29f0e21fb4ba21d360a0da9c755f20", size = 3436702 },
     { url = "https://files.pythonhosted.org/packages/b6/47/25b2b85b8fcabf99bfa92b4b0d587894c01576bf0b2bf137c243d1eb1070/psycopg_binary-3.2.4-cp313-cp313-win_amd64.whl", hash = "sha256:80297c3a9f7b5a6afdb0d8f220661ccd796e5c9128c44b32c41267f7daefd37f", size = 2779196 },
+]
+
+[[package]]
+name = "pygrister"
+version = "0.5.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c8/7f/5b452a1bf346e781bdc730f49140ab4b4932bca3efab829e2a71b8872658/pygrister-0.5.0.tar.gz", hash = "sha256:c1e34a514171b2a4c611a58f6a7e2e8e14326ed7c3041c458b9d250f73f43d20", size = 17883 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/26/ee/ee8a9bea68a5ebefc9440bc69b197eb74ae82613ef931372b4d6ae2ae380/Pygrister-0.5.0-py3-none-any.whl", hash = "sha256:7de3d2d9f950788bc60f97b9dae9aa2d2831dd62445b87f3d602cd45cc5d1d16", size = 12781 },
 ]
 
 [[package]]
