@@ -1,0 +1,18 @@
+{% load dsfr_tags %}
+
+{% for value, label in hits.items %}
+  <li class="fr-dropdown__item" data-suggest-target="option">
+    <button type="button" class="fr-btn fr-btn--tertiary-no-outline fr-dropdown__entry"
+            data-action="click->search-suggest#choose"
+    >
+      {{ label }}
+    </button>
+    <div class="fr-hidden">
+      {% include "ui/components/blocks/select_multi_suggest_option.html" with name=name value=value label=label disabled=True only %}
+    </div>
+  </li>
+{% empty %}
+  <li class="fr-dropdown__item fr-p-2v fr-icon-error-line">
+    Votre recherche n'a donné aucun résultat ; veuillez essayer autre chose.
+  </li>
+{% endfor %}

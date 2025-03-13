@@ -26,7 +26,7 @@
 
 {% block action %}{% url 'agri:step-4' %}{% endblock action %}
 
-{% block extra_form_attributes %}data-controller="step3" data-action=""{% endblock extra_form_attributes %}
+{% block extra_form_attributes %}data-controller="step3"{% endblock extra_form_attributes %}
 
 {% block form %}
 <div class="fr-grid-row fr-grid-row--gutters">
@@ -50,7 +50,7 @@
                    data-step3-target="siretSearch"
             >
             <button class="fr-btn" title="Rechercher"
-                    hx-get="{% url 'agri:find-company' %}"
+                    hx-get="{% url 'agri:search-etablissement' %}"
                     hx-target="#siret-messages"
                     hx-include="#siret-search"
                     onclick="this.disabled = true"

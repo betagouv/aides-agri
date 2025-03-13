@@ -5,8 +5,6 @@ import os
 from django.conf import settings
 import requests
 
-from .utils import departement_from_commune
-
 
 mapping_naf_short = dict()
 mapping_naf_complete = dict()
@@ -81,8 +79,7 @@ def get(query: str) -> dict:
     matching_etablissements = societe.pop("matching_etablissements")
     etablissement = matching_etablissements[0]
     etablissement["societe"] = societe
-    etablissement["nom"] = societe["nom_complet"] if etablissement.get("est_siege", False) else etablissement["nom_commercial"]
-    etablissement["departement"] = departement_from_commune(etablissement["commune"])
+    etablissement["nom"] = etablissement["nom_commercial"] if etablissement["nom_commercial"] else societe["nom_complet"]
     for key in etablissement:
         if isinstance(key, str) and key.startswith("date_") and etablissement[key]:
             etablissement[key] = datetime.date.fromisoformat(etablissement[key])
