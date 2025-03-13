@@ -23,9 +23,9 @@
 
 {% block form %}
 <div class="fr-grid-row fr-grid-row--gutters">
-  {% for option in options %}
+  {% for id, sujet in sujets.items %}
   <div class="fr-col fr-col-12">
-    {% ui_tile_checkbox id=option.id name=option.name value=option.value title="Lorem Ipsum" description="Description" extra_classes="fr-tile--horizontal fr-tile--sm" %}
+    {% ui_tile_checkbox id=id name="sujets" value=sujet.pk title=sujet.nom description=sujet.description extra_classes="fr-tile--horizontal fr-tile--sm" %}
   </div>
   {% endfor %}
 </div>

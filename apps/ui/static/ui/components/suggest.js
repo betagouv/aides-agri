@@ -11,10 +11,29 @@ class Suggest extends Controller {
     this.optionTargets.forEach(option => {
       option.dataset.normalized = sanitizeForSearch(option.textContent)
     })
+    document.body.addEventListener("click", evt => {
+      if (!evt.target.closest("#" + this.element.id)) {
+        this._close()
+      }
+    })
   }
 
-  search(evt) {
-    const q = sanitizeForSearch(evt.target.value)
+  _open() {
+    this.optionsTarget.classList.remove("fr-hidden")
+  }
+
+  _close() {
+    this.optionsTarget.classList.add("fr-hidden")
+  }
+
+  focus() {
+    if (this.searchTarget.value !== "") {
+      this.search()
+    }
+  }
+
+  search() {
+    const q = sanitizeForSearch(this.searchTarget.value)
 
     // show everything
     this.optionTargets.forEach(elt => {
@@ -28,16 +47,17 @@ class Suggest extends Controller {
       }
     })
 
-    this.optionsTarget.classList.remove("fr-hidden")
+    this._open()
   }
 
   choose(evt) {
     evt.target.parentElement.querySelectorAll(".fr-hidden *").forEach(child => {
-      child.removeAttribute("disabled")
-      this.tagsTarget.appendChild(child.cloneNode(true))
+      const tag = child.cloneNode(true)
+      tag.removeAttribute("disabled")
+      this.tagsTarget.appendChild(tag)
     })
-    this.optionsTarget.classList.add("fr-hidden")
     this.searchTarget.value = ""
+    this._close()
   }
 }
 

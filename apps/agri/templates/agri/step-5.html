@@ -39,7 +39,7 @@
       {% if not naf %}
         <span class="fr-error-text">Nous n'avons pas pu trouver l'activité de votre établissement, veuillez sélectionner au moins une activité ici :</span>
       {% endif %}
-      {% ui_searchbar_autocomplete label="Ajouter une filière complémentaire" options=mapping_naf initials=naf show_label=True %}
+      {% ui_select_multi_suggest label="Ajouter une filière complémentaire" options=mapping_naf initials=naf show_label=True placeholder="élevage, légumes, etc." %}
     </div>
     <div class="fr-fieldset__element fr-mb-3w">
       <label for="input-effectif" class="fr-label">Effectif de l'exploitation</label>

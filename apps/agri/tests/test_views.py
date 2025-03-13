@@ -49,7 +49,7 @@ def test_search_company(requests_mock, client):
     )
 
     # WHEN requesting search company with that Siret
-    url = reverse("agri:find-company") + "?" + urlencode({"q": "entreprise"})
+    url = reverse("agri:search-etablissement") + "?" + urlencode({"q": "entreprise"})
     response = client.get(url)
 
     # THEN it's a 200
