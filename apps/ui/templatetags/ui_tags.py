@@ -41,18 +41,35 @@ def ui_tile_checkbox(*args, **kwargs) -> dict:
     return {"self": tag_data}
 
 
-@register.inclusion_tag("ui/components/searchbar_suggest.html")
-def ui_searchbar_autocomplete(*args, **kwargs) -> dict:
+@register.inclusion_tag("ui/components/select_multi_suggest.html")
+def ui_select_multi_suggest(*args, **kwargs) -> dict:
     allowed_keys = [
+        "name",
         "options",
         "initials",
         "label",
         "show_label",
+        "placeholder",
     ]
     tag_data = parse_tag_args(args, kwargs, allowed_keys)
     tag_data["id"] = uuid4()
 
     if "show_label" not in tag_data or not isinstance(tag_data["show_label"], bool):
         tag_data["show_label"] = False
+
+    return {"self": tag_data}
+
+
+@register.inclusion_tag("ui/components/select_searchable.html")
+def ui_select_searchable(*args, **kwargs) -> dict:
+    allowed_keys = [
+        "label",
+        "name",
+        "initials",
+        "search_url",
+        "search_field_name",
+    ]
+    tag_data = parse_tag_args(args, kwargs, allowed_keys)
+    tag_data["id"] = uuid4()
 
     return {"self": tag_data}
