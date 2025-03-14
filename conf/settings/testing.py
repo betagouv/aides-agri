@@ -4,6 +4,7 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
+SECRET_KEY = "testing"
 LOGGING = {}
 
 STORAGES["staticfiles"]["BACKEND"] = (  # noqa: F405
