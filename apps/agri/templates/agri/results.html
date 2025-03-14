@@ -1,6 +1,11 @@
 {% extends "agri/_base.html" %}
 
-{% load dsfr_tags %}
+{% load static dsfr_tags %}
+
+{% block extra_css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'agri/results.css' %}">
+{% endblock extra_css %}
 
 {% block aside_tools %}
   <button type="button"
@@ -15,7 +20,7 @@
   </button>
 {% endblock aside_tools %}
 
-{% block h1 %}Résultats pour votre projet.{% endblock h1 %}
+{% block h1 %}Notre recommandation.{% endblock h1 %}
 
 {% block main_col %}
 <div class="fr-col fr-col-12 fr-col-md-9">
@@ -25,47 +30,31 @@
     </p>
   </div>
 
-  <div class="fr-tags-group fr-mb-3w">
-    {% for label in natures_aides %}
-      {# TODO replace with dsfr_tag when is_selected option will be available #}
-      <button class="fr-tag" aria-pressed="true">{{ label }}</button>
-    {% endfor %}
-  </div>
-
   <div class="fr-container fr-p-0 fr-mb-4v">
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col fr-col-12">
-        {% dsfr_card open_cards_data %}
-      </div>
-      <div class="fr-col fr-col-12">
-        {% dsfr_card open_cards_data %}
-      </div>
-      <div class="fr-col fr-col-12">
-        {% dsfr_card conseillers_entreprises_card_data %}
-      </div>
-      <div class="fr-col fr-col-12">
-        {% dsfr_card open_cards_data %}
-      </div>
-      <div class="fr-col fr-col-12">
-        {% dsfr_card open_cards_data %}
-      </div>
-      <div class="fr-col fr-col-12">
-        {% dsfr_card open_cards_data %}
-      </div>
-      <div class="fr-col fr-col-12">
-        {% dsfr_card open_cards_data %}
-      </div>
-      <div class="fr-col fr-col-12">
-        {% dsfr_card closed_cards_data %}
-      </div>
-      <div class="fr-col fr-col-12">
-        {% dsfr_card closed_cards_data %}
+        <div class="fr-accordions-group fr-mx-4w fr-mb-6w">
+        {% for nature in natures_aides %}
+          <section class="fr-accordion">
+            <h3 class="fr-accordion__title">
+              <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordeon-nature-{{ nature.pk }}">
+                {{ nature }} (3 dispositifs)
+              </button>
+            </h3>
+            <div id="accordeon-nature-{{ nature.pk }}" class="fr-collapse">
+              {% for i in "123"|make_list %}
+              <div class="fr-col fr-col-12">
+                {% dsfr_card open_cards_data %}
+              </div>
+              {% endfor %}
+            </div>
+          </section>
+          {% if forloop.counter == 2 %}
+            {% dsfr_card conseillers_entreprises_card_data id="conseillers-entreprises" %}
+          {% endif %}
+        {% endfor %}
       </div>
     </div>
-  </div>
-
-  <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-mb-6w">
-    {% dsfr_pagination page_obj %}
   </div>
 
   <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-mb-6w">

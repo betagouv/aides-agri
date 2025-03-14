@@ -1,4 +1,5 @@
 import csv
+import datetime
 import os
 
 from django.conf import settings
@@ -82,4 +83,7 @@ def get(query: str) -> dict:
     etablissement["societe"] = societe
     etablissement["nom"] = societe["nom_complet"] if etablissement.get("est_siege", False) else etablissement["nom_commercial"]
     etablissement["departement"] = departement_from_commune(etablissement["commune"])
+    for key in etablissement:
+        if isinstance(key, str) and key.startswith("date_") and etablissement[key]:
+            etablissement[key] = datetime.date.fromisoformat(etablissement[key])
     return etablissement

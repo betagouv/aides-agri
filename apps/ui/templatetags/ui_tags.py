@@ -46,8 +46,13 @@ def ui_searchbar_autocomplete(*args, **kwargs) -> dict:
     allowed_keys = [
         "options",
         "initials",
+        "label",
+        "show_label",
     ]
     tag_data = parse_tag_args(args, kwargs, allowed_keys)
     tag_data["id"] = uuid4()
+
+    if "show_label" not in tag_data or not isinstance(tag_data["show_label"], bool):
+        tag_data["show_label"] = False
 
     return {"self": tag_data}

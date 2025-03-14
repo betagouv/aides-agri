@@ -14,6 +14,9 @@
   {% if summary_departement %}
     <input type="hidden" name="departement" value="{{ summary_departement }}">
   {% endif %}
+  {% if summary_date_installation %}
+    <input type="hidden" name="date_installation" value="{{ summary_date_installation|date:"c" }}">
+  {% endif %}
   {% for naf in codes_naf %}
     <input type="hidden" name="nafs" value="{{ naf }}">
   {% endfor %}

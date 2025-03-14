@@ -1,6 +1,6 @@
 {% load dsfr_tags %}
 
-<div data-controller="suggest">
+<div class="fr-searchbar-suggest" data-controller="suggest">
   <div class="fr-tags-group fr-mb-2v" data-suggest-target="tags">
   {% for value, label in self.initials.items %}
     <input type="hidden" name="naf[]" value="{{ value }}">
@@ -8,10 +8,12 @@
   {% endfor %}
   </div>
 
-  <div class="fr-search-bar" role="search">
-    <label class="fr-label" for="suggest-{{ self.id }}-input">Recherche</label>
+  <div {% if not self.show_label %}class="fr-search-bar"{% endif %} role="search">
+    <label class="fr-label" for="suggest-{{ self.id }}-input">
+      {{ self.label }}
+    </label>
     <input type="search" id="suggest-{{ self.id }}-input"
-           class="fr-input fr-icon-search-line" placeholder="Rechercher"
+           class="fr-input fr-icon-search-line" placeholder="élevage, légumes, etc."
            data-suggest-target="search"
            data-action="input->suggest#search"
     >

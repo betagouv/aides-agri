@@ -97,7 +97,7 @@ class AgriMixin(ContextMixin):
         "coop": "Coopérative",
         "giee": "GIEE",
         "cuma": "CUMA",
-        "": "Non",
+        "": "Aucun",
     }
 
     def get_context_data(self, **kwargs):
@@ -106,6 +106,7 @@ class AgriMixin(ContextMixin):
         code_effectif = self.request.GET.get("tranche_effectif_salarie", None)
         regroupements = self.request.GET.getlist("regroupements", [])
         date_installation = self.request.GET.get("date_installation", None)
+        date_installation = datetime.date.fromisoformat(date_installation) if date_installation else None
         context_data.update(
             {
                 "summary_theme": self.request.GET.get("theme", None),
@@ -118,7 +119,7 @@ class AgriMixin(ContextMixin):
                     if naf in siret.mapping_naf_short
                 ],
                 "summary_departement": self.request.GET.get("departement", None),
-                "summary_date_installation": datetime.date.fromisoformat(date_installation) if date_installation else None,
+                "summary_date_installation": date_installation,
                 "code_effectif": code_effectif,
                 "summary_effectif": siret.mapping_tranche_effectif_salarie.get(
                     code_effectif, None
@@ -178,6 +179,7 @@ class Step4View(AgriMixin, TemplateView):
         extra_context = {
             "etablissement": etablissement,
             "departements": utils.mapping_departements,
+            "categories_juridiques": siret.mapping_categories_juridiques,
         }
 
         return extra_context
