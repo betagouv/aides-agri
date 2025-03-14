@@ -19,6 +19,7 @@ dev = [
   "pytest",
   "pytest-cov",
   "pytest-django",
+  "pytest-factoryboy",
   "requests-mock",
 ]
 scalingo = [
