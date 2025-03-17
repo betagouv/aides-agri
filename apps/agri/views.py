@@ -114,7 +114,7 @@ class AgriMixin(ContextMixin):
                 if self.commune
                 else None,
                 "code_effectif": self.code_effectif,
-                "summary_effectif": siret.mapping_tranche_effectif_salarie.get(
+                "summary_effectif": siret.mapping_effectif.get(
                     self.code_effectif, None
                 )
                 if self.code_effectif
@@ -200,7 +200,7 @@ class Step5View(AgriMixin, TemplateView):
         etablissement = siret.get(self.request.GET.get("siret", ""))
         extra_context = {
             "mapping_naf": siret.mapping_naf_complete_unique,
-            "mapping_tranches_effectif": siret.mapping_tranche_effectif_salarie,
+            "mapping_tranches_effectif": siret.mapping_effectif,
             "etablissement": etablissement,
             "regroupements": self.__class__.REGROUPEMENTS,
         }
@@ -218,8 +218,13 @@ class ResultsView(AgriMixin, ListView):
 
     def get_queryset(self):
         return (
-            Aide.objects.by_sujets(self.sujets)
+            Aide.objects
+            .by_sujets(self.sujets)
             .by_zone_geographique(self.commune)
+            .by_effectif(
+                siret.mapping_effectif_complete[self.code_effectif]["min"],
+                siret.mapping_effectif_complete[self.code_effectif]["max"],
+            )
             .select_related("operateur")
             .prefetch_related("natures")
             .order_by("-date_fin")

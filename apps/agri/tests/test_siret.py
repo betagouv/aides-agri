@@ -71,7 +71,7 @@ def test_mapping_naf_complete_unique():
 
 def test_mapping_tranche_effectif_salarie():
     # WHEN querying mapping_naf_short from testing data
-    mapping = siret.mapping_tranche_effectif_salarie
+    mapping = siret.mapping_effectif
 
     # THEN it's a dict with 4 entries, each value being a string
     assert isinstance(mapping, dict)
