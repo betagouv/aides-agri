@@ -99,8 +99,12 @@ class AideQuerySet(models.QuerySet):
     def by_sujets(self, sujets: list[Sujet]) -> models.QuerySet:
         return self.filter(sujets__in=sujets)
 
-    def by_themes(self, themes: list[Theme]) -> models.QuerySet:
-        return self.filter(themes__in=themes)
+    def by_effectif(self, effectif_low: int, effectif_high: int) -> models.QuerySet:
+        return self.filter(
+            (models.Q(effectif_min__lte=effectif_low) | models.Q(effectif_min=None))
+            &
+            (models.Q(effectif_max__gte=effectif_high) | models.Q(effectif_max=None))
+        )
 
     def by_natures(self, natures: set[Nature]):
         return self.filter(natures__in=natures)
@@ -162,5 +166,7 @@ class Aide(RefTable, models.Model):
     lien = models.URLField(blank=True, max_length=2000)
     date_debut = models.DateField(null=True)
     date_fin = models.DateField(null=True)
+    effectif_min = models.PositiveIntegerField(null=True)
+    effectif_max = models.PositiveIntegerField(null=True)
     couverture_geographique = models.CharField(choices=COUVERTURES_GEOGRAPHIQUES)
     zones_geographiques = models.ManyToManyField(ZoneGeographique)

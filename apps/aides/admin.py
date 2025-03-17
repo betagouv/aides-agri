@@ -45,7 +45,7 @@ class ZoneGeographiqueAdmin(RefTableAdmin):
 
 @admin.register(Aide)
 class AideAdmin(RefTableAdmin):
-    list_display = ("external_id", "nom", "operateur", "date_debut", "date_fin")
+    list_display = ("external_id", "nom", "operateur", "date_debut", "date_fin", "effectif_min", "effectif_max")
     fields = (
         "nom",
         "natures",
@@ -54,6 +54,8 @@ class AideAdmin(RefTableAdmin):
         "sujets",
         "date_debut",
         "date_fin",
+        "effectif_min",
+        "effectif_max",
         "couverture_geographique",
         "zones_geographiques",
         "promesse",

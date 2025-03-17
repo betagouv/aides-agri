@@ -211,6 +211,12 @@ def import_aides():
         if obj.description_longue != row["Description_longue"]:
             obj.description_longue = row["Description_longue"]
             modified = True
+        if obj.effectif_min != row["min_effectif"]:
+            obj.effectif_min = row["min_effectif"]
+            modified = True
+        if obj.effectif_max != row["max_effectif"]:
+            obj.effectif_max = row["max_effectif"]
+            modified = True
         if obj.lien != row["Lien_vers_le_descriptif_complet"]:
             obj.lien = row["Lien_vers_le_descriptif_complet"]
             modified = True
