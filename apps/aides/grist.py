@@ -191,14 +191,14 @@ def import_aides():
             )
             modified = True
         if (
-            row["Sous_Themes"]
+            row["Sujets"]
             and obj.sujets.values_list("external_id", flat=True)
-            != row["Sous_Themes"][1:]
+            != row["Sujets"][1:]
         ):
             obj.sujets.clear()
             obj.sujets.add(
                 *Sujet.objects.filter(
-                    external_id__in=row["Sous_Themes"][1:]
+                    external_id__in=row["Sujets"][1:]
                 )
             )
             modified = True
