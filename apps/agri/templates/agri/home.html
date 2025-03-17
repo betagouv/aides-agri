@@ -2,7 +2,7 @@
 
 <!DOCTYPE html>
 <html lang="fr"
-      data-fr-scheme="system"
+      data-fr-scheme="light"
       {% if SITE_CONFIG.mourning %}data-fr-mourning{% endif %}>
   <head>
     <meta charset="utf-8" />
@@ -10,11 +10,22 @@
           content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     {% dsfr_css %}
     {% dsfr_favicon %}
+    {% dsfr_js nonce=request.csp_nonce %}
 
     <link rel="stylesheet" href="{% static 'ui/base.css' %}">
     <link rel="stylesheet" href="{% static 'agri/home.css' %}">
 
-    <title>Mes Aides Agri</title>
+    <title>
+      {% if title and SITE_CONFIG.site_title %}
+        {{ title }} — {{ SITE_CONFIG.site_title }}
+      {% elif title %}
+        {{ title }}
+      {% elif SITE_CONFIG.site_title %}
+        {{ SITE_CONFIG.site_title }}
+      {% else %}
+        {% translate "Untitled page" %}
+      {% endif %}
+    </title>
     <meta name="format-detection"
           content="telephone=no,date=no,address=no,email=no,url=no">
   </head>
@@ -94,7 +105,5 @@
     </main>
 
     {% include "ui/blocks/footer.html" %}
-
-    {% dsfr_js nonce=request.csp_nonce %}
   </body>
 </html>
