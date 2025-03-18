@@ -50,7 +50,7 @@
       {% endfor %}
       <select id="input-effectif" class="fr-select fr-hidden" name="tranche_effectif_salarie">
         {% for code, label in mapping_tranches_effectif.items %}
-        <option value="{{ code }}" {% if code == etablissement.tranche_effectif_salarie %}selected{% endif %}>{{ label }}</option>
+        <option value="{% if code %}{{ code }}{% endif %}" {% if code == etablissement.tranche_effectif_salarie %}selected{% endif %}>{{ label }}</option>
         {% endfor %}
       </select>
     </div>
