@@ -27,8 +27,11 @@
 {% block extra_form_attributes %}data-controller="step5" data-action="change->step5#change"{% endblock extra_form_attributes %}
 
 {% block form %}
-<p class="fr-text--xs fr-text-mention--grey">Toutes les questions ci-dessous nécessitent une réponse afin de vous proposer des dispositifs pertinents.</p>
-<h3 class="fr-h6 fr-icon-seedling-fill fr-heading--soft fr-btn--icon-left">Votre activité</h3>
+<div class="fr-highlight fr-mb-4w">
+  <p class="fr-mb-2v">Vérifiez et complétez les informations suivantes déduites de votre SIRET.</p>
+  <p class="fr-mb-2v">Toutes les questions ci-dessous nécessitent une réponse afin de vous proposer des dispositifs pertinents.</p>
+</div>
+<h3 class="fr-h6 fr-icon-seedling-fill fr-heading--soft fr-btn--icon-left fr-mb-2w">Votre activité</h3>
 <div class="fr-grid-row">
   <fieldset class="fr-fieldset fr-col">
     <div class="fr-fieldset__element fr-mb-3w">
@@ -52,7 +55,7 @@
       </select>
     </div>
     <div class="fr-fieldset__element fr-container--fluid fr-mb-3w">
-      <p class="fr-label">Faites-vous partie d'un ou plusieurs regroupements ?</p>
+      <div class="fr-label fr-mb-2v">Faites-vous partie d'un ou plusieurs regroupements ?</div>
       <div class="fr-checkbox-group fr-grid-row">
         {% for code, label in regroupements.items %}
         <div class="fr-col fr-col-12 fr-col-md-4 fr-mb-2w">

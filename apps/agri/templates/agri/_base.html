@@ -53,7 +53,7 @@
         {% if summary_sujets %}
           <div class="fr-mb-3v">
             <span class="fr-tags-group fr-px-1v">
-              Sous-thèmes :
+              Sujets :
               {% for sujet in summary_sujets %}
                 {% dsfr_tag label=sujet extra_classes="fr-tag--sm" %}
               {% endfor %}
@@ -61,7 +61,7 @@
           </div>
           <div class="fr-mb-3v">
             <a class="fr-link fr-link--sm" href="{% url 'agri:step-2' %}{% querystring sujets=None siret=None departement=None regroupements=None nafs=None tranche_effectif_salarie=None %}">
-              Explorer d'autres sous-thèmes
+              Explorer d'autres sujets
             </a>
           </div>
         {% endif %}

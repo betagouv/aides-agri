@@ -33,17 +33,17 @@
   <div class="fr-container fr-p-0 fr-mb-4v">
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col fr-col-12">
-        <div class="fr-accordions-group fr-mx-4w fr-mb-6w">
+        <div class="fr-accordions-group fr-mr-4w fr-mb-6w">
         {% for nature in natures_aides %}
           <section class="fr-accordion">
             <h3 class="fr-accordion__title">
-              <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordeon-nature-{{ nature.pk }}">
+              <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordeon-nature-{{ forloop.counter }}">
                 {{ nature }} (3 dispositifs)
               </button>
             </h3>
-            <div id="accordeon-nature-{{ nature.pk }}" class="fr-collapse">
+            <div id="accordeon-nature-{{ forloop.counter }}" class="fr-collapse">
               {% for i in "123"|make_list %}
-              <div class="fr-col fr-col-12">
+              <div class="fr-col fr-col-12 fr-mb-1w">
                 {% dsfr_card open_cards_data %}
               </div>
               {% endfor %}

@@ -1,3 +1,7 @@
 #conseillers-entreprises img {
   object-fit: contain;
 }
+
+.fr-card.fr-enlarge-button:not(.fr-card--no-icon) .fr-card__content, .fr-card.fr-enlarge-link:not(.fr-card--no-icon) .fr-card__content {
+  padding-bottom: 2rem;
+}

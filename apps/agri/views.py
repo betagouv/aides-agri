@@ -13,7 +13,7 @@ from . import utils
 
 STEPS = [
     "Choix d'un thème",
-    "Choix des sous-thèmes",
+    "Choix des sujets",
     "Siret",
     "Précisions 1/2",
     "Précisions 2/2",
@@ -73,7 +73,10 @@ class HomeView(Step1Mixin, TemplateView):
                         "agri/images/home/illustration_conseillers_entreprise.svg"
                     ),
                     "media_badges": [
-                        {"extra_classes": "fr-badge--green-emeraude", "label": "En cours"}
+                        {
+                            "extra_classes": "fr-badge--green-emeraude",
+                            "label": "En cours",
+                        }
                     ],
                     "top_detail": {
                         "detail": {
@@ -106,7 +109,11 @@ class AgriMixin(ContextMixin):
         code_effectif = self.request.GET.get("tranche_effectif_salarie", None)
         regroupements = self.request.GET.getlist("regroupements", [])
         date_installation = self.request.GET.get("date_installation", None)
-        date_installation = datetime.date.fromisoformat(date_installation) if date_installation else None
+        date_installation = (
+            datetime.date.fromisoformat(date_installation)
+            if date_installation
+            else None
+        )
         context_data.update(
             {
                 "summary_theme": self.request.GET.get("theme", None),
@@ -124,7 +131,10 @@ class AgriMixin(ContextMixin):
                 "summary_effectif": siret.mapping_tranche_effectif_salarie.get(
                     code_effectif, None
                 ),
-                "summary_regroupements": [self.__class__.REGROUPEMENTS[regroupement] for regroupement in regroupements]
+                "summary_regroupements": [
+                    self.__class__.REGROUPEMENTS[regroupement]
+                    for regroupement in regroupements
+                ],
             }
         )
 
@@ -156,10 +166,10 @@ class Step2View(AgriMixin, TemplateView):
 
     extra_context = {
         "options": [
-            {"id": "subject1", "name": "sujets", "value": "Sous-thème 1"},
-            {"id": "subject2", "name": "sujets", "value": "Sous-thème 2"},
-            {"id": "subject3", "name": "sujets", "value": "Sous-thème 3"},
-            {"id": "subject4", "name": "sujets", "value": "Sous-thème 4"},
+            {"id": "subject1", "name": "sujets", "value": "Sujet 1"},
+            {"id": "subject2", "name": "sujets", "value": "Sujet 2"},
+            {"id": "subject3", "name": "sujets", "value": "Sujet 3"},
+            {"id": "subject4", "name": "sujets", "value": "Sujet 4"},
         ],
     }
 
@@ -227,10 +237,6 @@ class ResultsView(AgriMixin, TemplateView):
         "image_url": static("agri/images/placeholder.1x1.svg"),
         "media_badges": [],
         "top_detail": {
-            "tags": [
-                {"label": "Type d'aide", "extra_classes": "fr-tag--sm"},
-                {"label": "Zone géographique", "extra_classes": "fr-tag--sm"},
-            ],
             "detail": {
                 "icon_class": "fr-icon-arrow-right-line",
                 "text": "Guichet",
@@ -252,13 +258,19 @@ class ResultsView(AgriMixin, TemplateView):
         }
     )
     conseillers_entreprises_card_data = deepcopy(open_cards_data)
-    conseillers_entreprises_card_data["extra_classes"] = "fr-card--horizontal-half fr-border-default--red-marianne"
+    conseillers_entreprises_card_data["extra_classes"] = (
+        "fr-card--horizontal-tier fr-border-default--red-marianne fr-my-3w"
+    )
     conseillers_entreprises_card_data["title"] = "Conseillers Entreprises"
-    conseillers_entreprises_card_data["description"] = "Le service public d’accompagnement des entreprises. Échangez avec les conseillers qui peuvent vous aider dans vos projets, vos difficultés ou les transformations nécessaires à la réussite de votre entreprise."
-    conseillers_entreprises_card_data["image_url"] = static("agri/images/home/illustration_conseillers_entreprise.svg")
-    conseillers_entreprises_card_data["top_detail"]["detail"]["text"] = "Ministère de l’Économie x Ministère du Travail"
-    conseillers_entreprises_card_data["top_detail"]["tags"][0]["label"] = "Conseil"
-    conseillers_entreprises_card_data["top_detail"]["tags"][1]["label"] = "France"
+    conseillers_entreprises_card_data["description"] = (
+        "Le service public d’accompagnement des entreprises. Échangez avec les conseillers qui peuvent vous aider dans vos projets, vos difficultés ou les transformations nécessaires à la réussite de votre entreprise."
+    )
+    conseillers_entreprises_card_data["image_url"] = static(
+        "agri/images/home/illustration_conseillers_entreprise.svg"
+    )
+    conseillers_entreprises_card_data["top_detail"]["detail"]["text"] = (
+        "Ministère de l’Économie x Ministère du Travail"
+    )
 
     extra_context = {
         "open_cards_data": open_cards_data,

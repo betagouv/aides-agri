@@ -10,21 +10,23 @@
 {% block action %}{% url 'agri:step-5' %}{% endblock action %}
 
 {% block form %}
-<p class="fr-text--xs fr-text-mention--grey">Vérifiez et complétez les informations suivantes déduites de votre SIRET.</p>
-<p class="fr-text--xs fr-text-mention--grey">Toutes les questions ci-dessous nécessitent une réponse afin de vous proposer des dispositifs pertinents.</p>
-<h3 class="fr-h6 fr-icon-identity-fill fr-heading--soft fr-btn--icon-left">Identité de l'exploitation</h3>
+<div class="fr-highlight fr-mb-4w">
+  <p class="fr-mb-2v">Vérifiez et complétez les informations suivantes déduites de votre SIRET.</p>
+  <p class="fr-mb-2v">Toutes les questions ci-dessous nécessitent une réponse afin de vous proposer des dispositifs pertinents.</p>
+</div>
+<h3 class="fr-h6 fr-icon-identity-fill fr-heading--soft fr-btn--icon-left fr-mb-2w">Identité de l'exploitation</h3>
 <div class="fr-grid-row">
   <fieldset class="fr-fieldset fr-col">
-    <div class="fr-fieldset__element">
-      <span class="fr-label">Nom de l'exploitation</span>
+    <div class="fr-fieldset__element fr-mt-2v">
+      <span class="fr-label fr-mb-2v">Nom de l'exploitation</span>
       {% dsfr_tag label=etablissement.nom|default_if_none:etablissement.societe.nom_complet is_dismissable=True onclick="history.back()" %}
     </div>
-    <div class="fr-fieldset__element">
-      <span class="fr-label">Siret</span>
+    <div class="fr-fieldset__element fr-mt-2v">
+      <span class="fr-label fr-mb-2v">Siret</span>
       {% dsfr_tag label=etablissement.siret is_dismissable=True onclick="history.back()" %}
     </div>
-    <div class="fr-fieldset__element">
-      <label for="input-departement" class="fr-label">Département</label>
+    <div class="fr-fieldset__element fr-mt-2v">
+      <label for="input-departement" class="fr-label fr-mb-2v">Département</label>
       {% for code, label in departements.items %}
         {% if code == etablissement.departement %}
           {% dsfr_tag label=label is_dismissable=True onclick="this.nextElementSibling.classList.remove('fr-hidden')" %}
@@ -38,8 +40,8 @@
         {% endfor %}
       </select>
     </div>
-    <div class="fr-fieldset__element">
-      <label for="input-forme-juridique" class="fr-label">Forme juridique</label>
+    <div class="fr-fieldset__element fr-mt-2v">
+      <label for="input-forme-juridique" class="fr-label fr-mb-2v">Forme juridique</label>
       {% dsfr_tag label=etablissement.societe.libelle_nature_juridique is_dismissable=True onclick="this.nextElementSibling.classList.remove('fr-hidden')" %}
       <select id="input-forme-juridique" class="fr-select fr-hidden">
       {% for code, label in categories_juridiques.items %}
@@ -47,8 +49,8 @@
       {% endfor %}
       </select>
     </div>
-    <div class="fr-fieldset__element">
-      <label for="input-date-installation" class="fr-label">Date d'installation</label>
+    <div class="fr-fieldset__element fr-mt-2v">
+      <label for="input-date-installation" class="fr-label fr-mb-2v">Date d'installation</label>
       {% dsfr_tag label=etablissement.date_creation|date:"SHORT_DATE_FORMAT" is_dismissable=True onclick="this.nextElementSibling.classList.remove('fr-hidden')" %}
       <input type="date" id="input-date-installation"
               class="fr-input fr-hidden"
