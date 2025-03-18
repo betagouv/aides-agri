@@ -17,8 +17,11 @@ install-talisman:
     curl -s 'https://thoughtworks.github.io/talisman/install.sh' | bash
 
 # Install deployment tools for Scalingo
-install-deployment-scalingo:
+@install-deployment-scalingo:
+    echo "Setup Git hook for generating requirements.txt..."
     cp deployment/scalingo/git-hooks/* .git/hooks/
+    echo "Ensure Scalingo CLI is installed"
+    scalingo --version || (curl -s -O https://cli-dl.scalingo.com/install && bash install)
 
 # Install everything needed
 install: install-python install-js install-talisman install-deployment-scalingo
@@ -37,3 +40,10 @@ makemigrations: (manage "makemigrations")
 # Testing
 test:
     DJANGO_SETTINGS_MODULE=conf.settings.testing uv run pytest --cov
+
+# Scalingo
+scalingo-django-command environment command:
+    scalingo run --app aides-agri-{{environment}} python manage.py {{command}}
+
+# Scalingo
+scalingo-django-shell environment: (scalingo-django-command environment "shell")
