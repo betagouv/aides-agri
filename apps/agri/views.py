@@ -2,12 +2,13 @@ import datetime
 from collections import defaultdict
 
 from django.db.models import Q
+from django.utils.lorem_ipsum import sentence
 from django.templatetags.static import static
 from django.utils.timezone import now
 from django.views.generic import TemplateView, ListView
 from django.views.generic.base import ContextMixin
 
-from aides.models import Theme, Sujet, Aide, ZoneGeographique
+from aides.models import Theme, Sujet, Aide, ZoneGeographique, Operateur
 
 from .models import GroupementProducteurs, Filiere
 from . import siret
@@ -207,17 +208,18 @@ class ResultsView(AgriMixin, ListView):
     template_name = "agri/results.html"
 
     def get_queryset(self):
-        return (
-            Aide.objects.by_sujets(self.sujets)
-            .by_zone_geographique(self.commune)
-            .by_effectif(
-                siret.mapping_effectif_complete[self.code_effectif]["min"],
-                siret.mapping_effectif_complete[self.code_effectif]["max"],
+        all_types = list(Aide.Type)
+        fake_operateur = Operateur(external_id=9999, nom="Guichet")
+        return [
+            Aide(
+                external_id=i,
+                nom="Intitulé dispositif",
+                promesse=sentence(),
+                types=[all_types[i % len(all_types)]],
+                operateur=fake_operateur,
             )
-            .select_related("operateur")
-            .prefetch_related("zones_geographiques")
-            .order_by("-date_fin")
-        )
+            for i in range(0, 20)
+        ]
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -233,6 +235,7 @@ class ResultsView(AgriMixin, ListView):
                             "heading_tag": "h2",
                             "extra_classes": "fr-card--horizontal-tier fr-card--no-icon",
                             "title": aide.nom,
+                            "description": aide.promesse,
                             "link": "#",
                             "image_url": static("agri/images/placeholder.1x1.svg"),
                             "ratio_class": "fr-ratio-1x1",
