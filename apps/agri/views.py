@@ -20,9 +20,14 @@ STEPS = [
 
 
 class Step1Mixin:
-    extra_context = {
-        "themes": Theme.objects.exclude(aide__isnull=True),
-    }
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data.update(
+            {
+                "themes": Theme.objects.exclude(aide__isnull=True),
+            }
+        )
+        return context_data
 
 
 class HomeView(Step1Mixin, TemplateView):
@@ -179,40 +184,45 @@ class Step4View(AgriMixin, TemplateView):
     template_name = "agri/step-4.html"
     STEP = 4
 
-    @property
-    def extra_context(self) -> dict:
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
         etablissement = siret.get(self.siret)
         commune = ZoneGeographique.objects.communes().get(
             numero=etablissement.get("commune")
         )
-        return {
-            "etablissement": etablissement,
-            "categories_juridiques": siret.mapping_categories_juridiques,
-            "commune_initials": {
-                commune.numero: f"{commune.code_postal} {commune.nom}"
-            },
-        }
+        context_data.update(
+            {
+                "etablissement": etablissement,
+                "categories_juridiques": siret.mapping_categories_juridiques,
+                "commune_initials": {
+                    commune.numero: f"{commune.code_postal} {commune.nom}"
+                },
+            }
+        )
+        return context_data
 
 
 class Step5View(AgriMixin, TemplateView):
     template_name = "agri/step-5.html"
     STEP = 5
 
-    @property
-    def extra_context(self) -> dict:
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
         etablissement = siret.get(self.request.GET.get("siret", ""))
-        extra_context = {
-            "mapping_naf": siret.mapping_naf_complete_unique,
-            "mapping_tranches_effectif": siret.mapping_effectif,
-            "etablissement": etablissement,
-            "regroupements": self.__class__.REGROUPEMENTS,
-        }
+        context_data.update(
+            {
+                "mapping_naf": siret.mapping_naf_complete_unique,
+                "mapping_tranches_effectif": siret.mapping_effectif,
+                "etablissement": etablissement,
+                "regroupements": self.__class__.REGROUPEMENTS,
+            }
+        )
 
         naf = etablissement["activite_principale"]
         if naf in siret.mapping_naf_short:
-            extra_context["naf"] = {naf: siret.mapping_naf_short[naf]}
+            context_data["naf"] = {naf: siret.mapping_naf_short[naf]}
 
-        return extra_context
+        return context_data
 
 
 class ResultsView(AgriMixin, ListView):
@@ -232,12 +242,12 @@ class ResultsView(AgriMixin, ListView):
         )
 
     def get_context_data(self, **kwargs):
-        extra_context = super().get_context_data(**kwargs)
+        context_data = super().get_context_data(**kwargs)
         aides_by_type = defaultdict(set)
         for aide in self.get_queryset():
             for type_aide in aide.types:
                 aides_by_type[type_aide].add(aide)
-        extra_context.update(
+        context_data.update(
             {
                 "aides": {
                     type_aide: [
@@ -295,7 +305,7 @@ class ResultsView(AgriMixin, ListView):
                 },
             }
         )
-        return extra_context
+        return context_data
 
 
 class SearchEtablissementView(TemplateView):
