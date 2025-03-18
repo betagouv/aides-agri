@@ -1,4 +1,5 @@
 import datetime
+from collections import defaultdict
 
 from django.db.models import Q
 from django.templatetags.static import static
@@ -6,7 +7,7 @@ from django.utils.timezone import now
 from django.views.generic import TemplateView, ListView
 from django.views.generic.base import ContextMixin
 
-from aides.models import Theme, Sujet, Aide, ZoneGeographique, Nature
+from aides.models import Theme, Sujet, Aide, ZoneGeographique
 from . import siret
 
 STEPS = [
@@ -86,6 +87,8 @@ class AgriMixin(ContextMixin):
         self.commune = request.GET.get("commune", None)
         self.codes_naf = self.request.GET.getlist("nafs", [])
         self.code_effectif = self.request.GET.get("tranche_effectif_salarie", None)
+        if not self.code_effectif:
+            self.code_effectif = None
         self.regroupements = self.request.GET.getlist("regroupements", [])
         date_installation = self.request.GET.get("date_installation", None)
         self.date_installation = (
@@ -214,32 +217,30 @@ class Step5View(AgriMixin, TemplateView):
 
 class ResultsView(AgriMixin, ListView):
     template_name = "agri/results.html"
-    natures = set()
 
     def get_queryset(self):
         return (
-            Aide.objects
-            .by_sujets(self.sujets)
+            Aide.objects.by_sujets(self.sujets)
             .by_zone_geographique(self.commune)
             .by_effectif(
                 siret.mapping_effectif_complete[self.code_effectif]["min"],
                 siret.mapping_effectif_complete[self.code_effectif]["max"],
             )
             .select_related("operateur")
-            .prefetch_related("natures")
+            .prefetch_related("zones_geographiques")
             .order_by("-date_fin")
         )
 
     def get_context_data(self, **kwargs):
         extra_context = super().get_context_data(**kwargs)
-        aides_by_nature = {
-            nature: self.get_queryset().filter(natures=nature)
-            for nature in Nature.objects.all()
-        }
+        aides_by_type = defaultdict(set)
+        for aide in self.get_queryset():
+            for type_aide in aide.types:
+                aides_by_type[type_aide].add(aide)
         extra_context.update(
             {
                 "aides": {
-                    nature: [
+                    type_aide: [
                         {
                             "heading_tag": "h2",
                             "extra_classes": "fr-card--horizontal-tier fr-card--no-icon",
@@ -267,8 +268,7 @@ class ResultsView(AgriMixin, ListView):
                         }
                         for aide in aides
                     ]
-                    for nature, aides in aides_by_nature.items()
-                    if aides.exists()
+                    for type_aide, aides in aides_by_type.items()
                 },
                 "conseillers_entreprises_card_data": {
                     "heading_tag": "h2",
@@ -287,16 +287,6 @@ class ResultsView(AgriMixin, ListView):
                         }
                     ],
                     "top_detail": {
-                        "tags": [
-                            {
-                                "label": "Conseil",
-                                "extra_classes": "fr-tag--sm",
-                            },
-                            {
-                                "label": "National",
-                                "extra_classes": "fr-tag--sm",
-                            },
-                        ],
                         "detail": {
                             "icon_class": "fr-icon-arrow-right-line",
                             "text": "Ministère de l’Économie x Ministère du Travail",

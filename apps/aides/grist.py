@@ -1,32 +1,33 @@
 import datetime
 
 from django.conf import settings
-from pygrister.api import GristApi
+from pygrister.api import GristApi, GristApiNotConfigured
 
 from .models import (
     Theme,
     Sujet,
     Operateur,
-    Nature,
     ZoneGeographique,
     Aide,
 )
 
 
-grist = GristApi(config=settings.AIDES_PYGRISTER_CONFIG)
+try:
+    gristapi = GristApi(config=settings.AIDES_PYGRISTER_CONFIG)
+except GristApiNotConfigured:
+    gristapi = GristApi()
 
 
-def import_all():
-    import_themes()
-    import_sujets()
-    import_natures()
-    import_zones_geographiques()
-    import_operateurs()
-    import_aides()
+def load_all():
+    load_themes()
+    load_sujets()
+    load_zones_geographiques()
+    load_operateurs()
+    load_aides()
 
 
-def import_themes():
-    status, rows = grist.list_records("Ref_Themes")
+def load_themes():
+    status, rows = gristapi.list_records("Ref_Themes")
     for row in rows:
         if not row["Nom"]:
             return
@@ -39,8 +40,8 @@ def import_themes():
             obj.save()
 
 
-def import_sujets():
-    status, rows = grist.list_records("Ref_Sujets")
+def load_sujets():
+    status, rows = gristapi.list_records("Ref_Sujets")
     for row in rows:
         if not row["Nom"]:
             return
@@ -57,15 +58,15 @@ def import_sujets():
             obj.save()
 
 
-def import_operateurs():
-    status, rows = grist.list_records("Ref_Operateurs")
+def load_operateurs():
+    status, rows = gristapi.list_records("Ref_Operateurs")
     for row in rows:
-        if not row["Operateur"]:
+        if not row["Nom"]:
             return
         modified = False
         obj, _ = Operateur.objects.get_or_create(external_id=row["id"])
-        if obj.nom != row["Operateur"]:
-            obj.nom = row["Operateur"]
+        if obj.nom != row["Nom"]:
+            obj.nom = row["Nom"]
             modified = True
         if (
             row["Zones_geographiques"]
@@ -83,22 +84,8 @@ def import_operateurs():
             obj.save()
 
 
-def import_natures():
-    status, rows = grist.list_records("Ref_Natures")
-    for row in rows:
-        if not row["Nom"]:
-            return
-        modified = False
-        obj, _ = Nature.objects.get_or_create(external_id=row["id"])
-        if obj.nom != row["Nom"]:
-            obj.nom = row["Nom"]
-            modified = True
-        if modified:
-            obj.save()
-
-
-def import_zones_geographiques():
-    status, rows = grist.list_records("Ref_Zones_geographiques")
+def load_zones_geographiques():
+    status, rows = gristapi.list_records("Ref_Zones_geographiques")
     for row in rows:
         if not row["Nom"]:
             return
@@ -118,9 +105,7 @@ def import_zones_geographiques():
         ):
             obj.parent = ZoneGeographique.objects.get(external_id=row["Parent"])
             modified = True
-        if row["EPCI"] and (
-            obj.epci is None or obj.epci.external_id != row["EPCI"]
-        ):
+        if row["EPCI"] and (obj.epci is None or obj.epci.external_id != row["EPCI"]):
             obj.epci = ZoneGeographique.objects.get(external_id=row["EPCI"])
             modified = True
         if obj.code_postal != row["Code_postal"]:
@@ -130,28 +115,18 @@ def import_zones_geographiques():
             obj.save()
 
 
-def import_aides():
-    couvertures_geographiques = {c["id"]: c["Nom"].strip() for c in grist.list_records("Ref_Couvertures_geographiques")[1]}
-    status, rows = grist.list_records("Aides")
+def load_aides():
+    status, rows = gristapi.list_records("Aides")
     for row in rows:
-        if not row["Titre"].strip():
+        if not row["Nom"].strip():
             continue
         obj, _ = Aide.objects.get_or_create(external_id=row["id"])
         modified = False
-        if not obj.nom.strip() or obj.nom != row["Titre"]:
-            obj.nom = row["Titre"].strip()
+        if not obj.nom.strip() or obj.nom != row["Nom"]:
+            obj.nom = row["Nom"].strip()
             modified = True
-        if (
-            row["Type_d_aide"]
-            and obj.natures.values_list("external_id", flat=True)
-            != row["Type_d_aide"][1:]
-        ):
-            obj.natures.clear()
-            obj.natures.add(
-                *Nature.objects.filter(
-                    external_id__in=row["Type_d_aide"][1:]
-                )
-            )
+        if row["Types_d_aide"] and obj.types != row["Types_d_aide"][1:]:
+            obj.types = row["Types_d_aide"][1:]
             modified = True
         if row["Operateur_principal"] and (
             obj.operateur is None
@@ -173,34 +148,22 @@ def import_aides():
         ):
             obj.operateurs_secondaires.clear()
             obj.operateurs_secondaires.add(
-                *Operateur.objects.filter(
-                    external_id__in=row["Operateurs_autres"][1:]
-                )
+                *Operateur.objects.filter(external_id__in=row["Operateurs_autres"][1:])
             )
             modified = True
         if (
             row["Themes"]
-            and obj.themes.values_list("external_id", flat=True)
-            != row["Themes"][1:]
+            and obj.themes.values_list("external_id", flat=True) != row["Themes"][1:]
         ):
             obj.themes.clear()
-            obj.themes.add(
-                *Theme.objects.filter(
-                    external_id__in=row["Themes"][1:]
-                )
-            )
+            obj.themes.add(*Theme.objects.filter(external_id__in=row["Themes"][1:]))
             modified = True
         if (
             row["Sujets"]
-            and obj.sujets.values_list("external_id", flat=True)
-            != row["Sujets"][1:]
+            and obj.sujets.values_list("external_id", flat=True) != row["Sujets"][1:]
         ):
             obj.sujets.clear()
-            obj.sujets.add(
-                *Sujet.objects.filter(
-                    external_id__in=row["Sujets"][1:]
-                )
-            )
+            obj.sujets.add(*Sujet.objects.filter(external_id__in=row["Sujets"][1:]))
             modified = True
         if obj.promesse != row["Promesse"]:
             obj.promesse = row["Promesse"]
@@ -236,10 +199,10 @@ def import_aides():
                 print(f"Mauvais format de date de fermeture : {row['Date_de_cloture']}")
         if row["Couverture_Geographique"] and (
             obj.couverture_geographique is None
-            or obj.couverture_geographique != couvertures_geographiques[row["Couverture_Geographique"]]
+            or obj.couverture_geographique != row["Couverture_Geographique"]
         ):
             try:
-                obj.couverture_geographique = couvertures_geographiques[row["Couverture_Geographique"]]
+                obj.couverture_geographique = row["Couverture_Geographique"]
                 modified = True
             except ValueError:
                 print(

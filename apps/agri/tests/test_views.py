@@ -97,12 +97,26 @@ def test_step_5(requests_mock, client, theme, sujet, zone_geographique_commune_7
 
 
 @pytest.mark.django_db
-def test_results(client, theme, sujet, zone_geographique_commune_75001, zone_geographique_departement_75):
+def test_results(
+    client,
+    theme,
+    sujet,
+    zone_geographique_commune_75001,
+    zone_geographique_departement_75,
+):
     # WHEN requesting results
     url = (
         reverse("agri:results")
         + "?"
-        + urlencode({"theme": theme.pk, "subject": sujet.pk, "siret": fake_siret, "commune": "75001"})
+        + urlencode(
+            {
+                "theme": theme.pk,
+                "subject": sujet.pk,
+                "siret": fake_siret,
+                "commune": "75001",
+                "tranche_effectif_salarie": "01",
+            }
+        )
     )
     response = client.get(url)
     assert response.status_code == 200
