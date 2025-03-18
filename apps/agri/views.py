@@ -25,7 +25,7 @@ class Step1Mixin:
         context_data = super().get_context_data(**kwargs)
         context_data.update(
             {
-                "themes": Theme.objects.exclude(aide__isnull=True),
+                "themes": Theme.objects.all(),
             }
         )
         return context_data
@@ -167,9 +167,7 @@ class Step2View(AgriMixin, TemplateView):
             {
                 "sujets": {
                     f"sujet-{sujet.pk}": sujet
-                    for sujet in Sujet.objects.filter(themes=self.theme).exclude(
-                        aide__isnull=True
-                    )
+                    for sujet in Sujet.objects.filter(themes=self.theme)
                 }
             }
         )
