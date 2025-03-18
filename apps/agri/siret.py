@@ -36,13 +36,12 @@ with open(
     reader = csv.reader(f)
     for row in reader:
         mapping_tranche_effectif_salarie[row[0]] = row[1]
-
+        if row[0] == "null":
+            mapping_tranche_effectif_salarie[None] = row[1]
 
 
 # /!\ this code block is expensive, please make sure it's executed at application startup
-with open(
-    f"{_here}/{settings.AGRI_PATH_DATA}/mapping_categories_juridiques.csv"
-) as f:
+with open(f"{_here}/{settings.AGRI_PATH_DATA}/mapping_categories_juridiques.csv") as f:
     reader = csv.reader(f)
     for row in reader:
         mapping_categories_juridiques[row[0]] = row[1]
@@ -77,11 +76,17 @@ def search(query: str) -> list[dict]:
 
 def get(query: str) -> dict:
     societe = search(query)[0]
-    societe["libelle_nature_juridique"] = mapping_categories_juridiques.get(societe["nature_juridique"], "n/a")
+    societe["libelle_nature_juridique"] = mapping_categories_juridiques.get(
+        societe["nature_juridique"], "n/a"
+    )
     matching_etablissements = societe.pop("matching_etablissements")
     etablissement = matching_etablissements[0]
     etablissement["societe"] = societe
-    etablissement["nom"] = societe["nom_complet"] if etablissement.get("est_siege", False) else etablissement["nom_commercial"]
+    etablissement["nom"] = (
+        societe["nom_complet"]
+        if etablissement.get("est_siege", False)
+        else etablissement["nom_commercial"]
+    )
     etablissement["departement"] = departement_from_commune(etablissement["commune"])
     for key in etablissement:
         if isinstance(key, str) and key.startswith("date_") and etablissement[key]:
