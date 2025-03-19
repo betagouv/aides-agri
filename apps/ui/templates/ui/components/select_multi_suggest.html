@@ -18,15 +18,15 @@
     >
   </div>
   <ul class="fr-dropdown fr-hidden" data-suggest-target="options">
-  {% for value, labels in self.options.items %}
+  {% for value, label in self.options.items %}
     <li class="fr-dropdown__item" data-suggest-target="option">
       <button type="button" class="fr-btn fr-btn--tertiary-no-outline fr-dropdown__entry"
               data-action="click->suggest#choose"
       >
-        {{ labels.long }}
+        {{ label }}
       </button>
       <div class="fr-hidden">
-        {% include "ui/components/blocks/select_multi_suggest_option.html" with name=self.name value=value label=labels.short disabled=True only %}
+        {% include "ui/components/blocks/select_multi_suggest_option.html" with name=self.name value=value label=label disabled=True only %}
       </div>
     </li>
   {% endfor %}

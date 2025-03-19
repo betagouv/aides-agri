@@ -36,10 +36,10 @@
   <fieldset class="fr-fieldset fr-col">
     <div class="fr-fieldset__element fr-mb-3w">
       <div class="fr-label fr-mb-2v">Filières</div>
-      {% if not naf %}
-        <span class="fr-error-text">Nous n'avons pas pu trouver l'activité de votre établissement, veuillez sélectionner au moins une activité ici :</span>
+      {% if not filiere %}
+        <span class="fr-error-text">Nous n'avons pas pu déduire la filière de votre exploitation, veuillez en sélectionner au moins une ici :</span>
       {% endif %}
-      {% ui_select_multi_suggest label="Ajouter une filière complémentaire" options=mapping_naf initials=naf show_label=True placeholder="élevage, légumes, etc." %}
+      {% ui_select_multi_suggest name="filiere" label="Ajouter une filière complémentaire" options=filieres initials=filiere show_label=True placeholder="élevage, légumes, etc." %}
     </div>
     <div class="fr-fieldset__element fr-mb-3w">
       <label for="input-effectif" class="fr-label">Effectif de l'exploitation</label>
@@ -57,10 +57,10 @@
     <div class="fr-fieldset__element fr-container--fluid fr-mb-3w">
       <div class="fr-label fr-mb-2v">Faites-vous partie d'un ou plusieurs regroupements ?</div>
       <div class="fr-checkbox-group fr-grid-row">
-        {% for code, label in regroupements.items %}
-        <div class="fr-col fr-col-12 fr-col-md-4 fr-mb-2w">
-          <input id="checkbox-regroupements-{{ code }}" type="checkbox" name="regroupements" value="{{ code }}">
-          <label for="checkbox-regroupements-{{ code }}" class="fr-label">{{ label }}</label>
+        {% for groupement in groupements %}
+        <div class="fr-col fr-col-12 fr-col-md-6 fr-mb-2w">
+          <input id="checkbox-regroupements-{{ groupement.pk }}" type="checkbox" name="regroupements" value="{{ groupement.pk }}">
+          <label for="checkbox-regroupements-{{ groupement.pk }}" class="fr-label">{{ groupement.nom }}</label>
         </div>
         {% endfor %}
       </div>

@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.postgres import fields as postgres_fields
 
 
-class _ExternalModel(models.Model):
+class ExternalModel(models.Model):
     class Meta:
         abstract = True
 
@@ -13,7 +13,7 @@ class _ExternalModel(models.Model):
         return self.nom
 
 
-class Operateur(_ExternalModel):
+class Operateur(ExternalModel):
     class Meta:
         verbose_name = "Opérateur"
         verbose_name_plural = "Opérateurs"
@@ -21,14 +21,14 @@ class Operateur(_ExternalModel):
     zones_geographiques = models.ManyToManyField("ZoneGeographique")
 
 
-class Theme(_ExternalModel):
+class Theme(ExternalModel):
     class Meta:
         verbose_name = "Thème"
         verbose_name_plural = "Thèmes"
         ordering = ("nom",)
 
 
-class Sujet(_ExternalModel):
+class Sujet(ExternalModel):
     class Meta:
         verbose_name = "Sujet"
         verbose_name_plural = "Sujets"
@@ -45,7 +45,7 @@ class ZoneGeographiqueQuerySet(models.QuerySet):
         return self.filter(type=ZoneGeographique.Type.COMMUNE)
 
 
-class ZoneGeographique(_ExternalModel):
+class ZoneGeographique(ExternalModel):
     class Meta:
         verbose_name = "Zone géographique"
         verbose_name_plural = "Zones géographiques"
@@ -120,7 +120,7 @@ class AideQuerySet(models.QuerySet):
         )
 
 
-class Aide(_ExternalModel):
+class Aide(ExternalModel):
     class Meta:
         verbose_name = "Aide"
         verbose_name_plural = "Aides"

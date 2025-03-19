@@ -8,6 +8,8 @@ from django.views.generic import TemplateView, ListView
 from django.views.generic.base import ContextMixin
 
 from aides.models import Theme, Sujet, Aide, ZoneGeographique
+
+from .models import GroupementProducteurs, Filiere
 from . import siret
 
 STEPS = [
@@ -66,15 +68,6 @@ class HomeView(Step1Mixin, TemplateView):
 
 class AgriMixin(ContextMixin):
     STEP = None
-    REGROUPEMENTS = {
-        "interprofession": "Interprofession",
-        "aop": "AOP",
-        "op": "OP",
-        "coop": "Coopérative",
-        "giee": "GIEE",
-        "cuma": "CUMA",
-        "": "Aucun",
-    }
     theme = None
     sujets = []
     siret = None
@@ -207,18 +200,21 @@ class Step5View(AgriMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         etablissement = siret.get(self.request.GET.get("siret", ""))
+        naf = etablissement.get("activite_principale", "")
+        if naf[-1].isalpha():
+            naf = naf[:-1]
         context_data.update(
             {
                 "mapping_naf": siret.mapping_naf_complete_unique,
                 "mapping_tranches_effectif": siret.mapping_effectif,
                 "etablissement": etablissement,
-                "regroupements": self.__class__.REGROUPEMENTS,
+                "groupements": GroupementProducteurs.objects.all(),
+                "filieres": dict(Filiere.objects.all().values_list("pk", "nom")),
+                "filiere": dict(
+                    Filiere.objects.filter(code_naf=naf).values_list("pk", "nom")
+                ),
             }
         )
-
-        naf = etablissement["activite_principale"]
-        if naf in siret.mapping_naf_short:
-            context_data["naf"] = {naf: siret.mapping_naf_short[naf]}
 
         return context_data
 
