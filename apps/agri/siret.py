@@ -5,12 +5,11 @@ import os
 from django.conf import settings
 import requests
 
-from .utils import departement_from_commune
-
 
 mapping_naf_short = dict()
 mapping_naf_complete = dict()
-mapping_tranche_effectif_salarie = dict()
+mapping_effectif = dict()
+mapping_effectif_complete = dict()
 mapping_categories_juridiques = dict()
 
 _here = os.path.dirname(__file__)
@@ -35,9 +34,15 @@ with open(
 ) as f:
     reader = csv.reader(f)
     for row in reader:
-        mapping_tranche_effectif_salarie[row[0]] = row[1]
+        mapping_effectif[row[0]] = row[1]
+        mapping_effectif_complete[row[0]] = {
+            "label": row[1],
+            "min": row[2],
+            "max": row[3],
+        }
         if row[0] == "null":
-            mapping_tranche_effectif_salarie[None] = row[1]
+            mapping_effectif[None] = mapping_effectif[row[0]]
+            mapping_effectif_complete[None] = mapping_effectif_complete[row[0]]
 
 
 # /!\ this code block is expensive, please make sure it's executed at application startup
@@ -83,11 +88,10 @@ def get(query: str) -> dict:
     etablissement = matching_etablissements[0]
     etablissement["societe"] = societe
     etablissement["nom"] = (
-        societe["nom_complet"]
-        if etablissement.get("est_siege", False)
-        else etablissement["nom_commercial"]
+        etablissement["nom_commercial"]
+        if etablissement["nom_commercial"]
+        else societe["nom_complet"]
     )
-    etablissement["departement"] = departement_from_commune(etablissement["commune"])
     for key in etablissement:
         if isinstance(key, str) and key.startswith("date_") and etablissement[key]:
             etablissement[key] = datetime.date.fromisoformat(etablissement[key])

@@ -1,15 +1,14 @@
 import datetime
-from copy import deepcopy
+from collections import defaultdict
 
-from django.http.request import QueryDict
+from django.db.models import Q
 from django.templatetags.static import static
-from django.urls import reverse
-from django.utils import lorem_ipsum
-from django.views.generic import TemplateView
+from django.utils.timezone import now
+from django.views.generic import TemplateView, ListView
 from django.views.generic.base import ContextMixin
 
+from aides.models import Theme, Sujet, Aide, ZoneGeographique
 from . import siret
-from . import utils
 
 STEPS = [
     "Choix d'un thème",
@@ -21,39 +20,13 @@ STEPS = [
 
 
 class Step1Mixin:
-    extra_context = {
-        "themes": [
-            {
-                "title": "Thème 1",
-                "description": "Description",
-                "detail": "Détail",
-            },
-            {
-                "title": "Thème 2",
-                "description": "Description",
-                "detail": "Détail",
-            },
-            {
-                "title": "Thème 3",
-                "description": "Description",
-                "detail": "Détail",
-            },
-            {
-                "title": "Thème 4",
-                "description": "Description",
-                "detail": "Détail",
-            },
-        ],
-    }
-
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        for theme in context_data["themes"]:
-            theme["link"] = (
-                reverse("agri:step-2")
-                + "?"
-                + QueryDict.fromkeys(("theme",), theme["title"]).urlencode()
-            )
+        context_data.update(
+            {
+                "themes": Theme.objects.exclude(aide__isnull=True),
+            }
+        )
         return context_data
 
 
@@ -102,40 +75,61 @@ class AgriMixin(ContextMixin):
         "cuma": "CUMA",
         "": "Aucun",
     }
+    theme = None
+    sujets = []
+    siret = None
+    departement = None
 
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        codes_naf = self.request.GET.getlist("nafs", [])
-        code_effectif = self.request.GET.get("tranche_effectif_salarie", None)
-        regroupements = self.request.GET.getlist("regroupements", [])
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        theme_id = request.GET.get("theme", None)
+        if theme_id:
+            self.theme = Theme.objects.get(pk=theme_id)
+        sujets_ids = request.GET.getlist("sujets", [])
+        if sujets_ids:
+            self.sujets = Sujet.objects.filter(pk__in=sujets_ids)
+        self.siret = request.GET.get("siret", None)
+        self.commune = request.GET.get("commune", None)
+        self.codes_naf = self.request.GET.getlist("nafs", [])
+        self.code_effectif = self.request.GET.get("tranche_effectif_salarie", None)
+        if not self.code_effectif:
+            self.code_effectif = None
+        self.regroupements = self.request.GET.getlist("regroupements", [])
         date_installation = self.request.GET.get("date_installation", None)
-        date_installation = (
+        self.date_installation = (
             datetime.date.fromisoformat(date_installation)
             if date_installation
             else None
         )
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
         context_data.update(
             {
-                "summary_theme": self.request.GET.get("theme", None),
-                "summary_sujets": self.request.GET.getlist("sujets", []),
+                "summary_theme": self.theme,
+                "summary_sujets": self.sujets,
                 "summary_siret": self.request.GET.get("siret", None),
-                "codes_naf": codes_naf,
+                "codes_naf": self.codes_naf,
                 "summary_naf": [
                     siret.mapping_naf_short[naf]
-                    for naf in codes_naf
+                    for naf in self.codes_naf
                     if naf in siret.mapping_naf_short
                 ],
-                "summary_departement": self.request.GET.get("departement", None),
-                "summary_date_installation": date_installation,
-                "code_effectif": code_effectif,
-                "summary_effectif": siret.mapping_tranche_effectif_salarie.get(
-                    code_effectif, None
+                "summary_date_installation": self.date_installation,
+                "summary_commune": ZoneGeographique.objects.communes().get(
+                    numero=self.commune
                 )
-                if code_effectif
+                if self.commune
+                else None,
+                "code_effectif": self.code_effectif,
+                "summary_effectif": siret.mapping_effectif.get(
+                    self.code_effectif, None
+                )
+                if self.code_effectif
                 else None,
                 "summary_regroupements": [
                     self.__class__.REGROUPEMENTS[regroupement]
-                    for regroupement in regroupements
+                    for regroupement in self.regroupements
                 ],
             }
         )
@@ -166,14 +160,19 @@ class Step2View(AgriMixin, TemplateView):
     template_name = "agri/step-2.html"
     STEP = 2
 
-    extra_context = {
-        "options": [
-            {"id": "subject1", "name": "sujets", "value": "Sujet 1"},
-            {"id": "subject2", "name": "sujets", "value": "Sujet 2"},
-            {"id": "subject3", "name": "sujets", "value": "Sujet 3"},
-            {"id": "subject4", "name": "sujets", "value": "Sujet 4"},
-        ],
-    }
+    def get_context_data(self, **kwargs):
+        extra_context = super().get_context_data(**kwargs)
+        extra_context.update(
+            {
+                "sujets": {
+                    f"sujet-{sujet.pk}": sujet
+                    for sujet in Sujet.objects.filter(themes=self.theme).exclude(
+                        aide__isnull=True
+                    )
+                }
+            }
+        )
+        return extra_context
 
 
 class Step3View(AgriMixin, TemplateView):
@@ -185,105 +184,132 @@ class Step4View(AgriMixin, TemplateView):
     template_name = "agri/step-4.html"
     STEP = 4
 
-    @property
-    def extra_context(self) -> dict:
-        etablissement = siret.get(self.request.GET.get("siret", ""))
-        extra_context = {
-            "etablissement": etablissement,
-            "departements": utils.mapping_departements,
-            "categories_juridiques": siret.mapping_categories_juridiques,
-        }
-
-        return extra_context
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        etablissement = siret.get(self.siret)
+        commune = ZoneGeographique.objects.communes().get(
+            numero=etablissement.get("commune")
+        )
+        context_data.update(
+            {
+                "etablissement": etablissement,
+                "categories_juridiques": siret.mapping_categories_juridiques,
+                "commune_initials": {
+                    commune.numero: f"{commune.code_postal} {commune.nom}"
+                },
+            }
+        )
+        return context_data
 
 
 class Step5View(AgriMixin, TemplateView):
     template_name = "agri/step-5.html"
     STEP = 5
 
-    @property
-    def extra_context(self) -> dict:
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
         etablissement = siret.get(self.request.GET.get("siret", ""))
-        extra_context = {
-            "mapping_naf": siret.mapping_naf_complete_unique,
-            "mapping_tranches_effectif": siret.mapping_tranche_effectif_salarie,
-            "etablissement": etablissement,
-            "regroupements": self.__class__.REGROUPEMENTS,
-        }
+        context_data.update(
+            {
+                "mapping_naf": siret.mapping_naf_complete_unique,
+                "mapping_tranches_effectif": siret.mapping_effectif,
+                "etablissement": etablissement,
+                "regroupements": self.__class__.REGROUPEMENTS,
+            }
+        )
 
         naf = etablissement["activite_principale"]
         if naf in siret.mapping_naf_short:
-            extra_context["naf"] = {naf: siret.mapping_naf_short[naf]}
+            context_data["naf"] = {naf: siret.mapping_naf_short[naf]}
 
-        return extra_context
+        return context_data
 
 
-class ResultsView(AgriMixin, TemplateView):
+class ResultsView(AgriMixin, ListView):
     template_name = "agri/results.html"
-    NATURES_AIDES = (
-        "Audit",
-        "Avantage fiscal",
-        "Conseil",
-        "Étude",
-        "Financement",
-        "Formation",
-        "Prêt",
-        "Remplacement",
-    )
 
-    card_data = {
-        "heading_tag": "h2",
-        "extra_classes": "fr-card--horizontal-tier",
-        "title": "Intitulé dispositif",
-        "description": lorem_ipsum.paragraph(),
-        "image_url": static("agri/images/placeholder.1x1.svg"),
-        "media_badges": [],
-        "top_detail": {
-            "detail": {
-                "icon_class": "fr-icon-arrow-right-line",
-                "text": "Guichet",
-            },
-        },
-    }
-    open_cards_data = deepcopy(card_data)
-    open_cards_data["media_badges"].append(
-        {
-            "extra_classes": "fr-badge--green-emeraude",
-            "label": "En cours",
-        }
-    )
-    closed_cards_data = deepcopy(card_data)
-    closed_cards_data["media_badges"].append(
-        {
-            "extra_classes": "fr-badge--pink-tuile",
-            "label": "Clôturé",
-        }
-    )
-    conseillers_entreprises_card_data = deepcopy(open_cards_data)
-    conseillers_entreprises_card_data["extra_classes"] = (
-        "fr-card--horizontal-tier fr-border-default--red-marianne fr-my-3w"
-    )
-    conseillers_entreprises_card_data["title"] = "Conseillers Entreprises"
-    conseillers_entreprises_card_data["description"] = (
-        "Le service public d’accompagnement des entreprises. Échangez avec les conseillers qui peuvent vous aider dans vos projets, vos difficultés ou les transformations nécessaires à la réussite de votre entreprise."
-    )
-    conseillers_entreprises_card_data["image_url"] = static(
-        "agri/images/home/illustration_conseillers_entreprise.svg"
-    )
-    conseillers_entreprises_card_data["top_detail"]["detail"]["text"] = (
-        "Ministère de l’Économie x Ministère du Travail"
-    )
+    def get_queryset(self):
+        return (
+            Aide.objects.by_sujets(self.sujets)
+            .by_zone_geographique(self.commune)
+            .by_effectif(
+                siret.mapping_effectif_complete[self.code_effectif]["min"],
+                siret.mapping_effectif_complete[self.code_effectif]["max"],
+            )
+            .select_related("operateur")
+            .prefetch_related("zones_geographiques")
+            .order_by("-date_fin")
+        )
 
-    extra_context = {
-        "open_cards_data": open_cards_data,
-        "closed_cards_data": closed_cards_data,
-        "conseillers_entreprises_card_data": conseillers_entreprises_card_data,
-        "natures_aides": NATURES_AIDES,
-    }
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        aides_by_type = defaultdict(set)
+        for aide in self.get_queryset():
+            for type_aide in aide.types:
+                aides_by_type[type_aide].add(aide)
+        context_data.update(
+            {
+                "aides": {
+                    type_aide: [
+                        {
+                            "heading_tag": "h2",
+                            "extra_classes": "fr-card--horizontal-tier fr-card--no-icon",
+                            "title": aide.nom,
+                            "link": "#",
+                            "image_url": static("agri/images/placeholder.1x1.svg"),
+                            "ratio_class": "fr-ratio-1x1",
+                            "media_badges": [
+                                {
+                                    "extra_classes": "fr-badge--green-emeraude",
+                                    "label": "En cours",
+                                }
+                                if aide.date_fin is None or aide.date_fin > now().date()
+                                else {
+                                    "extra_classes": "fr-badge--pink-tuile",
+                                    "label": "Clôturé",
+                                }
+                            ],
+                            "top_detail": {
+                                "detail": {
+                                    "icon_class": "fr-icon-arrow-right-line",
+                                    "text": aide.operateur.nom,
+                                },
+                            },
+                        }
+                        for aide in aides
+                    ]
+                    for type_aide, aides in aides_by_type.items()
+                },
+                "conseillers_entreprises_card_data": {
+                    "heading_tag": "h2",
+                    "extra_classes": "fr-card--horizontal-tier fr-border-default--red-marianne fr-my-3w",
+                    "title": "Conseillers Entreprises",
+                    "description": "Le service public d’accompagnement des entreprises. Échangez avec les conseillers qui peuvent vous aider dans vos projets, vos difficultés ou les transformations nécessaires à la réussite de votre entreprise.",
+                    "link": "#",
+                    "image_url": static(
+                        "agri/images/home/illustration_conseillers_entreprise.svg"
+                    ),
+                    "ratio_class": "fr-ratio-1x1",
+                    "media_badges": [
+                        {
+                            "extra_classes": "fr-badge--green-emeraude",
+                            "label": "En cours",
+                        }
+                    ],
+                    "top_detail": {
+                        "detail": {
+                            "icon_class": "fr-icon-arrow-right-line",
+                            "text": "Ministère de l’Économie x Ministère du Travail",
+                        },
+                    },
+                },
+            }
+        )
+        return context_data
 
 
-class SearchCompanyView(TemplateView):
-    template_name = "agri/_partials/search_company.html"
+class SearchEtablissementView(TemplateView):
+    template_name = "agri/_partials/search_etablissement.html"
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -300,6 +326,27 @@ class SearchCompanyView(TemplateView):
                         ]
                     }
                 )
+        else:
+            context_data.update({"errors": ["Veuillez saisir une recherche"]})
+        return context_data
+
+
+class SearchCommuneView(TemplateView):
+    template_name = "ui/components/blocks/select_searchable_hits.html"
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+
+        q = self.request.GET.get("commune-search", "")
+        if q:
+            context_data.update(
+                {
+                    "name": "commune",
+                    "hits": ZoneGeographique.objects.communes()
+                    .filter(Q(code_postal__icontains=q) | Q(nom__icontains=q))
+                    .in_bulk(field_name="numero"),
+                }
+            )
         else:
             context_data.update({"errors": ["Veuillez saisir une recherche"]})
         return context_data

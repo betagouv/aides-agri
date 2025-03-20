@@ -34,25 +34,26 @@
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col fr-col-12">
         <div class="fr-accordions-group fr-mr-4w fr-mb-6w">
-        {% for nature in natures_aides %}
+        {% for type_aide, aide_list in aides.items %}
           <section class="fr-accordion">
             <h3 class="fr-accordion__title">
-              <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordeon-nature-{{ forloop.counter }}">
-                {{ nature }} (3 dispositifs)
+              <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordeon-type-{{ forloop.counter }}">
+                {{ type_aide }} ({{ aide_list|length }} dispositifs)
               </button>
             </h3>
-            <div id="accordeon-nature-{{ forloop.counter }}" class="fr-collapse">
-              {% for i in "123"|make_list %}
+            <div id="accordeon-type-{{ forloop.counter }}" class="fr-collapse">
+              {% for aide in aide_list %}
               <div class="fr-col fr-col-12 fr-mb-1w">
-                {% dsfr_card open_cards_data %}
+                {% dsfr_card aide %}
               </div>
               {% endfor %}
             </div>
           </section>
-          {% if forloop.counter == 2 %}
+          {% if forloop.counter == 2 or aides|length <= 2 and forloop.last %}
             {% dsfr_card conseillers_entreprises_card_data id="conseillers-entreprises" %}
           {% endif %}
         {% endfor %}
+        </div>
       </div>
     </div>
   </div>

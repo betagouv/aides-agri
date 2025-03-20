@@ -17,9 +17,9 @@ def test_step_1(client):
 
 
 @pytest.mark.django_db
-def test_step_2(client):
+def test_step_2(client, theme):
     # WHEN requesting step 2
-    url = reverse("agri:step-2") + "?" + urlencode({"theme": "Thème 1"})
+    url = reverse("agri:step-2") + "?" + urlencode({"theme": theme.pk})
     response = client.get(url)
 
     # THEN it's a 200
@@ -27,12 +27,12 @@ def test_step_2(client):
 
 
 @pytest.mark.django_db
-def test_step_3(client):
+def test_step_3(client, theme, sujet):
     # WHEN requesting step 3
     url = (
         reverse("agri:step-3")
         + "?"
-        + urlencode({"theme": "Thème 1", "subject": "Sujet 1"})
+        + urlencode({"theme": theme.pk, "subject": sujet.pk})
     )
     response = client.get(url)
 
@@ -49,7 +49,7 @@ def test_search_company(requests_mock, client):
     )
 
     # WHEN requesting search company with that Siret
-    url = reverse("agri:find-company") + "?" + urlencode({"q": "entreprise"})
+    url = reverse("agri:search-etablissement") + "?" + urlencode({"q": "entreprise"})
     response = client.get(url)
 
     # THEN it's a 200
@@ -57,7 +57,7 @@ def test_search_company(requests_mock, client):
 
 
 @pytest.mark.django_db
-def test_step_4(requests_mock, client):
+def test_step_4(requests_mock, client, theme, sujet, zone_geographique_commune_75001):
     # GIVEN the official companies API returns a result for a given Siret
     requests_mock.get(
         f"https://recherche-entreprises.api.gouv.fr/search?q={fake_siret}",
@@ -68,7 +68,7 @@ def test_step_4(requests_mock, client):
     url = (
         reverse("agri:step-4")
         + "?"
-        + urlencode({"theme": "Thème 1", "subject": "Sujet 1", "siret": fake_siret})
+        + urlencode({"theme": theme.pk, "subject": sujet.pk, "siret": fake_siret})
     )
     response = client.get(url)
 
@@ -77,7 +77,7 @@ def test_step_4(requests_mock, client):
 
 
 @pytest.mark.django_db
-def test_step_5(requests_mock, client):
+def test_step_5(requests_mock, client, theme, sujet, zone_geographique_commune_75001):
     # GIVEN the official companies API returns a result for a given Siret
     requests_mock.get(
         f"https://recherche-entreprises.api.gouv.fr/search?q={fake_siret}",
@@ -88,7 +88,7 @@ def test_step_5(requests_mock, client):
     url = (
         reverse("agri:step-5")
         + "?"
-        + urlencode({"theme": "Thème 1", "subject": "Sujet 1", "siret": fake_siret})
+        + urlencode({"theme": theme.pk, "subject": sujet.pk, "siret": fake_siret})
     )
     response = client.get(url)
 
@@ -97,12 +97,26 @@ def test_step_5(requests_mock, client):
 
 
 @pytest.mark.django_db
-def test_results(client):
+def test_results(
+    client,
+    theme,
+    sujet,
+    zone_geographique_commune_75001,
+    zone_geographique_departement_75,
+):
     # WHEN requesting results
     url = (
         reverse("agri:results")
         + "?"
-        + urlencode({"theme": "Thème 1", "subject": "Sujet 1", "siret": fake_siret})
+        + urlencode(
+            {
+                "theme": theme.pk,
+                "subject": sujet.pk,
+                "siret": fake_siret,
+                "commune": "75001",
+                "tranche_effectif_salarie": "01",
+            }
+        )
     )
     response = client.get(url)
     assert response.status_code == 200
