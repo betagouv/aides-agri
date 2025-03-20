@@ -130,7 +130,9 @@ class AgriMixin(ContextMixin):
                 "code_effectif": code_effectif,
                 "summary_effectif": siret.mapping_tranche_effectif_salarie.get(
                     code_effectif, None
-                ),
+                )
+                if code_effectif
+                else None,
                 "summary_regroupements": [
                     self.__class__.REGROUPEMENTS[regroupement]
                     for regroupement in regroupements
