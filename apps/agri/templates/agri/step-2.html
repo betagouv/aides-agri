@@ -8,10 +8,12 @@
   <link rel="stylesheet" href="{% static 'agri/step-2.css' %}">
   <script type="module">
     import { Application } from "@hotwired/stimulus"
-    import { Step2 } from "step-2"
+    import { CheckboxGroupField } from "checkbox-group-field"
+    import { FormWithCustomFields } from "form-with-custom-fields"
     window.Stimulus ??= Application.start()
 
-    Stimulus.register("step2", Step2)
+    Stimulus.register("checkbox-group-field", CheckboxGroupField)
+    Stimulus.register("form-with-custom-fields", FormWithCustomFields)
   </script>
 {% endblock extra_css %}
 
@@ -19,14 +21,24 @@
 
 {% block action %}{% url 'agri:step-3' %}{% endblock action %}
 
-{% block extra_form_attributes %}data-controller="step2" data-action="change->step2#change"{% endblock extra_form_attributes %}
+{% block extra_form_attributes %}
+  data-controller="form-with-custom-fields"
+  data-action="submit->form-with-custom-fields#submit change->form-with-custom-fields#validate"
+  data-form-with-custom-fields-checkbox-group-field-outlet="[data-controller=checkbox-group-field]"
+{% endblock extra_form_attributes %}
 
 {% block form %}
-<div class="fr-grid-row fr-grid-row--gutters">
+<div class="fr-grid-row fr-grid-row--gutters"
+     data-controller="checkbox-group-field"
+     data-checkbox-group-field-required-value="true"
+>
   {% for id, sujet in sujets.items %}
   <div class="fr-col fr-col-12">
     {% ui_tile_checkbox id=id name="sujets" value=sujet.pk title=sujet.nom description=sujet.description extra_classes="fr-tile--horizontal fr-tile--sm" %}
   </div>
   {% endfor %}
+  <div class="fr-error-text fr-icon-error-line fr-hidden" data-checkbox-group-field-target="error">
+    Veuillez sélectionner au moins un sujet pour passer à la suite
+  </div>
 </div>
 {% endblock form %}

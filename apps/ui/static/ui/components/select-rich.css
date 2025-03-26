@@ -1,0 +1,44 @@
+.fr-select-rich .fr-select {
+  text-align: left;
+}
+
+.fr-select-rich .fr-collapse.fr-menu {
+  margin: 0;
+  pointer-events: all;
+  transition: none;
+  max-height: 30vh;
+  width: 100%;
+  overflow: hidden auto;
+  background-color: var(--background-default-grey);
+  border: 1px solid var(--border-default-grey);
+  margin-block-start: 0;
+}
+
+.fr-select-rich__item {
+  border-bottom: 2px solid var(--border-default-grey);
+}
+
+.fr-select-rich__item:hover {
+  background-color: var(--hover);
+}
+
+.fr-select-rich__item:last-of-type {
+  border-bottom: none;
+}
+
+.fr-select-rich__option {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  text-align: left;
+}
+
+.fr-select-rich .fr-checkbox-group input[type="checkbox"] + label::before {
+  margin-top: .5rem;
+}
+
+.fr-select-rich__option:has(input:focus) {
+  background-color: var(--hover);
+}

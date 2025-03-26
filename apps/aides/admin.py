@@ -9,11 +9,9 @@ from .models import (
 )
 
 
-class _ExternalModelAdmin(admin.ModelAdmin):
-    list_display = (
-        "external_id",
-        "nom",
-    )
+class ExternalModelAdmin(admin.ModelAdmin):
+    list_display = ("external_id", "nom")
+    ordering = ("external_id",)
     list_display_links = ("external_id", "nom")
 
     def get_readonly_fields(self, request, obj=None):
@@ -27,29 +25,29 @@ class _ExternalModelAdmin(admin.ModelAdmin):
 
 
 @admin.register(Theme)
-class ThemeAdmin(_ExternalModelAdmin):
+class ThemeAdmin(ExternalModelAdmin):
     fields = ("nom",)
 
 
 @admin.register(Sujet)
-class SujetAdmin(_ExternalModelAdmin):
+class SujetAdmin(ExternalModelAdmin):
     fields = ("nom", "themes")
 
 
 @admin.register(Operateur)
-class OperateurAdmin(_ExternalModelAdmin):
+class OperateurAdmin(ExternalModelAdmin):
     fields = ("nom", "zones_geographiques")
 
 
 @admin.register(ZoneGeographique)
-class ZoneGeographiqueAdmin(_ExternalModelAdmin):
-    list_display = _ExternalModelAdmin.list_display + ("type", "parent", "epci")
+class ZoneGeographiqueAdmin(ExternalModelAdmin):
+    list_display = ExternalModelAdmin.list_display + ("type", "parent", "epci")
     fields = ("parent", "type", "nom", "epci")
 
 
 @admin.register(Aide)
-class AideAdmin(_ExternalModelAdmin):
-    list_display = _ExternalModelAdmin.list_display + (
+class AideAdmin(ExternalModelAdmin):
+    list_display = ExternalModelAdmin.list_display + (
         "types",
         "operateur",
         "date_debut",

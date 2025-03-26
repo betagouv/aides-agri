@@ -1,0 +1,25 @@
+<div class="fr-select-rich__item">
+  <input name="{{ self.name }}"
+         id="select-rich-{{ self.name }}-option-{{ value }}"
+         {% if not self.multi %}class="fr-sr-only"{% endif %}
+         type="{% if self.multi %}checkbox{% else %}radio{% endif %}"
+         value="{{ value }}"
+         {% if self.multi and value in self.initials or not self.multi and value == self.initial %}checked{% endif %}
+         data-action="change->select-rich#changed"
+         data-select-rich-target="option"
+         data-label="{{ label_short }}"
+  >
+  <label class="fr-select-rich__option fr-p-2v"
+         for="select-rich-{{ self.name }}-option-{{ value }}"
+  >
+    {% block option_label %}{{ label_long }}{% endblock option_label %}
+  </label>
+  {% if self.with_tags %}
+    <button class="fr-tag fr-tag--dismiss fr-tag--icon-left fr-icon-close-line fr-hidden"
+            data-input="select-rich-{{ self.name }}-option-{{ value }}"
+            onclick="document.getElementById(this.dataset.input).click()"
+    >
+      {{ label_short }}
+    </button>
+  {% endif %}
+</div>
