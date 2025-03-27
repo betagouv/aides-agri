@@ -1,0 +1,3 @@
+{% for value, label_long, label_short in options %}
+  {% include "ui/components/blocks/select_rich_option.html" with self=self label_long=label_long label_short=label_short value=value only %}
+{% endfor %}
