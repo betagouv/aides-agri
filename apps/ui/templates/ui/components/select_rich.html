@@ -1,0 +1,71 @@
+{% load dsfr_tags %}
+
+<div class="fr-select-rich fr-input-group {{ self.extra_classes }}"
+     id="select-rich-{{ self.name }}"
+     data-controller="select-rich"
+     data-select-rich-multi-value="{% if self.multi %}true{% else %}false{% endif %}"
+     data-select-rich-required-value="{% if self.required %}true{% else %}false{% endif %}"
+>
+  {% if self.with_tags %}
+    <div class="fr-select-rich__tags fr-tags-group" data-select-rich-target="tags"></div>
+  {% endif %}
+
+  <button type="button"
+          class="fr-select"
+          data-select-rich-target="button"
+          aria-controls="select-rich-{{ self.name }}-entries"
+          aria-expanded="false"
+  >
+    {% if self.button_text %}
+      {{ self.button_text }}
+    {% elif self.multi %}
+      Sélectionnez une ou plusieurs options
+    {% else %}
+      Sélectionnez une option
+    {% endif %}
+  </button>
+  <fieldset class="fr-collapse fr-menu {% if self.multi %}fr-checkbox-group{% endif %}"
+            data-select-rich-target="entries"
+            id="select-rich-{{ self.name }}-entries"
+  >
+    {% if self.searchable %}
+      <div class="{% if self.search_url %}fr-search-bar{% else %}fr-input-group{% endif %} fr-my-2w" role="search">
+        {% if self.search_url %}<label class="fr-label" for="select-rich-search-{{ self.name }}">Rechercher</label>{% endif %}
+        {% if not self.search_url %}<div class="fr-input-wrap fr-icon-search-line">{% endif %}
+        <input type="search" id="select-rich-search-{{ self.name }}"
+               class="fr-input"
+               placeholder="{{ self.search_placeholder|default:'Rechercher' }}"
+               {% if self.search_url %}name="{{ self.search_field_name|default_if_none:'q' }}"{% endif %}
+               autocomplete="false"
+               {% if not self.search_url %}
+               data-select-rich-target="search"
+               data-action="input->select-rich#search focus->select-rich#focus"
+               {% endif %}
+        >
+        {% if not self.search_url %}</div>{% endif %}
+        {% if self.search_url %}
+        <button type="button" class="fr-btn"
+                title="Rechercher"
+                hx-get="{% url self.search_url %}"
+                hx-target="#select-rich-options-{{ self.name }}"
+                hx-include="#select-rich-search-{{ self.name }}"
+                onclick="this.disabled = true"
+                hx-on::after-request="this.disabled = false"
+        >
+          Rechercher
+        </button>
+        {% endif %}
+      </div>
+    {% endif %}
+    <div id="select-rich-options-{{ self.name }}"
+         class="select-rich__options fr-mt-2w"
+    >
+    {% if self.options %}
+      {% include "ui/components/blocks/select_rich_options.html" with options=self.options self=self only %}
+    {% elif self.search_url %}
+      <p class="fr-info-text">Recherchez des options dans le champ ci-dessus</p>
+    {% endif %}
+    </div>
+  </fieldset>
+  {% if self.required %}<p class="fr-error-text fr-hidden" data-select-rich-target="error">Ce champ est requis.</p>{% endif %}
+</div>

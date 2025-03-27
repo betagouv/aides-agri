@@ -1,4 +1,0 @@
-{% load dsfr_tags %}
-
-<input type="hidden" name="{{ name }}" value="{{ value }}" {% if disabled %}disabled{% endif %}>
-{% dsfr_tag label=label is_dismissable=True onclick="event.preventDefault(); this.parentNode.removeChild(this.previousElementSibling); this.parentNode.removeChild(this);event.preventDefault();" %}

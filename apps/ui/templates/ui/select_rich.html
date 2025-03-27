@@ -1,0 +1,208 @@
+{% extends "ui/base.html" %}
+
+{% load static dsfr_tags ui_tags %}
+
+{% block extra_css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/dsfr-code.css' %}">
+  <link rel="stylesheet" href="{% static 'ui/components/select-rich.css' %}">
+  <script type="importmap">
+  {
+    "imports": {
+      "@hotwired/stimulus": "{% static 'vendor/stimulus.js' %}",
+      "select-rich": "{% static 'ui/components/select-rich.js' %}"
+    }
+  }
+  </script>
+  <script type="module">
+    import { Application } from "@hotwired/stimulus"
+    import { SelectRich } from "select-rich"
+    window.Stimulus ??= Application.start()
+
+    Stimulus.register("select-rich", SelectRich)
+  </script>
+{% endblock extra_css %}
+
+{% block content %}
+<h1>Présentation du composant Liste déroulante riche</h1>
+
+<div class="fr-grid-row fr-mb-4w">
+  <div class="fr-col fr-col-12 fr-callout">
+    <h2 class="fr-callout__title">Avant-propos et état des lieux</h2>
+    <p class="fr-callout__text">Cette page présente deux composants avec leur fonctionnement et leurs options.</p>
+    <p class="fr-callout__text">
+      L'idée est ici d'implémenter via Django le composant bêta de Liste déroulante riche,
+      présenté <a target="_blank" class="fr-link" href="https://www.systeme-de-design.gouv.fr/composants-et-modeles/composants-beta/liste-deroulante-riche">ici dans le système de design</a>.
+    </p>
+    <div class="fr-accordion fr-my-2w">
+      <h3 class="fr-accordion__title">
+        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-intro">Point sur les fonctionnalités</button>
+      </h3>
+      <div class="fr-collapse" id="accordion-intro">
+        <ul>
+          <li>✅ Liste déroulante qui s'ouvre à partir d'un bouton</li>
+          <li>✅ Liste d'options qui sont de vrais <code>{{ '<input type="radio">'|force_escape }}</code> ou <code>{{ '<input type="checkbox">'|force_escape }}</code></li>
+          <li>
+            ✅ Mise à jour du libellé du bouton de la liste déroulante selon la ou les options sélectionnées
+            <ul>
+              <li>... y compris après un retour sur la page via le bouton Back du navigateur</li>
+              <li>... avec la possibilité d'y mettre un libellé plus court que le libellé complet présenté dans la liste</li>
+            </ul>
+          </li>
+          <li>✅ Possibilité de marquer des options comme <strong>sélectionnées à l'initialisation</strong></li>
+          <li>✅ Possibilité de <strong>filtrer les options</strong> via un champ de recherche, en direct de la frappe</li>
+          <li>✅ Possibilité de <strong>charger les options en AJAX</strong> via une barre de recherche</li>
+          <li>✅ ✨ Supplément : possibilité d'afficher les options sélectionnées <strong>sous forme de tags supprimables</strong> au-dessus de la liste déroulante</li>
+          <li>✅ Possibilité de <strong>marquer le champ comme requis</strong>, état d'erreur le cas échéant</li>
+          <li>🚧 Accessibilité : navigation au clavier partiellement possible</li>
+          <li>⚠️ Accessibilité : gestion des lecteurs d'écran pas du tout vérifiée</li>
+        </ul>
+      </div>
+    </div>
+    <p class="fr-callout__text">⚠️ L'implémentation introduit deux dépendances logicielles Javascript : <a target="_blank" href="https://stimulus.hotwired.dev/">StimulusJS</a>, et <a target="_blank" href="https://htmx.org">htmx</a>.</p>
+  </div>
+</div>
+
+<div class="fr-grid-row">
+
+  <div class="fr-col fr-col-12 fr-col-md-4">
+    <nav class="fr-sidemenu">
+      <ul class="fr-sidemenu__list">
+      {% for component in select_rich_single %}
+        <li class="fr-sidemenu__link">
+          <a href="#{{ component.name }}">{{ component.label }}</a>
+        </li>
+      {% endfor %}
+      {% for component in select_rich_multi %}
+        <li class="fr-sidemenu__link">
+          <a href="#{{ component.name }}">{{ component.label }}</a>
+        </li>
+      {% endfor %}
+      </ul>
+    </nav>
+  </div>
+
+  <div class="fr-col fr-col-12 fr-col-md-8">
+
+  {% for component in select_rich_single %}
+    <form class="fr-mb-4w" onsubmit="if (!Stimulus.getControllerForElementAndIdentifier(this.querySelector('[data-controller=select-rich]'), 'select-rich').validate()) {event.preventDefault()}">
+      <h2 id="{{ component.name }}">{{ component.label }}</h2>
+      {% ui_select_rich_single name=component.name options=component.options initial=component.initial required=component.required search_url=component.search_url search_field_name=component.search_field_name %}
+      <div class="fr-accordion fr-mt-2w">
+        <h3 class="fr-accordion__title">
+          <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-{{ component.name }}">En savoir plus</button>
+        </h3>
+        <div class="fr-collapse" id="accordion-{{ component.name }}">
+          <details>
+            <summary>Code et données</summary>
+            <ul>
+              <li>
+                <strong>Templatetag</strong>
+                {% spaceless %}
+                <pre class="dsfr-code">
+                  <code>{% templatetag openblock %} ui_select_rich_single name="{{ component.name }}"{% if component.options %} options=options{% endif %}{% if component.initial %} initial=initial{% endif %}{% if component.required %} required=True{% endif %}{% if component.search_url %} search_url="{{ component.search_url }}"{% endif %}{% if component.search_field_name %} search_field_name="{{ component.search_field_name }}"{% endif %}{% if component.search_placeholder %} search_placeholder="{{ component.search_placeholder }}"{% endif %} {% templatetag closeblock %}</code>
+                </pre>
+                {% endspaceless %}
+              </li>
+              {% if component.options %}
+                <li>
+                  <strong>Objet <code>options</code></strong>
+                  {% spaceless %}<pre class="dsfr-code"><code>{{ component.options }}</code></pre>{% endspaceless %}
+                </li>
+              {% endif %}
+              {% if component.initial %}
+                <li>
+                  <strong>Objet <code>initial</code></strong>
+                  {% spaceless %}<pre class="dsfr-code"><code>{{ component.initial }}</code></pre>{% endspaceless %}
+                </li>
+              {% endif %}
+            </ul>
+          </details>
+          <details>
+            <summary>Validation</summary>
+            <strong>Soumettre le formulaire</strong>
+            <div class="fr-highlight">
+              <p>Si l'option <code>required</code> a été passée et qu'on n'a pas saisi de valeur, le formulaire n'est pas soumis, et un message d'erreur spécifique au champ est validé.</p>
+              <p>Si une option a été choisie, le formulaire est soumis, on peut alors en voir les valeurs dans les queryparams de l'URL.</p>
+              <p>Pour voir l'appel à la validation, cf le <code>onload</code> de la balise <code>{{ "<form>"|force_escape }}</code></p>
+            </div>
+            <button type="submit" class="fr-btn fr-btn--secondary">Envoyer</button>
+          </details>
+        </div>
+      </div>
+    </form>
+  {% endfor %}
+
+  {% for component in select_rich_multi %}
+    <form class="fr-mb-4w" onsubmit="if (!Stimulus.getControllerForElementAndIdentifier(this.querySelector('[data-controller=select-rich]'), 'select-rich').validate()) {event.preventDefault()}">
+      <h2 id="{{ component.name }}">{{ component.label }}</h2>
+      {% ui_select_rich_multi name=component.name options=component.options initials=component.initials required=component.required searchable=component.searchable search_url=component.search_url search_field_name=component.search_field_name with_tags=component.with_tags %}
+      <div class="fr-accordion fr-mt-2w">
+        <h3 class="fr-accordion__title">
+          <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-{{ component.name }}">En savoir plus</button>
+        </h3>
+        <div class="fr-collapse" id="accordion-{{ component.name }}">
+          <details>
+            <summary>Code et données</summary>
+            <ul>
+              <li>
+                <strong>Templatetag</strong>
+                {% spaceless %}<pre class="dsfr-code"><code>{% templatetag openblock %} ui_select_rich_multi name="{{ component.name }}"{% if component.options %} options=options{% endif %}{% if component.initials %} initials=initials{% endif %}{% if component.required %} required=True{% endif %}{% if component.searchable %} searchable=True{% endif %}{% if component.search_url %} search_url="{{ component.search_url }}"{% endif %}{% if component.search_field_name %} search_field_name="{{ component.search_field_name }}"{% endif %}{% if component.search_placeholder %} search_placeholder="{{ component.search_placeholder }}"{% endif %}{% if component.with_tags %} with_tags=True{% endif %} {% templatetag closeblock %}</code></pre>{% endspaceless %}
+              </li>
+              {% if component.options %}
+                <li>
+                  <strong>Objet <code>options</code></strong>
+                  {% spaceless %}<pre class="dsfr-code"><code>{{ component.options }}</code></pre>{% endspaceless %}
+                </li>
+              {% endif %}
+              {% if component.initials %}
+                <li>
+                  <strong>Objet <code>initials</code></strong>
+                  {% spaceless %}<pre class="dsfr-code"><code>{{ component.initials }}</code></pre>{% endspaceless %}
+                </li>
+              {% endif %}
+            </ul>
+          </details>
+          <details>
+            <summary>Validation</summary>
+            <strong>Soumettre le formulaire</strong>
+            <div class="fr-highlight">
+              <p>Si l'option <code>required</code> a été passée et qu'on n'a pas saisi de valeur, le formulaire n'est pas soumis, et un message d'erreur spécifique au champ est validé.</p>
+              <p>Si une option a été choisie, le formulaire est soumis, on peut alors en voir les valeurs dans les queryparams de l'URL.</p>
+              <p>Pour voir l'appel à la validation, cf le <code>onload</code> de la balise <code>{{ "<form>"|force_escape }}</code></p>
+            </div>
+            <button type="submit" class="fr-btn fr-btn--secondary">Envoyer</button>
+          </details>
+        </div>
+      </div>
+    </form>
+  {% endfor %}
+
+  </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script type="module" src="{% static 'vendor/htmx.esm.js' %}"></script>
+<script>
+// Fonction de démonstration des valeurs des champs
+updateValueAsString = elt => {
+  const name = elt.name
+  const multi = elt.type === "checkbox"
+  let valueAsString = ""
+  if (multi) {
+    const value = []
+    document.querySelectorAll(`input[name=${name}]:checked`).forEach(elt => {
+        value.push(elt.value)
+    })
+    valueAsString = value.toString()
+  } else {
+    const input = document.querySelector(`input[name=${name}]:checked`)
+    if (input) {
+      valueAsString = input.value
+    }
+  }
+  document.getElementById(`${name}_value`).textContent = valueAsString
+}
+</script>
+{% endblock extra_js %}

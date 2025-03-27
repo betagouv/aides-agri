@@ -1,5 +1,3 @@
-from uuid import uuid4
-
 from django import template
 from dsfr.utils import parse_tag_args
 
@@ -41,35 +39,48 @@ def ui_tile_checkbox(*args, **kwargs) -> dict:
     return {"self": tag_data}
 
 
-@register.inclusion_tag("ui/components/select_multi_suggest.html")
-def ui_select_multi_suggest(*args, **kwargs) -> dict:
+@register.inclusion_tag("ui/components/select_rich.html")
+def ui_select_rich_single(*args, **kwargs) -> dict:
     allowed_keys = [
         "name",
+        "button_text",
         "options",
-        "initials",
-        "label",
-        "show_label",
-        "placeholder",
+        "initial",
+        "required",
+        "search_url",
+        "search_field_name",
+        "search_placeholder",
+        "extra_classes",
     ]
     tag_data = parse_tag_args(args, kwargs, allowed_keys)
-    tag_data["id"] = uuid4()
-
-    if "show_label" not in tag_data or not isinstance(tag_data["show_label"], bool):
-        tag_data["show_label"] = False
+    tag_data["multi"] = False
+    tag_data["searchable"] = True
 
     return {"self": tag_data}
 
 
-@register.inclusion_tag("ui/components/select_searchable.html")
-def ui_select_searchable(*args, **kwargs) -> dict:
+@register.inclusion_tag("ui/components/select_rich.html")
+def ui_select_rich_multi(*args, **kwargs) -> dict:
     allowed_keys = [
-        "label",
         "name",
+        "options",
         "initials",
+        "required",
+        "searchable",
         "search_url",
         "search_field_name",
+        "search_placeholder",
+        "with_tags",
+        "extra_classes",
     ]
     tag_data = parse_tag_args(args, kwargs, allowed_keys)
-    tag_data["id"] = uuid4()
+    tag_data["multi"] = True
+
+    if tag_data["with_tags"]:
+        tag_data["tags"] = [
+            (option[0], option[2])
+            for option in tag_data["options"]
+            if option[0] in tag_data["initials"]
+        ]
 
     return {"self": tag_data}
