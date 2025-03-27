@@ -1,18 +1,13 @@
-import { Controller } from "@hotwired/stimulus"
+import { FormWithCustomFields } from "form-with-custom-fields"
 
-export class Step4 extends Controller {
+export class Step4 extends FormWithCustomFields {
   static targets = ["commune"]
 
-  _update() {
-    this.element.querySelectorAll("button[type=submit]").forEach(elt => {
-      elt.disabled = this.communeTarget.querySelector("input[type=hidden]:not(:disabled)") === null
-    })
-  }
+  validate() {
+    let isValid = super.validate()
 
-  connect() {
-    this._update()
-    this.communeTarget.addEventListener("click", evt => {
-      this._update()
-    })
+    isValid ||= this.hasCommuneTarget
+
+    return isValid
   }
 }

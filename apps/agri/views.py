@@ -8,6 +8,8 @@ from django.views.generic import TemplateView, ListView
 from django.views.generic.base import ContextMixin
 
 from aides.models import Theme, Sujet, Aide, ZoneGeographique
+
+from .models import GroupementProducteurs, Filiere
 from . import siret
 
 STEPS = [
@@ -66,19 +68,14 @@ class HomeView(Step1Mixin, TemplateView):
 
 class AgriMixin(ContextMixin):
     STEP = None
-    REGROUPEMENTS = {
-        "interprofession": "Interprofession",
-        "aop": "AOP",
-        "op": "OP",
-        "coop": "Coopérative",
-        "giee": "GIEE",
-        "cuma": "CUMA",
-        "": "Aucun",
-    }
     theme = None
     sujets = []
     siret = None
-    departement = None
+    commune = None
+    date_installation = None
+    filieres = []
+    code_effectif = None
+    regroupements = []
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -90,12 +87,12 @@ class AgriMixin(ContextMixin):
             self.sujets = Sujet.objects.filter(pk__in=sujets_ids)
         self.siret = request.GET.get("siret", None)
         self.commune = request.GET.get("commune", None)
-        self.codes_naf = self.request.GET.getlist("nafs", [])
-        self.code_effectif = self.request.GET.get("tranche_effectif_salarie", None)
+        self.filieres = request.GET.getlist("filieres", [])
+        self.code_effectif = request.GET.get("tranche_effectif_salarie", None)
         if not self.code_effectif:
             self.code_effectif = None
-        self.regroupements = self.request.GET.getlist("regroupements", [])
-        date_installation = self.request.GET.get("date_installation", None)
+        self.regroupements = request.GET.getlist("regroupements", [])
+        date_installation = request.GET.get("date_installation", None)
         self.date_installation = (
             datetime.date.fromisoformat(date_installation)
             if date_installation
@@ -109,28 +106,20 @@ class AgriMixin(ContextMixin):
                 "summary_theme": self.theme,
                 "summary_sujets": self.sujets,
                 "summary_siret": self.request.GET.get("siret", None),
-                "codes_naf": self.codes_naf,
-                "summary_naf": [
-                    siret.mapping_naf_short[naf]
-                    for naf in self.codes_naf
-                    if naf in siret.mapping_naf_short
-                ],
+                "filieres": self.filieres,
+                "summary_filieres": Filiere.objects.filter(pk__in=self.filieres),
                 "summary_date_installation": self.date_installation,
                 "summary_commune": ZoneGeographique.objects.communes().get(
                     numero=self.commune
                 )
                 if self.commune
                 else None,
-                "code_effectif": self.code_effectif,
-                "summary_effectif": siret.mapping_effectif.get(
-                    self.code_effectif, None
-                )
+                "summary_effectif": siret.mapping_effectif.get(self.code_effectif, None)
                 if self.code_effectif
                 else None,
-                "summary_regroupements": [
-                    self.__class__.REGROUPEMENTS[regroupement]
-                    for regroupement in self.regroupements
-                ],
+                "summary_regroupements": GroupementProducteurs.objects.filter(
+                    pk__in=self.regroupements
+                ),
             }
         )
 
@@ -187,16 +176,13 @@ class Step4View(AgriMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         etablissement = siret.get(self.siret)
-        commune = ZoneGeographique.objects.communes().get(
-            numero=etablissement.get("commune")
-        )
         context_data.update(
             {
                 "etablissement": etablissement,
                 "categories_juridiques": siret.mapping_categories_juridiques,
-                "commune_initials": {
-                    commune.numero: f"{commune.code_postal} {commune.nom}"
-                },
+                "commune": ZoneGeographique.objects.communes().get(
+                    numero=etablissement.get("commune")
+                ),
             }
         )
         return context_data
@@ -209,18 +195,24 @@ class Step5View(AgriMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         etablissement = siret.get(self.request.GET.get("siret", ""))
+        naf = etablissement.get("activite_principale", "")
+        if naf[-1].isalpha():
+            naf = naf[:-1]
+        filiere = Filiere.objects.filter(code_naf=naf).first()
         context_data.update(
             {
                 "mapping_naf": siret.mapping_naf_complete_unique,
                 "mapping_tranches_effectif": siret.mapping_effectif,
                 "etablissement": etablissement,
-                "regroupements": self.__class__.REGROUPEMENTS,
+                "groupements": GroupementProducteurs.objects.all(),
+                "filieres": [
+                    (pk, nom, nom)
+                    for pk, nom in Filiere.objects.values_list("pk", "nom")
+                ],
+                "filieres_initials": [filiere.pk] if filiere else [],
+                "filiere": filiere,
             }
         )
-
-        naf = etablissement["activite_principale"]
-        if naf in siret.mapping_naf_short:
-            context_data["naf"] = {naf: siret.mapping_naf_short[naf]}
 
         return context_data
 
@@ -313,6 +305,14 @@ class SearchEtablissementView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
+        context_data.update(
+            {
+                "self": {
+                    "name": "siret",
+                    "searchable": True,
+                }
+            }
+        )
 
         q = self.request.GET.get("siret-search", "")
         if q:
@@ -332,19 +332,30 @@ class SearchEtablissementView(TemplateView):
 
 
 class SearchCommuneView(TemplateView):
-    template_name = "ui/components/blocks/select_searchable_hits.html"
+    template_name = "ui/components/blocks/select_rich_options.html"
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
+        context_data.update(
+            {
+                "self": {
+                    "name": "commune",
+                    "searchable": True,
+                }
+            }
+        )
 
         q = self.request.GET.get("commune-search", "")
         if q:
             context_data.update(
                 {
                     "name": "commune",
-                    "hits": ZoneGeographique.objects.communes()
-                    .filter(Q(code_postal__icontains=q) | Q(nom__icontains=q))
-                    .in_bulk(field_name="numero"),
+                    "options": [
+                        (zone.numero, zone, zone)
+                        for zone in ZoneGeographique.objects.communes().filter(
+                            Q(code_postal__icontains=q) | Q(nom__icontains=q)
+                        )
+                    ],
                 }
             )
         else:

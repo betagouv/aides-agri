@@ -5,27 +5,6 @@
 {% block extra_css %}
   {{ block.super }}
   <link rel="stylesheet" href="{% static 'agri/base.css' %}">
-  <script type="importmap">
-  {
-    "imports": {
-      "@hotwired/stimulus": "{% static 'vendor/stimulus.js' %}",
-      "summary-mobile": "{% static 'agri/summary-mobile.js' %}",
-      "suggest": "{% static 'ui/components/suggest.js' %}",
-      "search-suggest": "{% static 'ui/components/search-suggest.js' %}",
-      "step-2": "{% static 'agri/step-2.js' %}",
-      "step-3": "{% static 'agri/step-3.js' %}",
-      "step-4": "{% static 'agri/step-4.js' %}",
-      "step-5": "{% static 'agri/step-5.js' %}"
-    }
-  }
-  </script>
-  <script type="module">
-    import { Application } from "@hotwired/stimulus"
-    import { SummaryMobile } from "summary-mobile"
-    window.Stimulus ??= Application.start()
-
-    Stimulus.register("summary-mobile", SummaryMobile)
-  </script>
 {% endblock extra_css %}
 
 
@@ -79,12 +58,12 @@
             {% dsfr_tag label=summary_commune.nom extra_classes="fr-tag--sm" %}
           </div>
           {% endif %}
-          {% if summary_naf %}
+          {% if summary_filieres %}
           <div class="fr-mb-3v">
             <span class="fr-tags-group fr-px-1v">
               Filières :
-              {% for naf in summary_naf %}
-                {% dsfr_tag label=naf extra_classes="fr-tag--sm" %}
+              {% for filiere in summary_filieres %}
+                {% dsfr_tag label=filiere.nom extra_classes="fr-tag--sm" %}
               {% endfor %}
             </span>
           </div>
@@ -106,7 +85,7 @@
             <span class="fr-tags-group fr-px-1v">
               Regroupements :
               {% for regroupement in summary_regroupements %}
-                {% dsfr_tag label=regroupement extra_classes="fr-tag--sm" %}
+                {% dsfr_tag label=regroupement.nom extra_classes="fr-tag--sm" %}
               {% endfor %}
             </span>
           </div>

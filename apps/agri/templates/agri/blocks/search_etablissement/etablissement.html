@@ -1,0 +1,20 @@
+{% extends "ui/components/blocks/select_rich_option.html" %}
+
+{% block option_label %}
+  <strong>{{ hit.nom_complet }}</strong>
+  <span>
+    SIRET&nbsp;{{ etablissement.siret }},
+    à {{ etablissement.libelle_commune }} ({{ etablissement.code_postal }})
+  </span>
+  <span class="fr-icon-briefcase-line">
+    {{ etablissement.activite_principale }}
+    {% if etablissement.libelle_activite_principale %}
+      : {{ etablissement.libelle_activite_principale }}
+    {% endif %}
+  </span>
+  {% if etablissement.nom_commercial %}
+    <span>{{ etablissement.nom_commercial }}</span>
+  {% elif etablissement.liste_enseignes %}
+    <span>{{ etablissement.liste_enseignes.0 }}</span>
+  {% endif %}
+{% endblock option_label %}
