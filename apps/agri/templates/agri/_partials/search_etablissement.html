@@ -1,16 +1,14 @@
-<ul class="fr-dropdown">
 {% for hit in hits %}
   {% for etablissement in hit.matching_etablissements %}
-    {% include "agri/blocks/search_company/etablissement.html" with hit=hit etablissement=etablissement only %}
+    {% include "agri/blocks/search_etablissement/etablissement.html" with self=self hit=hit etablissement=etablissement value=etablissement.siret label_short=etablissement.siret only %}
   {% empty %}
-    {% include "agri/blocks/search_company/etablissement.html" with hit=hit etablissement=hit.siege only %}
+    {% include "agri/blocks/search_etablissement/etablissement.html" with self=self hit=hit etablissement=hit.siege value=hit.siege.siret label_short=hit.siege.siret only %}
   {% endfor %}
 {% empty %}
-  <li class="fr-dropdown__item">
+  <li class="fr-select-rich__item">
     <div class="fr-p-2w fr-icon-error-line">Votre recherche n'a donné aucun résultat. Veuillez réessayer ou visiter <a href="https://annuaire-entreprises.data.gouv.fr/" target="_blank">https://annuaire-entreprises.data.gouv.fr/</a> pour trouver votre exploitation.</div>
   </li>
 {% endfor %}
-</ul>
 
 {% for error in errors %}
   <p class="fr-error-text">{{ error }}</p>

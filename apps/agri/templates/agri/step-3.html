@@ -4,13 +4,29 @@
 
 {% block extra_css %}
   {{ block.super }}
-  <link rel="stylesheet" href="{% static 'ui/components/dropdown.css' %}">
+  <link rel="stylesheet" href="{% static 'ui/components/select-rich.css' %}">
+
+  <script type="importmap">
+  {
+    "imports": {
+      "@hotwired/stimulus": "{% static 'vendor/stimulus.js' %}",
+      "form-with-custom-fields": "{% static 'ui/controllers/form_with_custom_fields.js' %}",
+      "select-rich": "{% static 'ui/components/select-rich.js' %}",
+      "summary-mobile": "{% static 'agri/summary-mobile.js' %}"
+    }
+  }
+  </script>
   <script type="module">
     import { Application } from "@hotwired/stimulus"
-    import { Step3 } from "step-3"
-    window.Stimulus ??= Application.start()
+    import { FormWithCustomFields } from "form-with-custom-fields"
+    import { SelectRich } from "select-rich"
+    import { SummaryMobile } from "summary-mobile"
 
-    Stimulus.register("step3", Step3)
+    window.Stimulus = Application.start()
+
+    Stimulus.register("form-with-custom-fields", FormWithCustomFields)
+    Stimulus.register("select-rich", SelectRich)
+    Stimulus.register("summary-mobile", SummaryMobile)
   </script>
 {% endblock extra_css %}
 
@@ -26,38 +42,23 @@
 
 {% block action %}{% url 'agri:step-4' %}{% endblock action %}
 
-{% block extra_form_attributes %}data-controller="step3"{% endblock extra_form_attributes %}
+{% block extra_form_attributes %}
+  data-controller="form-with-custom-fields"
+  data-action="submit->form-with-custom-fields#submit change->form-with-custom-fields#validate"
+  data-form-with-custom-fields-select-rich-outlet="[data-controller=select-rich]"
+{% endblock extra_form_attributes %}
 
 {% block form %}
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col">
     <fieldset class="fr-fieldset" aria-label="SIRET de l'entreprise">
       <div class="fr-fieldset__element">
+       <label class="fr-label fr-mb-1w">
+          Recherchez votre entreprise (SIRET, SIREN, nom, etc.)
+          <span class="fr-hint-text">ex : "Maraichage Carpentras" ou "130 025 265 00013"</span>
+        </label>
         <div class="fr-input-group">
-          <label class="fr-label fr-mb-1w" for="siret-search">
-            Recherchez votre entreprise (SIRET, SIREN, nom, etc.)
-            <span class="fr-hint-text">ex : "Maraichage Carpentras" ou "130 025 265 00013"</span>
-          </label>
-          <div class="fr-search-bar" role="search">
-            <label class="fr-label" for="siret-search">Recherche</label>
-            <input type="hidden" name="siret"
-                   data-step3-target="siret"
-                   data-action="change->step3#change"
-            >
-            <input id="siret-search" class="fr-input" name="siret-search"
-                   placeholder="Rechercher" type="search"
-                   aria-describedby="siret-messages"
-                   data-step3-target="siretSearch"
-            >
-            <button class="fr-btn" title="Rechercher"
-                    hx-get="{% url 'agri:search-etablissement' %}"
-                    hx-target="#siret-messages"
-                    hx-include="#siret-search"
-                    onclick="this.disabled = true"
-                    hx-on::after-request="this.disabled = false"
-            >Rechercher</button>
-          </div>
-          <div class="fr-messages-group" id="siret-messages" aria-live="assertive"></div>
+          {% ui_select_rich_single name="siret" button_text="Votre exploitation" required=True search_url="agri:search-etablissement" search_field_name="siret-search" %}
         </div>
       </div>
     </fieldset>

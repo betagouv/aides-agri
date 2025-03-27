@@ -4,17 +4,31 @@
 
 {% block extra_css %}
   {{ block.super }}
-  <link rel="stylesheet" href="{% static 'ui/components/dropdown.css' %}">
+  <link rel="stylesheet" href="{% static 'ui/components/select-rich.css' %}">
 
+  <script type="importmap">
+  {
+    "imports": {
+      "@hotwired/stimulus": "{% static 'vendor/stimulus.js' %}",
+      "select-rich": "{% static 'ui/components/select-rich.js' %}",
+      "summary-mobile": "{% static 'agri/summary-mobile.js' %}",
+      "step4": "{% static 'agri/step-4.js' %}"
+    }
+  }
+  </script>
   <script type="module">
     import { Application } from "@hotwired/stimulus"
-    import { SearchSuggest } from "search-suggest"
-    import { Step4 } from "step-4"
-    window.Stimulus ??= Application.start()
+    import { SelectRich } from "select-rich"
+    import { SummaryMobile } from "summary-mobile"
+    import { Step4 } from "step4"
 
-    Stimulus.register("search-suggest", SearchSuggest)
+    window.Stimulus = Application.start()
+
+    Stimulus.register("select-rich", SelectRich)
+    Stimulus.register("summary-mobile", SummaryMobile)
     Stimulus.register("step4", Step4)
   </script>
+
 {% endblock extra_css %}
 
 {% block extra_js %}
@@ -29,7 +43,11 @@
 
 {% block action %}{% url 'agri:step-5' %}{% endblock action %}
 
-{% block extra_form_attributes %}data-controller="step4"{% endblock extra_form_attributes %}
+{% block extra_form_attributes %}
+  data-controller="step4"
+  data-action="submit->step4#submit change->step4#validate"
+  data-step4-select-rich-outlet="[data-controller=select-rich]"
+{% endblock extra_form_attributes %}
 
 {% block form %}
 <div class="fr-highlight fr-mb-4w">
@@ -59,8 +77,11 @@
         {{ etablissement.siret }}
       </button>
     </div>
-    <div class="fr-fieldset__element" data-step4-target="commune">
-      {% ui_select_searchable label="Commune" name="commune" search_url="agri:search-commune" search_field_name="commune-search" initials=commune_initials %}
+    <div class="fr-fieldset__element">
+      <span class="fr-label fr-mb-2v">Commune</span>
+      {% dsfr_tag label=commune.code_postal|add:" "|add:commune.nom is_dismissable=True onclick="this.parentElement.removeChild(this.nextElementSibling);this.nextElementSibling.classList.remove('fr-hidden')" %}
+      <input type="hidden" name="commune" value="{{ commune.numero }}" data-step4-target="commune">
+      {% ui_select_rich_single name="commune" required=True search_url="agri:search-commune" search_field_name="commune-search" extra_classes="fr-hidden" %}
     </div>
     <div class="fr-fieldset__element fr-mt-2v">
       <label for="input-forme-juridique" class="fr-label fr-mb-2v">Forme juridique</label>
