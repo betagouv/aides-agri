@@ -1,6 +1,13 @@
 import pytest
 
-from aides import grist
+from grist.loader import gristapi
+from aides.grist import (
+    ThemeLoader,
+    SujetLoader,
+    OperateurLoader,
+    ZoneGeographiqueLoader,
+    AideLoader,
+)
 from aides.models import Theme, Sujet, Operateur, ZoneGeographique, Aide
 
 
@@ -19,10 +26,10 @@ def test_load_themes(monkeypatch, theme):
             {"id": 2, "Nom": "Super second thème"},
         ]
 
-    monkeypatch.setattr(grist.gristapi, "list_records", mock_list_records)
+    monkeypatch.setattr(gristapi, "list_records", mock_list_records)
 
     # WHEN loading Themes
-    grist.load_themes()
+    ThemeLoader().load()
 
     # THEN we have 2 Themes
     # the existing one has been renamed
@@ -53,10 +60,10 @@ def test_load_sujets(monkeypatch, theme, theme_2, sujet):
             },
         ]
 
-    monkeypatch.setattr(grist.gristapi, "list_records", mock_list_records)
+    monkeypatch.setattr(gristapi, "list_records", mock_list_records)
 
     # WHEN loading Sujets
-    grist.load_sujets()
+    SujetLoader().load()
 
     # THEN we have 2 Sujets
     # the existing one has been renamed
@@ -120,10 +127,10 @@ def test_load_zones_geographiques(monkeypatch, zone_geographique):
             },
         ]
 
-    monkeypatch.setattr(grist.gristapi, "list_records", mock_list_records)
+    monkeypatch.setattr(gristapi, "list_records", mock_list_records)
 
     # WHEN loading ZoneGeographique
-    grist.load_zones_geographiques()
+    ZoneGeographiqueLoader().load()
 
     # THEN we have 2 ZoneGeographique
     # the existing one has been renamed
@@ -170,10 +177,10 @@ def test_load_operateurs(monkeypatch, operateur, zone_geographique):
             },
         ]
 
-    monkeypatch.setattr(grist.gristapi, "list_records", mock_list_records)
+    monkeypatch.setattr(gristapi, "list_records", mock_list_records)
 
     # WHEN loading Operateurs
-    grist.load_operateurs()
+    OperateurLoader().load()
 
     # THEN we have 2 Operateurs
     # the existing one has been renamed
@@ -211,8 +218,8 @@ def test_load_aides(monkeypatch, theme, sujet, operateur, zone_geographique, aid
                 "min_effectif": None,
                 "max_effectif": 10,
                 "Lien_vers_le_descriptif_complet": "https://beta.gouv.fr",
-                "Date_d_ouverture": "2025-01-01",
-                "Date_de_cloture": "2025-12-31",
+                "Date_d_ouverture": 1742425200,
+                "Date_de_cloture": 1742425200,
             },
             {
                 "id": 2,
@@ -230,15 +237,15 @@ def test_load_aides(monkeypatch, theme, sujet, operateur, zone_geographique, aid
                 "min_effectif": None,
                 "max_effectif": 10,
                 "Lien_vers_le_descriptif_complet": "https://beta.gouv.fr",
-                "Date_d_ouverture": None,
-                "Date_de_cloture": None,
+                "Date_d_ouverture": 1742425200,
+                "Date_de_cloture": 1742425200,
             },
         ]
 
-    monkeypatch.setattr(grist.gristapi, "list_records", mock_list_records)
+    monkeypatch.setattr(gristapi, "list_records", mock_list_records)
 
     # WHEN loading Aides
-    grist.load_aides()
+    AideLoader().load()
 
     # THEN we have 2 Aides
     # the existing one has been renamed
@@ -249,3 +256,4 @@ def test_load_aides(monkeypatch, theme, sujet, operateur, zone_geographique, aid
     assert existing.nom == "Super aide"
     second = Aide.objects.get(pk=2)
     assert second.nom == "Super seconde aide"
+    assert second.date_debut.isoformat() == "2025-03-20"

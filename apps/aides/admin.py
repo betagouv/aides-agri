@@ -1,5 +1,7 @@
 from django.contrib import admin
 
+from grist.admin import AbstractGristModelAdmin
+
 from .models import (
     Theme,
     Sujet,
@@ -9,47 +11,30 @@ from .models import (
 )
 
 
-class _ExternalModelAdmin(admin.ModelAdmin):
-    list_display = (
-        "external_id",
-        "nom",
-    )
-    list_display_links = ("external_id", "nom")
-
-    def get_readonly_fields(self, request, obj=None):
-        if self.fields:
-            return self.fields
-        else:
-            fields = []
-            for _, fieldset in self.fieldsets:
-                fields.extend(fieldset["fields"])
-            return fields
-
-
 @admin.register(Theme)
-class ThemeAdmin(_ExternalModelAdmin):
+class ThemeAdmin(AbstractGristModelAdmin):
     fields = ("nom",)
 
 
 @admin.register(Sujet)
-class SujetAdmin(_ExternalModelAdmin):
+class SujetAdmin(AbstractGristModelAdmin):
     fields = ("nom", "themes")
 
 
 @admin.register(Operateur)
-class OperateurAdmin(_ExternalModelAdmin):
+class OperateurAdmin(AbstractGristModelAdmin):
     fields = ("nom", "zones_geographiques")
 
 
 @admin.register(ZoneGeographique)
-class ZoneGeographiqueAdmin(_ExternalModelAdmin):
-    list_display = _ExternalModelAdmin.list_display + ("type", "parent", "epci")
+class ZoneGeographiqueAdmin(AbstractGristModelAdmin):
+    list_display = AbstractGristModelAdmin.list_display + ("type", "parent", "epci")
     fields = ("parent", "type", "nom", "epci")
 
 
 @admin.register(Aide)
-class AideAdmin(_ExternalModelAdmin):
-    list_display = _ExternalModelAdmin.list_display + (
+class AideAdmin(AbstractGristModelAdmin):
+    list_display = AbstractGristModelAdmin.list_display + (
         "types",
         "operateur",
         "date_debut",
