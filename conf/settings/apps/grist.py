@@ -1,6 +1,6 @@
 import os
 
-AIDES_PYGRISTER_CONFIG = {
+GRIST_PYGRISTER_CONFIG = {
     "GRIST_API_KEY": os.environ.get("AIDES_GRIST_API_KEY", ""),
     "GRIST_SELF_MANAGED": "Y",
     "GRIST_SELF_MANAGED_HOME": "https://grist.numerique.gouv.fr",

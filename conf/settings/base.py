@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "widget_tweaks",
     "dsfr",
     "ui",
+    "grist",
     "agri",
     "aides",
 ]
