@@ -218,8 +218,8 @@ def test_load_aides(monkeypatch, theme, sujet, operateur, zone_geographique, aid
                 "min_effectif": None,
                 "max_effectif": 10,
                 "Lien_vers_le_descriptif_complet": "https://beta.gouv.fr",
-                "Date_d_ouverture": "2025-01-01",
-                "Date_de_cloture": "2025-12-31",
+                "Date_d_ouverture": 1742425200,
+                "Date_de_cloture": 1742425200,
             },
             {
                 "id": 2,
@@ -237,8 +237,8 @@ def test_load_aides(monkeypatch, theme, sujet, operateur, zone_geographique, aid
                 "min_effectif": None,
                 "max_effectif": 10,
                 "Lien_vers_le_descriptif_complet": "https://beta.gouv.fr",
-                "Date_d_ouverture": None,
-                "Date_de_cloture": None,
+                "Date_d_ouverture": 1742425200,
+                "Date_de_cloture": 1742425200,
             },
         ]
 
@@ -256,3 +256,4 @@ def test_load_aides(monkeypatch, theme, sujet, operateur, zone_geographique, aid
     assert existing.nom == "Super aide"
     second = Aide.objects.get(pk=2)
     assert second.nom == "Super seconde aide"
+    assert second.date_debut.isoformat() == "2025-03-20"
