@@ -5,8 +5,8 @@ version = "0.1.0"
 dependencies = [
   "django ~=5.1",
   "django-dsfr ~=2.1",
+  "django-grist-loader ~=0.1",
   "psycopg[binary] ~=3.0",
-  "pygrister ~=0.5",
   "requests ~=2.32",
 ]
 

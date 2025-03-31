@@ -43,8 +43,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "widget_tweaks",
     "dsfr",
+    "grist_loader",
     "ui",
-    "grist",
     "agri",
     "aides",
 ]

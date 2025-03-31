@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.postgres import fields as postgres_fields
 
-from grist.models import GristModel
+from grist_loader.models import GristModel
 
 
 class Operateur(GristModel):
@@ -9,6 +9,7 @@ class Operateur(GristModel):
         verbose_name = "Opérateur"
         verbose_name_plural = "Opérateurs"
 
+    nom = models.CharField(max_length=100, blank=True)
     zones_geographiques = models.ManyToManyField("ZoneGeographique")
 
 
@@ -18,6 +19,8 @@ class Theme(GristModel):
         verbose_name_plural = "Thèmes"
         ordering = ("nom",)
 
+    nom = models.CharField(max_length=100, blank=True)
+
 
 class Sujet(GristModel):
     class Meta:
@@ -25,6 +28,7 @@ class Sujet(GristModel):
         verbose_name_plural = "Sujets"
         ordering = ("nom",)
 
+    nom = models.CharField(max_length=100, blank=True)
     themes = models.ManyToManyField(Theme)
 
 
@@ -54,6 +58,7 @@ class ZoneGeographique(GristModel):
         CC = "Communauté de communes", "Communauté de communes"
         COMMUNE = "Commune", "Commune"
 
+    nom = models.CharField(max_length=100, blank=True)
     numero = models.CharField(max_length=5, blank=True)
     type = models.CharField(choices=Type)
     parent = models.ForeignKey(
@@ -137,6 +142,7 @@ class Aide(GristModel):
         CONSEIL = "Conseil", "Conseil"
         AUDIT = "Audit", "Audit"
 
+    nom = models.CharField(max_length=100, blank=True)
     operateur = models.ForeignKey(Operateur, null=True, on_delete=models.CASCADE)
     operateurs_secondaires = models.ManyToManyField(
         Operateur, related_name="aides_secondaires"

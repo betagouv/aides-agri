@@ -9,8 +9,8 @@ source = { virtual = "." }
 dependencies = [
     { name = "django" },
     { name = "django-dsfr" },
+    { name = "django-grist-loader" },
     { name = "psycopg", extra = ["binary"] },
-    { name = "pygrister" },
     { name = "requests" },
 ]
 
@@ -35,8 +35,8 @@ scalingo = [
 requires-dist = [
     { name = "django", specifier = "~=5.1" },
     { name = "django-dsfr", specifier = "~=2.1" },
+    { name = "django-grist-loader", specifier = "~=0.1" },
     { name = "psycopg", extras = ["binary"], specifier = "~=3.0" },
-    { name = "pygrister", specifier = "~=0.5" },
     { name = "requests", specifier = "~=2.32" },
 ]
 
@@ -273,6 +273,20 @@ wheels = [
 ]
 
 [[package]]
+name = "django-grist-loader"
+version = "0.1.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "psycopg", extra = ["binary"] },
+    { name = "pygrister" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/33/90/7363a2d6e3827ebf942b3e32f0182947b197c7a1eaa0f2c9fdb64c982d1c/django_grist_loader-0.1.2.tar.gz", hash = "sha256:2f4a6d5ecf5424c4d29ba0c3aa80572acf9567d14e83076d7470904198860e5d", size = 6299 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/62/1f/6e9db09eeb6ad348ce6c3e84ebf4e80f8da95ccef447e3133202794d1d7a/django_grist_loader-0.1.2-py3-none-any.whl", hash = "sha256:4ad62591fcde384f1bb273c103751b926e49a6e42b1fa1afa0eb00494acea2fb", size = 6739 },
+]
+
+[[package]]
 name = "django-widget-tweaks"
 version = "1.5.0"
 source = { registry = "https://pypi.org/simple" }
@@ -422,14 +436,14 @@ wheels = [
 
 [[package]]
 name = "pygrister"
-version = "0.5.0"
+version = "0.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c8/7f/5b452a1bf346e781bdc730f49140ab4b4932bca3efab829e2a71b8872658/pygrister-0.5.0.tar.gz", hash = "sha256:c1e34a514171b2a4c611a58f6a7e2e8e14326ed7c3041c458b9d250f73f43d20", size = 17883 }
+sdist = { url = "https://files.pythonhosted.org/packages/7c/ec/c060cfb2440014b811526f7ffabc2d7996e8c7f0548ea1857b58558f4126/pygrister-0.6.0.tar.gz", hash = "sha256:76332b58da00cf4da07db1ecae0756c23b7995caf9ca321a548fa2f71600b36d", size = 22115 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/26/ee/ee8a9bea68a5ebefc9440bc69b197eb74ae82613ef931372b4d6ae2ae380/Pygrister-0.5.0-py3-none-any.whl", hash = "sha256:7de3d2d9f950788bc60f97b9dae9aa2d2831dd62445b87f3d602cd45cc5d1d16", size = 12781 },
+    { url = "https://files.pythonhosted.org/packages/ff/a0/6dc9574b76b7a77cdbb23b394a8fed19c384f498c6af4d7ce97feaf0b6a0/pygrister-0.6.0-py3-none-any.whl", hash = "sha256:2ad3e464c93084d2e8200d95c18551f2f48e3a7039407a8e77a96f7648cbefed", size = 15050 },
 ]
 
 [[package]]

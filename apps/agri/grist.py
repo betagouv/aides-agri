@@ -1,4 +1,4 @@
-from grist.loader import GristLoader, register_grist_loader
+from grist_loader.loader import GristLoader, register_grist_loader
 
 from .models import Filiere, SousFiliere, Production, GroupementProducteurs
 

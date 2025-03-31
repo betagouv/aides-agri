@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from grist.admin import AbstractGristModelAdmin
+from grist_loader.admin import AbstractGristModelAdmin
 
 from .models import (
     Theme,
@@ -13,28 +13,37 @@ from .models import (
 
 @admin.register(Theme)
 class ThemeAdmin(AbstractGristModelAdmin):
+    list_display = AbstractGristModelAdmin.list_display + ("nom",)
     fields = ("nom",)
 
 
 @admin.register(Sujet)
 class SujetAdmin(AbstractGristModelAdmin):
+    list_display = AbstractGristModelAdmin.list_display + ("nom",)
     fields = ("nom", "themes")
 
 
 @admin.register(Operateur)
 class OperateurAdmin(AbstractGristModelAdmin):
+    list_display = AbstractGristModelAdmin.list_display + ("nom",)
     fields = ("nom", "zones_geographiques")
 
 
 @admin.register(ZoneGeographique)
 class ZoneGeographiqueAdmin(AbstractGristModelAdmin):
-    list_display = AbstractGristModelAdmin.list_display + ("type", "parent", "epci")
+    list_display = AbstractGristModelAdmin.list_display + (
+        "nom",
+        "type",
+        "parent",
+        "epci",
+    )
     fields = ("parent", "type", "nom", "epci")
 
 
 @admin.register(Aide)
 class AideAdmin(AbstractGristModelAdmin):
     list_display = AbstractGristModelAdmin.list_display + (
+        "nom",
         "types",
         "operateur",
         "date_debut",

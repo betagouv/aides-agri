@@ -1,6 +1,5 @@
 import pytest
 
-from grist.loader import gristapi
 from aides.grist import (
     ThemeLoader,
     SujetLoader,
@@ -26,10 +25,11 @@ def test_load_themes(monkeypatch, theme):
             {"id": 2, "Nom": "Super second thème"},
         ]
 
-    monkeypatch.setattr(gristapi, "list_records", mock_list_records)
+    loader = ThemeLoader()
+    monkeypatch.setattr(loader.gristapi, "list_records", mock_list_records)
 
     # WHEN loading Themes
-    ThemeLoader().load()
+    loader.load()
 
     # THEN we have 2 Themes
     # the existing one has been renamed
@@ -60,10 +60,11 @@ def test_load_sujets(monkeypatch, theme, theme_2, sujet):
             },
         ]
 
-    monkeypatch.setattr(gristapi, "list_records", mock_list_records)
+    loader = SujetLoader()
+    monkeypatch.setattr(loader.gristapi, "list_records", mock_list_records)
 
     # WHEN loading Sujets
-    SujetLoader().load()
+    loader.load()
 
     # THEN we have 2 Sujets
     # the existing one has been renamed
@@ -127,10 +128,11 @@ def test_load_zones_geographiques(monkeypatch, zone_geographique):
             },
         ]
 
-    monkeypatch.setattr(gristapi, "list_records", mock_list_records)
+    loader = ZoneGeographiqueLoader()
+    monkeypatch.setattr(loader.gristapi, "list_records", mock_list_records)
 
     # WHEN loading ZoneGeographique
-    ZoneGeographiqueLoader().load()
+    loader.load()
 
     # THEN we have 2 ZoneGeographique
     # the existing one has been renamed
@@ -177,10 +179,11 @@ def test_load_operateurs(monkeypatch, operateur, zone_geographique):
             },
         ]
 
-    monkeypatch.setattr(gristapi, "list_records", mock_list_records)
+    loader = OperateurLoader()
+    monkeypatch.setattr(loader.gristapi, "list_records", mock_list_records)
 
     # WHEN loading Operateurs
-    OperateurLoader().load()
+    loader.load()
 
     # THEN we have 2 Operateurs
     # the existing one has been renamed
@@ -242,10 +245,11 @@ def test_load_aides(monkeypatch, theme, sujet, operateur, zone_geographique, aid
             },
         ]
 
-    monkeypatch.setattr(gristapi, "list_records", mock_list_records)
+    loader = AideLoader()
+    monkeypatch.setattr(loader.gristapi, "list_records", mock_list_records)
 
     # WHEN loading Aides
-    AideLoader().load()
+    loader.load()
 
     # THEN we have 2 Aides
     # the existing one has been renamed
