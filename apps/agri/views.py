@@ -12,16 +12,8 @@ from aides.models import Theme, Sujet, Aide, ZoneGeographique
 from .models import GroupementProducteurs, Filiere
 from . import siret
 
-STEPS = [
-    "Choix d'un thème",
-    "Choix des sujets",
-    "Siret",
-    "Précisions 1/2",
-    "Précisions 2/2",
-]
 
-
-class Step1Mixin:
+class Step1Mixin(ContextMixin):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data.update(
@@ -128,10 +120,6 @@ class AgriMixin(ContextMixin):
                 {
                     "stepper": {
                         "current_step_id": self.STEP,
-                        "current_step_title": STEPS[self.STEP - 1],
-                        "next_step_title": STEPS[self.STEP]
-                        if len(STEPS) > self.STEP
-                        else None,
                         "total_steps": 5,
                     },
                 }

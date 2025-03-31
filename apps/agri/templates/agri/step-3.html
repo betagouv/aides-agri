@@ -12,7 +12,8 @@
       "@hotwired/stimulus": "{% static 'vendor/stimulus.js' %}",
       "form-with-custom-fields": "{% static 'ui/controllers/form_with_custom_fields.js' %}",
       "select-rich": "{% static 'ui/components/select-rich.js' %}",
-      "summary-mobile": "{% static 'agri/summary-mobile.js' %}"
+      "summary-mobile": "{% static 'agri/summary-mobile.js' %}",
+      "step4": "{% static 'agri/step-4.js' %}"
     }
   }
   </script>
@@ -21,12 +22,14 @@
     import { FormWithCustomFields } from "form-with-custom-fields"
     import { SelectRich } from "select-rich"
     import { SummaryMobile } from "summary-mobile"
+    import { Step4 } from "step4"
 
     window.Stimulus = Application.start()
 
     Stimulus.register("form-with-custom-fields", FormWithCustomFields)
     Stimulus.register("select-rich", SelectRich)
     Stimulus.register("summary-mobile", SummaryMobile)
+    Stimulus.register("step4", Step4)
   </script>
 {% endblock extra_css %}
 
@@ -40,12 +43,12 @@
 {% block h2 %}Afin de vous proposer des aides adéquates, nous avons besoin d’en savoir un peu plus sur votre
   exploitation.{% endblock %}
 
-{% block action %}{% url 'agri:step-4' %}{% endblock action %}
+{% block action %}{% url 'agri:step-5' %}{% endblock action %}
 
 {% block extra_form_attributes %}
-  data-controller="form-with-custom-fields"
-  data-action="submit->form-with-custom-fields#submit change->form-with-custom-fields#validate"
-  data-form-with-custom-fields-select-rich-outlet="[data-controller=select-rich]"
+  data-controller="step4"
+  data-action="submit->step4#submit change->step4#validate"
+  data-step4-select-rich-outlet="[data-controller=select-rich]"
 {% endblock extra_form_attributes %}
 
 {% block form %}
@@ -57,11 +60,52 @@
           Recherchez votre entreprise (SIRET, SIREN, nom, etc.)
           <span class="fr-hint-text">ex : "Maraichage Carpentras" ou "130 025 265 00013"</span>
         </label>
-        <div class="fr-input-group">
-          {% ui_select_rich_single name="siret" button_text="Votre exploitation" required=True search_url="agri:search-etablissement" search_field_name="siret-search" %}
+        <div class="fr-select-rich fr-input-group"
+             id="select-rich-siret"
+             data-controller="select-rich"
+             data-select-rich-multi-value="false"
+             data-select-rich-required-value="true"
+             hx-trigger="change"
+             hx-get="{% url 'agri:step-4' %}"
+             hx-include="closest form"
+             hx-target="#step-4"
+             hx-select=".form-fields"
+             hx-disinherit="*"
+        >
+          <div class="fr-search-bar fr-my-2w" role="search">
+            <label class="fr-label" for="select-rich-search-siret">Rechercher</label>
+            <input type="search"
+                   id="select-rich-search-siret"
+                   class="fr-input"
+                   placeholder="Rechercher"
+                   name="siret-search"
+                   autocomplete="false"
+                   data-action="focus->select-rich#focus"
+                   onchange="event.stopPropagation()"
+            >
+            <button type="button" class="fr-btn"
+                    title="Rechercher"
+                    hx-get="{% url 'agri:search-etablissement' %}"
+                    hx-target="#select-rich-options-siret"
+                    hx-include="#select-rich-search-siret"
+                    onclick="this.disabled = true"
+                    hx-on::after-request="this.disabled = false"
+            >
+              Rechercher
+            </button>
+          </div>
+          <fieldset class="fr-collapse fr-menu"
+                    data-select-rich-target="entries"
+                    id="select-rich-siret-entries"
+                    hx-on::after-settle="this.classList.add('fr-collapse--expanded')"
+          >
+            <div id="select-rich-options-siret" class="select-rich__options"></div>
+          </fieldset>
+          <p class="fr-error-text fr-hidden" data-select-rich-target="error">Ce champ est requis.</p>
         </div>
       </div>
     </fieldset>
   </div>
 </div>
+<div id="step-4"></div>
 {% endblock form %}
