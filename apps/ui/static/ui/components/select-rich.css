@@ -14,6 +14,10 @@
   margin-block-start: 0;
 }
 
+.fr-select-rich .fr-collapse.fr-menu::before {
+  transition: none;
+}
+
 .fr-select-rich__item {
   border-bottom: 2px solid var(--border-default-grey);
 }

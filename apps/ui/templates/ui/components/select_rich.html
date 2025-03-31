@@ -35,9 +35,11 @@
         <input type="search" id="select-rich-search-{{ self.name }}"
                class="fr-input"
                placeholder="{{ self.search_placeholder|default:'Rechercher' }}"
-               {% if self.search_url %}name="{{ self.search_field_name|default_if_none:'q' }}"{% endif %}
                autocomplete="false"
-               {% if not self.search_url %}
+               {% if self.search_url %}
+               name="{{ self.search_field_name|default_if_none:'q' }}"
+               onchange="event.stopPropagation()"
+               {% else %}
                data-select-rich-target="search"
                data-action="input->select-rich#search focus->select-rich#focus"
                {% endif %}

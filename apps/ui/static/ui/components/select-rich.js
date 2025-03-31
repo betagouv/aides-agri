@@ -15,17 +15,19 @@ export class SelectRich extends Controller {
     super.connect()
 
     document.body.addEventListener("click", evt => {
-      if (this.entriesTarget.classList.contains("fr-collapse--expanded") && !evt.target.closest("#" + this.element.id)) {
-        this.buttonTarget.click()
+      if (!evt.target.closest("#" + this.element.id)) {
+        this.entriesTarget.classList.remove("fr-collapse--expanded")
       }
     })
     document.body.addEventListener("keydown", evt => {
-      if (this.entriesTarget.classList.contains("fr-collapse--expanded") && evt.code === "Escape") {
-        this.buttonTarget.click()
+      if (evt.code === "Escape") {
+        this.entriesTarget.classList.remove("fr-collapse--expanded")
       }
     })
 
-    this.buttonText = this.buttonTarget.textContent.trim()
+    if (this.hasButtonTarget) {
+      this.buttonText = this.buttonTarget.textContent.trim()
+    }
 
     if (this.hasSearchTarget) {
       this.optionTargets.forEach(option => {
@@ -51,9 +53,7 @@ export class SelectRich extends Controller {
   }
 
   focus() {
-    if (this.hasSearchTarget && this.searchTarget.value !== "") {
-      this.search()
-    }
+    this.entriesTarget.classList.add("fr-collapse--expanded")
   }
 
   search() {
@@ -73,6 +73,10 @@ export class SelectRich extends Controller {
   }
 
   _updateButton() {
+    if (!this.hasButtonTarget) {
+      return
+    }
+
     if (this.multiValue) {
       const checkedInputs = this.entriesTarget.querySelectorAll("input[type=checkbox]:checked")
       if (checkedInputs.length) {
@@ -120,7 +124,7 @@ export class SelectRich extends Controller {
         }
       }
     } else {
-      this.buttonTarget.click()
+      this.entriesTarget.classList.remove("fr-collapse--expanded")
     }
     this.element.dispatchEvent(new Event("change"))
   }
