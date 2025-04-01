@@ -60,8 +60,11 @@ class ZoneGeographiqueLoader(GristLoader):
 @register_grist_loader
 class AideLoader(GristLoader):
     model = Aide
-    table = "Aides"
+    table = "Solutions"
     required_cols = ("Nom",)
+    filter = {
+        "GO": [True],
+    }
     fields = {
         "Nom": Aide.nom,
         "Promesse": Aide.promesse,
