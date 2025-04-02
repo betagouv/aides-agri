@@ -176,7 +176,7 @@ class Step4View(AgriMixin, TemplateView):
 
 class Step5View(AgriMixin, TemplateView):
     template_name = "agri/step-5.html"
-    STEP = 5
+    STEP = 4
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)

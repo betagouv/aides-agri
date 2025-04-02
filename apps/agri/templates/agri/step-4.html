@@ -50,31 +50,21 @@
 {% endblock extra_form_attributes %}
 
 {% block form %}
+<h3 class="fr-h6 fr-icon-identity-fill fr-heading--soft fr-btn--icon-left fr-mb-2w">Identité de l'exploitation</h3>
 <div class="fr-highlight fr-mb-4w">
   <p class="fr-mb-2v">Vérifiez et complétez les informations suivantes déduites de votre SIRET.</p>
   <p class="fr-mb-2v">Toutes les questions ci-dessous nécessitent une réponse afin de vous proposer des dispositifs pertinents.</p>
 </div>
-<h3 class="fr-h6 fr-icon-identity-fill fr-heading--soft fr-btn--icon-left fr-mb-2w">Identité de l'exploitation</h3>
 <div class="fr-grid-row">
   <fieldset class="fr-fieldset fr-col">
     <div class="fr-fieldset__element fr-mt-2v">
-      <span class="fr-label fr-mb-2v">Nom de l'exploitation</span>
+      <span class="fr-label fr-mb-2v">Nom de l'exploitation et SIRET</span>
       {% comment %}
       TODO reenable when https://github.com/numerique-gouv/django-dsfr/pull/213 is merged
       {% dsfr_tag label=etablissement.nom|default_if_none:etablissement.societe.nom_complet is_dismissable=True onclick="history.back()" %}
       {% endcomment %}
-      <button type="button" class="fr-tag fr-tag--dismiss" aria-label="Retirer le filtre Label of the tag item" onclick="history.back()">
-        {{ etablissement.nom|default_if_none:etablissement.societe.nom_complet }}
-      </button>
-    </div>
-    <div class="fr-fieldset__element fr-mt-2v">
-      <span class="fr-label fr-mb-2v">Siret</span>
-      {% comment %}
-      TODO reenable when https://github.com/numerique-gouv/django-dsfr/pull/213 is merged
-      {% dsfr_tag label=etablissement.siret is_dismissable=True onclick="history.back()" %}
-      {% endcomment %}
-      <button type="button" class="fr-tag fr-tag--dismiss" aria-label="Retirer le filtre Label of the tag item" onclick="history.back()">
-        {{ etablissement.siret }}
+      <button type="button" class="fr-tag fr-tag--dismiss" aria-label="Retirer le filtre Label of the tag item" onclick="document.getElementById('step-4').innerHTML = ''">
+        {{ etablissement.nom|default_if_none:etablissement.societe.nom_complet }} - {{ etablissement.siret }}
       </button>
     </div>
     <div class="fr-fieldset__element">
