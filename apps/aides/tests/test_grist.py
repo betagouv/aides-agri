@@ -21,8 +21,18 @@ def test_load_themes(monkeypatch, theme):
     # GIVEN the Grist API returns some Themes
     def mock_list_records(*args, **kwargs):
         return 200, [
-            {"id": theme.pk, "Nom": "Super thème"},
-            {"id": 2, "Nom": "Super second thème"},
+            {
+                "id": theme.pk,
+                "Libelle": "Super thème",
+                "Libelle_court": "Super",
+                "Biscuit2": "ouais ouais",
+            },
+            {
+                "id": 2,
+                "Libelle": "Super second thème",
+                "Libelle_court": "Super second",
+                "Biscuit2": "ouais ouais second",
+            },
         ]
 
     loader = ThemeLoader()
@@ -52,10 +62,16 @@ def test_load_sujets(monkeypatch, theme, theme_2, sujet):
     # GIVEN the Grist API returns some Themes
     def mock_list_records(*args, **kwargs):
         return 200, [
-            {"id": sujet.pk, "Nom": "Super sujet", "Themes": ["L1", theme.external_id]},
+            {
+                "id": sujet.pk,
+                "Libelle": "Super sujet",
+                "Libelle_court": "Super",
+                "Themes": ["L1", theme.external_id],
+            },
             {
                 "id": 2,
-                "Nom": "Super second sujet",
+                "Libelle": "Super second sujet",
+                "Libelle_court": "Super second",
                 "Themes": ["L2", theme.external_id, theme_2.external_id],
             },
         ]

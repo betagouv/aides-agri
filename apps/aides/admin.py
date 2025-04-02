@@ -14,13 +14,15 @@ from .models import (
 @admin.register(Theme)
 class ThemeAdmin(AbstractGristModelAdmin):
     list_display = AbstractGristModelAdmin.list_display + ("nom",)
-    fields = ("nom",)
+    list_display_links = AbstractGristModelAdmin.list_display_links + ("nom",)
+    fields = ("nom", "nom_court", "description")
 
 
 @admin.register(Sujet)
 class SujetAdmin(AbstractGristModelAdmin):
     list_display = AbstractGristModelAdmin.list_display + ("nom",)
-    fields = ("nom", "themes")
+    list_display_links = AbstractGristModelAdmin.list_display_links + ("nom",)
+    fields = ("nom", "nom_court", "themes")
 
 
 @admin.register(Operateur)

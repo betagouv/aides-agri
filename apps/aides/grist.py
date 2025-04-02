@@ -12,20 +12,21 @@ from .models import (
 @register_grist_loader
 class ThemeLoader(GristLoader):
     model = Theme
-    table = "Ref_Themes"
-    required_cols = ("Nom",)
+    table = "Themes_v2"
     fields = {
-        "Nom": Theme.nom,
+        "Libelle": Theme.nom,
+        "Libelle_court": Theme.nom_court,
+        "Biscuit2": Theme.description,
     }
 
 
 @register_grist_loader
 class SujetLoader(GristLoader):
     model = Sujet
-    table = "Ref_Sujets"
-    required_cols = ("Nom",)
+    table = "Sujets_v2"
     fields = {
-        "Nom": Sujet.nom,
+        "Libelle": Sujet.nom,
+        "Libelle_court": Sujet.nom_court,
         "Themes": Sujet.themes,
     }
 
