@@ -30,7 +30,7 @@
   box-shadow: var(--lifted-shadow);
 }
 
-#proposition h3, #conseillers-entreprise h3 {
+#proposition h3, #conseillers-entreprise h3, #cta-more-themes {
   text-align: center;
 }
 

@@ -54,6 +54,7 @@ class HomeView(Step1Mixin, TemplateView):
                 }
             }
         )
+        context_data["themes"] = context_data["themes"][:4]
         return context_data
 
 
@@ -119,7 +120,7 @@ class AgriMixin(ContextMixin):
                 {
                     "stepper": {
                         "current_step_id": self.STEP,
-                        "total_steps": 5,
+                        "total_steps": 4,
                     },
                 }
             )
