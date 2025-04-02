@@ -126,12 +126,15 @@ export class SelectRich extends Controller {
     } else {
       this.entriesTarget.classList.remove("fr-collapse--expanded")
     }
+    this.validate()
     this.element.dispatchEvent(new Event("change"))
   }
 
   validate() {
     if (this.requiredValue && !this.entriesTarget.querySelector("input:checked")) {
+      this.errorTarget.innerHTML = "Ce champ est requis"
       this.errorTarget.classList.remove("fr-hidden")
+      this.errorTarget.classList.add("fr-error-text")
       return false
     } else {
       this.errorTarget.classList.add("fr-hidden")

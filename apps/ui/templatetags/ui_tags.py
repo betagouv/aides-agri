@@ -65,6 +65,7 @@ def ui_select_rich_multi(*args, **kwargs) -> dict:
         "name",
         "options",
         "initials",
+        "helper",
         "required",
         "searchable",
         "search_url",
