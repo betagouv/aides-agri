@@ -52,6 +52,8 @@
           {% if forloop.counter == 2 or aides|length <= 2 and forloop.last %}
             {% dsfr_card conseillers_entreprises_card_data id="conseillers-entreprises" %}
           {% endif %}
+        {% empty %}
+          {% dsfr_card conseillers_entreprises_card_data id="conseillers-entreprises" %}
         {% endfor %}
         </div>
       </div>

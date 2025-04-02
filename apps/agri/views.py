@@ -18,7 +18,7 @@ class Step1Mixin(ContextMixin):
         context_data = super().get_context_data(**kwargs)
         context_data.update(
             {
-                "themes": Theme.objects.exclude(aide__isnull=True),
+                "themes": Theme.objects.all(),
             }
         )
         return context_data
@@ -50,7 +50,6 @@ class HomeView(Step1Mixin, TemplateView):
                             "icon_class": "fr-icon-arrow-right-line",
                             "text": "Ministère de l’Économie x Ministère du Travail",
                         },
-                        "tags": [{"label": "Conseil"}, {"label": "France"}],
                     },
                 }
             }
@@ -143,9 +142,7 @@ class Step2View(AgriMixin, TemplateView):
             {
                 "sujets": {
                     f"sujet-{sujet.pk}": sujet
-                    for sujet in Sujet.objects.filter(themes=self.theme).exclude(
-                        aide__isnull=True
-                    )
+                    for sujet in Sujet.objects.filter(themes=self.theme)
                 }
             }
         )

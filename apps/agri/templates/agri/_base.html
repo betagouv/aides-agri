@@ -29,14 +29,14 @@
         <div class="fr-h6 fr-mb-3v">Votre projet</div>
         <div class="fr-mb-3v">
           <span>Thème :</span>
-          {% dsfr_tag label=summary_theme.nom extra_classes="fr-tag--sm" %}
+          {% dsfr_tag label=summary_theme.nom_court extra_classes="fr-tag--sm" %}
         </div>
         {% if summary_sujets %}
           <div class="fr-mb-3v">
             <span class="fr-tags-group fr-px-1v">
               Sujets :
               {% for sujet in summary_sujets %}
-                {% dsfr_tag label=sujet.nom extra_classes="fr-tag--sm" %}
+                {% dsfr_tag label=sujet.nom_court extra_classes="fr-tag--sm" %}
               {% endfor %}
             </span>
           </div>
