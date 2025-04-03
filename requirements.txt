@@ -3,6 +3,9 @@
 asgiref==3.8.1 \
     --hash=sha256:3e1e3ecc849832fe52ccf2cb6686b7a55f82bb1d6aee72a58826471390335e47 \
     --hash=sha256:c343bd80a0bec947a9860adb4c432ffa7db769836c64238fc34bdc3fec84d590
+beautifulsoup4==4.13.3 \
+    --hash=sha256:1bd32405dacc920b42b83ba01644747ed77456a65760e285fbc47633ceddaf8b \
+    --hash=sha256:99045d7d3f08f91f0d656bc9b7efbae189426cd913d830294a15eefa0ea4df16
 certifi==2024.12.14 \
     --hash=sha256:1275f7a45be9464efc1173084eaa30f866fe2e47d389406136d332ed4967ec56 \
     --hash=sha256:b650d30f370c2b724812bee08008be0c4163b163ddaec3f2546c1caf65f191db
@@ -69,6 +72,9 @@ gunicorn==23.0.0 \
 idna==3.10 \
     --hash=sha256:12f65c9b470abda6dc35cf8e63cc574b1c52b11df2c86030af0ac09b01b13ea9 \
     --hash=sha256:946d195a0d259cbba61165e88e65941f16e9b36ea6ddb97f00452bae8b1287d3
+markdownify==1.1.0 \
+    --hash=sha256:32a5a08e9af02c8a6528942224c91b933b4bd2c7d078f9012943776fc313eeef \
+    --hash=sha256:449c0bbbf1401c5112379619524f33b63490a8fa479456d41de9dc9e37560ebd
 packaging==24.2 \
     --hash=sha256:09abb1bccd265c01f4a3aa3f7a7db064b36514d2cba19a2f694fe6150451a759 \
     --hash=sha256:c228a6dc5e932d346bc5739379109d49e8853dd8223571c7c5b55260edc0b97f
@@ -115,10 +121,16 @@ pygrister==0.6.0 \
 requests==2.32.3 \
     --hash=sha256:55365417734eb18255590a9ff9eb97e9e1da868d4ccd6402399eaf68af20a760 \
     --hash=sha256:70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6
+six==1.17.0 \
+    --hash=sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274 \
+    --hash=sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81
+soupsieve==2.6 \
+    --hash=sha256:e2e68417777af359ec65daac1057404a3c8a5455bb8abc36f1a9866ab1a51abb \
+    --hash=sha256:e72c4ff06e4fb6e4b5a9f0f55fe6e81514581fca1515028625d0f299c602ccc9
 sqlparse==0.5.3 \
     --hash=sha256:09f67787f56a0b16ecdbde1bfc7f5d9c3371ca683cfeaa8e6ff60b4807ec9272 \
     --hash=sha256:cf2196ed3418f3ba5de6af7e82c694a9fbdbfecccdfc72e281548517081f16ca
-typing-extensions==4.12.2 ; python_full_version < '3.13' \
+typing-extensions==4.12.2 \
     --hash=sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d \
     --hash=sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8
 tzdata==2025.1 ; sys_platform == 'win32' \
@@ -130,3 +142,6 @@ urllib3==2.3.0 \
 whitenoise==6.8.2 \
     --hash=sha256:486bd7267a375fa9650b136daaec156ac572971acc8bf99add90817a530dd1d4 \
     --hash=sha256:df12dce147a043d1956d81d288c6f0044147c6d2ab9726e5772ac50fb45d2280
+xlsx2csv==0.8.4 \
+    --hash=sha256:2aa809888826f6af5b26c77fc7f613f2bbeada0d8cc09e5a58e0f59684bb6911 \
+    --hash=sha256:52ab873fc7b2f2ca75d14aee8bd1985a9f5c1bcb3cc7b80df7a5d57a40a67473
