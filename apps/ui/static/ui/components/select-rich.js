@@ -9,7 +9,7 @@ export class SelectRich extends Controller {
     multi: Boolean,
     required: Boolean
   }
-  static targets = ["button", "entries", "search", "option", "error", "tags"]
+  static targets = ["button", "entries", "search", "option", "helper", "error", "tags"]
 
   connect() {
     super.connect()
@@ -72,6 +72,11 @@ export class SelectRich extends Controller {
     })
   }
 
+  externalSearch(evt) {
+    evt.target.disabled = true
+    this._unsetErrorState()
+  }
+
   _updateButton() {
     if (!this.hasButtonTarget) {
       return
@@ -130,14 +135,26 @@ export class SelectRich extends Controller {
     this.element.dispatchEvent(new Event("change"))
   }
 
+  _setErrorState() {
+    if (this.hasHelperTarget) {
+      this.helperTarget.classList.add("fr-hidden")
+    }
+
+    this.errorTarget.classList.remove("fr-hidden")
+    this.element.classList.add("fr-input-group--error")
+  }
+
+  _unsetErrorState() {
+    this.errorTarget.classList.add("fr-hidden")
+    this.element.classList.remove("fr-input-group--error")
+  }
+
   validate() {
     if (this.requiredValue && !this.entriesTarget.querySelector("input:checked")) {
-      this.errorTarget.innerHTML = "Ce champ est requis"
-      this.errorTarget.classList.remove("fr-hidden")
-      this.errorTarget.classList.add("fr-error-text")
+      this._setErrorState()
       return false
     } else {
-      this.errorTarget.classList.add("fr-hidden")
+      this._unsetErrorState()
       return true
     }
   }

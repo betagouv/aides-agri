@@ -87,7 +87,7 @@
   {% for component in select_rich_single %}
     <form class="fr-mb-4w" onsubmit="if (!Stimulus.getControllerForElementAndIdentifier(this.querySelector('[data-controller=select-rich]'), 'select-rich').validate()) {event.preventDefault()}">
       <h2 id="{{ component.name }}">{{ component.label }}</h2>
-      {% ui_select_rich_single name=component.name options=component.options initial=component.initial required=component.required search_url=component.search_url search_field_name=component.search_field_name %}
+      {% ui_select_rich_single label=component.label name=component.name options=component.options initial=component.initial required=component.required search_url=component.search_url search_field_name=component.search_field_name %}
       <div class="fr-accordion fr-mt-2w">
         <h3 class="fr-accordion__title">
           <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-{{ component.name }}">En savoir plus</button>
@@ -136,7 +136,7 @@
   {% for component in select_rich_multi %}
     <form class="fr-mb-4w" onsubmit="if (!Stimulus.getControllerForElementAndIdentifier(this.querySelector('[data-controller=select-rich]'), 'select-rich').validate()) {event.preventDefault()}">
       <h2 id="{{ component.name }}">{{ component.label }}</h2>
-      {% ui_select_rich_multi name=component.name options=component.options initials=component.initials required=component.required searchable=component.searchable search_url=component.search_url search_field_name=component.search_field_name with_tags=component.with_tags %}
+      {% ui_select_rich_multi label=component.label name=component.name options=component.options initials=component.initials required=component.required searchable=component.searchable search_url=component.search_url search_field_name=component.search_field_name with_tags=component.with_tags %}
       <div class="fr-accordion fr-mt-2w">
         <h3 class="fr-accordion__title">
           <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-{{ component.name }}">En savoir plus</button>

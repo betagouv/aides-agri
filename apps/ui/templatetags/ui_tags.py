@@ -42,11 +42,13 @@ def ui_tile_checkbox(*args, **kwargs) -> dict:
 @register.inclusion_tag("ui/components/select_rich.html")
 def ui_select_rich_single(*args, **kwargs) -> dict:
     allowed_keys = [
+        "label",
         "name",
         "button_text",
         "options",
         "initial",
         "required",
+        "required_error_message",
         "search_url",
         "search_field_name",
         "search_placeholder",
@@ -62,11 +64,13 @@ def ui_select_rich_single(*args, **kwargs) -> dict:
 @register.inclusion_tag("ui/components/select_rich.html")
 def ui_select_rich_multi(*args, **kwargs) -> dict:
     allowed_keys = [
+        "label",
         "name",
         "options",
         "initials",
         "helper",
         "required",
+        "required_error_message",
         "searchable",
         "search_url",
         "search_field_name",

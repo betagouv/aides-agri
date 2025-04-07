@@ -6,6 +6,7 @@
      data-select-rich-multi-value="{% if self.multi %}true{% else %}false{% endif %}"
      data-select-rich-required-value="{% if self.required %}true{% else %}false{% endif %}"
 >
+  <label class="fr-label fr-mb-2v">{{ self.label }}</label>
   {% if self.with_tags %}
     <div class="fr-select-rich__tags fr-tags-group" data-select-rich-target="tags"></div>
   {% endif %}
@@ -51,7 +52,7 @@
                 hx-get="{% url self.search_url %}"
                 hx-target="#select-rich-options-{{ self.name }}"
                 hx-include="#select-rich-search-{{ self.name }}"
-                onclick="this.disabled = true"
+                data-action="click->select-rich#externalSearch"
                 hx-on::after-request="this.disabled = false"
         >
           Rechercher
@@ -69,7 +70,12 @@
     {% endif %}
     </div>
   </fieldset>
-  <p class="{% if not self.initials and self.helper %}fr-info-text{% else %}fr-hidden{% endif %}" data-select-rich-target="error">
-    {% if not self.initials and self.helper %}{{ self.helper }}{% endif %}
+
+  {% if self.helper %}
+  <p class="fr-info-text" data-select-rich-target="helper">{{ self.helper }}</p>
+  {% endif %}
+
+  <p class="fr-error-text fr-hidden" data-select-rich-target="error">
+    {{ self.required_error_message|default:"Ce champ est requis" }}
   </p>
 </div>

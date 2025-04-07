@@ -46,3 +46,11 @@
 .fr-select-rich__option:has(input:focus) {
   background-color: var(--hover);
 }
+
+.fr-select-rich.fr-input-group.fr-input-group--error label.fr-select-rich__option {
+  color: unset;
+}
+
+.fr-select-rich.fr-input-group.fr-input-group--error input.fr-input[type=search] {
+  box-shadow: unset;
+}
