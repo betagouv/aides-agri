@@ -6,22 +6,28 @@ export class CheckboxGroupField extends Controller {
   }
   static targets = ["input", "error"]
 
-  _hideError() {
+  _unsetErrorState() {
     this.errorTarget.classList.add("fr-hidden")
+    this.element.classList.remove("fr-input-group--error")
+  }
+
+  _setErrorState() {
+    this.errorTarget.classList.remove("fr-hidden")
+    this.element.classList.add("fr-input-group--error")
   }
 
   validate() {
     if (!this.requiredValue) {
-      this._hideError()
+      this._unsetErrorState()
       return true
     }
 
     if (this.element.querySelector("input[type=checkbox]:checked")) {
-      this._hideError()
+      this._unsetErrorState()
       return true
     }
 
-    this.errorTarget.classList.remove("fr-hidden")
+    this._setErrorState()
     return false
   }
 }

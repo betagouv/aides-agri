@@ -12,7 +12,6 @@ def ui_tile_checkbox(*args, **kwargs) -> dict:
     * Key `url` has no effect since there is no link
     * Key `name` (str) is added as the name of the input checkbox
     * Key `checked` (optional, boolean, default False) is added
-    ```
     """
     allowed_keys = [
         "title",
@@ -35,6 +34,19 @@ def ui_tile_checkbox(*args, **kwargs) -> dict:
 
     if "checked" not in tag_data:
         tag_data["checked"] = False
+
+    return {"self": tag_data}
+
+
+@register.inclusion_tag("ui/components/checkbox_group_field.html")
+def ui_checkbox_group_field(*args, **kwargs) -> dict:
+    allowed_keys = [
+        "label",
+        "name",
+        "options",
+        "required_error_message",
+    ]
+    tag_data = parse_tag_args(args, kwargs, allowed_keys)
 
     return {"self": tag_data}
 
