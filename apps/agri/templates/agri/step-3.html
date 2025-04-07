@@ -56,10 +56,6 @@
   <div class="fr-col">
     <fieldset class="fr-fieldset" aria-label="SIRET de l'entreprise">
       <div class="fr-fieldset__element">
-       <label class="fr-label fr-mb-1w">
-          Recherchez votre entreprise (SIRET, SIREN, nom, etc.)
-          <span class="fr-hint-text">ex : "Maraichage Carpentras" ou "130 025 265 00013"</span>
-        </label>
         <div class="fr-select-rich fr-input-group"
              id="select-rich-siret"
              data-controller="select-rich"
@@ -72,6 +68,10 @@
              hx-select=".form-fields"
              hx-disinherit="*"
         >
+         <label class="fr-label fr-mb-1w">
+            Recherchez votre entreprise (SIRET, SIREN, nom, etc.)
+            <span class="fr-hint-text">ex : "Maraichage Carpentras" ou "130 025 265 00013"</span>
+          </label>
           <div class="fr-search-bar fr-my-2w" role="search">
             <label class="fr-label" for="select-rich-search-siret">Rechercher</label>
             <input type="search"
@@ -88,7 +88,7 @@
                     hx-get="{% url 'agri:search-etablissement' %}"
                     hx-target="#select-rich-options-siret"
                     hx-include="#select-rich-search-siret"
-                    onclick="this.disabled = true"
+                    data-action="click->select-rich#externalSearch"
                     hx-on::after-request="this.disabled = false"
             >
               Rechercher
@@ -101,7 +101,7 @@
           >
             <div id="select-rich-options-siret" class="select-rich__options"></div>
           </fieldset>
-          <p class="fr-error-text fr-hidden" data-select-rich-target="error">Ce champ est requis.</p>
+          <p class="fr-error-text fr-hidden" data-select-rich-target="error">Veuillez sélectionner un établissement pour passer à la suite, cela nous permettra de vous proposer des aides adaptées.</p>
         </div>
       </div>
     </fieldset>

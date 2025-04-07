@@ -5,12 +5,13 @@
 {% block extra_css %}
   {{ block.super }}
   <link rel="stylesheet" href="{% static 'ui/components/select-rich.css' %}">
+  <link rel="stylesheet" href="{% static 'ui/components/checkbox-group-field.css' %}">
 
   <script type="importmap">
   {
     "imports": {
       "@hotwired/stimulus": "{% static 'vendor/stimulus.js' %}",
-      "checkbox-group-field": "{% static 'ui/controllers/checkbox_group_field.js' %}",
+      "checkbox-group-field": "{% static 'ui/components/checkbox-group-field.js' %}",
       "form-with-custom-fields": "{% static 'ui/controllers/form_with_custom_fields.js' %}",
       "select-rich": "{% static 'ui/components/select-rich.js' %}",
       "summary-mobile": "{% static 'agri/summary-mobile.js' %}"
@@ -79,23 +80,10 @@
       </select>
     </div>
     <div class="fr-fieldset__element fr-input-group fr-mb-3w">
-      <div class="fr-label fr-mb-2v">Filières</div>
-      {% ui_select_rich_multi name="filieres" required=True options=filieres initials=filieres_initials searchable=True search_placeholder="élevage, légumes, etc." with_tags=True helper="Nous n'avons pas pu déduire la filière de votre exploitation, veuillez en sélectionner au moins une ci-dessus." %}
+      {% ui_select_rich_multi label="Filières" name="filieres" required=True options=filieres initials=filieres_initials searchable=True search_placeholder="élevage, légumes, etc." with_tags=True helper="Nous n'avons pas pu déduire la filière de votre exploitation, veuillez en sélectionner au moins une ci-dessus." %}
     </div>
-    <div class="fr-fieldset__element fr-container--fluid fr-mb-3w"
-         data-controller="checkbox-group-field"
-         data-checkbox-group-field-required-value="true"
-    >
-      <div class="fr-label fr-mb-2v">Faites-vous partie d'un ou plusieurs regroupements ?</div>
-      <div class="fr-checkbox-group fr-grid-row fr-mt-2v">
-        {% for groupement in groupements %}
-        <div class="fr-col fr-col-12 fr-col-md-6 fr-mb-2w">
-          <input id="checkbox-regroupements-{{ groupement.pk }}" type="checkbox" name="regroupements" value="{{ groupement.pk }}">
-          <label for="checkbox-regroupements-{{ groupement.pk }}" class="fr-label">{{ groupement.nom }}</label>
-        </div>
-        {% endfor %}
-      </div>
-      <div class="fr-error-text fr-hidden fr-mt-1v" data-checkbox-group-field-target="error">Ce champ est requis pour passer à la suite.</div>
+    <div class="fr-fieldset__element">
+      {% ui_checkbox_group_field label="Faites-vous partie d'un ou plusieurs regroupements ?" name="regroupements" options=groupements error_message="Ce champ est requis pour passer à la suite." %}
     </div>
   </fieldset>
 </div>

@@ -190,7 +190,12 @@ class Step5View(AgriMixin, TemplateView):
                 "mapping_naf": siret.mapping_naf_complete_unique,
                 "mapping_tranches_effectif": siret.mapping_effectif,
                 "etablissement": etablissement,
-                "groupements": GroupementProducteurs.objects.all(),
+                "groupements": {
+                    pk: nom
+                    for pk, nom in GroupementProducteurs.objects.values_list(
+                        "pk", "nom"
+                    )
+                },
                 "filieres": [
                     (pk, nom, nom)
                     for pk, nom in Filiere.objects.values_list("pk", "nom")
