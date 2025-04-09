@@ -54,9 +54,9 @@ django==5.1.7 \
 django-crispy-forms==2.3 \
     --hash=sha256:2db17ae08527201be1273f0df789e5f92819e23dd28fec69cffba7f3762e1a38 \
     --hash=sha256:efc4c31e5202bbec6af70d383a35e12fc80ea769d464fb0e7fe21768bb138a20
-django-dsfr==2.1.0 \
-    --hash=sha256:128da3df478bf80ea3b9f4f54adb8b3ad0caf81748fb248ec6bb2bc396f6daf9 \
-    --hash=sha256:a5e3e38ddf8d7a9bb4ac590ccd9cd42d57d72d0b64c2707b83c12c655a3dcc86
+django-dsfr==2.3.0 \
+    --hash=sha256:767d45695ccba9aab9fb07627230c748975944f3f6a9265b35f34537dfd3d135 \
+    --hash=sha256:d286631428ff7db92dd5c92da9031700d1f383145ea3d3b6228978fc1855622b
 django-grist-loader==0.1.2 \
     --hash=sha256:2f4a6d5ecf5424c4d29ba0c3aa80572acf9567d14e83076d7470904198860e5d \
     --hash=sha256:4ad62591fcde384f1bb273c103751b926e49a6e42b1fa1afa0eb00494acea2fb
