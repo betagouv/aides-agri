@@ -35,8 +35,8 @@ scalingo = [
 requires-dist = [
     { name = "django", specifier = "~=5.1" },
     { name = "django-dsfr", specifier = "~=2.1" },
-    { name = "django-grist-loader", specifier = "~=0.1" },
-    { name = "psycopg", extras = ["binary"], specifier = "~=3.0" },
+    { name = "django-grist-loader", specifier = "~=0.2" },
+    { name = "psycopg", extras = ["binary"], specifier = "==3.2.4" },
     { name = "requests", specifier = "~=2.32" },
 ]
 
@@ -274,16 +274,16 @@ wheels = [
 
 [[package]]
 name = "django-grist-loader"
-version = "0.1.2"
+version = "0.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
     { name = "psycopg", extra = ["binary"] },
     { name = "pygrister" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/33/90/7363a2d6e3827ebf942b3e32f0182947b197c7a1eaa0f2c9fdb64c982d1c/django_grist_loader-0.1.2.tar.gz", hash = "sha256:2f4a6d5ecf5424c4d29ba0c3aa80572acf9567d14e83076d7470904198860e5d", size = 6299 }
+sdist = { url = "https://files.pythonhosted.org/packages/6d/98/0ce3a3e22182520f73d97bb4b187caeafbfbd423b2a989a5f947ce7d808d/django_grist_loader-0.2.0.tar.gz", hash = "sha256:903c979bdb90e882a063b91e19996803e6ce361d070c6acd7425ddbfec56eb83", size = 6338 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/62/1f/6e9db09eeb6ad348ce6c3e84ebf4e80f8da95ccef447e3133202794d1d7a/django_grist_loader-0.1.2-py3-none-any.whl", hash = "sha256:4ad62591fcde384f1bb273c103751b926e49a6e42b1fa1afa0eb00494acea2fb", size = 6739 },
+    { url = "https://files.pythonhosted.org/packages/ee/2e/662f10e68c7f58a84e6ab962621abeba3952d5d65d3d473a6c114632ed1e/django_grist_loader-0.2.0-py3-none-any.whl", hash = "sha256:29e87d2ed918b9b1bf34d9a87a0de652c924fd80ae968db08c8d09d0adbbf1ce", size = 6786 },
 ]
 
 [[package]]
