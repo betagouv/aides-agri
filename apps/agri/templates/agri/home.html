@@ -28,6 +28,8 @@
     </title>
     <meta name="format-detection"
           content="telephone=no,date=no,address=no,email=no,url=no">
+
+    <script type="module" src="{% static 'vendor/htmx.esm.js' %}"></script>
   </head>
   <body>
     {% dsfr_skiplinks skiplinks %}
@@ -47,7 +49,7 @@
               <div class="fr-col fr-col-lg-6 fr-pt-4w">
                 <h1 class="fr-mb-md-6w">Agriculteurs :<br>un projet, une difficulté ?</h1>
                 <h2 class="fr-mb-md-6w">{{ SITE_CONFIG.site_title }} vous accompagne pour identifier des aides pertinentes ou le bon conseiller de proximité.</h2>
-                <a class="fr-btn fr-btn--lg fr-mb-3w fr-mb-md-6w" href="{% url 'agri:step-1' %}">Racontez-nous !</a>
+                <a class="fr-btn fr-btn--lg fr-mb-3w fr-mb-md-6w" href="#projet">Racontez-nous !</a>
               </div>
             </section>
           </div>
@@ -82,16 +84,19 @@
           <h3 class="fr-h1">Votre projet.</h3>
           <h4 class="fr-h6">Parmi ces thèmes lequel correspond le mieux à votre besoin ?</h4>
           <div class="fr-container--fluid">
-            <div class="fr-grid-row fr-grid-row--gutters">
-              {% for theme in themes %}
-                <div class="fr-col-12 fr-col-sm-6">
-                  {% dsfr_tile heading_tag="h4" title=theme.nom description=theme.description url=theme.pk|agri_theme_to_step2_link extra_classes="fr-tile--horizontal" %}
-                </div>
-              {% endfor %}
+            <div id="themes" class="fr-grid-row fr-grid-row--gutters">
+              {% include "agri/_partials/home_themes.html" with themes=themes only %}
             </div>
             <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-mt-2w">
               <div class="fr-col-12 fr-col-sm-4" id="cta-more-themes">
-                <a class="fr-btn" href="{% url 'agri:step-1' %}">Voir plus de thèmes</a>
+                <a class="fr-btn"
+                   href="{% url 'agri:home' %}?more_themes=1"
+                   hx-boost="true"
+                   hx-target="#themes"
+                   hx-swap="beforeend show:none"
+                   hx-push-url="false"
+                   hx-on::after-request="this.parentElement.removeChild(this)"
+                >Voir plus de thèmes</a>
               </div>
             </div>
           </div>

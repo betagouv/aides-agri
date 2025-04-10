@@ -1,3 +1,7 @@
+html {
+  scroll-behavior: smooth;
+}
+
 .fr-grid-row.fr-grid-row--space-between {
   justify-content: space-between;
 }

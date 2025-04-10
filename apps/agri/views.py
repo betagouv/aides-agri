@@ -13,24 +13,19 @@ from .models import GroupementProducteurs, Filiere
 from . import siret
 
 
-class Step1Mixin(ContextMixin):
+class HomeView(TemplateView):
+    def get_template_names(self):
+        if self.request.htmx:
+            template_name = "agri/_partials/home_themes.html"
+        else:
+            template_name = "agri/home.html"
+        return [template_name]
+
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data.update(
             {
                 "themes": Theme.objects.all(),
-            }
-        )
-        return context_data
-
-
-class HomeView(Step1Mixin, TemplateView):
-    template_name = "agri/home.html"
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data.update(
-            {
                 "conseillers_entreprises_card": {
                     "heading_tag": "h4",
                     "extra_classes": "fr-card--horizontal fr-border-default--red-marianne",
@@ -51,10 +46,18 @@ class HomeView(Step1Mixin, TemplateView):
                             "text": "Ministère de l’Économie x Ministère du Travail",
                         },
                     },
-                }
+                },
             }
         )
-        context_data["themes"] = context_data["themes"][:4]
+        if self.request.htmx and self.request.GET.get("more_themes", None):
+            # show more themes, partial template
+            context_data["themes"] = context_data["themes"][4:]
+        elif not self.request.htmx and not self.request.GET.get("more_themes", None):
+            # nominal case: show only 4 themes, full page
+            context_data["themes"] = context_data["themes"][:4]
+        else:
+            # show all themes, because more_themes was asked, but on a new page
+            pass
         return context_data
 
 
@@ -126,11 +129,6 @@ class AgriMixin(ContextMixin):
             )
 
         return context_data
-
-
-class Step1View(AgriMixin, Step1Mixin, TemplateView):
-    template_name = "agri/step-1.html"
-    STEP = 1
 
 
 class Step2View(AgriMixin, TemplateView):

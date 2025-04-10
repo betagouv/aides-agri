@@ -6,6 +6,7 @@ dependencies = [
   "django ~=5.1",
   "django-dsfr ~=2.1",
   "django-grist-loader ~=0.1",
+  "django-htmx>=1.23.0",
   "psycopg[binary] ~=3.0",
   "requests ~=2.32",
 ]

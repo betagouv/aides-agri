@@ -7,16 +7,6 @@ from .common import fake_siret, fake_api_response_one_hit
 
 
 @pytest.mark.django_db
-def test_step_1(client):
-    # WHEN requesting step 1
-    url = reverse("agri:step-1")
-    response = client.get(url)
-
-    # THEN it's a 200
-    assert response.status_code == 200
-
-
-@pytest.mark.django_db
 def test_step_2(client, theme):
     # WHEN requesting step 2
     url = reverse("agri:step-2") + "?" + urlencode({"theme": theme.pk})
