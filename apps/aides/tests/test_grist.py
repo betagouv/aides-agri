@@ -3,11 +3,12 @@ import pytest
 from aides.grist import (
     ThemeLoader,
     SujetLoader,
+    TypeLoader,
     OperateurLoader,
     ZoneGeographiqueLoader,
     AideLoader,
 )
-from aides.models import Theme, Sujet, Operateur, ZoneGeographique, Aide
+from aides.models import Theme, Sujet, Type, Operateur, ZoneGeographique, Aide
 
 
 @pytest.mark.django_db
@@ -93,6 +94,44 @@ def test_load_sujets(monkeypatch, theme, theme_2, sujet):
     second = Sujet.objects.get(pk=2)
     assert second.nom == "Super second sujet"
     assert set(second.themes.all()) == {theme, theme_2}
+
+
+@pytest.mark.django_db
+def test_load_types(monkeypatch, type_aide):
+    # GIVEN we have one Type
+    assert Type.objects.count() == 1
+    existing = Type.objects.first()
+    assert existing.pk == type_aide.pk
+    assert existing.nom != "Super type"
+
+    # GIVEN the Grist API returns some Types
+    def mock_list_records(*args, **kwargs):
+        return 200, [
+            {
+                "id": type_aide.pk,
+                "Type_aide": "Super type",
+                "Description": "Super description pour un super type !",
+            },
+            {
+                "id": 2,
+                "Type_aide": "Super second type",
+                "Description": "Super description pour un super second type !",
+            },
+        ]
+
+    loader = TypeLoader()
+    monkeypatch.setattr(loader.gristapi, "list_records", mock_list_records)
+
+    # WHEN loading Themes
+    loader.load()
+
+    # THEN we have 2 Themes
+    # the existing one has been renamed
+    assert Type.objects.count() == 2
+    assert set(Type.objects.values_list("pk", flat=True)) == {type_aide.pk, 2}
+    existing.refresh_from_db()
+    assert existing.nom == "Super type"
+    assert Type.objects.get(pk=2).nom == "Super second type"
 
 
 @pytest.mark.django_db
@@ -210,8 +249,9 @@ def test_load_operateurs(monkeypatch, operateur, zone_geographique):
     assert Operateur.objects.get(pk=2).nom == "Super second opérateur"
 
 
-@pytest.mark.django_db
-def test_load_aides(monkeypatch, theme, sujet, operateur, zone_geographique, aide):
+def test_load_aides(
+    monkeypatch, theme, sujet, type_aide, operateur, zone_geographique, aide
+):
     # GIVEN we have one Aide
     assert Aide.objects.count() == 1
     existing = Aide.objects.first()
@@ -224,7 +264,7 @@ def test_load_aides(monkeypatch, theme, sujet, operateur, zone_geographique, aid
             {
                 "id": aide.pk,
                 "Nom": "Super aide",
-                "Types_d_aide": [Aide.Type.FINANCEMENT],
+                "Types_d_aide": ["L1", 1],
                 "Operateur_principal": 1,
                 "Operateurs_autres": ["L0"],
                 "Couverture_Geographique": Aide.CouvertureGeographique.NATIONAL,
@@ -243,7 +283,7 @@ def test_load_aides(monkeypatch, theme, sujet, operateur, zone_geographique, aid
             {
                 "id": 2,
                 "Nom": "Super seconde aide",
-                "Types_d_aide": [Aide.Type.PRET],
+                "Types_d_aide": ["L1", 1],
                 "Operateur_principal": 1,
                 "Operateurs_autres": ["L0"],
                 "Couverture_Geographique": Aide.CouvertureGeographique.REGIONAL,

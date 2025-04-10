@@ -3,6 +3,7 @@ from grist_loader.loader import GristLoader, register_grist_loader
 from .models import (
     Theme,
     Sujet,
+    Type,
     Operateur,
     ZoneGeographique,
     Aide,
@@ -28,6 +29,16 @@ class SujetLoader(GristLoader):
         "Libelle": Sujet.nom,
         "Libelle_court": Sujet.nom_court,
         "Themes": Sujet.themes,
+    }
+
+
+@register_grist_loader
+class TypeLoader(GristLoader):
+    model = Type
+    table = "Ref_Types"
+    fields = {
+        "Type_aide": Type.nom,
+        "Description": Type.description,
     }
 
 

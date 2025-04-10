@@ -228,12 +228,12 @@ class ResultsView(AgriMixin, ListView):
         context_data = super().get_context_data(**kwargs)
         aides_by_type = defaultdict(set)
         for aide in self.get_queryset():
-            for type_aide in aide.types:
+            for type_aide in aide.types.all():
                 aides_by_type[type_aide].add(aide)
         context_data.update(
             {
                 "aides": {
-                    type_aide: [
+                    type_aide.nom: [
                         {
                             "heading_tag": "h2",
                             "extra_classes": "fr-card--horizontal-tier fr-card--no-icon",

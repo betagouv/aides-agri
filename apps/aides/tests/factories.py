@@ -27,6 +27,15 @@ class SujetFactory(factory.django.DjangoModelFactory):
     nom = factory.Sequence(lambda n: f"Sujet {n}")
 
 
+class TypeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.Type
+
+    external_id = factory.Sequence(lambda n: n)
+    nom = factory.Sequence(lambda n: f"Type d'aide {n}")
+    description = factory.Faker("sentence")
+
+
 class ZoneGeographiqueFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.ZoneGeographique

@@ -5,6 +5,7 @@ from grist_loader.admin import AbstractGristModelAdmin
 from .models import (
     Theme,
     Sujet,
+    Type,
     Operateur,
     ZoneGeographique,
     Aide,
@@ -23,6 +24,13 @@ class SujetAdmin(AbstractGristModelAdmin):
     list_display = AbstractGristModelAdmin.list_display + ("nom",)
     list_display_links = AbstractGristModelAdmin.list_display_links + ("nom",)
     fields = ("nom", "nom_court", "themes")
+
+
+@admin.register(Type)
+class TypeAdmin(AbstractGristModelAdmin):
+    list_display = AbstractGristModelAdmin.list_display + ("nom",)
+    list_display_links = AbstractGristModelAdmin.list_display_links + ("nom",)
+    fields = ("nom", "description")
 
 
 @admin.register(Operateur)
@@ -46,13 +54,13 @@ class ZoneGeographiqueAdmin(AbstractGristModelAdmin):
 class AideAdmin(AbstractGristModelAdmin):
     list_display = AbstractGristModelAdmin.list_display + (
         "nom",
-        "types",
         "operateur",
         "date_debut",
         "date_fin",
         "effectif_min",
         "effectif_max",
     )
+    list_display_links = AbstractGristModelAdmin.list_display_links + ("nom",)
     fieldsets = [
         (
             "Infos de base",
