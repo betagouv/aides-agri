@@ -217,7 +217,7 @@ class ResultsView(AgriMixin, ListView):
                 siret.mapping_effectif_complete[self.code_effectif]["min"],
                 siret.mapping_effectif_complete[self.code_effectif]["max"],
             )
-            .select_related("operateur")
+            .select_related("organisme")
             .prefetch_related("zones_geographiques")
             .order_by("-date_fin")
         )
@@ -253,7 +253,7 @@ class ResultsView(AgriMixin, ListView):
                             "top_detail": {
                                 "detail": {
                                     "icon_class": "fr-icon-arrow-right-line",
-                                    "text": aide.operateur.nom,
+                                    "text": aide.organisme.nom,
                                 },
                             },
                         }
