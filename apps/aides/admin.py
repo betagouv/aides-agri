@@ -23,6 +23,7 @@ class ThemeAdmin(AbstractGristModelAdmin):
 class SujetAdmin(AbstractGristModelAdmin):
     list_display = AbstractGristModelAdmin.list_display + ("nom",)
     list_display_links = AbstractGristModelAdmin.list_display_links + ("nom",)
+    list_filter = ("themes",)
     fields = ("nom", "nom_court", "themes")
 
 
@@ -36,6 +37,7 @@ class TypeAdmin(AbstractGristModelAdmin):
 @admin.register(Organisme)
 class OrganismeAdmin(AbstractGristModelAdmin):
     list_display = AbstractGristModelAdmin.list_display + ("nom",)
+    list_display_links = AbstractGristModelAdmin.list_display_links + ("nom",)
     fields = ("nom", "zones_geographiques")
 
 
@@ -47,6 +49,9 @@ class ZoneGeographiqueAdmin(AbstractGristModelAdmin):
         "parent",
         "epci",
     )
+    list_display_links = AbstractGristModelAdmin.list_display_links + ("nom",)
+    list_filter = ("type",)
+    list_select_related = ("parent", "epci")
     fields = ("parent", "type", "nom", "epci")
 
 
@@ -61,6 +66,7 @@ class AideAdmin(AbstractGristModelAdmin):
         "effectif_max",
     )
     list_display_links = AbstractGristModelAdmin.list_display_links + ("nom",)
+    list_filter = ("sujets", "types")
     fieldsets = [
         (
             "Infos de base",
