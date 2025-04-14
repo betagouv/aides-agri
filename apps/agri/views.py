@@ -203,7 +203,9 @@ class Step5View(AgriMixin, TemplateView):
                     for pk, nom in Filiere.objects.values_list("pk", "nom")
                 ],
                 "filieres_initials": [filiere.pk] if filiere else [],
-                "filiere": filiere,
+                "filieres_helper": "Nous n'avons pas pu déduire la filière de votre exploitation, veuillez en sélectionner au moins une ci-dessus."
+                if not filiere
+                else "",
             }
         )
 

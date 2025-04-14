@@ -67,7 +67,7 @@
       </select>
     </div>
     <div class="fr-fieldset__element fr-input-group fr-mb-3w">
-      {% ui_select_rich_multi label="Filières" name="filieres" required=True options=filieres initials=filieres_initials searchable=True search_placeholder="élevage, légumes, etc." with_tags=True helper="Nous n'avons pas pu déduire la filière de votre exploitation, veuillez en sélectionner au moins une ci-dessus." %}
+      {% ui_select_rich_multi label="Filières" name="filieres" required=True options=filieres initials=filieres_initials searchable=True search_placeholder="élevage, légumes, etc." with_tags=True helper=filieres_helper %}
     </div>
     <div class="fr-fieldset__element">
       {% ui_checkbox_group_field label="Faites-vous partie d'un ou plusieurs regroupements ?" name="regroupements" options=groupements error_message="Ce champ est requis pour passer à la suite." %}
