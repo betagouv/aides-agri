@@ -11,6 +11,7 @@ class GroupementProducteursAdmin(AbstractGristModelAdmin):
         "nom",
         "libelle",
     )
+    list_display_links = AbstractGristModelAdmin.list_display_links + ("nom",)
     fields = ("nom", "libelle")
 
 
@@ -20,6 +21,7 @@ class FiliereAdmin(AbstractGristModelAdmin):
         "nom",
         "position",
     )
+    list_display_links = AbstractGristModelAdmin.list_display_links + ("nom",)
     fields = ("nom", "position")
 
 
@@ -29,6 +31,9 @@ class SousFiliereAdmin(AbstractGristModelAdmin):
         "nom",
         "filiere",
     )
+    list_display_links = AbstractGristModelAdmin.list_display_links + ("nom",)
+    list_filter = ("filiere",)
+    list_select_related = ("filiere",)
     fields = ("nom", "filiere")
 
 
@@ -38,4 +43,7 @@ class ProductionAdmin(AbstractGristModelAdmin):
         "nom",
         "sous_filiere",
     )
+    list_display_links = AbstractGristModelAdmin.list_display_links + ("nom",)
+    list_filter = ("sous_filiere",)
+    list_select_related = ("sous_filiere",)
     fields = ("nom", "sous_filiere")

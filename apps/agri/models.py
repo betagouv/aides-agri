@@ -13,6 +13,9 @@ class Filiere(GristModel):
     position = models.IntegerField(unique=True, default=0)
     code_naf = models.CharField(max_length=10, blank=True)
 
+    def __str__(self):
+        return self.nom
+
 
 class SousFiliere(GristModel):
     class Meta:
@@ -22,6 +25,9 @@ class SousFiliere(GristModel):
     nom = models.CharField(max_length=100, blank=True)
     filiere = models.ForeignKey(Filiere, on_delete=models.CASCADE, null=True)
 
+    def __str__(self):
+        return self.nom
+
 
 class Production(GristModel):
     class Meta:
@@ -30,6 +36,9 @@ class Production(GristModel):
 
     nom = models.CharField(max_length=100, blank=True)
     sous_filiere = models.ForeignKey(SousFiliere, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.nom
 
 
 class GroupementProducteurs(GristModel):
@@ -49,3 +58,6 @@ class GroupementProducteurs(GristModel):
         output_field=models.BooleanField(),
         db_persist=True,
     )
+
+    def __str__(self):
+        return self.nom
