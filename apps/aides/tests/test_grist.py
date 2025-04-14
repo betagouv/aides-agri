@@ -4,11 +4,11 @@ from aides.grist import (
     ThemeLoader,
     SujetLoader,
     TypeLoader,
-    OperateurLoader,
+    OrganismeLoader,
     ZoneGeographiqueLoader,
     AideLoader,
 )
-from aides.models import Theme, Sujet, Type, Operateur, ZoneGeographique, Aide
+from aides.models import Theme, Sujet, Type, Organisme, ZoneGeographique, Aide
 
 
 @pytest.mark.django_db
@@ -142,7 +142,7 @@ def test_load_zones_geographiques(monkeypatch, zone_geographique):
     assert existing.pk == zone_geographique.pk
     assert existing.nom != "Super région"
 
-    # GIVEN the Grist API returns some Operateurs
+    # GIVEN the Grist API returns some Zones Geographiques
     def mock_list_records(*args, **kwargs):
         return 200, [
             {
@@ -212,45 +212,46 @@ def test_load_zones_geographiques(monkeypatch, zone_geographique):
 
 
 @pytest.mark.django_db
-def test_load_operateurs(monkeypatch, operateur, zone_geographique):
-    # GIVEN we have one Operateur
-    assert Operateur.objects.count() == 1
-    existing = Operateur.objects.first()
-    assert existing.pk == operateur.pk
+def test_load_organismes(monkeypatch, organisme, zone_geographique):
+    # GIVEN we have one Organisme
+    assert Organisme.objects.count() == 1
+    existing = Organisme.objects.first()
+    assert existing.pk == organisme.pk
     assert existing.nom != "Super opérateur"
 
-    # GIVEN the Grist API returns some Operateurs
+    # GIVEN the Grist API returns some Organismes
     def mock_list_records(*args, **kwargs):
         return 200, [
             {
-                "id": operateur.pk,
-                "Nom": "Super opérateur",
+                "id": organisme.pk,
+                "Nom": "Super organisme",
                 "Zones_geographiques": ["L1", zone_geographique.external_id],
             },
             {
                 "id": 2,
-                "Nom": "Super second opérateur",
+                "Nom": "Super second organisme",
                 "Zones_geographiques": ["L1", zone_geographique.external_id],
             },
         ]
 
-    loader = OperateurLoader()
+    loader = OrganismeLoader()
     monkeypatch.setattr(loader.gristapi, "list_records", mock_list_records)
 
-    # WHEN loading Operateurs
+    # WHEN loading Organismes
     loader.load()
 
-    # THEN we have 2 Operateurs
+    # THEN we have 2 Organismes
     # the existing one has been renamed
-    assert Operateur.objects.count() == 2
-    assert set(Operateur.objects.values_list("pk", flat=True)) == {operateur.pk, 2}
+    assert Organisme.objects.count() == 2
+    assert set(Organisme.objects.values_list("pk", flat=True)) == {organisme.pk, 2}
     existing.refresh_from_db()
-    assert existing.nom == "Super opérateur"
-    assert Operateur.objects.get(pk=2).nom == "Super second opérateur"
+    assert existing.nom == "Super organisme"
+    assert Organisme.objects.get(pk=2).nom == "Super second organisme"
 
 
+@pytest.mark.django_db
 def test_load_aides(
-    monkeypatch, theme, sujet, type_aide, operateur, zone_geographique, aide
+    monkeypatch, theme, sujet, type_aide, organisme, zone_geographique, aide
 ):
     # GIVEN we have one Aide
     assert Aide.objects.count() == 1
@@ -265,8 +266,8 @@ def test_load_aides(
                 "id": aide.pk,
                 "Nom": "Super aide",
                 "Types_d_aide": ["L1", 1],
-                "Operateur_principal": 1,
-                "Operateurs_autres": ["L0"],
+                "Organisme_principal": 1,
+                "Organismes_autres": ["L0"],
                 "Couverture_Geographique": Aide.CouvertureGeographique.NATIONAL,
                 "Zones_geographiques": ["L1", 1],
                 "Themes": ["L0"],
@@ -284,8 +285,8 @@ def test_load_aides(
                 "id": 2,
                 "Nom": "Super seconde aide",
                 "Types_d_aide": ["L1", 1],
-                "Operateur_principal": 1,
-                "Operateurs_autres": ["L0"],
+                "Organisme_principal": 1,
+                "Organismes_autres": ["L0"],
                 "Couverture_Geographique": Aide.CouvertureGeographique.REGIONAL,
                 "Zones_geographiques": ["L1", 1],
                 "Themes": ["L0"],

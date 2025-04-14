@@ -4,7 +4,7 @@ from .models import (
     Theme,
     Sujet,
     Type,
-    Operateur,
+    Organisme,
     ZoneGeographique,
     Aide,
 )
@@ -43,13 +43,13 @@ class TypeLoader(GristLoader):
 
 
 @register_grist_loader
-class OperateurLoader(GristLoader):
-    model = Operateur
-    table = "Ref_Operateurs"
+class OrganismeLoader(GristLoader):
+    model = Organisme
+    table = "Ref_Organisme"
     required_cols = ("Nom",)
     fields = {
-        "Nom": Operateur.nom,
-        "Zones_geographiques": Operateur.zones_geographiques,
+        "Nom": Organisme.nom,
+        "Zones_geographiques": Organisme.zones_geographiques,
     }
 
 
@@ -88,8 +88,8 @@ class AideLoader(GristLoader):
         "Date_d_ouverture": Aide.date_debut,
         "Date_de_cloture": Aide.date_fin,
         "Couverture_Geographique": Aide.couverture_geographique,
-        "Operateur_principal": Aide.operateur,
-        "Operateurs_autres": Aide.operateurs_secondaires,
+        "Organisme_principal": Aide.organisme,
+        "Organismes_autres": Aide.organismes_secondaires,
         "Themes": Aide.themes,
         "Sujets": Aide.sujets,
         "Zones_geographiques": Aide.zones_geographiques,

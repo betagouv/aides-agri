@@ -6,7 +6,7 @@ from .models import (
     Theme,
     Sujet,
     Type,
-    Operateur,
+    Organisme,
     ZoneGeographique,
     Aide,
 )
@@ -33,8 +33,8 @@ class TypeAdmin(AbstractGristModelAdmin):
     fields = ("nom", "description")
 
 
-@admin.register(Operateur)
-class OperateurAdmin(AbstractGristModelAdmin):
+@admin.register(Organisme)
+class OrganismeAdmin(AbstractGristModelAdmin):
     list_display = AbstractGristModelAdmin.list_display + ("nom",)
     fields = ("nom", "zones_geographiques")
 
@@ -54,7 +54,7 @@ class ZoneGeographiqueAdmin(AbstractGristModelAdmin):
 class AideAdmin(AbstractGristModelAdmin):
     list_display = AbstractGristModelAdmin.list_display + (
         "nom",
-        "operateur",
+        "organisme",
         "date_debut",
         "date_fin",
         "effectif_min",
@@ -68,8 +68,8 @@ class AideAdmin(AbstractGristModelAdmin):
                 "fields": [
                     "nom",
                     "types",
-                    "operateur",
-                    "operateurs_secondaires",
+                    "organisme",
+                    "organismes_secondaires",
                 ],
             },
         ),
@@ -109,4 +109,4 @@ class AideAdmin(AbstractGristModelAdmin):
         ),
     ]
 
-    list_select_related = ("operateur",)
+    list_select_related = ("organisme",)

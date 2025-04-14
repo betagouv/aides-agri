@@ -3,12 +3,13 @@ from django.db import models
 from grist_loader.models import GristModel
 
 
-class Operateur(GristModel):
+class Organisme(GristModel):
     class Meta:
-        verbose_name = "Opérateur"
-        verbose_name_plural = "Opérateurs"
+        verbose_name = "Organisme"
+        verbose_name_plural = "Organismes"
 
     nom = models.CharField(blank=True)
+    acronyme = models.CharField(blank=True)
     zones_geographiques = models.ManyToManyField("ZoneGeographique")
 
     def __str__(self):
@@ -132,11 +133,11 @@ class AideQuerySet(models.QuerySet):
             # Same departement
             models.Q(zones_geographiques=departement)
             |
-            # Operateur : same EPCI
-            models.Q(operateur__zones_geographiques__enfants__numero=code_commune)
+            # Organisme : same EPCI
+            models.Q(organisme__zones_geographiques__enfants__numero=code_commune)
             |
-            # Operateur : same commune
-            models.Q(operateur__zones_geographiques__numero=code_commune)
+            # Organisme : same commune
+            models.Q(organisme__zones_geographiques__numero=code_commune)
         )
 
 
@@ -156,9 +157,9 @@ class Aide(GristModel):
         LOCAL = "Local", "Local"
 
     nom = models.CharField(blank=True)
-    operateur = models.ForeignKey(Operateur, null=True, on_delete=models.CASCADE)
-    operateurs_secondaires = models.ManyToManyField(
-        Operateur, related_name="aides_secondaires"
+    organisme = models.ForeignKey(Organisme, null=True, on_delete=models.CASCADE)
+    organismes_secondaires = models.ManyToManyField(
+        Organisme, related_name="aides_secondaires"
     )
     types = models.ManyToManyField(Type)
     themes = models.ManyToManyField(Theme)
