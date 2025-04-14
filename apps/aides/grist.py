@@ -18,6 +18,7 @@ class ThemeLoader(GristLoader):
         "Libelle": Theme.nom,
         "Libelle_court": Theme.nom_court,
         "Biscuit2": Theme.description,
+        "Urgence": Theme.urgence,
     }
 
 

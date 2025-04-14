@@ -16,29 +16,42 @@ class Organisme(GristModel):
         return self.nom
 
 
+class ThemeQuerySet(models.QuerySet):
+    def with_aides_count(self):
+        return self.annotate(aides_count=models.Count("sujets__aides"))
+
+
 class Theme(GristModel):
     class Meta:
         verbose_name = "Thème"
         verbose_name_plural = "Thèmes"
-        ordering = ("nom",)
+
+    objects = ThemeQuerySet.as_manager()
 
     nom = models.CharField(blank=True)
     nom_court = models.CharField(blank=True)
     description = models.TextField(blank=True)
+    urgence = models.BooleanField(default=False)
 
     def __str__(self):
         return self.nom
+
+
+class SujetQuerySet(models.QuerySet):
+    def with_aides_count(self):
+        return self.annotate(aides_count=models.Count("aides"))
 
 
 class Sujet(GristModel):
     class Meta:
         verbose_name = "Sujet"
         verbose_name_plural = "Sujets"
-        ordering = ("nom",)
+
+    objects = SujetQuerySet.as_manager()
 
     nom = models.CharField(blank=True)
     nom_court = models.CharField(blank=True)
-    themes = models.ManyToManyField(Theme)
+    themes = models.ManyToManyField(Theme, related_name="sujets")
 
     def __str__(self):
         return self.nom
@@ -161,8 +174,8 @@ class Aide(GristModel):
     organismes_secondaires = models.ManyToManyField(
         Organisme, related_name="aides_secondaires"
     )
-    types = models.ManyToManyField(Type)
-    sujets = models.ManyToManyField(Sujet)
+    types = models.ManyToManyField(Type, related_name="aides")
+    sujets = models.ManyToManyField(Sujet, related_name="aides")
     promesse = models.CharField(blank=True)
     description_courte = models.TextField(blank=True)
     description_longue = models.TextField(blank=True)
@@ -175,7 +188,7 @@ class Aide(GristModel):
     couverture_geographique = models.CharField(
         choices=CouvertureGeographique, default=CouvertureGeographique.NATIONAL
     )
-    zones_geographiques = models.ManyToManyField(ZoneGeographique)
+    zones_geographiques = models.ManyToManyField(ZoneGeographique, related_name="aides")
 
     def __str__(self):
         return self.nom

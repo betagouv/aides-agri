@@ -14,17 +14,33 @@ from .models import (
 
 @admin.register(Theme)
 class ThemeAdmin(AbstractGristModelAdmin):
-    list_display = AbstractGristModelAdmin.list_display + ("nom",)
+    list_display = AbstractGristModelAdmin.list_display + (
+        "nom",
+        "urgence",
+        "aides_count",
+    )
     list_display_links = AbstractGristModelAdmin.list_display_links + ("nom",)
-    fields = ("nom", "nom_court", "description")
+    fields = ("nom", "nom_court", "description", "urgence")
+
+    def aides_count(self, obj):
+        return obj.aides_count
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).with_aides_count()
 
 
 @admin.register(Sujet)
 class SujetAdmin(AbstractGristModelAdmin):
-    list_display = AbstractGristModelAdmin.list_display + ("nom",)
+    list_display = AbstractGristModelAdmin.list_display + ("nom", "aides_count")
     list_display_links = AbstractGristModelAdmin.list_display_links + ("nom",)
     list_filter = ("themes",)
     fields = ("nom", "nom_court", "themes")
+
+    def aides_count(self, obj):
+        return obj.aides_count
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).with_aides_count()
 
 
 @admin.register(Type)
