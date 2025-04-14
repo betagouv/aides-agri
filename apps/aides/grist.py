@@ -90,7 +90,6 @@ class AideLoader(GristLoader):
         "Couverture_Geographique": Aide.couverture_geographique,
         "Organisme_principal": Aide.organisme,
         "Organismes_autres": Aide.organismes_secondaires,
-        "Themes": Aide.themes,
         "Sujets": Aide.sujets,
         "Zones_geographiques": Aide.zones_geographiques,
     }

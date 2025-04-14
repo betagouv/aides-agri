@@ -162,7 +162,6 @@ class Aide(GristModel):
         Organisme, related_name="aides_secondaires"
     )
     types = models.ManyToManyField(Type)
-    themes = models.ManyToManyField(Theme)
     sujets = models.ManyToManyField(Sujet)
     promesse = models.CharField(blank=True)
     description_courte = models.TextField(blank=True)
