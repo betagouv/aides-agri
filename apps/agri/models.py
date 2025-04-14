@@ -36,7 +36,16 @@ class GroupementProducteurs(GristModel):
     class Meta:
         verbose_name = "Groupement de producteurs"
         verbose_name_plural = "Groupement de producteurs"
-        ordering = ("-nom",)
+        ordering = ("-is_real", "nom")
 
     nom = models.CharField(max_length=100, blank=True)
     libelle = models.CharField(max_length=200, blank=True)
+    is_real = models.GeneratedField(
+        expression=models.Case(
+            models.When(libelle="", then=False),
+            default=True,
+            output_field=models.BooleanField(),
+        ),
+        output_field=models.BooleanField(),
+        db_persist=True,
+    )
