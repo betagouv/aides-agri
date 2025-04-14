@@ -32,19 +32,6 @@
     Stimulus.register("select-rich", SelectRich)
     Stimulus.register("summary-mobile", SummaryMobile)
   </script>
-
-
-  <script type="module">
-    import { Application } from "@hotwired/stimulus"
-    import { SelectRich } from "select-rich"
-    import { CheckboxGroupField } from "checkbox-group-field"
-    import { FormWithCustomFields } from "form-with-custom-fields"
-    window.Stimulus ??= Application.start()
-
-    Stimulus.register("select-rich", SelectRich)
-    Stimulus.register("checkbox-group-field", CheckboxGroupField)
-    Stimulus.register("form-with-custom-fields", FormWithCustomFields)
-  </script>
 {% endblock extra_css %}
 
 {% block h1 %}Votre exploitation.{% endblock %}
