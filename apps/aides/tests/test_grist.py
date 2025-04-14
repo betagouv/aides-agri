@@ -27,12 +27,14 @@ def test_load_themes(monkeypatch, theme):
                 "Libelle": "Super thème",
                 "Libelle_court": "Super",
                 "Biscuit2": "ouais ouais",
+                "Urgence": True,
             },
             {
                 "id": 2,
                 "Libelle": "Super second thème",
                 "Libelle_court": "Super second",
                 "Biscuit2": "ouais ouais second",
+                "Urgence": False,
             },
         ]
 
@@ -48,7 +50,10 @@ def test_load_themes(monkeypatch, theme):
     assert set(Theme.objects.values_list("pk", flat=True)) == {theme.pk, 2}
     existing.refresh_from_db()
     assert existing.nom == "Super thème"
-    assert Theme.objects.get(pk=2).nom == "Super second thème"
+    assert existing.urgence is True
+    new = Theme.objects.get(pk=2)
+    assert new.nom == "Super second thème"
+    assert new.urgence is False
 
 
 @pytest.mark.django_db

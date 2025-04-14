@@ -43,6 +43,24 @@ html {
   margin: 0;
 }
 
+#projet .fr-tile--horizontal.fr-tile--with-icon .fr-tile__img {
+  width: unset;
+  align-items: flex-start;
+}
+
+#projet .fr-tile--horizontal.fr-tile--with-icon .fr-tile__img .fr-responsive-img {
+  width: 0;
+}
+
+#projet .fr-tile--horizontal.fr-tile--with-icon .fr-tile__img::before {
+  content: "";
+  mask-image: url("/static/dsfr/dist/icons/system/alarm-warning-line.svg");
+  mask-size: cover;
+  background-color: var(--text-action-high-blue-france);
+  width: 30px;
+  height: 30px;
+}
+
 #projet .fr-tile--horizontal .fr-tile__content {
   padding-bottom: 0;
 }
