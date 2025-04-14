@@ -25,7 +25,9 @@ class HomeView(TemplateView):
         context_data = super().get_context_data(**kwargs)
         context_data.update(
             {
-                "themes": Theme.objects.all(),
+                "themes": Theme.objects.with_aides_count().order_by(
+                    "-urgence", "-aides_count"
+                ),
                 "conseillers_entreprises_card": {
                     "heading_tag": "h4",
                     "extra_classes": "fr-card--horizontal fr-border-default--red-marianne",
@@ -141,7 +143,9 @@ class Step2View(AgriMixin, TemplateView):
             {
                 "sujets": {
                     f"sujet-{sujet.pk}": sujet
-                    for sujet in Sujet.objects.filter(themes=self.theme)
+                    for sujet in Sujet.objects.with_aides_count()
+                    .filter(themes=self.theme)
+                    .order_by("-aides_count")
                 }
             }
         )
