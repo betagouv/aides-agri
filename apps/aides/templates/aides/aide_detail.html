@@ -1,0 +1,69 @@
+{% extends "ui/base.html" %}
+
+{% load static dsfr_tags %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'aides/aide_detail.css' %}">
+{% endblock extra_css %}
+
+{% block title %}{{ object.nom }}{% endblock title %}
+
+{% block content %}
+  <div class="fr-container--fluid">
+    <div class="fr-grid-row">
+      <div class="fr-col fr-col-1">
+      </div>
+      <div class="fr-col fr-col-11">
+        <h1>{{ object.nom }}</h1>
+        <div class="fr-container--fluid">
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col fr-col-12 fr-col-md-6">
+              <div class="fr-tags-group">
+                {% dsfr_tag label=object.organisme.nom %}
+                {% for sujet in object.sujets.all %}
+                  {% dsfr_tag label=sujet.nom_court %}
+                {% endfor %}
+              </div>
+              <button type="button"
+                      class="fr-btn fr-btn--icon-left fr-btn--sm fr-pl-0 fr-btn--tertiary-no-outline fr-icon-file-pdf-line"
+              >
+                Télécharger la fiche aide
+              </button>
+              <p class="fr-mt-4w">{{ object.promesse }}</p>
+              <p class="fr-mt-4w">{{ object.description_courte }}</p>
+              <a class="fr-btn fr-btn--primary"
+                 target="_blank"
+                 href="{{ object.lien }}"
+                 id="link-to-origin"
+              >
+                Postuler
+              </a>
+            </div>
+            <div id="metadata" class="fr-col fr-col-12 fr-col-md-6">
+              <div class="fr-container--fluid">
+                <div class="fr-grid-row">
+                  <div class="fr-col fr-col-12 fr-col-md-8 fr-background-action-low--blue-france fr-px-2w fr-py-1w">
+                    {% for type_aide in object.types.all %}
+                      <strong>{{ type_aide.nom }}</strong>
+                    {% endfor %}
+                  </div>
+                  <div class="fr-col fr-col-12 fr-col-md-4 fr-background-action-low--blue-france fr-px-2w fr-py-1w">
+                    {% if object.date_debut %}
+                      <p class="fr-mb-1v">Début <strong>{{ object.date_debut|date:"SHORT_DATE_FORMAT" }}</strong></p>
+                      <p>Fin <strong>{{ object.date_fin|date:"SHORT_DATE_FORMAT" }}</strong></p>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="fr-grid-row">
+                  <div class="fr-col fr-col-12 fr-background-action-low--blue-france fr-px-2w fr-py-1w">
+                    Pour l'instant je sais pas trop quoi mettre ici
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
