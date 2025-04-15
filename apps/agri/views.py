@@ -242,7 +242,7 @@ class ResultsView(AgriMixin, ListView):
                             "heading_tag": "h2",
                             "extra_classes": "fr-card--horizontal-tier fr-card--no-icon",
                             "title": aide.nom,
-                            "description": aide.description_courte,
+                            "description": aide.promesse,
                             "link": reverse("aides:aide", kwargs={"pk": aide.pk}),
                             "image_url": static("agri/images/placeholder.1x1.svg"),
                             "ratio_class": "fr-ratio-1x1",
