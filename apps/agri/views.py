@@ -38,12 +38,6 @@ class HomeView(TemplateView):
                     "label": "En cours",
                 }
             ],
-            "top_detail": {
-                "detail": {
-                    "icon_class": "fr-icon-arrow-right-line",
-                    "text": "Ministère de l’Économie x Ministère du Travail",
-                },
-            },
         },
     }
 
