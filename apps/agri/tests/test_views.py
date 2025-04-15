@@ -91,6 +91,7 @@ def test_results(
     client,
     theme,
     sujet,
+    type_aide_conseil,
     zone_geographique_commune_75001,
     zone_geographique_departement_75,
 ):

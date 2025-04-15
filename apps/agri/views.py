@@ -7,7 +7,7 @@ from django.utils.timezone import now
 from django.views.generic import TemplateView, ListView
 from django.views.generic.base import ContextMixin
 
-from aides.models import Theme, Sujet, Aide, ZoneGeographique
+from aides.models import Theme, Sujet, Aide, ZoneGeographique, Type
 
 from .models import GroupementProducteurs, Filiere
 from . import siret
@@ -237,11 +237,12 @@ class ResultsView(AgriMixin, ListView):
         context_data.update(
             {
                 "aides": {
-                    type_aide.nom: [
+                    type_aide: [
                         {
                             "heading_tag": "h2",
                             "extra_classes": "fr-card--horizontal-tier fr-card--no-icon",
                             "title": aide.nom,
+                            "description": aide.description_courte,
                             "link": "#",
                             "image_url": static("agri/images/placeholder.1x1.svg"),
                             "ratio_class": "fr-ratio-1x1",
@@ -267,29 +268,28 @@ class ResultsView(AgriMixin, ListView):
                     ]
                     for type_aide, aides in aides_by_type.items()
                 },
-                "conseillers_entreprises_card_data": {
-                    "heading_tag": "h2",
-                    "extra_classes": "fr-card--horizontal-tier fr-border-default--red-marianne fr-my-3w",
-                    "title": "Conseillers Entreprises",
-                    "description": "Le service public d’accompagnement des entreprises. Échangez avec les conseillers qui peuvent vous aider dans vos projets, vos difficultés ou les transformations nécessaires à la réussite de votre entreprise.",
-                    "link": "#",
-                    "image_url": static(
-                        "agri/images/home/illustration_conseillers_entreprise.svg"
-                    ),
-                    "ratio_class": "fr-ratio-1x1",
-                    "media_badges": [
-                        {
-                            "extra_classes": "fr-badge--green-emeraude",
-                            "label": "En cours",
-                        }
-                    ],
-                    "top_detail": {
-                        "detail": {
-                            "icon_class": "fr-icon-arrow-right-line",
-                            "text": "Ministère de l’Économie x Ministère du Travail",
-                        },
-                    },
-                },
+            }
+        )
+        type_conseil = Type.objects.get_conseil()
+        if type_conseil not in context_data["aides"]:
+            context_data["aides"][type_conseil] = []
+        context_data["aides"][type_conseil].append(
+            {
+                "heading_tag": "h2",
+                "extra_classes": "fr-card--horizontal-tier fr-card--no-icon fr-border-default--red-marianne",
+                "title": "Conseillers Entreprises",
+                "description": "Le service public d’accompagnement des entreprises. Échangez avec les conseillers qui peuvent vous aider dans vos projets, vos difficultés ou les transformations nécessaires à la réussite de votre entreprise.",
+                "link": "#",
+                "image_url": static(
+                    "agri/images/home/illustration_conseillers_entreprise.svg"
+                ),
+                "ratio_class": "fr-ratio-1x1",
+                "media_badges": [
+                    {
+                        "extra_classes": "fr-badge--green-emeraude",
+                        "label": "En cours",
+                    }
+                ],
             }
         )
         return context_data

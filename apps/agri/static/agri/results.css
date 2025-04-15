@@ -1,4 +1,4 @@
-#conseillers-entreprises img {
+.fr-card--horizontal-tier.fr-border-default--red-marianne .fr-card__img img {
   object-fit: contain;
 }
 

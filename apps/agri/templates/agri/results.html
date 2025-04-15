@@ -30,15 +30,25 @@
     </p>
   </div>
 
-  <div class="fr-container fr-p-0 fr-mb-4v">
+  <div class="fr-container fr-p-0 fr-mb-6w">
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col fr-col-12">
-        <div class="fr-accordions-group fr-mr-4w fr-mb-6w">
+        <div class="fr-accordions-group">
         {% for type_aide, aide_list in aides.items %}
           <section class="fr-accordion">
             <h3 class="fr-accordion__title">
-              <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordeon-type-{{ forloop.counter }}">
-                {{ type_aide }} ({{ aide_list|length }} dispositifs)
+              <button type="button"
+                      class="fr-accordion__btn"
+                      aria-expanded="false"
+                      aria-controls="accordeon-type-{{ forloop.counter }}"
+              >
+                {{ type_aide.nom }}
+                <span class="fr-text--xs fr-text-mention--grey fr-text--regular fr-mx-2v">
+                  {{ type_aide.description }}
+                </span>
+                <p class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon">
+                  {{ aide_list|length }} aide{{ aide_list|pluralize }} disponible{{ aide_list|pluralize }}
+                </p>
               </button>
             </h3>
             <div id="accordeon-type-{{ forloop.counter }}" class="fr-collapse">
@@ -49,21 +59,14 @@
               {% endfor %}
             </div>
           </section>
-          {% if forloop.counter == 2 or aides|length <= 2 and forloop.last %}
-            {% dsfr_card conseillers_entreprises_card_data id="conseillers-entreprises" %}
-          {% endif %}
-        {% empty %}
-          {% dsfr_card conseillers_entreprises_card_data id="conseillers-entreprises" %}
         {% endfor %}
         </div>
       </div>
     </div>
   </div>
 
-  <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-mb-6w">
-    <a href="https://jedonnemonavis.numerique.gouv.fr/Demarches/3385?button=3644" target='_blank' title="Je donne mon avis - nouvelle fenêtre">
-          <img src="https://jedonnemonavis.numerique.gouv.fr/static/bouton-blanc.svg" alt="Je donne mon avis" />
-    </a>
+  <div class="fr-highlight">
+    <p>Nous nous efforçons de recenser et mettre à jour notre catalogue qui est encore en cours de construction. Il se peut que certaines aides ne soient pas encore recensée par notre équipe. Découvrez notre méthodologie sur notre page L’approche start-up d’Etat.</p>
   </div>
 </div>
 {% endblock main_col %}
