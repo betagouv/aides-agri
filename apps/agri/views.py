@@ -3,6 +3,7 @@ from collections import defaultdict
 
 from django.db.models import Q
 from django.templatetags.static import static
+from django.urls import reverse
 from django.utils.timezone import now
 from django.views.generic import TemplateView, ListView
 from django.views.generic.base import ContextMixin
@@ -242,7 +243,7 @@ class ResultsView(AgriMixin, ListView):
                             "extra_classes": "fr-card--horizontal-tier fr-card--no-icon",
                             "title": aide.nom,
                             "description": aide.description_courte,
-                            "link": "#",
+                            "link": reverse("aides:aide", kwargs={"pk": aide.pk}),
                             "image_url": static("agri/images/placeholder.1x1.svg"),
                             "ratio_class": "fr-ratio-1x1",
                             "media_badges": [
