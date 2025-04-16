@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_htmx",
+    "procrastinate.contrib.django",
     "widget_tweaks",
     "dsfr",
     "grist_loader",
