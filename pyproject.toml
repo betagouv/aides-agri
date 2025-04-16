@@ -4,6 +4,7 @@ name = "aides-agri"
 version = "0.1.0"
 dependencies = [
   "django ~=5.1",
+  "django-anymail[brevo] ~=13.0",
   "django-dsfr ~=2.1",
   "django-grist-loader ~=0.1",
   "django-htmx>=1.23.0",
