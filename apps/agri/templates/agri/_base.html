@@ -14,7 +14,7 @@
     {# main column, nothing in left column #}
     <div class="fr-col fr-col-0 fr-col-md-3"></div>
     <div class="fr-col fr-col-12 fr-col-md-9">
-      <h1>{% block h1 %}Votre projet{% endblock %}</h1>
+      <h1>{% block h1 %}{% endblock h1 %}</h1>
     </div>
   </div>
 
@@ -43,7 +43,7 @@
           </div>
           <div class="fr-mb-3v">
             <a class="fr-link fr-link--sm" href="{% url 'agri:step-2' %}{% querystring sujets=None siret=None commune=None date_installation=None regroupements=None nafs=None tranche_effectif_salarie=None %}">
-              Explorer d'autres sujets
+              Explorer d’autres sujets
             </a>
           </div>
         {% endif %}
