@@ -22,9 +22,17 @@ class ThemeFactory(factory.django.DjangoModelFactory):
 class SujetFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Sujet
+        skip_postgeneration_save = True
 
     external_id = factory.Sequence(lambda n: n)
     nom = factory.Sequence(lambda n: f"Sujet {n}")
+
+    @factory.post_generation
+    def with_themes(self, create, extracted: int, **kwargs):
+        if not create or not extracted:
+            return
+        for i in range(0, extracted):
+            self.themes.add(ThemeFactory.create())
 
 
 class TypeFactory(factory.django.DjangoModelFactory):

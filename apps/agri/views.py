@@ -21,36 +21,34 @@ class HomeView(TemplateView):
             template_name = "agri/home.html"
         return [template_name]
 
+    extra_context = {
+        "themes": Theme.objects.with_aides_count().order_by("-urgence", "-aides_count"),
+        "conseillers_entreprises_card": {
+            "heading_tag": "h4",
+            "extra_classes": "fr-card--horizontal fr-border-default--red-marianne",
+            "title": "Conseillers Entreprises",
+            "description": "Le service public d’accompagnement des entreprises. Échangez avec les conseillers de proximité qui peuvent vous aider dans vos projets, vos difficultés ou les transformations nécessaires à la réussite de votre entreprise.",
+            "image_url": static(
+                "agri/images/home/illustration_conseillers_entreprise.svg"
+            ),
+            "media_badges": [
+                {
+                    "extra_classes": "fr-badge--green-emeraude",
+                    "label": "En cours",
+                }
+            ],
+            "top_detail": {
+                "detail": {
+                    "icon_class": "fr-icon-arrow-right-line",
+                    "text": "Ministère de l’Économie x Ministère du Travail",
+                },
+            },
+        },
+    }
+
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data.update(
-            {
-                "themes": Theme.objects.with_aides_count().order_by(
-                    "-urgence", "-aides_count"
-                ),
-                "conseillers_entreprises_card": {
-                    "heading_tag": "h4",
-                    "extra_classes": "fr-card--horizontal fr-border-default--red-marianne",
-                    "title": "Conseillers Entreprises",
-                    "description": "Le service public d’accompagnement des entreprises. Échangez avec les conseillers de proximité qui peuvent vous aider dans vos projets, vos difficultés ou les transformations nécessaires à la réussite de votre entreprise.",
-                    "image_url": static(
-                        "agri/images/home/illustration_conseillers_entreprise.svg"
-                    ),
-                    "media_badges": [
-                        {
-                            "extra_classes": "fr-badge--green-emeraude",
-                            "label": "En cours",
-                        }
-                    ],
-                    "top_detail": {
-                        "detail": {
-                            "icon_class": "fr-icon-arrow-right-line",
-                            "text": "Ministère de l’Économie x Ministère du Travail",
-                        },
-                    },
-                },
-            }
-        )
+
         if self.request.htmx and self.request.GET.get("more_themes", None):
             # show more themes, partial template
             context_data["themes"] = context_data["themes"][4:]
@@ -60,6 +58,7 @@ class HomeView(TemplateView):
         else:
             # show all themes, because more_themes was asked, but on a new page
             pass
+
         return context_data
 
 
