@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{% static 'ui/base.css' %}">
     {% block extra_css %}{% endblock extra_css %}
 
-    <title>{{ title }} — {{ SITE_CONFIG.site_title }}</title>
+    <title>{% block title %}{% endblock title %} — {{ SITE_CONFIG.site_title }}</title>
 
     <meta name="format-detection"
           content="telephone=no,date=no,address=no,email=no,url=no">
