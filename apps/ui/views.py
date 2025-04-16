@@ -1,3 +1,4 @@
+from django.shortcuts import reverse
 from django.views.generic import TemplateView
 
 
@@ -8,6 +9,15 @@ class SelectRichView(TemplateView):
         context_data = super().get_context_data(**kwargs)
         context_data.update(
             {
+                "breadcrumb_data": {
+                    "links": [
+                        {
+                            "url": reverse("ui:components"),
+                            "title": "Composants",
+                        },
+                    ],
+                    "current": "Liste déroulante riche",
+                },
                 "select_rich_single": [
                     {
                         "label": "Sélection simple, recherche interne",

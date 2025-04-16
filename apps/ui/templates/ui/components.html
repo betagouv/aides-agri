@@ -1,0 +1,14 @@
+{% extends "ui/base.html" %}
+
+{% block title %}Composants graphiques réutilisables en extension du DSFR{% endblock title %}
+
+{% block breadcrumb %}{% endblock breadcrumb %}
+
+{% block content %}
+  <h1>Composants graphiques réutilisables en extension du DSFR</h1>
+  <nav role="navigation">
+    <ul>
+      <li><a href="{% url 'ui:component-select-rich' %}">Liste déroulante riche</a></li>
+    </ul>
+  </nav>
+{% endblock content %}
