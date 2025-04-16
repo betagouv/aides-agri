@@ -2,16 +2,18 @@ import datetime
 from collections import defaultdict
 
 from django.db.models import Q
+from django.shortcuts import render
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.timezone import now
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, View
 from django.views.generic.base import ContextMixin
 
 from aides.models import Theme, Sujet, Aide, ZoneGeographique, Type
 
 from .models import GroupementProducteurs, Filiere
 from . import siret
+from . import tasks
 
 
 class HomeView(TemplateView):
@@ -350,3 +352,13 @@ class SearchCommuneView(TemplateView):
         else:
             context_data.update({"errors": ["Veuillez saisir une recherche"]})
         return context_data
+
+
+class SendResultsByMailView(View):
+    def post(self, request, *args, **kwargs):
+        tasks.send_results_by_mail.defer(
+            base_url=f"{self.request.scheme}://{self.request.headers['host']}",
+            results_querystring=self.request.POST.get("results_url"),
+            email=self.request.POST.get("email"),
+        )
+        return render(request, "agri/_partials/send-results-by-mail-ok.html")
