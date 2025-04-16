@@ -15,25 +15,13 @@
     <link rel="stylesheet" href="{% static 'ui/base.css' %}">
     <link rel="stylesheet" href="{% static 'agri/home.css' %}">
 
-    <title>
-      {% if title and SITE_CONFIG.site_title %}
-        {{ title }} — {{ SITE_CONFIG.site_title }}
-      {% elif title %}
-        {{ title }}
-      {% elif SITE_CONFIG.site_title %}
-        {{ SITE_CONFIG.site_title }}
-      {% else %}
-        {% translate "Untitled page" %}
-      {% endif %}
-    </title>
+    <title>{{ SITE_CONFIG.site_title }}</title>
     <meta name="format-detection"
           content="telephone=no,date=no,address=no,email=no,url=no">
 
     <script type="module" src="{% static 'vendor/htmx.esm.js' %}"></script>
   </head>
   <body>
-    {% dsfr_skiplinks skiplinks %}
-
     {% include 'ui/blocks/header.html' %}
 
     {% dsfr_theme_modale %}
@@ -41,6 +29,7 @@
     {% if SITE_CONFIG.notice_title or SITE_CONFIG.notice_description %}
       {% dsfr_notice title=SITE_CONFIG.notice_title description=SITE_CONFIG.notice_description link=SITE_CONFIG.notice_link type=SITE_CONFIG.notice_type icon=SITE_CONFIG.notice_icon_class is_collapsible=SITE_CONFIG.notice_is_collapsible %}
     {% endif %}
+
     <main id="content">
       <div class="fr-background-contrast--info fr-pb-8w">
         <div id="intro" class="fr-container--fluid">
@@ -58,62 +47,62 @@
       <div>
         <div class="fr-container">
           <section id="proposition" class="fr-container fr-mt-n4w fr-mt-md-n12w fr-mb-6w fr-py-3w">
-            <h3 class="fr-text-title--blue-france">{{ SITE_CONFIG.site_title }}, c'est :</h3>
+            <h3 class="fr-text-title--blue-france">{{ SITE_CONFIG.site_title }}, c’est :</h3>
 
-        <div class="fr-grid-row fr-grid-row--space-around">
-          <div class="fr-col-12 fr-col-md-3 fr-py-3w fr-py-md-0 fr-px-3w">
-            <strong>Un outil d’aide à la décision :</strong>
-            accédez rapidement à une pré-sélection personnalisée de fiches d’aide synthétiques.
-          </div>
-          <div class="fr-col-12 fr-col-md-3 fr-py-3w fr-py-md-0 fr-px-3w">
-            <strong>Une centralisation des aides publiques</strong>
-            à destination des agriculteurs mis à jour en continu.
-          </div>
-          <div class="fr-col-12 fr-col-md-3 fr-py-3w fr-py-md-0 fr-px-3w">
-            <strong>Une orientation</strong>
-            vers les organismes pertinents : déposez votre dossier ou rentrez en contact avec un conseiller.
-          </div>
-        </div>
-      </section>
-    </div>
-  </div>
-  <div class="fr-background-contrast--info fr-py-4w">
-    <div class="fr-container">
-      <div id="projet" class="fr-grid-row fr-grid-row--center">
-        <section class="fr-col fr-col-md-12">
-          <h3 class="fr-h1">Votre projet.</h3>
-          <h4 class="fr-h6">Parmi ces thèmes lequel correspond le mieux à votre besoin ?</h4>
-          <div class="fr-container--fluid">
-            <div id="themes" class="fr-grid-row fr-grid-row--gutters">
-              {% include "agri/_partials/home_themes.html" with themes=themes only %}
-            </div>
-            <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-mt-2w">
-              <div class="fr-col-12 fr-col-sm-4" id="cta-more-themes">
-                <a class="fr-btn"
-                   href="{% url 'agri:home' %}?more_themes=1"
-                   hx-boost="true"
-                   hx-target="#themes"
-                   hx-swap="beforeend show:none"
-                   hx-push-url="false"
-                   hx-on::after-request="this.parentElement.removeChild(this)"
-                >Voir plus de thèmes</a>
+            <div class="fr-grid-row fr-grid-row--space-around">
+              <div class="fr-col-12 fr-col-md-3 fr-py-3w fr-py-md-0 fr-px-3w">
+                <strong>Un outil d’aide à la décision :</strong>
+                accédez rapidement à une pré-sélection personnalisée de fiches d’aide synthétiques.
+              </div>
+              <div class="fr-col-12 fr-col-md-3 fr-py-3w fr-py-md-0 fr-px-3w">
+                <strong>Une centralisation des aides publiques</strong>
+                à destination des agriculteurs mis à jour en continu.
+              </div>
+              <div class="fr-col-12 fr-col-md-3 fr-py-3w fr-py-md-0 fr-px-3w">
+                <strong>Une orientation</strong>
+                vers les organismes pertinents : déposez votre dossier ou rentrez en contact avec un conseiller.
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
-    </div>
-  </div>
-  <div>
-    <div class="fr-container">
-      <section id="conseillers-entreprise" class="fr-container fr-py-5w fr-px-md-5w">
-        <h3 class="fr-h2">Vous souhaitez parler directement à un conseiller ?</h3>
-        {% dsfr_card conseillers_entreprises_card %}
-      </section>
-    </div>
-  </div>
-</main>
+      <div class="fr-background-contrast--info fr-py-4w">
+        <div class="fr-container">
+          <div id="projet" class="fr-grid-row fr-grid-row--center">
+            <section class="fr-col fr-col-md-12">
+              <h3 class="fr-h1">Votre projet.</h3>
+              <h4 class="fr-h6">Parmi ces thèmes lequel correspond le mieux à votre besoin ?</h4>
+              <div class="fr-container--fluid">
+                <div id="themes" class="fr-grid-row fr-grid-row--gutters">
+                  {% include "agri/_partials/home_themes.html" with themes=themes only %}
+                </div>
+                <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-mt-2w">
+                  <div class="fr-col-12 fr-col-sm-4" id="cta-more-themes">
+                    <a class="fr-btn"
+                       href="{% url 'agri:home' %}?more_themes=1"
+                       hx-boost="true"
+                       hx-target="#themes"
+                       hx-swap="beforeend show:none"
+                       hx-push-url="false"
+                       hx-on::after-request="this.parentElement.removeChild(this)"
+                    >Voir plus de thèmes</a>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="fr-container">
+          <section id="conseillers-entreprise" class="fr-container fr-py-5w fr-px-md-5w">
+            <h3 class="fr-h2">Vous souhaitez parler directement à un conseiller ?</h3>
+            {% dsfr_card conseillers_entreprises_card %}
+          </section>
+        </div>
+      </div>
+    </main>
 
-{% include "ui/blocks/footer.html" %}
-</body>
+    {% include "ui/blocks/footer.html" %}
+  </body>
 </html>

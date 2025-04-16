@@ -34,7 +34,8 @@
   </script>
 {% endblock extra_css %}
 
-{% block h1 %}Votre exploitation.{% endblock %}
+{% block title %}Votre exploitation{% endblock title %}
+{% block h1 %}Votre exploitation.{% endblock h1 %}
 
 {% block action %}{% url 'agri:results' %}{% endblock action %}
 
@@ -54,7 +55,7 @@
 <div class="fr-grid-row">
   <fieldset class="fr-fieldset fr-col">
     <div class="fr-fieldset__element fr-mb-3w">
-      <label for="input-effectif" class="fr-label fr-mb-2v">Effectif de l'exploitation</label>
+      <label for="input-effectif" class="fr-label fr-mb-2v">Effectif de l’exploitation</label>
       {% for code, label in mapping_tranches_effectif.items %}
         {% if code == etablissement.tranche_effectif_salarie %}
           {% dsfr_tag label=label is_dismissable=True onclick="this.nextElementSibling.classList.remove('fr-hidden')" %}
@@ -70,7 +71,7 @@
       {% ui_select_rich_multi label="Filières" name="filieres" required=True options=filieres initials=filieres_initials searchable=True search_placeholder="élevage, légumes, etc." with_tags=True helper=filieres_helper %}
     </div>
     <div class="fr-fieldset__element">
-      {% ui_checkbox_group_field label="Faites-vous partie d'un ou plusieurs regroupements ?" name="regroupements" options=groupements error_message="Ce champ est requis pour passer à la suite." %}
+      {% ui_checkbox_group_field label="Faites-vous partie d’un ou plusieurs regroupements ?" name="regroupements" options=groupements error_message="Ce champ est requis pour passer à la suite." %}
     </div>
   </fieldset>
 </div>
