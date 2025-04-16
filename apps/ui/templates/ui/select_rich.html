@@ -23,6 +23,12 @@
   </script>
 {% endblock extra_css %}
 
+{% block extra_head_js %}
+<script type="module" src="{% static 'vendor/htmx.esm.js' %}"></script>
+{% endblock extra_head_js %}
+
+{% block title %}Liste déroulante riche{% endblock title %}
+
 {% block content %}
 <h1>Présentation du composant Liste déroulante riche</h1>
 
@@ -53,7 +59,8 @@
           <li>✅ Possibilité de <strong>filtrer les options</strong> via un champ de recherche, en direct de la frappe</li>
           <li>✅ Possibilité de <strong>charger les options en AJAX</strong> via une barre de recherche</li>
           <li>✅ ✨ Supplément : possibilité d'afficher les options sélectionnées <strong>sous forme de tags supprimables</strong> au-dessus de la liste déroulante</li>
-          <li>✅ Possibilité de <strong>marquer le champ comme requis</strong>, état d'erreur le cas échéant</li>
+          <li>✅ Possibilité de <strong>marquer le champ comme requis</strong>, état d'erreur conforme au DSFR le cas échéant</li>
+          <li>✅ Gestion correcte du thème sombre du DSFR</li>
           <li>🚧 Accessibilité : navigation au clavier partiellement possible</li>
           <li>⚠️ Accessibilité : gestion des lecteurs d'écran pas du tout vérifiée</li>
         </ul>
@@ -183,7 +190,6 @@
 {% endblock content %}
 
 {% block extra_js %}
-<script type="module" src="{% static 'vendor/htmx.esm.js' %}"></script>
 <script>
 // Fonction de démonstration des valeurs des champs
 updateValueAsString = elt => {
