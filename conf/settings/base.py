@@ -22,9 +22,7 @@ APPS_DIR = f"{str(BASE_DIR)}/apps"
 sys.path.append(APPS_DIR)
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
+ENVIRONMENT = environ.get("ENVIRONMENT")
 SECRET_KEY = environ.get("SECRET_KEY")
 
 DEBUG = False
@@ -75,6 +73,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "dsfr.context_processors.site_config",
+                "ui.context_processors.ui_tools_tokens",
             ],
         },
     },

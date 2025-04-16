@@ -9,6 +9,7 @@ dependencies = [
   "django-htmx>=1.23.0",
   "psycopg[binary] ~=3.0",
   "requests ~=2.32",
+  "sentry-sdk[django] ~=2.26",
 ]
 
 [dependency-groups]

@@ -4,6 +4,9 @@
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'ui/base.css' %}">
+
+  {% if SENTRY_DSN %}{% include "ui/blocks/sentry.html" %}{% endif %}
+  {% if MATOMO_SITE_ID %}{% include "ui/blocks/matomo.html" %}{% endif %}
 {% endblock extra_css %}
 
 {% block breadcrumb %}{% endblock %}
