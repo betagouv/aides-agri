@@ -358,11 +358,21 @@ class SearchCommuneView(TemplateView):
         return context_data
 
 
-class SendResultsByMailView(View):
+class SendResultsByMailView(ResultsMixin, View):
     def post(self, request, *args, **kwargs):
         tasks.send_results_by_mail.defer(
-            base_url=f"{self.request.scheme}://{self.request.headers['host']}",
-            results_querystring=self.request.POST.get("results_url"),
             email=self.request.POST.get("email"),
+            base_url=f"{self.request.scheme}://{self.request.headers['host']}",
+            theme_id=self.theme.pk,
+            sujets_ids=[s.pk for s in self.sujets],
+            etablissement={
+                k: v for k, v in self.etablissement.items() if k in ("siret", "nom")
+            },
+            commune_id=self.commune.pk,
+            date_installation=self.date_installation.isoformat(),
+            effectif=(self.code_effectif, siret.mapping_effectif[self.code_effectif]),
+            filieres_ids=[f.pk for f in self.filieres],
+            groupements_ids=[g.pk for g in self.groupements],
+            aides_ids=[a.pk for a in self.get_results()],
         )
         return render(request, "agri/_partials/send-results-by-mail-ok.html")

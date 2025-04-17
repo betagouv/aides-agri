@@ -1,0 +1,87 @@
+{% load static %}
+<mjml>
+   <mj-head>
+     <mj-font name="Marianne" href="{{ base_url }}{% static 'dsfr/dist/core/style/typography/standalone/font-face.css' %}" />
+     <mj-preview>
+       Votre recherche Aides Agri pour {{ theme.nom_court }},
+       {% for sujet in sujet %}{{ sujet.nom_court }}, {% endfor %}
+     </mj-preview>
+   </mj-head>
+  <mj-body>
+    <mj-section padding="5px 0">
+      <mj-group>
+        <mj-column width="50%">
+          <mj-image alt="Logo du Ministère de l’Agriculture et de la Souveraineté Alimentaire"
+                    width="300px"
+                    src="{{ base_url }}{% static 'ui/logos/mail/masa.png' %}" />
+        </mj-column>
+        <mj-column width="50%">
+          <mj-image alt="Logo Aides Agri"
+                    width="300px"
+                    src="" />
+        </mj-column>
+      </mj-group>
+    </mj-section>
+    <mj-section padding="5px 0">
+      <mj-column>
+        <mj-text font-family="Marianne, Arial">Bonjour,</mj-text>
+        <mj-text font-family="Marianne, Arial">Vous venez d’effectuer sur le site Aides Agri un parcours de recherche d’aides pour votre exploitation agricole.</mj-text>
+        <mj-text font-family="Marianne, Arial">
+          Voici les aides que nous avions sélectionné pour vous :
+          <ul>
+            {% for aide in aides %}
+              <li><a href="{% url 'aides:aide' pk=aide.pk %}">{{ aide.nom }}</a></li>
+            {% endfor %}
+          </ul>
+        </mj-text>
+        <mj-text font-family="Marianne, Arial">
+          Votre recherche, que vous pouvez retrouver actualisée en suivant <strong><a href="{{ link }}">ce lien</a></strong>, concernait :
+          <ul>
+            <li><strong>Thème</strong> : {{ theme.nom_court }}</li>
+            <li>
+              <strong>Sujets</strong> :
+              {% for sujet in sujets %}
+                {{ sujet.nom_court }}{% if not forloop.last %},{% endif %}
+              {% endfor %}
+            </li>
+            <li>
+              <strong>Exploitation</strong> : {{ etablissement.nom }} (SIRET {{ etablissement.siret }})
+            </li>
+            <li>
+              <strong>Commune</strong> : {{ commune.nom }} ({{ commune.code_postal }})
+            </li>
+            <li>
+              <strong>Date d’installation</strong> : {{ date_installation|date:"SHORT_DATE_FORMAT" }}
+            </li>
+            <li>
+              <strong>Effectif</strong> : {{ effectif }}
+            </li>
+            <li>
+              <strong>Filières</strong> :
+              {% for filiere in filieres %}
+                {{ filiere.nom }}{% if not forloop.last %},{% endif %}
+              {% endfor %}
+            </li>
+            <li>
+              <strong>Regroupements de producteurs</strong> :
+              {% for groupement in groupements %}
+                {{ groupement.nom }}{% if not forloop.last %},{% endif %}
+              {% endfor %}
+            </li>
+          </ul>
+        </mj-text>
+        <mj-text font-family="Marianne, Arial">
+          Nous nous efforçons de recenser et mettre à jour notre catalogue en construction. Il se peut que certaines aides ne soient pas encore recensées par notre équipe.
+          Vous pouvez toujours nous contacter à l’adresse suivante : <a href="mailto:aides-agri@beta.gouv.fr">aides-agri@beta.gouv.fr</a>
+        </mj-text>
+        <mj-text font-family="Marianne, Arial">Bonne journée,</mj-text>
+        <mj-text font-family="Marianne, Arial">L’équipe Aides Agri</mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section padding="5px 0">
+      <mj-column>
+        <mj-text font-family="Marianne, Arial">Si cet e-mail ne s’affiche pas correctement, vous pouvez le lire dans votre navigateur en suivant <a href="#">ce lien</a>.</mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
