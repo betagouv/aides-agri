@@ -22,13 +22,12 @@
       <div class="fr-col-12 fr-col-md-8 fr-col-lg-7">
         <div class="fr-modal__body">
           <form method="post"
-                action="{% url 'agri:send-results-by-mail' %}"
+                action="{% url 'agri:send-results-by-mail' %}{% querystring %}"
                 hx-boost="true"
                 hx-target="#modal-send-by-mail-content"
                 hx-push-url="false"
           >
             {% csrf_token %}
-            <input type="hidden" name="results_url" value="{% querystring %}">
             <div class="fr-modal__header">
               <button class="fr-btn--close fr-btn" aria-controls="modal-send-by-mail">Fermer</button>
             </div>
