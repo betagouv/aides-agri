@@ -40,9 +40,6 @@ with open(
             "min": row[2],
             "max": row[3],
         }
-        if row[0] == "null":
-            mapping_effectif[None] = mapping_effectif[row[0]]
-            mapping_effectif_complete[None] = mapping_effectif_complete[row[0]]
 
 
 # /!\ this code block is expensive, please make sure it's executed at application startup
@@ -92,6 +89,8 @@ def get(query: str) -> dict:
         if etablissement["nom_commercial"]
         else societe["nom_complet"]
     )
+    if etablissement["tranche_effectif_salarie"] is None:
+        etablissement["tranche_effectif_salarie"] = "null"
     for key in etablissement:
         if isinstance(key, str) and key.startswith("date_") and etablissement[key]:
             etablissement[key] = datetime.date.fromisoformat(etablissement[key])
