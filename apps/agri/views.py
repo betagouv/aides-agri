@@ -63,12 +63,12 @@ class AgriMixin(ContextMixin):
     STEP = None
     theme = None
     sujets = []
-    siret = None
+    etablissement = None
     commune = None
     date_installation = None
     filieres = []
     code_effectif = None
-    regroupements = []
+    groupements = []
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -78,19 +78,24 @@ class AgriMixin(ContextMixin):
         sujets_ids = request.GET.getlist("sujets", [])
         if sujets_ids:
             self.sujets = Sujet.objects.filter(pk__in=sujets_ids)
-        self.siret = request.GET.get("siret", None)
-        self.commune = request.GET.get("commune", None)
-        self.filieres = request.GET.getlist("filieres", [])
+        code_siret = request.GET.get("siret", None)
+        if code_siret:
+            self.etablissement = siret.get(code_siret)
+        code_commune = request.GET.get("commune", None)
+        if code_commune:
+            self.commune = ZoneGeographique.objects.communes().get(numero=code_commune)
         self.code_effectif = request.GET.get("tranche_effectif_salarie", None)
-        if not self.code_effectif:
-            self.code_effectif = None
-        self.regroupements = request.GET.getlist("regroupements", [])
         date_installation = request.GET.get("date_installation", None)
-        self.date_installation = (
-            datetime.date.fromisoformat(date_installation)
-            if date_installation
-            else None
-        )
+        if date_installation:
+            self.date_installation = datetime.date.fromisoformat(date_installation)
+        filieres_ids = request.GET.getlist("filieres", [])
+        if filieres_ids:
+            self.filieres = Filiere.objects.filter(pk__in=filieres_ids)
+        groupements_ids = request.GET.getlist("regroupements", [])
+        if groupements_ids:
+            self.groupements = GroupementProducteurs.objects.filter(
+                pk__in=groupements_ids
+            )
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -98,21 +103,16 @@ class AgriMixin(ContextMixin):
             {
                 "summary_theme": self.theme,
                 "summary_sujets": self.sujets,
-                "summary_siret": self.request.GET.get("siret", None),
-                "filieres": self.filieres,
-                "summary_filieres": Filiere.objects.filter(pk__in=self.filieres),
-                "summary_date_installation": self.date_installation,
-                "summary_commune": ZoneGeographique.objects.communes().get(
-                    numero=self.commune
-                )
-                if self.commune
+                "summary_siret": self.etablissement.get("siret")
+                if self.etablissement
                 else None,
+                "summary_filieres": self.filieres,
+                "summary_date_installation": self.date_installation,
+                "summary_commune": self.commune,
                 "summary_effectif": siret.mapping_effectif.get(self.code_effectif, None)
                 if self.code_effectif
                 else None,
-                "summary_regroupements": GroupementProducteurs.objects.filter(
-                    pk__in=self.regroupements
-                ),
+                "summary_regroupements": self.groupements,
             }
         )
 
@@ -159,13 +159,12 @@ class Step4View(AgriMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        etablissement = siret.get(self.siret)
         context_data.update(
             {
-                "etablissement": etablissement,
+                "etablissement": self.etablissement,
                 "categories_juridiques": siret.mapping_categories_juridiques,
                 "commune": ZoneGeographique.objects.communes().get(
-                    numero=etablissement.get("commune")
+                    numero=self.etablissement.get("commune")
                 ),
             }
         )
@@ -178,8 +177,7 @@ class Step5View(AgriMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        etablissement = siret.get(self.request.GET.get("siret", ""))
-        naf = etablissement.get("activite_principale", "")
+        naf = self.etablissement.get("activite_principale", "")
         if naf[-1].isalpha():
             naf = naf[:-1]
         filiere = Filiere.objects.filter(code_naf=naf).first()
@@ -187,7 +185,8 @@ class Step5View(AgriMixin, TemplateView):
             {
                 "mapping_naf": siret.mapping_naf_complete_unique,
                 "mapping_tranches_effectif": siret.mapping_effectif,
-                "etablissement": etablissement,
+                "code_effectif": self.code_effectif,
+                "etablissement": self.etablissement,
                 "groupements": {
                     pk: nom
                     for pk, nom in GroupementProducteurs.objects.values_list(
@@ -208,10 +207,8 @@ class Step5View(AgriMixin, TemplateView):
         return context_data
 
 
-class ResultsView(AgriMixin, ListView):
-    template_name = "agri/results.html"
-
-    def get_queryset(self):
+class ResultsMixin(AgriMixin):
+    def get_results(self):
         return (
             Aide.objects.by_sujets(self.sujets)
             .by_zone_geographique(self.commune)
@@ -223,6 +220,13 @@ class ResultsView(AgriMixin, ListView):
             .prefetch_related("zones_geographiques")
             .order_by("-date_fin")
         )
+
+
+class ResultsView(ResultsMixin, ListView):
+    template_name = "agri/results.html"
+
+    def get_queryset(self):
+        return self.get_results()
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)

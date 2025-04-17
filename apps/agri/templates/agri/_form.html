@@ -17,9 +17,6 @@
   {% if summary_date_installation %}
     <input type="hidden" name="date_installation" value="{{ summary_date_installation|date:"c" }}">
   {% endif %}
-  {% if summary_date_installation %}
-    <input type="hidden" name="date_installation" value="{{ summary_date_installation|date:"c" }}">
-  {% endif %}
   {% for naf in codes_naf %}
     <input type="hidden" name="nafs" value="{{ naf }}">
   {% endfor %}
