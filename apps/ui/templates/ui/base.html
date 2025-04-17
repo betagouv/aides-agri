@@ -1,20 +1,59 @@
-{% extends "dsfr/base.html" %}
-
 {% load static %}
 
-{% block extra_css %}
-  <link rel="stylesheet" href="{% static 'ui/base.css' %}">
+{% load i18n static dsfr_tags %}
+<!DOCTYPE html>
+<html lang="fr"
+      data-fr-scheme="system"
+      {% if SITE_CONFIG.mourning %}data-fr-mourning{% endif %}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    {% dsfr_favicon %}
 
-  {% if SENTRY_DSN %}{% include "ui/blocks/sentry.html" %}{% endif %}
-  {% if MATOMO_SITE_ID %}{% include "ui/blocks/matomo.html" %}{% endif %}
-{% endblock extra_css %}
+    {% dsfr_css %}
+    <link rel="stylesheet" href="{% static 'ui/base.css' %}">
+    {% block extra_css %}{% endblock extra_css %}
 
-{% block breadcrumb %}{% endblock %}
+    <title>{% block title %}{% endblock title %} — {{ SITE_CONFIG.site_title }}</title>
 
-{% block header %}
-  {% include "ui/blocks/header.html" %}
-{% endblock header %}
+    <meta name="format-detection"
+          content="telephone=no,date=no,address=no,email=no,url=no">
 
-{% block footer %}
-  {% include "ui/blocks/footer.html" %}
-{% endblock footer %}
+    {% block opengraph %}{% endblock opengraph %}
+
+    {% if SENTRY_DSN %}{% include "ui/blocks/sentry.html" %}{% endif %}
+    {% if MATOMO_SITE_ID %}{% include "ui/blocks/matomo.html" %}{% endif %}
+    {% block extra_head_js %}{% endblock extra_head_js %}
+  </head>
+  <body hx-headers='{"x-csrftoken": "{{ csrf_token }}"}'>
+    {% block skiplinks %}
+      {% dsfr_skiplinks skiplinks %}
+    {% endblock skiplinks %}
+
+    {% include "ui/blocks/header.html" %}
+
+    {% dsfr_theme_modale %}
+    {% block modals %}{% endblock modals %}
+
+    {% if SITE_CONFIG.notice_title or SITE_CONFIG.notice_description %}
+      {% dsfr_notice title=SITE_CONFIG.notice_title description=SITE_CONFIG.notice_description link=SITE_CONFIG.notice_link type=SITE_CONFIG.notice_type icon=SITE_CONFIG.notice_icon_class is_collapsible=SITE_CONFIG.notice_is_collapsible %}
+    {% endif %}
+
+    <div class="fr-container fr-mt-4w fr-mb-6w">
+      {% block breadcrumb %}
+        {% dsfr_breadcrumb %}
+      {% endblock breadcrumb %}
+      <main id="content" role="main">
+        {% block content %}{% endblock content %}
+      </main>
+    </div>
+
+    {% block footer %}
+      {% include "ui/blocks/footer.html" %}
+    {% endblock footer %}
+
+    {% dsfr_js nonce=request.csp_nonce %}
+    {% block extra_js %}{% endblock extra_js %}
+  </body>
+</html>

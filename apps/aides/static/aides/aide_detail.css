@@ -1,0 +1,10 @@
+#metadata .fr-col {
+  border: 2px solid var(--grey-1000-50);
+}
+
+@media print {
+  #footer,
+  .fr-btn {
+    display: none;
+  }
+}

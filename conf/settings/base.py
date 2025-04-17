@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "anymail",
     "django_htmx",
     "procrastinate.contrib.django",
     "widget_tweaks",
@@ -166,3 +167,6 @@ LOGGING = {
         "level": "WARNING",
     },
 }
+
+# Email
+DEFAULT_FROM_EMAIL = "aides-agri@beta.gouv.fr"

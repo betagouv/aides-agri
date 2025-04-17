@@ -1,3 +1,5 @@
+import os
+
 from .default import *  # noqa
 
 
@@ -22,3 +24,10 @@ INTERNAL_IPS = [
 ]
 
 LOGGING = {}
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "sandbox.smtp.mailtrap.io"
+EMAIL_PORT = 465
+EMAIL_HOST_USER = os.getenv("MAILTRAP_USER")
+EMAIL_HOST_PASSWORD = os.getenv("MAILTRAP_PASSWORD")
+EMAIL_USE_TLS = True

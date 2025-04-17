@@ -9,6 +9,7 @@ from .views import (
     ResultsView,
     SearchEtablissementView,
     SearchCommuneView,
+    SendResultsByMailView,
 )
 
 
@@ -24,6 +25,11 @@ urlpatterns = [
         "trouver-mon-entreprise",
         SearchEtablissementView.as_view(),
         name="search-etablissement",
+    ),
+    path(
+        "envoyer-les-resultats-par-courriel",
+        SendResultsByMailView.as_view(),
+        name="send-results-by-mail",
     ),
     path("trouver-ma-commune", SearchCommuneView.as_view(), name="search-commune"),
 ]

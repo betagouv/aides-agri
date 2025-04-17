@@ -38,10 +38,9 @@
   <script type="module" src="{% static 'vendor/htmx.esm.js' %}"></script>
 {% endblock extra_js %}
 
-{% block h1 %}Votre exploitation.{% endblock %}
-
-{% block h2 %}Afin de vous proposer des aides adéquates, nous avons besoin d’en savoir un peu plus sur votre
-  exploitation.{% endblock %}
+{% block title %}Votre exploitation{% endblock title %}
+{% block h1 %}Votre exploitation.{% endblock h1 %}
+{% block h2 %}Afin de vous proposer des aides adéquates, nous avons besoin d’en savoir un peu plus sur votre exploitation.{% endblock %}
 
 {% block action %}{% url 'agri:step-5' %}{% endblock action %}
 
@@ -54,7 +53,7 @@
 {% block form %}
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col">
-    <fieldset class="fr-fieldset" aria-label="SIRET de l'entreprise">
+    <fieldset class="fr-fieldset" aria-label="SIRET de l’entreprise">
       <div class="fr-fieldset__element">
         <div class="fr-select-rich fr-input-group"
              id="select-rich-siret"
@@ -69,7 +68,7 @@
              hx-disinherit="*"
         >
          <label class="fr-label fr-mb-1w">
-            Recherchez votre entreprise (SIRET, SIREN, nom, etc.)
+            Recherchez votre entreprise (nom d’exploitation, SIRET, SIREN, etc.)
             <span class="fr-hint-text">ex : "Maraichage Carpentras" ou "130 025 265 00013"</span>
           </label>
           <div class="fr-search-bar fr-my-2w" role="search">

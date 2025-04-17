@@ -139,10 +139,8 @@ class AideQuerySet(models.QuerySet):
     def by_types(self, types: Type):
         return self.filter(types__contains=types)
 
-    def by_zone_geographique(self, code_commune: str) -> models.QuerySet:
-        departement = ZoneGeographique.objects.get(
-            type=ZoneGeographique.Type.COMMUNE, numero=code_commune
-        ).parent
+    def by_zone_geographique(self, commune: ZoneGeographique) -> models.QuerySet:
+        departement = commune.parent
         return self.filter(
             # Nationales
             models.Q(couverture_geographique=Aide.CouvertureGeographique.NATIONAL)
@@ -154,10 +152,10 @@ class AideQuerySet(models.QuerySet):
             models.Q(zones_geographiques=departement)
             |
             # Organisme : same EPCI
-            models.Q(organisme__zones_geographiques__enfants__numero=code_commune)
+            models.Q(organisme__zones_geographiques__enfants=commune)
             |
             # Organisme : same commune
-            models.Q(organisme__zones_geographiques__numero=code_commune)
+            models.Q(organisme__zones_geographiques=commune)
         )
 
 

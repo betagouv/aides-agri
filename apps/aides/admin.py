@@ -99,7 +99,6 @@ class AideAdmin(AbstractGristModelAdmin):
             "Catégorisation",
             {
                 "fields": [
-                    "themes",
                     "sujets",
                 ],
             },

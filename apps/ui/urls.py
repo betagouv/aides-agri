@@ -11,7 +11,14 @@ from .views import (
 app_name = "ui"
 urlpatterns = [
     path("", TemplateView.as_view(template_name="ui/base.html"), name="home"),
-    path("components", SelectRichView.as_view(), name="components"),
+    path(
+        "components",
+        TemplateView.as_view(template_name="ui/components.html"),
+        name="components",
+    ),
+    path(
+        "components/select-rich", SelectRichView.as_view(), name="component-select-rich"
+    ),
     path(
         "components/search-options/single",
         SelectRichSingleSelectRichSearchOptionsView.as_view(),
