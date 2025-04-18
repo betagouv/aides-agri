@@ -3,14 +3,17 @@ requires-python = ">=3.11"
 name = "aides-agri"
 version = "0.1.0"
 dependencies = [
+  "beautifulsoup4 ~=4.13",
   "django ~=5.1",
   "django-dsfr ~=2.1",
   "django-grist-loader ~=0.1",
   "django-htmx>=1.23.0",
+  "markdownify ~=1.1",
   "procrastinate[django] ~=3.1",
   "psycopg[binary] ~=3.0",
   "requests ~=2.32",
   "sentry-sdk[django] ~=2.26",
+  "xlsx2csv ~=0.8",
 ]
 
 [dependency-groups]
