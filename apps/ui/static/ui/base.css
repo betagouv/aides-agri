@@ -27,3 +27,9 @@ html {
   -webkit-mask-image:url("icons/fr--seedling-fill.svg");
   mask-image:url("icons/fr--seedling-fill.svg");
 }
+
+@media (prefers-reduced-motion) {
+  html {
+    scroll-behavior: auto;
+  }
+}
