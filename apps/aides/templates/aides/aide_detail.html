@@ -1,6 +1,6 @@
 {% extends "ui/base.html" %}
 
-{% load static dsfr_tags %}
+{% load static dsfr_tags ui_tags %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'aides/aide_detail.css' %}">
@@ -31,10 +31,10 @@
                 Télécharger la fiche aide
               </button>
               <p class="fr-mt-4w">{{ object.promesse }}</p>
-              <p class="fr-mt-4w">{{ object.description_courte }}</p>
+              <p class="fr-mt-2w">{{ object.description }}</p>
               <a class="fr-btn fr-btn--primary"
                  target="_blank"
-                 href="{{ object.lien }}"
+                 href="{{ object.url_demarche }}"
                  id="link-to-origin"
               >
                 Postuler
@@ -64,6 +64,14 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+  <div id="conditions" class="fr-container--fluid fr-mt-4w">
+    <div class="fr-grid-row">
+      <div class="fr-col fr-col-12 fr-py-6w fr-px-12w">
+        <h2 class="fr-h3 fr-icon-checkbox-circle-fill fr-heading--soft fr-btn--icon-left fr-mb-2w">Conditions d'éligibilité</h2>
+        <p>{{ object.conditions|ui_markdown|safe }}</p>
       </div>
     </div>
   </div>

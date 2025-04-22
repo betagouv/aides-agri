@@ -2,6 +2,15 @@
   border: 2px solid var(--grey-1000-50);
 }
 
+#conditions {
+  background-color: var(--background-default-grey);
+  box-shadow: var(--lifted-shadow);
+}
+
+.fr-heading--soft {
+  color: #6a6af4 !important;
+}
+
 @media print {
   #footer,
   .fr-btn {

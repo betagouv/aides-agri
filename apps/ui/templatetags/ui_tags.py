@@ -1,7 +1,13 @@
 from django import template
 from dsfr.utils import parse_tag_args
+from markdown import markdown
 
 register = template.Library()
+
+
+@register.filter
+def ui_markdown(content: str) -> str:
+    return markdown(content)
 
 
 @register.inclusion_tag("ui/components/tile_checkbox.html")
