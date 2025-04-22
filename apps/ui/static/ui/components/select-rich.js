@@ -9,11 +9,12 @@ export class SelectRich extends Controller {
     multi: Boolean,
     required: Boolean
   }
-  static targets = ["button", "entries", "search", "option", "helper", "error", "tags"]
+  static targets = ["button", "entries", "search", "searchButton", "option", "helper", "error", "tags"]
 
   connect() {
     super.connect()
 
+    // Close the select-rich element on click elsewhere or hit Esc
     document.body.addEventListener("click", evt => {
       if (!evt.target.closest("#" + this.element.id)) {
         this.entriesTarget.classList.remove("fr-collapse--expanded")
@@ -25,22 +26,35 @@ export class SelectRich extends Controller {
       }
     })
 
+    // Save original button text to be able to restore it when all options are unchosen
     if (this.hasButtonTarget) {
       this.buttonText = this.buttonTarget.textContent.trim()
     }
 
+    // in case of internal search, prepare all options to be searched
     if (this.hasSearchTarget) {
       this.optionTargets.forEach(option => {
         option.dataset.normalized = sanitizeForSearch(option.nextElementSibling.textContent)
       })
-
-      if (!this.hasOptionTarget) {
-        this.entriesTarget.addEventListener("htmx:afterSwap", evt => {
-          this.buttonTarget.click()
-        })
-      }
     }
 
+    // in case of external search, disable form submission when entries are opened
+    if (this.hasSearchButtonTarget) {
+      new MutationObserver((mutationList, observer) => {
+        for (const mutation of mutationList) {
+          if (mutation.type === "attributes" && mutation.attributeName === "class") {
+            const isOpened = mutation.target.classList.contains("fr-collapse--expanded")
+            this.element.closest("form").querySelectorAll("button[type=submit]").forEach(elt => {
+              if (elt !== this.searchButtonTarget) {
+                elt.disabled = isOpened
+              }
+            })
+          }
+        }
+      }).observe(this.entriesTarget, { attributes: true });
+    }
+
+    // if tags are enabled, initialize them
     if (this.hasTagsTarget) {
       this.optionTargets.forEach(inputElt => {
         if (inputElt.checked) {
@@ -73,7 +87,6 @@ export class SelectRich extends Controller {
   }
 
   externalSearch(evt) {
-    evt.target.disabled = true
     this._unsetErrorState()
   }
 
@@ -131,7 +144,6 @@ export class SelectRich extends Controller {
     } else {
       this.entriesTarget.classList.remove("fr-collapse--expanded")
     }
-    this.validate()
     this.element.dispatchEvent(new Event("change"))
   }
 

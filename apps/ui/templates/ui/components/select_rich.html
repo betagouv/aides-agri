@@ -47,13 +47,14 @@
         >
         {% if not self.search_url %}</div>{% endif %}
         {% if self.search_url %}
-        <button type="button" class="fr-btn"
+        <button type="submit" class="fr-btn"
                 title="Rechercher"
                 hx-get="{% url self.search_url %}"
                 hx-target="#select-rich-options-{{ self.name }}"
                 hx-include="#select-rich-search-{{ self.name }}"
+                hx-disabled-elt="this"
+                data-select-rich-target="searchButton"
                 data-action="click->select-rich#externalSearch"
-                hx-on::after-request="this.disabled = false"
         >
           Rechercher
         </button>

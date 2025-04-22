@@ -37,6 +37,7 @@
   align-items: flex-start;
   width: 100%;
   text-align: left;
+  user-select: none;
 }
 
 .fr-select-rich .fr-checkbox-group input[type="checkbox"] + label::before {
