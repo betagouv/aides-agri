@@ -82,13 +82,13 @@
                    data-action="focus->select-rich#focus"
                    onchange="event.stopPropagation()"
             >
-            <button type="button" class="fr-btn"
+            <button type="submit" class="fr-btn"
                     title="Rechercher"
                     hx-get="{% url 'agri:search-etablissement' %}"
                     hx-target="#select-rich-options-siret"
                     hx-include="#select-rich-search-siret"
+                    hx-disabled-elt="this"
                     data-action="click->select-rich#externalSearch"
-                    hx-on::after-request="this.disabled = false"
             >
               Rechercher
             </button>
