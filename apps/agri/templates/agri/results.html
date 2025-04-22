@@ -5,6 +5,23 @@
 {% block extra_css %}
   {{ block.super }}
   <link rel="stylesheet" href="{% static 'agri/results.css' %}">
+
+  <script type="importmap">
+  {
+    "imports": {
+      "@hotwired/stimulus": "{% static 'vendor/stimulus.js' %}",
+      "summary-mobile": "{% static 'agri/summary-mobile.js' %}"
+    }
+  }
+  </script>
+  <script type="module">
+    import { Application } from "@hotwired/stimulus"
+    import { SummaryMobile } from "summary-mobile"
+
+    window.Stimulus = Application.start()
+
+    Stimulus.register("summary-mobile", SummaryMobile)
+  </script>
 {% endblock extra_css %}
 
 {% block extra_js %}
@@ -97,10 +114,10 @@
                       aria-controls="accordeon-type-{{ forloop.counter }}"
               >
                 {{ type_aide.nom }}
-                <span class="fr-text--xs fr-text-mention--grey fr-text--regular fr-mx-2v">
+                <span class="fr-text--xs fr-text-mention--grey fr-text--regular fr-ml-2v fr-hidden fr-unhidden-sm">
                   {{ type_aide.description }}
                 </span>
-                <p class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon">
+                <p class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon fr-ml-2v">
                   {{ aide_list|length }} aide{{ aide_list|pluralize }} disponible{{ aide_list|pluralize }}
                 </p>
               </button>
