@@ -76,10 +76,6 @@ class AideAdmin(AbstractGristModelAdmin):
     list_display = AbstractGristModelAdmin.list_display + (
         "nom",
         "organisme",
-        "date_debut",
-        "date_fin",
-        "effectif_min",
-        "effectif_max",
     )
     list_display_links = AbstractGristModelAdmin.list_display_links + ("nom",)
     list_filter = ("sujets", "types")
@@ -88,6 +84,7 @@ class AideAdmin(AbstractGristModelAdmin):
             "Infos de base",
             {
                 "fields": [
+                    "slug",
                     "nom",
                     "types",
                     "organisme",
@@ -113,6 +110,7 @@ class AideAdmin(AbstractGristModelAdmin):
                     "effectif_max",
                     "couverture_geographique",
                     "zones_geographiques",
+                    "conditions",
                 ],
             },
         ),
@@ -121,10 +119,10 @@ class AideAdmin(AbstractGristModelAdmin):
             {
                 "fields": [
                     "promesse",
-                    "description_courte",
-                    "description_longue",
+                    "description",
                     "montant",
-                    "lien",
+                    "url_descriptif",
+                    "url_demarche",
                 ],
             },
         ),

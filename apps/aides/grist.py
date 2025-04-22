@@ -73,24 +73,26 @@ class ZoneGeographiqueLoader(GristLoader):
 class AideLoader(GristLoader):
     model = Aide
     table = "Solutions"
-    required_cols = ("Nom",)
+    required_cols = ("nom_aide",)
     filter = {
         "GO": [True],
     }
     fields = {
-        "Nom": Aide.nom,
-        "Promesse": Aide.promesse,
-        "Description_Courte": Aide.description_courte,
-        "Description_longue": Aide.description_longue,
+        "id_aide": Aide.slug,
+        "nom_aide": Aide.nom,
+        "promesse": Aide.promesse,
+        "description": Aide.description,
+        "taux_subvention_commentaire": Aide.montant,
+        "condition_eligibilite": Aide.conditions,
         "min_effectif": Aide.effectif_min,
         "max_effectif": Aide.effectif_max,
-        "Lien_vers_le_descriptif_complet": Aide.lien,
-        "Types_d_aide": Aide.types,
-        "Date_d_ouverture": Aide.date_debut,
-        "Date_de_cloture": Aide.date_fin,
-        "Couverture_Geographique": Aide.couverture_geographique,
-        "Organisme_principal": Aide.organisme,
-        "Organismes_autres": Aide.organismes_secondaires,
-        "Sujets": Aide.sujets,
-        "Zones_geographiques": Aide.zones_geographiques,
+        "url_descriptif": Aide.url_descriptif,
+        "url_demarche": Aide.url_demarche,
+        "types_aide": Aide.types,
+        "date_ouverture": Aide.date_debut,
+        "date_cloture": Aide.date_fin,
+        "porteur_aide": Aide.organisme,
+        "porteurs_autres": Aide.organismes_secondaires,
+        "thematique_aide": Aide.sujets,
+        "zone_geographique": Aide.zones_geographiques,
     }

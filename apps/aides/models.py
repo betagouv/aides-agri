@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 from grist_loader.models import GristModel
 
@@ -174,6 +175,7 @@ class Aide(GristModel):
         DEPARTEMENTAL = "Départemental", "Départemental"
         LOCAL = "Local", "Local"
 
+    slug = models.CharField(blank=True, max_length=200)
     nom = models.CharField(blank=True)
     organisme = models.ForeignKey(Organisme, null=True, on_delete=models.CASCADE)
     organismes_secondaires = models.ManyToManyField(
@@ -182,10 +184,11 @@ class Aide(GristModel):
     types = models.ManyToManyField(Type, related_name="aides")
     sujets = models.ManyToManyField(Sujet, related_name="aides")
     promesse = models.CharField(blank=True)
-    description_courte = models.TextField(blank=True)
-    description_longue = models.TextField(blank=True)
+    description = models.TextField(blank=True)
+    conditions = models.TextField(blank=True)
     montant = models.CharField(blank=True)
-    lien = models.URLField(blank=True, max_length=2000)
+    url_descriptif = models.URLField(blank=True, max_length=2000)
+    url_demarche = models.URLField(blank=True, max_length=2000)
     date_debut = models.DateField(null=True)
     date_fin = models.DateField(null=True)
     effectif_min = models.PositiveIntegerField(null=True)
@@ -197,3 +200,6 @@ class Aide(GristModel):
 
     def __str__(self):
         return self.nom
+
+    def get_absolute_url(self):
+        return reverse("aides:aide", kwargs={"slug": self.slug, "pk": self.pk})
