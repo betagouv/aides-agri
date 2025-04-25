@@ -3,6 +3,7 @@ from django.conf import settings
 
 def ui_tools_tokens(request):
     return {
-        "MATOMO_SITE_ID": settings.MATOMO_SITE_ID,
-        "SENTRY_DSN": settings.SENTRY_DSN_UI,
+        "UI_ENVIRONMENT": settings.ENVIRONMENT,
+        "UI_MATOMO_SITE_ID": settings.MATOMO_SITE_ID,
+        "UI_SENTRY_PUBLIC_KEY": settings.SENTRY_UI_PUBLIC_KEY,
     }

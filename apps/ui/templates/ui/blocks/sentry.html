@@ -1,1 +1,11 @@
-<script src="https://sentry.incubateur.net/js-sdk-loader/{{ SENTRY_DSN }}.min.js" crossorigin="anonymous"></script>
+<script>
+  // Configure sentryOnLoad before adding the Loader Script
+  window.sentryOnLoad = function () {
+    Sentry.init({
+      environment: {{ ENVIRONMENT }}
+    });
+  };
+</script>
+
+<script src="https://sentry.incubateur.net/js-sdk-loader/{{ UI_SENTRY_PUBLIC_KEY }}.min.js"
+        crossorigin="anonymous"></script>

@@ -1,7 +1,4 @@
-{% load static %}
-
-{% load i18n static dsfr_tags %}
-<!DOCTYPE html>
+{% load i18n static dsfr_tags %}<!DOCTYPE html>
 <html lang="fr"
       data-fr-scheme="system"
       {% if SITE_CONFIG.mourning %}data-fr-mourning{% endif %}>
@@ -22,8 +19,8 @@
 
     {% block opengraph %}{% endblock opengraph %}
 
-    {% if SENTRY_DSN %}{% include "ui/blocks/sentry.html" %}{% endif %}
-    {% if MATOMO_SITE_ID %}{% include "ui/blocks/matomo.html" %}{% endif %}
+    {% if UI_SENTRY_PUBLIC_KEY %}{% include "ui/blocks/sentry.html" %}{% endif %}
+    {% if UI_MATOMO_SITE_ID %}{% include "ui/blocks/matomo.html" %}{% endif %}
     {% block extra_head_js %}{% endblock extra_head_js %}
   </head>
   <body hx-headers='{"x-csrftoken": "{{ csrf_token }}"}'>

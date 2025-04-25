@@ -14,4 +14,4 @@ if SENTRY_DSN:
         traces_sample_rate=SENTRY_PERFORMANCE_SAMPLE_RATE,
     )
 
-SENTRY_DSN_UI = os.getenv("SENTRY_DSN_UI", "")
+SENTRY_UI_PUBLIC_KEY = os.getenv("SENTRY_UI_PUBLIC_KEY", "")
