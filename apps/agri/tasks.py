@@ -52,7 +52,7 @@ def send_results_by_mail(
     send_mail(
         "Aides Agri : notre recommandation pour votre besoin et profil d'exploitant",
         f"Retrouvez nos recommandations en cliquant sur ce lien : {url}",
-        "aides-agri@beta.gouv.fr",
+        "Aides Agri <no-reply@aides-agri.beta.gouv.fr>",
         [email],
         html_message=mjml2html(
             render_to_string(
