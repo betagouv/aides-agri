@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="{% static 'ui/base.css' %}">
     {% block extra_css %}{% endblock extra_css %}
 
-    <title>{% block title %}{% endblock title %} — {{ SITE_CONFIG.site_title }}</title>
+    <title>{% block pagetitle %}{% block title %}{% endblock title %} — {{ SITE_CONFIG.site_title }}{% endblock pagetitle %}</title>
 
     <meta name="format-detection"
           content="telephone=no,date=no,address=no,email=no,url=no">
@@ -24,6 +24,7 @@
     {% block extra_head_js %}{% endblock extra_head_js %}
   </head>
   <body hx-headers='{"x-csrftoken": "{{ csrf_token }}"}'>
+  {% block body %}
     {% block skiplinks %}
       {% dsfr_skiplinks skiplinks %}
     {% endblock skiplinks %}
@@ -52,5 +53,6 @@
 
     {% dsfr_js nonce=request.csp_nonce %}
     {% block extra_js %}{% endblock extra_js %}
+  {% endblock body %}
   </body>
 </html>
