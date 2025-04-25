@@ -5,10 +5,14 @@
   <label class="fr-label fr-mb-2v">{{ self.label }}</label>
   <div class="fr-container--fluid">
     <div class="fr-checkbox-group fr-grid-row fr-mt-2v">
-      {% for value, label in self.options.items %}
+      {% for value, label, label_long in self.options %}
       <div class="fr-col fr-col-12 fr-col-md-6 fr-mb-2w">
         <input id="checkbox-regroupements-{{ value }}" type="checkbox" name="{{ self.name }}" value="{{ value }}">
-        <label for="checkbox-regroupements-{{ value }}">{{ label }}</label>
+        <label for="checkbox-regroupements-{{ value }}">
+          {% if label_long %}<abbr title="{{ label_long }}">{% endif %}
+          {{ label }}
+          {% if label_long %}</abbr>{% endif %}
+        </label>
       </div>
       {% endfor %}
     </div>
