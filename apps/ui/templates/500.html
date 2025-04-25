@@ -1,0 +1,9 @@
+{% extends "ui/_error.html" %}
+
+{% block title %}Erreur inattendue{% endblock title %}
+{% block status_code %}Erreur 500{% endblock status_code %}
+{% block message %}Désolé, le service rencontre un problème, nous travaillons pour le résoudre le plus rapidement possible.{% endblock message %}
+
+{% block details %}
+<p class="fr-text--sm fr-mb-3w">Essayez de rafraîchir la page ou bien réessayez plus tard.</p>
+{% endblock details %}

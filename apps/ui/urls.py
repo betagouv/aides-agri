@@ -29,4 +29,6 @@ urlpatterns = [
         SelectRichMultiSelectRichSearchOptionsView.as_view(),
         name="components-search-options-multi",
     ),
+    path("404", TemplateView.as_view(template_name="404.html")),
+    path("500", TemplateView.as_view(template_name="500.html")),
 ]

@@ -1,0 +1,17 @@
+{% extends "ui/_error.html" %}
+
+{% block title %}Page non trouvée{% endblock title %}
+{% block status_code %}Erreur 404{% endblock status_code %}
+{% block message %}La page que vous cherchez est introuvable. Excusez-nous pour la gène occasionnée.{% endblock message %}
+
+{% block details %}
+<p class="fr-text--sm fr-mb-5w">
+  Si vous avez tapé l’adresse web dans le navigateur, vérifiez qu’elle est correcte.
+  La page n’est peut-être plus disponible.
+  <br>
+  Dans ce cas, pour continuer votre visite, vous pouvez consulter notre page d’accueil.
+</p>
+<ul class="fr-btns-group fr-btns-group--inline-md">
+  <li><a class="fr-btn" href="/ui/static">Page d’accueil</a></li>
+</ul>
+{% endblock details %}
