@@ -357,7 +357,7 @@ class SearchCommuneView(TemplateView):
 
 class SendResultsByMailView(ResultsMixin, View):
     def post(self, request, *args, **kwargs):
-        tasks.send_results_by_mail.defer(
+        tasks.send_results_by_mail.enqueue(
             email=self.request.POST.get("email"),
             base_url=f"{self.request.scheme}://{self.request.headers['host']}",
             theme_id=self.theme.pk,

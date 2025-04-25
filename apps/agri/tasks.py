@@ -4,15 +4,15 @@ from django.core.mail import send_mail
 from django.http.request import QueryDict
 from django.template.loader import render_to_string
 from django.urls import reverse
+from django_tasks import task
 from mjml import mjml2html
-from procrastinate.contrib.django import app
 
 from aides.models import Theme, Sujet, ZoneGeographique, Aide
 
 from .models import Filiere, GroupementProducteurs
 
 
-@app.task
+@task()
 def send_results_by_mail(
     email: str,
     base_url: str,
