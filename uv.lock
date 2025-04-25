@@ -39,7 +39,7 @@ scalingo = [
 
 [package.metadata]
 requires-dist = [
-    { name = "django", specifier = "~=5.1" },
+    { name = "django", specifier = "~=5.2" },
     { name = "django-anymail", extras = ["brevo"], specifier = "~=13.0" },
     { name = "django-dsfr", specifier = "~=2.1" },
     { name = "django-grist-loader", specifier = "~=0.1" },
