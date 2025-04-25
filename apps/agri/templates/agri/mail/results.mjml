@@ -30,7 +30,7 @@
           Voici les aides que nous avions sélectionné pour vous :
           <ul>
             {% for aide in aides %}
-              <li><a href="{% url 'aides:aide' pk=aide.pk %}">{{ aide.nom }}</a></li>
+              <li><a href="{{ aide.get_absolute_url }}">{{ aide.nom }}</a></li>
             {% endfor %}
           </ul>
         </mj-text>
