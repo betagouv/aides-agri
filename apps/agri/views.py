@@ -187,12 +187,10 @@ class Step5View(AgriMixin, TemplateView):
                 "mapping_tranches_effectif": siret.mapping_effectif,
                 "code_effectif": self.code_effectif,
                 "etablissement": self.etablissement,
-                "groupements": {
-                    pk: nom
-                    for pk, nom in GroupementProducteurs.objects.values_list(
-                        "pk", "nom"
-                    )
-                },
+                "groupements": [
+                    (g.pk, g.nom, g.libelle)
+                    for g in GroupementProducteurs.objects.all()
+                ],
                 "filieres": [
                     (pk, nom, nom)
                     for pk, nom in Filiere.objects.values_list("pk", "nom")
