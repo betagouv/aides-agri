@@ -5,6 +5,7 @@ from .models import (
     Sujet,
     Type,
     Organisme,
+    Programme,
     ZoneGeographique,
     Aide,
 )
@@ -51,6 +52,17 @@ class OrganismeLoader(GristLoader):
     fields = {
         "Nom": Organisme.nom,
         "Zones_geographiques": Organisme.zones_geographiques,
+    }
+
+
+@register_grist_loader
+class ProgrammeLoader(GristLoader):
+    model = Programme
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
+    table = "Ref_Programmes"
+    required_cols = ("Nom",)
+    fields = {
+        "Nom": Programme.nom,
     }
 
 

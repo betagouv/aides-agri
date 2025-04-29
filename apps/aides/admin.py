@@ -6,6 +6,7 @@ from .models import (
     Theme,
     Sujet,
     Type,
+    Programme,
     Organisme,
     ZoneGeographique,
     Aide,
@@ -50,6 +51,13 @@ class TypeAdmin(AbstractGristModelAdmin):
     fields = ("nom", "description")
 
 
+@admin.register(Programme)
+class ProgrammeAdmin(AbstractGristModelAdmin):
+    list_display = AbstractGristModelAdmin.list_display + ("nom",)
+    list_display_links = AbstractGristModelAdmin.list_display_links + ("nom",)
+    fields = ("nom",)
+
+
 @admin.register(Organisme)
 class OrganismeAdmin(AbstractGristModelAdmin):
     list_display = AbstractGristModelAdmin.list_display + ("nom",)
@@ -88,6 +96,7 @@ class AideAdmin(AbstractGristModelAdmin):
                     "nom",
                     "types",
                     "organisme",
+                    "programmes",
                     "organismes_secondaires",
                 ],
             },
