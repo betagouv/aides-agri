@@ -8,6 +8,10 @@ from .models import (
     Organisme,
     Programme,
     ZoneGeographique,
+    Filiere,
+    SousFiliere,
+    Production,
+    GroupementProducteurs,
     Aide,
 )
 
@@ -84,6 +88,55 @@ class ZoneGeographiqueLoader(GristLoader):
         "Code_postal": ZoneGeographique.code_postal,
         "Parent": ZoneGeographique.parent,
         "EPCI": ZoneGeographique.epci,
+    }
+
+
+@register_grist_loader
+class GroupementProducteursLoader(GristLoader):
+    model = GroupementProducteurs
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
+    table = "Ref_Groupements_producteurs"
+    required_cols = ("Nom",)
+    fields = {
+        "Nom": GroupementProducteurs.nom,
+        "Mention_longue": GroupementProducteurs.libelle,
+    }
+
+
+@register_grist_loader
+class FiliereLoader(GristLoader):
+    model = Filiere
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
+    table = "Ref_Filieres"
+    required_cols = ("Nom", "A_AFFICHER")
+    fields = {
+        "Nom": Filiere.nom,
+        "Ordre": Filiere.position,
+        "NAF": Filiere.code_naf,
+    }
+
+
+@register_grist_loader
+class SousFiliereLoader(GristLoader):
+    model = SousFiliere
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
+    table = "Ref_Sous_filieres"
+    required_cols = ("Nom",)
+    fields = {
+        "Nom": SousFiliere.nom,
+        "Filiere": SousFiliere.filiere,
+    }
+
+
+@register_grist_loader
+class ProductionLoader(GristLoader):
+    model = Production
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
+    table = "Ref_Productions"
+    required_cols = ("Nom",)
+    fields = {
+        "Nom": Production.nom,
+        "Sous_filiere": Production.sous_filiere,
     }
 
 
