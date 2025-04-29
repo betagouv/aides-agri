@@ -27,10 +27,13 @@ gristapi = GristApi(config=settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG)
 
 
 class GristIntegration:
-    def __init__(self):
-        _, self.doc_id = gristapi.add_doc(
-            f"Intégration {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-        )
+    def __init__(self, doc_id: str = None):
+        if doc_id:
+            self.doc_id = doc_id
+        else:
+            _, self.doc_id = gristapi.add_doc(
+                f"Intégration {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+            )
 
     def replicate_references(self):
         """
@@ -81,47 +84,127 @@ class GristIntegration:
     def programmes(self) -> dict[str, str]:
         return {
             i["Nom"]: i["id"]
-            for i in gristapi.list_records("Ref_Programmes", doc_id=self.doc_id)[1]
+            for i in gristapi.list_records(ProgrammeLoader.table, doc_id=self.doc_id)[1]
         }
 
-    def build_grist_programme(self, nom_programme: str) -> tuple[str, str]:
-        return "L", self.programmes[nom_programme]
+    def build_grist_programme(self, nom_programme: str) -> tuple[str, str] | None:
+        if nom_programme and nom_programme in self.programmes:
+            return "L", self.programmes[nom_programme]
+        else:
+            return None
 
     @functools.cached_property
     def regions(self) -> dict[str, str]:
         return {
             i["Nom"]: i["id"]
             for i in gristapi.list_records(
-                "Ref_Zones_geographiques",
+                ZoneGeographiqueLoader.table,
                 filter={"Type": ["Région"]},
                 doc_id=self.doc_id,
             )[1]
         }
 
-    def build_grist_region(self, nom_region: str) -> tuple[str, str]:
-        return "L", self.regions[nom_region]
+    @functools.cached_property
+    def departements(self) -> dict[str, str]:
+        return {
+            i["Nom"]: i["id"]
+            for i in gristapi.list_records(
+                ZoneGeographiqueLoader.table,
+                filter={"Type": ["Département"]},
+                doc_id=self.doc_id,
+            )[1]
+        }
+
+    @functools.cached_property
+    def epcis(self) -> dict[str, str]:
+        return {
+            i["Nom"]: i["id"]
+            for i in gristapi.list_records(
+                ZoneGeographiqueLoader.table,
+                filter={
+                    "Type": [
+                        "Communauté d'Agglo",
+                        "Communauté de communes",
+                        "Communauté Urbaine",
+                        "Métropole",
+                    ]
+                },
+                doc_id=self.doc_id,
+            )[1]
+        }
+
+    def build_grist_region(self, nom_region: str) -> tuple[str, str] | None:
+        if nom_region and nom_region in self.regions:
+            return "L", self.regions[nom_region]
+        else:
+            return None
+
+    def build_grist_departement(self, nom_departement: str) -> tuple[str, str] | None:
+        if nom_departement and nom_departement in self.departements:
+            return "L", self.departements[nom_departement]
+        else:
+            return None
+
+    def build_grist_epci(self, nom_epci: str) -> tuple[str, str] | None:
+        if nom_epci and nom_epci in self.epcis:
+            return "L", self.epcis[nom_epci]
+        else:
+            return None
 
     @functools.cached_property
     def organismes(self) -> dict[str, str]:
         return {
             i["Nom"]: i["id"]
-            for i in gristapi.list_records("Ref_Organismes", doc_id=self.doc_id)[1]
+            for i in gristapi.list_records(OrganismeLoader.table, doc_id=self.doc_id)[1]
         }
 
-    def build_grist_organisme(self, nom_organisme: str) -> tuple[str, str]:
-        return "L", self.organismes[nom_organisme]
+    def build_grist_organisme(self, nom_organisme: str) -> tuple[str, str] | None:
+        if nom_organisme and nom_organisme in self.organismes:
+            return "L", self.organismes[nom_organisme]
+        return None
+
+    def build_grist_organismes(
+        self, noms_organismes: list[str]
+    ) -> tuple[str, ...] | None:
+        if not noms_organismes:
+            return None
+        return tuple(
+            ["L"]
+            + [
+                self.organismes.get(nom, None)
+                for nom in noms_organismes
+                if nom in self.types
+            ]
+        )
 
     @functools.cached_property
     def types(self) -> dict[str, str]:
         return {
             i["Type_aide"]: i["id"]
-            for i in gristapi.list_records("Ref_Types", doc_id=self.doc_id)[1]
+            for i in gristapi.list_records(TypeLoader.table, doc_id=self.doc_id)[1]
         }
 
-    def build_grist_types(self, noms_types: list[str]) -> tuple[str, ...]:
+    def build_grist_types(self, noms_types: list[str]) -> tuple[str, ...] | None:
+        if not noms_types:
+            return None
         return tuple(
             ["L"]
             + [self.types.get(nom, None) for nom in noms_types if nom in self.types]
+        )
+
+    @functools.cached_property
+    def sujets(self) -> dict[str, str]:
+        return {
+            i["Libelle_court"]: i["id"]
+            for i in gristapi.list_records(SujetLoader.table, doc_id=self.doc_id)[1]
+        }
+
+    def build_grist_sujets(self, noms_sujets: list[str]) -> tuple[str, ...] | None:
+        if not noms_sujets:
+            return None
+        return tuple(
+            ["L"]
+            + [self.sujets.get(nom, None) for nom in noms_sujets if nom in self.sujets]
         )
 
     class VisibleSolutionsColumns(enum.Enum):
@@ -231,10 +314,23 @@ class GristIntegration:
 
 
 class AbstractAidesSource:
-    name = None
-
     def __init__(self, grist_integration: GristIntegration):
         self.grist_integration = grist_integration
 
+    def _scrape(self) -> list[dict]:
+        raise NotImplementedError
+
+    def _enrich_aide(self, aide: dict) -> None:
+        raise NotImplementedError
+
     def get_aides(self) -> list[dict]:
-        return []
+        aides = self._scrape()
+        for aide in aides:
+            self._enrich_aide(aide)
+        return aides
+
+
+class AbstractRawFields(enum.Enum):
+    @property
+    def name_full(self):
+        return f"raw_{self.name}"
