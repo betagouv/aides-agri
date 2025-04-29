@@ -42,7 +42,7 @@ requires-dist = [
     { name = "django", specifier = "~=5.2" },
     { name = "django-anymail", extras = ["brevo"], specifier = "~=13.0" },
     { name = "django-dsfr", specifier = "~=2.1" },
-    { name = "django-grist-loader", specifier = "==0.2.0" },
+    { name = "django-grist-loader", specifier = "~=0.3" },
     { name = "django-htmx", specifier = ">=1.23.0" },
     { name = "django-tasks", specifier = "~=0.6" },
     { name = "markdown", specifier = "~=3.8" },
@@ -261,16 +261,16 @@ wheels = [
 
 [[package]]
 name = "django-grist-loader"
-version = "0.2.0"
+version = "0.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
     { name = "psycopg", extra = ["binary"] },
     { name = "pygrister" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6d/98/0ce3a3e22182520f73d97bb4b187caeafbfbd423b2a989a5f947ce7d808d/django_grist_loader-0.2.0.tar.gz", hash = "sha256:903c979bdb90e882a063b91e19996803e6ce361d070c6acd7425ddbfec56eb83", size = 6338, upload-time = "2025-04-01T16:19:56.518Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/fc/5b/f54cf7e7943c1c45298a433b14c479e8f49b8a1588966b54f769f58ca866/django_grist_loader-0.3.0.tar.gz", hash = "sha256:9c7b694c00a6c2128a9e2fd33597b5de063633dfa1f3409403f98f760d8547c2", size = 6463 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ee/2e/662f10e68c7f58a84e6ab962621abeba3952d5d65d3d473a6c114632ed1e/django_grist_loader-0.2.0-py3-none-any.whl", hash = "sha256:29e87d2ed918b9b1bf34d9a87a0de652c924fd80ae968db08c8d09d0adbbf1ce", size = 6786, upload-time = "2025-04-01T16:19:55.096Z" },
+    { url = "https://files.pythonhosted.org/packages/3c/be/f4545c9927caf4e223f511c6497e3df8dc487b0519ec1d4742bf986696f9/django_grist_loader-0.3.0-py3-none-any.whl", hash = "sha256:5892e85181c5f9e84763c92d1e5843d06d425c6046ca6ba30fcbcd4fd9bdfe2d", size = 6862 },
 ]
 
 [[package]]
