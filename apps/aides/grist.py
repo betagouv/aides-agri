@@ -1,3 +1,4 @@
+from django.conf import settings
 from grist_loader.loader import GristLoader, register_grist_loader
 
 from .models import (
@@ -14,6 +15,7 @@ from .models import (
 @register_grist_loader
 class ThemeLoader(GristLoader):
     model = Theme
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
     table = "Themes_v2"
     fields = {
         "Libelle": Theme.nom,
@@ -26,6 +28,7 @@ class ThemeLoader(GristLoader):
 @register_grist_loader
 class SujetLoader(GristLoader):
     model = Sujet
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
     table = "Sujets_v2"
     fields = {
         "Libelle": Sujet.nom,
@@ -37,6 +40,7 @@ class SujetLoader(GristLoader):
 @register_grist_loader
 class TypeLoader(GristLoader):
     model = Type
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
     table = "Ref_Types"
     fields = {
         "Type_aide": Type.nom,
@@ -47,6 +51,7 @@ class TypeLoader(GristLoader):
 @register_grist_loader
 class OrganismeLoader(GristLoader):
     model = Organisme
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
     table = "Ref_Organisme"
     required_cols = ("Nom",)
     fields = {
@@ -69,6 +74,7 @@ class ProgrammeLoader(GristLoader):
 @register_grist_loader
 class ZoneGeographiqueLoader(GristLoader):
     model = ZoneGeographique
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
     table = "Ref_Zones_geographiques"
     required_cols = ("Nom",)
     fields = {
@@ -84,6 +90,7 @@ class ZoneGeographiqueLoader(GristLoader):
 @register_grist_loader
 class AideLoader(GristLoader):
     model = Aide
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
     table = "Solutions"
     required_cols = ("nom_aide",)
     filter = {
