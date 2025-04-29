@@ -7,9 +7,14 @@ from django.urls import reverse
 from django_tasks import task
 from mjml import mjml2html
 
-from aides.models import Theme, Sujet, ZoneGeographique, Aide
-
-from .models import Filiere, GroupementProducteurs
+from aides.models import (
+    Theme,
+    Sujet,
+    ZoneGeographique,
+    Aide,
+    Filiere,
+    GroupementProducteurs,
+)
 
 
 @task()

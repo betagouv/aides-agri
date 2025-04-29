@@ -8,9 +8,16 @@ from django.utils.timezone import now
 from django.views.generic import TemplateView, ListView, View
 from django.views.generic.base import ContextMixin
 
-from aides.models import Theme, Sujet, Aide, ZoneGeographique, Type
+from aides.models import (
+    Theme,
+    Sujet,
+    Aide,
+    ZoneGeographique,
+    Type,
+    GroupementProducteurs,
+    Filiere,
+)
 
-from .models import GroupementProducteurs, Filiere
 from . import siret
 from . import tasks
 
