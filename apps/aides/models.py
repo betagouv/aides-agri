@@ -78,6 +78,18 @@ class Type(GristModel):
         return self.nom
 
 
+class Programme(GristModel):
+    class Meta:
+        verbose_name = "Programme d'aides"
+        verbose_name_plural = "Programmes d'aides"
+        ordering = ("nom",)
+
+    nom = models.CharField(blank=True)
+
+    def __str__(self):
+        return self.nom
+
+
 class ZoneGeographiqueQuerySet(models.QuerySet):
     def departements(self):
         return self.filter(type=ZoneGeographique.Type.DEPARTEMENT).order_by("numero")
@@ -177,18 +189,22 @@ class Aide(GristModel):
 
     slug = models.CharField(blank=True, max_length=200)
     nom = models.CharField(blank=True)
+    promesse = models.CharField(blank=True)
+    description = models.TextField(blank=True)
+    url_descriptif = models.URLField(blank=True, max_length=2000)
+    url_demarche = models.URLField(blank=True, max_length=2000)
+    sujets = models.ManyToManyField(Sujet, related_name="aides")
+    types = models.ManyToManyField(Type, related_name="aides")
     organisme = models.ForeignKey(Organisme, null=True, on_delete=models.CASCADE)
     organismes_secondaires = models.ManyToManyField(
         Organisme, related_name="aides_secondaires"
     )
-    types = models.ManyToManyField(Type, related_name="aides")
-    sujets = models.ManyToManyField(Sujet, related_name="aides")
-    promesse = models.CharField(blank=True)
-    description = models.TextField(blank=True)
+    programmes = models.ManyToManyField(Programme, related_name="aides")
+    aap_ami = models.BooleanField(
+        default=False, verbose_name="Appel à projet ou manifestation d'intérêt"
+    )
     conditions = models.TextField(blank=True)
     montant = models.CharField(blank=True)
-    url_descriptif = models.URLField(blank=True, max_length=2000)
-    url_demarche = models.URLField(blank=True, max_length=2000)
     date_debut = models.DateField(null=True)
     date_fin = models.DateField(null=True)
     effectif_min = models.PositiveIntegerField(null=True)
