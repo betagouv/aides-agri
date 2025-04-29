@@ -36,7 +36,6 @@ migrate: (manage "migrate")
 shell: (manage "shell")
 makemigrations: (manage "makemigrations")
     ruff format apps/*/migrations/*.py
-runworker: (manage "procrastinate worker --listen-notify --delete-jobs=successful --shutdown-graceful-timeout=5")
 
 # Testing
 test:
