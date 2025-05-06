@@ -1,3 +1,4 @@
+from django.conf import settings
 from grist_loader.loader import GristLoader, register_grist_loader
 
 from .models import (
@@ -5,7 +6,12 @@ from .models import (
     Sujet,
     Type,
     Organisme,
+    Programme,
     ZoneGeographique,
+    Filiere,
+    SousFiliere,
+    Production,
+    GroupementProducteurs,
     Aide,
 )
 
@@ -13,6 +19,7 @@ from .models import (
 @register_grist_loader
 class ThemeLoader(GristLoader):
     model = Theme
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
     table = "Themes_v2"
     fields = {
         "Libelle": Theme.nom,
@@ -25,6 +32,7 @@ class ThemeLoader(GristLoader):
 @register_grist_loader
 class SujetLoader(GristLoader):
     model = Sujet
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
     table = "Sujets_v2"
     fields = {
         "Libelle": Sujet.nom,
@@ -36,6 +44,7 @@ class SujetLoader(GristLoader):
 @register_grist_loader
 class TypeLoader(GristLoader):
     model = Type
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
     table = "Ref_Types"
     fields = {
         "Type_aide": Type.nom,
@@ -46,6 +55,7 @@ class TypeLoader(GristLoader):
 @register_grist_loader
 class OrganismeLoader(GristLoader):
     model = Organisme
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
     table = "Ref_Organisme"
     required_cols = ("Nom",)
     fields = {
@@ -55,8 +65,20 @@ class OrganismeLoader(GristLoader):
 
 
 @register_grist_loader
+class ProgrammeLoader(GristLoader):
+    model = Programme
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
+    table = "Ref_Programmes"
+    required_cols = ("Nom",)
+    fields = {
+        "Nom": Programme.nom,
+    }
+
+
+@register_grist_loader
 class ZoneGeographiqueLoader(GristLoader):
     model = ZoneGeographique
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
     table = "Ref_Zones_geographiques"
     required_cols = ("Nom",)
     fields = {
@@ -70,8 +92,58 @@ class ZoneGeographiqueLoader(GristLoader):
 
 
 @register_grist_loader
+class GroupementProducteursLoader(GristLoader):
+    model = GroupementProducteurs
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
+    table = "Ref_Groupements_producteurs"
+    required_cols = ("Nom",)
+    fields = {
+        "Nom": GroupementProducteurs.nom,
+        "Mention_longue": GroupementProducteurs.libelle,
+    }
+
+
+@register_grist_loader
+class FiliereLoader(GristLoader):
+    model = Filiere
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
+    table = "Ref_Filieres"
+    required_cols = ("Nom", "A_AFFICHER")
+    fields = {
+        "Nom": Filiere.nom,
+        "Ordre": Filiere.position,
+        "NAF": Filiere.code_naf,
+    }
+
+
+@register_grist_loader
+class SousFiliereLoader(GristLoader):
+    model = SousFiliere
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
+    table = "Ref_Sous_filieres"
+    required_cols = ("Nom",)
+    fields = {
+        "Nom": SousFiliere.nom,
+        "Filiere": SousFiliere.filiere,
+    }
+
+
+@register_grist_loader
+class ProductionLoader(GristLoader):
+    model = Production
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
+    table = "Ref_Productions"
+    required_cols = ("Nom",)
+    fields = {
+        "Nom": Production.nom,
+        "Sous_filiere": Production.sous_filiere,
+    }
+
+
+@register_grist_loader
 class AideLoader(GristLoader):
     model = Aide
+    pygrister_config = settings.AIDES_GRIST_LOADER_PYGRISTER_CONFIG
     table = "Solutions"
     required_cols = ("nom_aide",)
     filter = {
