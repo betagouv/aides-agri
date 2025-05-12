@@ -1,7 +1,3 @@
-html {
-  scroll-behavior: smooth;
-}
-
 #intro {
   background-image: url("images/home/illustration_baseline.svg"),
                     url("images/home/illustration_baseline_bg.svg");
