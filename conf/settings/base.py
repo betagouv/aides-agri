@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "dsfr",
     "grist_loader",
     "ui",
+    "product",
     "agri",
     "aides",
 ]

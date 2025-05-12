@@ -13,7 +13,8 @@
 
 @media print {
   #footer,
-  .fr-btn {
+  .fr-btn,
+  #product-space {
     display: none;
   }
 }

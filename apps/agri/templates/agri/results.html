@@ -5,6 +5,7 @@
 {% block extra_css %}
   {{ block.super }}
   <link rel="stylesheet" href="{% static 'agri/results.css' %}">
+  <link rel="stylesheet" href="{% static 'product/base.css' %}">
 {% endblock extra_css %}
 
 {% block extra_head_js %}
@@ -100,8 +101,8 @@
     <p>Nous nous efforçons de recenser et mettre à jour notre catalogue en construction. Il se peut que certaines aides ne soient pas encore recensées par notre équipe.</p>
   </div>
 
-  <div class="fr-container fr-p-0 fr-mb-6w">
-    <div class="fr-grid-row fr-grid-row--gutters">
+  <div class="fr-container fr-p-0">
+    <div class="fr-grid-row fr-grid-row--gutters fr-mb-5w">
       <div class="fr-col fr-col-12">
         <div class="fr-accordions-group">
         {% for type_aide, aide_list in aides.items %}
@@ -136,3 +137,7 @@
   </div>
 </div>
 {% endblock main_col %}
+
+{% block aftercontent %}
+  {% include "product/blocks/user_note.html" %}
+{% endblock aftercontent %}

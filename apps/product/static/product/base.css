@@ -1,0 +1,14 @@
+#product-space {
+  text-align: center;
+}
+
+#product-space .fr-fieldset {
+  justify-content: center;
+}
+
+#product-space .fr-radio-group .fr-label {
+  padding-left: 0;
+  padding-top: 2rem;
+  background-position-x: center;
+  font-size: 14px;
+}

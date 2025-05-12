@@ -4,7 +4,12 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'aides/aide_detail.css' %}">
+<link rel="stylesheet" href="{% static 'product/base.css' %}">
 {% endblock extra_css %}
+
+{% block extra_head_js %}
+  <script type="module" src="{% static 'vendor/htmx.esm.js' %}"></script>
+{% endblock extra_head_js %}
 
 {% block title %}{{ object.nom }}{% endblock title %}
 
@@ -74,5 +79,9 @@
         <p>{{ object.conditions|ui_markdown|safe }}</p>
       </div>
     </div>
+  </div>
+
+  <div class="fr-container fr-mt-4w">
+    {% include "product/blocks/user_note.html" %}
   </div>
 {% endblock content %}

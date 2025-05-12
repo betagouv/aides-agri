@@ -7,6 +7,7 @@ from django.templatetags.static import static
 from django.utils.timezone import now
 from django.views.generic import TemplateView, ListView, View
 from django.views.generic.base import ContextMixin
+from django.views.generic.edit import CreateView
 
 from aides.models import (
     Theme,
@@ -17,6 +18,7 @@ from aides.models import (
     GroupementProducteurs,
     Filiere,
 )
+from product.forms import UserFeedbackForm, UserNoteForm
 
 from . import siret
 from . import tasks
@@ -272,6 +274,7 @@ class ResultsView(ResultsMixin, ListView):
                     ]
                     for type_aide, aides in aides_by_type.items()
                 },
+                "user_note_form": UserNoteForm(),
             }
         )
         type_conseil = Type.objects.get_conseil()

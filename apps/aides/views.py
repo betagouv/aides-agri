@@ -1,5 +1,7 @@
 from django.views.generic import DetailView
 
+from product.forms import UserNoteForm
+
 from .models import Aide
 
 
@@ -19,6 +21,7 @@ class AideDetailView(DetailView):
 
         context_data.update(
             {
+                "user_note_form": UserNoteForm(),
                 "breadcrumb_data": {
                     "links": breadcrumb_links,
                     "current": self.object.nom,
