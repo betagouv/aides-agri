@@ -6,6 +6,10 @@
   <link rel="stylesheet" href="{% static 'agri/home.css' %}">
 {% endblock extra_css %}
 
+{% block extra_head_js %}
+  <script type="module" src="{% static 'vendor/htmx.esm.js' %}"></script>
+{% endblock extra_head_js %}
+
 {% block pagetitle %}{{ SITE_CONFIG.site_title }}{% endblock pagetitle %}
 
 {% block body %}

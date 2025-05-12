@@ -6,7 +6,9 @@
   {{ block.super }}
   <link rel="stylesheet" href="{% static 'ui/components/tile_checkbox.css' %}">
   <link rel="stylesheet" href="{% static 'agri/step-2.css' %}">
+{% endblock extra_css %}
 
+{% block extra_head_js %}
   <script type="importmap">
   {
     "imports": {
@@ -30,7 +32,7 @@
     Stimulus.register("summary-mobile", SummaryMobile)
   </script>
 
-{% endblock extra_css %}
+{% endblock extra_head_js %}
 
 {% block title %}Votre projet{% endblock title %}
 {% block h1 %}Votre projet.{% endblock h1 %}
