@@ -68,8 +68,12 @@
     </div>
     <div class="fr-fieldset__element">
       <span class="fr-label fr-mb-2v">Commune</span>
-      {% dsfr_tag label=commune.code_postal|add:" "|add:commune.nom is_dismissable=True onclick="this.parentElement.removeChild(this.previousElementSibling);this.parentElement.removeChild(this.nextElementSibling);this.nextElementSibling.classList.remove('fr-hidden')" %}
-      <input type="hidden" name="commune" value="{{ commune.numero }}" data-step4-target="commune">
+      {% if commune %}
+        {% dsfr_tag label=commune.code_postal|add:" "|add:commune.nom is_dismissable=True onclick="this.parentElement.removeChild(this.previousElementSibling);this.parentElement.removeChild(this.nextElementSibling);this.nextElementSibling.classList.remove('fr-hidden')" %}
+        <input type="hidden" name="commune" value="{{ commune.numero }}" data-step4-target="commune">
+      {% else %}
+        <span class="fr-info-text">Nous n'avons pas pu trouver la commune de votre exploitation, veuillez la sélectionner ici</span>
+      {% endif %}
       {% ui_select_rich_single label="Commune" name="commune" required=True search_url="agri:search-commune" search_field_name="commune-search" extra_classes="fr-hidden" %}
     </div>
     <div class="fr-fieldset__element fr-mt-2v">

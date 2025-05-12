@@ -44,11 +44,14 @@ export class SelectRich extends Controller {
         for (const mutation of mutationList) {
           if (mutation.type === "attributes" && mutation.attributeName === "class") {
             const isOpened = mutation.target.classList.contains("fr-collapse--expanded")
-            this.element.closest("form").querySelectorAll("button[type=submit]").forEach(elt => {
-              if (elt !== this.searchButtonTarget) {
-                elt.disabled = isOpened
-              }
-            })
+            const form = this.element.closest("form")
+            if (form) {
+              form.querySelectorAll("button[type=submit]").forEach(elt => {
+                if (elt !== this.searchButtonTarget) {
+                  elt.disabled = isOpened
+                }
+              })
+            }
           }
         }
       }).observe(this.entriesTarget, { attributes: true });

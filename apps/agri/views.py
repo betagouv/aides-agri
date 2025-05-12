@@ -162,9 +162,9 @@ class Step4View(AgriMixin, TemplateView):
             {
                 "etablissement": self.etablissement,
                 "categories_juridiques": siret.mapping_categories_juridiques,
-                "commune": ZoneGeographique.objects.communes().get(
-                    numero=self.etablissement.get("commune")
-                ),
+                "commune": ZoneGeographique.objects.communes()
+                .filter(numero=self.etablissement.get("commune"))
+                .first(),
             }
         )
         return context_data
