@@ -2,7 +2,7 @@
   // Configure sentryOnLoad before adding the Loader Script
   window.sentryOnLoad = function () {
     Sentry.init({
-      environment: {{ ENVIRONMENT }}
+      environment: "{{ UI_ENVIRONMENT }}"
     });
   };
 </script>
