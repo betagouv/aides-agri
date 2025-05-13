@@ -3,6 +3,7 @@
 {% load dsfr_tags static ui_tags %}
 
 {% block extra_css %}
+  {{ block.super }}
   <link rel="stylesheet" href="{% static 'ui/components/select-rich.css' %}">
 {% endblock extra_css %}
 
