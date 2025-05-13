@@ -58,18 +58,11 @@ class Sujet(GristModel):
         return self.nom
 
 
-class TypeQuerySet(models.QuerySet):
-    def get_conseil(self):
-        return self.get(nom="Conseil")
-
-
 class Type(GristModel):
     class Meta:
         verbose_name = "Type d'aides"
         verbose_name_plural = "Types d'aides"
         ordering = ("nom",)
-
-    objects = TypeQuerySet.as_manager()
 
     nom = models.CharField(blank=True)
     description = models.CharField(blank=True)

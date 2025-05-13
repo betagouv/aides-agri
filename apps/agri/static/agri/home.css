@@ -30,7 +30,7 @@
   box-shadow: var(--lifted-shadow);
 }
 
-#proposition h3, #conseillers-entreprise h3, #cta-more-themes {
+#proposition h3, #cta-more-themes {
   text-align: center;
 }
 
@@ -63,12 +63,6 @@
 
 #projet .fr-tile--horizontal .fr-tile__link::after {
   content: none;
-}
-
-#conseillers-entreprise .illustration {
-  background-image: url("images/home/illustration_conseillers_entreprise.svg");
-  background-repeat: no-repeat;
-  height: 301px;
 }
 
 @media (min-width:62em) {

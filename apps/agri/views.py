@@ -34,21 +34,6 @@ class HomeView(TemplateView):
 
     extra_context = {
         "themes": Theme.objects.with_aides_count().order_by("-urgence", "-aides_count"),
-        "conseillers_entreprises_card": {
-            "heading_tag": "h4",
-            "extra_classes": "fr-card--horizontal fr-border-default--red-marianne",
-            "title": "Conseillers Entreprises",
-            "description": "Le service public d’accompagnement des entreprises. Échangez avec les conseillers de proximité qui peuvent vous aider dans vos projets, vos difficultés ou les transformations nécessaires à la réussite de votre entreprise.",
-            "image_url": static(
-                "agri/images/home/illustration_conseillers_entreprise.svg"
-            ),
-            "media_badges": [
-                {
-                    "extra_classes": "fr-badge--green-emeraude",
-                    "label": "En cours",
-                }
-            ],
-        },
     }
 
     def get_context_data(self, **kwargs):
@@ -277,28 +262,7 @@ class ResultsView(ResultsMixin, ListView):
                 "user_note_form": UserNoteForm(),
             }
         )
-        type_conseil = Type.objects.get_conseil()
-        if type_conseil not in context_data["aides"]:
-            context_data["aides"][type_conseil] = []
-        context_data["aides"][type_conseil].append(
-            {
-                "heading_tag": "h2",
-                "extra_classes": "fr-card--horizontal-tier fr-card--no-icon fr-border-default--red-marianne",
-                "title": "Conseillers Entreprises",
-                "description": "Le service public d’accompagnement des entreprises. Échangez avec les conseillers qui peuvent vous aider dans vos projets, vos difficultés ou les transformations nécessaires à la réussite de votre entreprise.",
-                "link": "#",
-                "image_url": static(
-                    "agri/images/home/illustration_conseillers_entreprise.svg"
-                ),
-                "ratio_class": "fr-ratio-1x1",
-                "media_badges": [
-                    {
-                        "extra_classes": "fr-badge--green-emeraude",
-                        "label": "En cours",
-                    }
-                ],
-            }
-        )
+
         return context_data
 
 
