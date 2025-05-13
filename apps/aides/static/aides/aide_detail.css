@@ -7,8 +7,12 @@
   box-shadow: var(--lifted-shadow);
 }
 
-.fr-heading--soft {
-  color: #6a6af4 !important;
+.fr-icon-arrow-right-down-circle-fill:before {
+  rotate: -45deg;
+}
+
+.fr-col.fr-m-auto {
+  text-align: center;
 }
 
 @media print {
