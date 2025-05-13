@@ -97,42 +97,52 @@
 {% block main_col %}
 <div class="fr-col fr-col-12 fr-col-md-9">
   <div class="fr-highlight">
-    <p>La recommandation de ces dispositifs se base sur les informations que vous nous avez fournies en amont. Elle n’assure pas votre éligibilité.</p>
-    <p>Nous nous efforçons de recenser et mettre à jour notre catalogue en construction. Il se peut que certaines aides ne soient pas encore recensées par notre équipe.</p>
+    {% if aides %}
+      <p>La recommandation de ces dispositifs se base sur les informations que vous nous avez fournies en amont. Elle n’assure pas votre éligibilité.</p>
+      <p>Nous nous efforçons de recenser et mettre à jour notre catalogue encore en construction. Il se peut que certaines aides ne soient pas encore recensées par notre équipe.</p>
+    {% else %}
+      <p>La recommandation de dispositifs se base sur les informations que vous nous avez fournies en amont.</p>
+      <p><strong>Malheureusement, nous n’avons pas recensé à ce jour de dispositif correspondant à la fois à votre besoin et à votre profil d’exploitant.</strong></p>
+      <p>Nous nous efforçons de recenser et mettre à jour notre catalogue encore en construction. Il se peut également qu'aucune aide ne soit proposée pour le moment par nos partenaires publics.</p>
+    {% endif %}
   </div>
 
   <div class="fr-container fr-p-0">
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-5w">
-      <div class="fr-col fr-col-12">
-        <div class="fr-accordions-group">
-        {% for type_aide, aide_list in aides.items %}
-          <section class="fr-accordion">
-            <h3 class="fr-accordion__title">
-              <button type="button"
-                      class="fr-accordion__btn"
-                      aria-expanded="false"
-                      aria-controls="accordeon-type-{{ forloop.counter }}"
-              >
-                {{ type_aide.nom }}
-                <span class="fr-text--xs fr-text-mention--grey fr-text--regular fr-ml-2v fr-hidden fr-unhidden-sm">
-                  {{ type_aide.description }}
-                </span>
-                <p class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon fr-ml-2v">
-                  {{ aide_list|length }} aide{{ aide_list|pluralize }} disponible{{ aide_list|pluralize }}
-                </p>
-              </button>
-            </h3>
-            <div id="accordeon-type-{{ forloop.counter }}" class="fr-collapse">
-              {% for aide in aide_list %}
-              <div class="fr-col fr-col-12 fr-mb-1w">
-                {% dsfr_card aide %}
+      {% if aides %}
+        <div class="fr-col fr-col-12">
+          <div class="fr-accordions-group">
+          {% for type_aide, aide_list in aides.items %}
+            <section class="fr-accordion">
+              <h3 class="fr-accordion__title">
+                <button type="button"
+                        class="fr-accordion__btn"
+                        aria-expanded="false"
+                        aria-controls="accordeon-type-{{ forloop.counter }}"
+                >
+                  {{ type_aide.nom }}
+                  <span class="fr-text--xs fr-text-mention--grey fr-text--regular fr-ml-2v fr-hidden fr-unhidden-sm">
+                    {{ type_aide.description }}
+                  </span>
+                  <p class="fr-badge fr-badge--sm fr-badge--info fr-badge--no-icon fr-ml-2v">
+                    {{ aide_list|length }} aide{{ aide_list|pluralize }} disponible{{ aide_list|pluralize }}
+                  </p>
+                </button>
+              </h3>
+              <div id="accordeon-type-{{ forloop.counter }}" class="fr-collapse">
+                {% for aide in aide_list %}
+                <div class="fr-col fr-col-12 fr-mb-1w">
+                  {% dsfr_card aide %}
+                </div>
+                {% endfor %}
               </div>
-              {% endfor %}
-            </div>
-          </section>
-        {% endfor %}
+            </section>
+          {% endfor %}
+          </div>
         </div>
-      </div>
+      {% else %}
+        <a class="fr-btn fr-mx-auto fr-mt-2w" href="{% url 'agri:home' %}">Recommencer la recherche</a>
+      {% endif %}
     </div>
   </div>
 </div>
