@@ -66,16 +66,13 @@
             <div class="fr-container--fluid">
               <div id="themes" class="fr-grid-row fr-grid-row--gutters">
                 {% include "agri/_partials/home_themes.html" with themes=themes only %}
-              </div>
-              <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-mt-2w">
-                <div class="fr-col-12 fr-col-sm-4" id="cta-more-themes">
+                <div class="fr-col fr-col-12 fr-col-sm-4 fr-m-auto" id="cta-more-themes">
                   <a class="fr-btn"
                      href="{% url 'agri:home' %}?more_themes=1"
                      hx-boost="true"
-                     hx-target="#themes"
-                     hx-swap="beforeend show:none"
+                     hx-target="closest .fr-col"
+                     hx-swap="outerHTML show:none"
                      hx-push-url="false"
-                     hx-on::after-request="this.parentElement.removeChild(this)"
                   >Voir plus de thèmes</a>
                 </div>
               </div>
