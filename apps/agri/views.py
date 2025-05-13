@@ -178,7 +178,9 @@ class Step5View(AgriMixin, TemplateView):
             {
                 "mapping_naf": siret.mapping_naf_complete_unique,
                 "mapping_tranches_effectif": siret.mapping_effectif,
-                "code_effectif": self.code_effectif,
+                "tranche_effectif_salarie": siret.mapping_effectif.get(
+                    self.etablissement.get("tranche_effectif_salarie", ""), None
+                ),
                 "etablissement": self.etablissement,
                 "groupements": [
                     (g.pk, g.nom, g.libelle)

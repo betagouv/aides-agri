@@ -89,8 +89,8 @@ def get(query: str) -> dict:
         if etablissement["nom_commercial"]
         else societe["nom_complet"]
     )
-    if etablissement["tranche_effectif_salarie"] is None:
-        etablissement["tranche_effectif_salarie"] = "null"
+    if etablissement["tranche_effectif_salarie"] == "NN":
+        etablissement["tranche_effectif_salarie"] = "00"
     for key in etablissement:
         if isinstance(key, str) and key.startswith("date_") and etablissement[key]:
             etablissement[key] = datetime.date.fromisoformat(etablissement[key])
