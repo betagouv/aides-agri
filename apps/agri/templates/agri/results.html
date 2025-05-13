@@ -29,6 +29,23 @@
   <script type="module" src="{% static 'vendor/htmx.esm.js' %}"></script>
 {% endblock extra_head_js %}
 
+{% block extra_js %}
+<script>
+window.onbeforeprint = evt => {
+  document.querySelectorAll(".fr-collapse:not(.fr-collapse--expanded)").forEach(elt => {
+    elt.classList.add("fr-collapse--expanded")
+    elt.classList.add("fr-collapse--expanded-for-print")
+  })
+}
+window.onafterprint = evt => {
+  document.querySelectorAll(".fr-collapse--expanded-for-print").forEach(elt => {
+    elt.classList.remove("fr-collapse--expanded")
+    elt.classList.remove("fr-collapse--expanded-for-print")
+  })
+}
+</script>
+{% endblock extra_js %}
+
 {% block modals %}
 <dialog class="fr-modal"
         id="modal-send-by-mail"
@@ -88,6 +105,12 @@
           data-fr-opened="false"
   >
     M’envoyer la recherche
+  </button>
+  <button type="button"
+          class="fr-btn fr-btn--icon-left fr-btn--sm fr-pl-0 fr-btn--tertiary-no-outline fr-icon-file-pdf-line"
+          onclick="window.print()"
+  >
+    Télécharger en PDF
   </button>
 {% endblock aside_tools %}
 

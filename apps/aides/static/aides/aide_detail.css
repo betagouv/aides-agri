@@ -13,6 +13,7 @@
 
 @media print {
   #footer,
+  .fr-breadcrumb,
   .fr-btn,
   #product-space {
     display: none;

@@ -35,3 +35,12 @@
 .fr-card.fr-enlarge-button:not(.fr-card--no-icon) .fr-card__content, .fr-card.fr-enlarge-link:not(.fr-card--no-icon) .fr-card__content {
   padding-bottom: 2rem;
 }
+
+@media print {
+  #footer,
+  .fr-btn,
+  #product-space,
+  #summary a.fr-link {
+    display: none;
+  }
+}
