@@ -1,4 +1,34 @@
-.fr-card--horizontal-tier.fr-border-default--red-marianne .fr-card__img img {
+.fr-card--horizontal-fifth .fr-card__header {
+  flex: 0 0 20%;
+  width: 20%;
+}
+
+.fr-card__content {
+  padding: 1.5rem;
+}
+
+.fr-card__start {
+  margin-bottom: .5rem;
+}
+
+.fr-card__desc {
+  margin-top: .5rem;
+}
+
+.fr-card__content .fr-tags-group > li {
+  line-height: unset;
+}
+
+.fr-card__content .fr-tag {
+  margin-bottom: 0;
+}
+
+.fr-card__title {
+  font-size: .875rem;
+  line-height: 1.5rem;
+}
+
+.fr-card--horizontal-fifth.fr-border-default--red-marianne .fr-card__img img {
   object-fit: contain;
 }
 

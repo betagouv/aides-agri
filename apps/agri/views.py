@@ -231,7 +231,7 @@ class ResultsView(ResultsMixin, ListView):
                     type_aide: [
                         {
                             "heading_tag": "h2",
-                            "extra_classes": "fr-card--horizontal-tier fr-card--no-icon",
+                            "extra_classes": "fr-card--horizontal fr-card--horizontal-fifth fr-card--no-icon",
                             "title": aide.nom,
                             "description": aide.promesse,
                             "link": aide.get_absolute_url(),
@@ -249,10 +249,12 @@ class ResultsView(ResultsMixin, ListView):
                                 }
                             ],
                             "top_detail": {
-                                "detail": {
-                                    "icon_class": "fr-icon-arrow-right-line",
-                                    "text": aide.organisme.nom,
-                                },
+                                "tags": [
+                                    {
+                                        "label": aide.couverture_geographique,
+                                        "extra_classes": "fr-tag--sm",
+                                    }
+                                ],
                             },
                         }
                         for aide in aides
