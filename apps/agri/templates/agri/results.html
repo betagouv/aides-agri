@@ -47,6 +47,7 @@ window.onafterprint = evt => {
 {% endblock extra_js %}
 
 {% block modals %}
+{% if aides %}
 <dialog class="fr-modal"
         id="modal-send-by-mail"
         aria-labelledby="modal-send-by-mail-title"
@@ -58,7 +59,8 @@ window.onafterprint = evt => {
           <form method="post"
                 action="{% url 'agri:send-results-by-mail' %}{% querystring %}"
                 hx-boost="true"
-                hx-target="#modal-send-by-mail-content"
+                hx-target="#content"
+                hx-swap="beforebegin show:none"
                 hx-push-url="false"
           >
             {% csrf_token %}
@@ -86,8 +88,18 @@ window.onafterprint = evt => {
             </div>
             <div class="fr-modal__footer" id="modal-send-results-by-mail-footer">
               <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
-                <button class="fr-btn fr-icon-checkbox-circle-line fr-btn--icon-left">Envoyer par e-mail</button>
-                <button class="fr-btn fr-btn--secondary" aria-controls="modal-send-by-mail">Annuler</button>
+                <button type="submit"
+                        class="fr-btn fr-icon-checkbox-circle-line fr-btn--icon-left"
+                        aria-controls="modal-send-by-mail"
+                >
+                  Envoyer par e-mail
+                </button>
+                <button type="button"
+                        class="fr-btn fr-btn--secondary"
+                        aria-controls="modal-send-by-mail"
+                >
+                  Annuler
+                </button>
               </div>
             </div>
           </form>
@@ -96,9 +108,11 @@ window.onafterprint = evt => {
     </div>
   </div>
 </dialog>
+{% endif %}
 {% endblock modals %}
 
 {% block aside_tools %}
+  {% if aides %}
   <button type="button"
           class="fr-btn fr-btn--icon-left fr-btn--sm fr-pl-0 fr-btn--tertiary-no-outline fr-icon-mail-line"
           aria-controls="modal-send-by-mail"
@@ -112,6 +126,7 @@ window.onafterprint = evt => {
   >
     Télécharger en PDF
   </button>
+  {% endif %}
 {% endblock aside_tools %}
 
 {% block title %}Nos recommandations{% endblock title %}

@@ -1,6 +1,3 @@
-<div class="fr-alert fr-alert--success">
-  <h3 class="fr-alert__title">Succès de l’envoi</h3>
-  <p>Description</p>
-</div>
+{% load dsfr_tags %}
 
-<div id="modal-send-results-by-mail-footer" hx-swap-oob="outerHTML"></div>
+{% dsfr_alert type="success" is_collapsible=True extra_classes="fr-alert--sm fr-mb-4w" title="Succès de l’envoi" content="Cette recherche devrait arriver dans votre boîte e-mail dans quelques instants ; pensez à vérifier votre dossier Spam." %}
