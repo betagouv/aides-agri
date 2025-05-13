@@ -4,7 +4,6 @@
 
 {% block extra_css %}
   {{ block.super }}
-  <link rel="stylesheet" href="{% static 'ui/components/tile_checkbox.css' %}">
   <link rel="stylesheet" href="{% static 'agri/step-2.css' %}">
 {% endblock extra_css %}
 
@@ -52,8 +51,11 @@
      data-checkbox-group-field-required-value="true"
 >
   {% for id, sujet in sujets.items %}
-  <div class="fr-col fr-col-12">
-    {% ui_tile_checkbox id=id name="sujets" value=sujet.pk title=sujet.nom description=sujet.description extra_classes="fr-tile--horizontal fr-tile--sm" %}
+  <div class="fr-col fr-col-12 sujet">
+    <div class="fr-checkbox-group">
+      <input id="{{ id }}" type="checkbox" name="sujets" value="{{ sujet.pk }}">
+      <label class="fr-label" for="{{ id }}">{{ sujet.nom }}</label>
+    </div>
   </div>
   {% endfor %}
   <div class="fr-error-text fr-icon-error-line fr-hidden" data-checkbox-group-field-target="error">

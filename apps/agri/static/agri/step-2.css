@@ -1,24 +1,13 @@
-.fr-tile--checkbox .fr-tile__detail .fr-label {
-  font-size: .5rem;
-  line-height: 1rem;
+.sujet {
+  border-bottom: 1px solid var(--border-contrast-grey);
 }
 
-.fr-tile--checkbox.fr-checkbox-group input[type="checkbox"] {
-  height: 1rem;
-  width: 1rem;
+.fr-checkbox-group input[type="checkbox"] + label.fr-label {
+  margin-left: 3rem;
 }
 
-.fr-tile--horizontal .fr-tile__img {
-  width: 0;
-  margin: 0;
-}
-
-.fr-tile--horizontal .fr-tile__content {
-  padding-bottom: 0;
-}
-
-.fr-tile--horizontal .fr-tile__link::after {
-  content: none;
+.fr-checkbox-group input[type="checkbox"] + label.fr-label::before {
+  left: -3rem;
 }
 
 @media (min-width:62em) {
