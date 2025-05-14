@@ -30,7 +30,7 @@
   box-shadow: var(--lifted-shadow);
 }
 
-#proposition h3, #a-propos h3, #cta-more-themes {
+#proposition h3, #a-propos h3, #cta-more-themes, #cta-feedback {
   text-align: center;
 }
 

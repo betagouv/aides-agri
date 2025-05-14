@@ -14,14 +14,14 @@ from aides.models import (
     Sujet,
     Aide,
     ZoneGeographique,
-    Type,
     GroupementProducteurs,
     Filiere,
 )
-from product.forms import UserFeedbackForm, UserNoteForm
+from product.forms import UserNoteForm
 
 from . import siret
 from . import tasks
+from .forms import FeedbackForm
 
 
 class HomeView(TemplateView):
@@ -351,3 +351,13 @@ class SendResultsByMailView(ResultsMixin, View):
             aides_ids=[a.pk for a in self.get_results()],
         )
         return render(request, "agri/_partials/send-results-by-mail-ok.html")
+
+
+class CreateFeedbackView(CreateView):
+    form_class = FeedbackForm
+    template_name = "agri/_partials/feedback_form.html"
+
+    def form_valid(self, form: FeedbackForm):
+        form.instance.sent_from_url = self.request.htmx.current_url
+        self.object = form.save()
+        return render(self.request, "agri/_partials/feedback_ok.html")

@@ -1,0 +1,25 @@
+<h1 id="fr-modal-feedback-title" class="fr-modal__title">
+  <span class="fr-icon-arrow-right-line fr-icon--lg"></span>
+  Aidez-nous à nous améliorer : quel est votre besoin non disponible sur la plateforme ?
+</h1>
+
+<form id="form-feedback"
+      method="post"
+      action="{% url 'agri:feedback-themes-sujets' %}"
+      hx-boost="true"
+      hx-target="this"
+      hx-swap="outerHTML"
+      hx-push-url="false"
+      hx-disabled-elt="#fr-modal-feedback-primary-button"
+>
+  {{ form }}
+</form>
+
+<button id="fr-modal-feedback-primary-button"
+        type="submit"
+        form="form-feedback"
+        class="fr-btn"
+        hx-swap-oob="true"
+>
+  Envoyer
+</button>
