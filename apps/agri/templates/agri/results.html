@@ -13,16 +13,19 @@
   {
     "imports": {
       "@hotwired/stimulus": "{% static 'vendor/stimulus.js' %}",
+      "dsfr-form": "{% static 'ui/controllers/dsfr_form.js' %}",
       "summary-mobile": "{% static 'agri/summary-mobile.js' %}"
     }
   }
   </script>
   <script type="module">
     import { Application } from "@hotwired/stimulus"
+    import { DsfrForm } from "dsfr-form"
     import { SummaryMobile } from "summary-mobile"
 
     window.Stimulus = Application.start()
 
+    Stimulus.register("dsfr-form", DsfrForm)
     Stimulus.register("summary-mobile", SummaryMobile)
   </script>
 

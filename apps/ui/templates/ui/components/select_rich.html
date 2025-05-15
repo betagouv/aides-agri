@@ -3,6 +3,7 @@
 <div class="fr-select-rich fr-input-group {{ self.extra_classes }}"
      id="select-rich-{{ self.name }}"
      data-controller="select-rich"
+     data-select-rich-name-value="{{ self.name }}"
      data-select-rich-multi-value="{% if self.multi %}true{% else %}false{% endif %}"
      data-select-rich-required-value="{% if self.required %}true{% else %}false{% endif %}"
 >

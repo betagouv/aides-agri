@@ -13,8 +13,8 @@
   {
     "imports": {
       "@hotwired/stimulus": "{% static 'vendor/stimulus.js' %}",
+      "dsfr-form": "{% static 'ui/controllers/dsfr_form.js' %}",
       "checkbox-group-field": "{% static 'ui/components/checkbox-group-field.js' %}",
-      "form-with-custom-fields": "{% static 'ui/controllers/form_with_custom_fields.js' %}",
       "select-rich": "{% static 'ui/components/select-rich.js' %}",
       "summary-mobile": "{% static 'agri/summary-mobile.js' %}"
     }
@@ -22,15 +22,15 @@
   </script>
   <script type="module">
     import { Application } from "@hotwired/stimulus"
+    import { DsfrForm } from "dsfr-form"
     import { CheckboxGroupField } from "checkbox-group-field"
-    import { FormWithCustomFields } from "form-with-custom-fields"
     import { SelectRich } from "select-rich"
     import { SummaryMobile } from "summary-mobile"
 
     window.Stimulus = Application.start()
 
+    Stimulus.register("dsfr-form", DsfrForm)
     Stimulus.register("checkbox-group-field", CheckboxGroupField)
-    Stimulus.register("form-with-custom-fields", FormWithCustomFields)
     Stimulus.register("select-rich", SelectRich)
     Stimulus.register("summary-mobile", SummaryMobile)
   </script>
@@ -42,10 +42,9 @@
 {% block action %}{% url 'agri:results' %}{% endblock action %}
 
 {% block extra_form_attributes %}
-  data-controller="form-with-custom-fields"
-  data-action="submit->form-with-custom-fields#submit"
-  data-form-with-custom-fields-select-rich-outlet="[data-controller=select-rich]"
-  data-form-with-custom-fields-checkbox-group-field-outlet="[data-controller=checkbox-group-field]"
+  data-controller="dsfr-form"
+  data-dsfr-form-select-rich-outlet="[data-controller=select-rich]"
+  data-dsfr-form-checkbox-group-field-outlet="[data-controller=checkbox-group-field]"
 {% endblock extra_form_attributes %}
 
 {% block form %}
@@ -73,6 +72,7 @@
         <option value="{% if code %}{{ code }}{% endif %}" {% if code == etablissement.tranche_effectif_salarie %}selected{% endif %}>{{ label }}</option>
         {% endfor %}
       </select>
+      <span class="fr-error-text fr-hidden">Ce champ est requis pour passer à la suite</span>
     </div>
     <div class="fr-fieldset__element fr-input-group fr-mb-3w">
       {% ui_select_rich_multi label="Filières" name="filieres" required=True options=filieres initials=filieres_initials searchable=True search_placeholder="élevage, légumes, etc." with_tags=True helper=filieres_helper %}

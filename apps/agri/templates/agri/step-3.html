@@ -12,26 +12,23 @@
   {
     "imports": {
       "@hotwired/stimulus": "{% static 'vendor/stimulus.js' %}",
-      "form-with-custom-fields": "{% static 'ui/controllers/form_with_custom_fields.js' %}",
+      "dsfr-form": "{% static 'ui/controllers/dsfr_form.js' %}",
       "select-rich": "{% static 'ui/components/select-rich.js' %}",
-      "summary-mobile": "{% static 'agri/summary-mobile.js' %}",
-      "step4": "{% static 'agri/step-4.js' %}"
+      "summary-mobile": "{% static 'agri/summary-mobile.js' %}"
     }
   }
   </script>
   <script type="module">
     import { Application } from "@hotwired/stimulus"
-    import { FormWithCustomFields } from "form-with-custom-fields"
+    import { DsfrForm } from "dsfr-form"
     import { SelectRich } from "select-rich"
     import { SummaryMobile } from "summary-mobile"
-    import { Step4 } from "step4"
 
     window.Stimulus = Application.start()
 
-    Stimulus.register("form-with-custom-fields", FormWithCustomFields)
+    Stimulus.register("dsfr-form", DsfrForm)
     Stimulus.register("select-rich", SelectRich)
     Stimulus.register("summary-mobile", SummaryMobile)
-    Stimulus.register("step4", Step4)
   </script>
 
   <script type="module" src="{% static 'vendor/htmx.esm.js' %}"></script>
@@ -44,9 +41,9 @@
 {% block action %}{% url 'agri:step-5' %}{% endblock action %}
 
 {% block extra_form_attributes %}
-  data-controller="step4"
-  data-action="submit->step4#submit change->step4#validate"
-  data-step4-select-rich-outlet="[data-controller=select-rich]"
+  data-controller="dsfr-form"
+  data-action="change->dsfr-form#validateCustomFields"
+  data-dsfr-form-select-rich-outlet="[data-controller=select-rich]"
 {% endblock extra_form_attributes %}
 
 {% block form %}
@@ -57,6 +54,7 @@
         <div class="fr-select-rich fr-input-group"
              id="select-rich-siret"
              data-controller="select-rich"
+             data-select-rich-name-value="siret"
              data-select-rich-multi-value="false"
              data-select-rich-required-value="true"
              hx-trigger="change"

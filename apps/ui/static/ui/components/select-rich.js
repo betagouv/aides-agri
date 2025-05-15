@@ -6,6 +6,7 @@ const sanitizeForSearch = (someString) => {
 
 export class SelectRich extends Controller {
   static values = {
+    name: String,
     multi: Boolean,
     required: Boolean
   }
@@ -165,7 +166,7 @@ export class SelectRich extends Controller {
   }
 
   validate() {
-    if (this.requiredValue && !this.entriesTarget.querySelector("input:checked")) {
+    if (this.requiredValue && !this.entriesTarget.querySelector("input:checked") && !this.element.closest("form").querySelector(`input[type=hidden][name=${this.nameValue}][value]`)) {
       this._setErrorState()
       return false
     } else {

@@ -12,23 +12,23 @@
   {
     "imports": {
       "@hotwired/stimulus": "{% static 'vendor/stimulus.js' %}",
+      "dsfr-form": "{% static 'ui/controllers/dsfr_form.js' %}",
       "select-rich": "{% static 'ui/components/select-rich.js' %}",
-      "summary-mobile": "{% static 'agri/summary-mobile.js' %}",
-      "step4": "{% static 'agri/step-4.js' %}"
+      "summary-mobile": "{% static 'agri/summary-mobile.js' %}"
     }
   }
   </script>
   <script type="module">
     import { Application } from "@hotwired/stimulus"
+    import { DsfrForm } from "dsfr-form"
     import { SelectRich } from "select-rich"
     import { SummaryMobile } from "summary-mobile"
-    import { Step4 } from "step4"
 
     window.Stimulus = Application.start()
 
+    Stimulus.register("dsfr-form", DsfrForm)
     Stimulus.register("select-rich", SelectRich)
     Stimulus.register("summary-mobile", SummaryMobile)
-    Stimulus.register("step4", Step4)
   </script>
 
   <script type="module" src="{% static 'vendor/htmx.esm.js' %}"></script>
@@ -41,9 +41,8 @@
 {% block action %}{% url 'agri:step-5' %}{% endblock action %}
 
 {% block extra_form_attributes %}
-  data-controller="step4"
-  data-action="submit->step4#submit change->step4#validate"
-  data-step4-select-rich-outlet="[data-controller=select-rich]"
+  data-controller="dsfr-form"
+  data-dsfr-form-select-rich-outlet="[data-controller=select-rich]"
 {% endblock extra_form_attributes %}
 
 {% block form %}
@@ -68,7 +67,7 @@
       <span class="fr-label fr-mb-2v">Commune</span>
       {% if commune %}
         {% dsfr_tag label=commune.code_postal|add:" "|add:commune.nom is_dismissable=True onclick="this.parentElement.removeChild(this.previousElementSibling);this.parentElement.removeChild(this.nextElementSibling);this.nextElementSibling.classList.remove('fr-hidden')" %}
-        <input type="hidden" name="commune" value="{{ commune.numero }}" data-step4-target="commune">
+        <input type="hidden" name="commune" value="{{ commune.numero }}">
         {% ui_select_rich_single label="Commune" name="commune" required=True search_url="agri:search-commune" search_field_name="commune-search" extra_classes="fr-hidden" %}
       {% else %}
         <span class="fr-info-text">Nous n’avons pas pu trouver la commune de votre exploitation, veuillez la sélectionner ici</span>
