@@ -6,18 +6,8 @@
   color: #6a6af4 !important;
 }
 
-a.fr-tag[aria-pressed=true] {
-  background-color: transparent;
-  background-image: radial-gradient(circle at 100% .25rem,transparent .578125rem,var(--background-active-blue-france) .625rem);
-  color: var(--text-inverted-blue-france);
-}
-
-a.fr-tag[aria-pressed=true]:hover {
-  background-image: radial-gradient(circle at 100% .25rem,transparent .578125rem,var(--background-active-blue-france-hover) .625rem);
-}
-
-a.fr-tag[aria-pressed=true]::after {
-  color: var(--text-action-high-blue-france);
+#cta-feedback {
+  text-align: center;
 }
 
 @media screen and (max-width: 576px) {
