@@ -26,6 +26,15 @@ class AideDetailView(DetailView):
                     "links": breadcrumb_links,
                     "current": self.object.nom,
                 },
+                "badge_data": {
+                    "extra_classes": "fr-badge--green-emeraude",
+                    "label": "En cours",
+                }
+                if self.object.is_ongoing
+                else {
+                    "extra_classes": "fr-badge--pink-tuile",
+                    "label": "Clôturé",
+                },
             }
         )
         return context_data

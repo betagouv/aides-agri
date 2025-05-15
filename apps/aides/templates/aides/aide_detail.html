@@ -14,45 +14,42 @@
 {% block title %}{{ object.nom }}{% endblock title %}
 
 {% block content %}
-  <div class="fr-container--fluid">
+  <div class="fr-container--fluid" id="aide">
     <div class="fr-grid-row fr-mb-3w">
-      <div class="fr-col fr-col-11">
-        <h1 class="fr-h2">{{ object.nom }}</h1>
-        <div class="fr-container--fluid">
-          <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col fr-col-12">
+      <div class="fr-col fr-col-9">
+        {% dsfr_badge badge_data %}
+        <h1 class="fr-h2 fr-mt-1w">{{ object.nom }}</h1>
               <div class="fr-tags-group">
                 {% dsfr_tag label=object.organisme.nom extra_classes="fr-tag--sm" %}
                 {% for sujet in object.sujets.all %}
                   {% dsfr_tag label=sujet.nom_court extra_classes="fr-tag--sm" %}
                 {% endfor %}
-              </div>
-              <button type="button"
-                      class="fr-btn fr-btn--icon-left fr-btn--sm fr-btn--tertiary-no-outline fr-icon-file-pdf-line"
-                      onclick="window.print()"
-              >
-                Télécharger la fiche aide
-              </button>
-            </div>
-          </div>
         </div>
       </div>
-      <div class="fr-col fr-col-1">
-        <img src="" alt="" class="fr-responsive-img">
+      <div class="fr-col fr-col-3">
+        <div>
+          <img src="" alt="" class="fr-responsive-img">
+        </div>
+        <button type="button"
+                class="fr-btn fr-btn--icon-left fr-btn--sm fr-btn--tertiary fr-icon-file-pdf-line"
+                onclick="window.print()"
+        >
+          Télécharger la fiche aide
+        </button>
       </div>
     </div>
-    <div class="fr-grid-row">
-      <div class="fr-col fr-col-12 fr-col-md-6">
-        <p>{{ object.promesse }}</p>
-        <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-arrow-right-down-circle-fill fr-btn--icon-left fr-pl-2v fr-mb-2w">Description</h2>
-        <p>{{ object.description|ui_markdown|safe }}</p>
-      </div>
+    <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col fr-col-12 fr-col-md-6">
         <div class="fr-background-action-low--blue-france fr-px-2w fr-py-1w">
           {% for type_aide in object.types.all %}
             <strong>{{ type_aide.nom }}</strong>
           {% endfor %}
         </div>
+        <p>{{ object.promesse }}</p>
+        <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-arrow-right-down-circle-fill fr-btn--icon-left fr-pl-2v fr-mb-2w">Description</h2>
+        <p>{{ object.description|ui_markdown|safe }}</p>
+      </div>
+      <div class="fr-col fr-col-12 fr-col-md-6">
         <div class="fr-mt-3w">
           <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-btn--icon-left fr-mb-2w">Critères d'éligibilité</h2>
           <p>{{ object.conditions|ui_markdown|safe }}</p>
@@ -63,10 +60,10 @@
       <div class="fr-col fr-col-12 fr-col-md-4 fr-m-auto">
         <a class="fr-btn fr-btn--primary"
            target="_blank"
-           href="{{ object.url_demarche }}"
+           href="{{ object.url_descriptif }}"
            id="link-to-origin"
         >
-          Postuler
+          Voir le détail
         </a>
       </div>
     </div>

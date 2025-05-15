@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.db import models
 from django.urls import reverse
 
@@ -272,3 +274,7 @@ class Aide(GristModel):
 
     def get_absolute_url(self):
         return reverse("aides:aide", kwargs={"slug": self.slug, "pk": self.pk})
+
+    @property
+    def is_ongoing(self) -> bool:
+        return self.date_fin is None or self.date_fin > date.today()
