@@ -67,12 +67,15 @@
     Veuillez sélectionner au moins un sujet pour passer à la suite
   </div>
 </div>
+{% endblock form %}
+
+{% block main_col_footer %}
 <div id="cta-feedback">
-  <h4 class="fr-h6 fr-mt-5w">Vous ne trouvez pas parmi cette liste votre projet ou difficulté actuelle ?</h4>
+  <h4 class="fr-text--lg fr-mt-5w">Vous ne trouvez pas ici votre situation actuelle ?</h4>
   <p>
     <button type="button" class="fr-btn fr-btn--tertiary" data-fr-opened="false" aria-controls="fr-modal-feedback">
-      Aidez-nous à nous améliorer en nous racontant votre besoin
+      Racontez-nous votre besoin
     </button>
   </p>
 </div>
-{% endblock form %}
+{% endblock main_col_footer %}
