@@ -1,3 +1,5 @@
+{% load i18n dsfr_tags %}
+
 <div class="fr-checkbox-group-field fr-input-group"
      data-controller="checkbox-group-field"
      data-checkbox-group-field-required-value="true"
@@ -9,9 +11,22 @@
       <div class="fr-col fr-col-12 fr-col-md-6 fr-mb-2w">
         <input id="checkbox-regroupements-{{ value }}" type="checkbox" name="{{ self.name }}" value="{{ value }}">
         <label for="checkbox-regroupements-{{ value }}">
-          {% if label_long %}<abbr title="{{ label_long }}">{% endif %}
           {{ label }}
-          {% if label_long %}</abbr>{% endif %}
+          {% if label_long %}
+            <button type="button"
+                    class="fr-btn--tooltip fr-btn"
+                    aria-describedby="tooltip-{{ self.name }}-{{ value }}"
+            >
+              {% translate "Contextual information" %}
+            </button>
+            <span class="fr-tooltip fr-placement"
+                  id="tooltip-{{ self.name }}-{{ value }}"
+                  role="tooltip"
+                  aria-hidden="true"
+            >
+              {{ label_long }}
+            </span>
+          {% endif %}
         </label>
       </div>
       {% endfor %}
