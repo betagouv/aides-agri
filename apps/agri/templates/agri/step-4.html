@@ -75,15 +75,6 @@
       {% endif %}
     </div>
     <div class="fr-fieldset__element fr-mt-2v">
-      <label for="input-forme-juridique" class="fr-label fr-mb-2v">Forme juridique</label>
-      {% dsfr_tag label=etablissement.societe.libelle_nature_juridique is_dismissable=True onclick="this.nextElementSibling.classList.remove('fr-hidden')" %}
-      <select id="input-forme-juridique" class="fr-select fr-hidden">
-      {% for code, label in categories_juridiques.items %}
-        <option value="{{ code }}" {% if code == etablissement.societe.nature_juridique %}selected{% endif %}>{{ label }}</option>
-      {% endfor %}
-      </select>
-    </div>
-    <div class="fr-fieldset__element fr-mt-2v">
       <label for="input-date-installation" class="fr-label fr-mb-2v">Date d’installation</label>
       {% dsfr_tag label=etablissement.date_creation|date:"SHORT_DATE_FORMAT" is_dismissable=True onclick="this.nextElementSibling.classList.remove('fr-hidden')" %}
       <input type="date" id="input-date-installation"

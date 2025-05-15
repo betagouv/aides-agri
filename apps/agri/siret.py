@@ -10,7 +10,6 @@ mapping_naf_short = dict()
 mapping_naf_complete = dict()
 mapping_effectif = dict()
 mapping_effectif_complete = dict()
-mapping_categories_juridiques = dict()
 
 _here = os.path.dirname(__file__)
 
@@ -42,13 +41,6 @@ with open(
         }
 
 
-# /!\ this code block is expensive, please make sure it's executed at application startup
-with open(f"{_here}/{settings.AGRI_PATH_DATA}/mapping_categories_juridiques.csv") as f:
-    reader = csv.reader(f)
-    for row in reader:
-        mapping_categories_juridiques[row[0]] = row[1]
-
-
 class SearchUnavailable(RuntimeError):
     pass
 
@@ -78,9 +70,6 @@ def search(query: str) -> list[dict]:
 
 def get(query: str) -> dict:
     societe = search(query)[0]
-    societe["libelle_nature_juridique"] = mapping_categories_juridiques.get(
-        societe["nature_juridique"], "n/a"
-    )
     matching_etablissements = societe.pop("matching_etablissements")
     etablissement = matching_etablissements[0]
     etablissement["societe"] = societe
