@@ -36,21 +36,6 @@ class HomeView(TemplateView):
         "themes": Theme.objects.with_aides_count().order_by("-urgence", "-aides_count"),
     }
 
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-
-        if self.request.htmx and self.request.GET.get("more_themes", None):
-            # show more themes, partial template
-            context_data["themes"] = context_data["themes"][4:]
-        elif not self.request.htmx and not self.request.GET.get("more_themes", None):
-            # nominal case: show only 4 themes, full page
-            context_data["themes"] = context_data["themes"][:4]
-        else:
-            # show all themes, because more_themes was asked, but on a new page
-            pass
-
-        return context_data
-
 
 class AgriMixin(ContextMixin):
     STEP = None

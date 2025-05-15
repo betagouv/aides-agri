@@ -30,7 +30,7 @@
   box-shadow: var(--lifted-shadow);
 }
 
-#proposition h3, #a-propos h3, #cta-more-themes, #cta-feedback {
+#proposition h3, #a-propos h3, #cta-feedback {
   text-align: center;
 }
 
@@ -63,6 +63,10 @@
 
 #projet .fr-tile--horizontal .fr-tile__link::after {
   content: none;
+}
+
+#a-propos p {
+  text-align: justify;
 }
 
 @media (min-width:62em) {

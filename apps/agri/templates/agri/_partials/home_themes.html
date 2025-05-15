@@ -9,14 +9,3 @@
     {% endif %}
   </div>
 {% endfor %}
-
-{% if request.htmx %}
-<div id="cta-feedback" hx-swap-oob="innerHTML">
-  <h4 class="fr-h6 fr-mt-5w">Vous ne trouvez pas parmi cette liste votre projet ou difficulté actuelle ?</h4>
-  <p>
-    <button type="button" class="fr-btn fr-btn--tertiary" data-fr-opened="false" aria-controls="fr-modal-feedback">
-      Aidez-nous à nous améliorer en nous racontant votre besoin
-    </button>
-  </p>
-</div>
-{% endif %}
