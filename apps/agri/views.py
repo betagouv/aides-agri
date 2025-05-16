@@ -4,7 +4,6 @@ from collections import defaultdict
 from django.db.models import Q
 from django.shortcuts import render
 from django.templatetags.static import static
-from django.utils.timezone import now
 from django.views.generic import TemplateView, ListView, View
 from django.views.generic.base import ContextMixin
 from django.views.generic.edit import CreateView
@@ -230,7 +229,7 @@ class ResultsView(ResultsMixin, ListView):
                                     "extra_classes": "fr-badge--green-emeraude",
                                     "label": "En cours",
                                 }
-                                if aide.date_fin is None or aide.date_fin > now().date()
+                                if aide.is_ongoing
                                 else {
                                     "extra_classes": "fr-badge--pink-tuile",
                                     "label": "Clôturé",
