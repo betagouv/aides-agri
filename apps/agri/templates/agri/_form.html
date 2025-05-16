@@ -1,7 +1,9 @@
 {% extends "agri/_base.html" %}
 
 {% block main_col_content %}
-<form action="{% block action %}{% endblock action %}" {% block extra_form_attributes %}{% endblock extra_form_attributes %}>
+<form action="{% if request.GET.next %}{{ request.GET.next }}{% else %}{% block action %}{% endblock action %}{% endif %}"
+    {% block extra_form_attributes %}{% endblock extra_form_attributes %}
+>
 
   {# previous steps fields hidden #}
   <input type="hidden" name="theme" value="{{ summary_theme.pk }}">
@@ -17,12 +19,15 @@
   {% if summary_date_installation %}
     <input type="hidden" name="date_installation" value="{{ summary_date_installation|date:"c" }}">
   {% endif %}
-  {% for naf in codes_naf %}
-    <input type="hidden" name="nafs" value="{{ naf }}">
+  {% for filiere in summary_filieres %}
+    <input type="hidden" name="filieres" value="{{ filiere.pk }}">
   {% endfor %}
   {% if code_effectif %}
     <input type="hidden" name="tranche_effectif_salarie" value="{{ code_effectif }}">
   {% endif %}
+  {% for regroupement in summary_regroupements %}
+    <input type="hidden" name="regroupements" value="{{ regroupement.pk }}">
+  {% endfor %}
 
   <section class="fr-container fr-p-0 fr-mb-4w form-fields">
     {% block form %}{% endblock form %}

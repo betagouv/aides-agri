@@ -65,7 +65,15 @@
             <h3 class="fr-h1">Quel est votre besoin ?</h3>
             <div class="fr-container--fluid">
               <div id="themes" class="fr-grid-row fr-grid-row--gutters">
-                {% include "agri/_partials/home_themes.html" with themes=themes only %}
+                {% for url, theme in themes %}
+                  <div class="fr-col-12 fr-col-sm-6">
+                    {% if theme.urgence %}
+                      {% dsfr_tile heading_tag="h5" title=theme.nom description=theme.description url=url image_path="/static/dsfr/dist/icons/system/alarm-warning-line.svg" extra_classes="fr-tile--horizontal fr-tile--with-icon" %}
+                    {% else %}
+                      {% dsfr_tile heading_tag="h5" title=theme.nom description=theme.description url=url extra_classes="fr-tile--horizontal" %}
+                    {% endif %}
+                  </div>
+                {% endfor %}
               </div>
               <div class="fr-grid-row--gutters">
                 <div id="cta-feedback" class="fr-col fr-col-12 fr-col-md-6 fr-mx-auto">

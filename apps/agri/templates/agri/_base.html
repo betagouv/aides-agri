@@ -41,7 +41,7 @@
             </span>
           </div>
           <div class="fr-mb-3v">
-            <a class="fr-link fr-link--sm" href="{% url 'agri:step-2' %}{% querystring sujets=None siret=None commune=None date_installation=None regroupements=None nafs=None tranche_effectif_salarie=None %}">
+            <a class="fr-link fr-link--sm" href="{% url 'agri:step-2' %}{% querystring sujets=None next=request.path %}">
               Explorer d’autres sujets
             </a>
           </div>
@@ -91,7 +91,7 @@
           </div>
           {% endif %}
           <div>
-            <a class="fr-link fr-link--sm" href="{% url 'agri:step-3' %}{% querystring siret=None commune=None date_installation=None regroupements=None nafs=None tranche_effectif_salarie=None %}">
+            <a class="fr-link fr-link--sm" href="{% url 'agri:step-3' %}{% querystring siret=None commune=None date_installation=None regroupements=None filieres=None tranche_effectif_salarie=None %}">
               Modifier
             </a>
           </div>

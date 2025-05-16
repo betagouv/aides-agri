@@ -182,7 +182,7 @@ window.onafterprint = evt => {
           </div>
         </div>
       {% else %}
-        <a class="fr-btn fr-mx-auto fr-mt-2w" href="{% url 'agri:home' %}">Recommencer la recherche</a>
+        <a class="fr-btn fr-mx-auto fr-mt-2w" href="{% url 'agri:home' %}{% querystring theme=None sujets=None next=request.path %}">Recommencer la recherche</a>
       {% endif %}
     </div>
   </div>

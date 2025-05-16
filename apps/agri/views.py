@@ -4,6 +4,7 @@ from collections import defaultdict
 from django.db.models import Q
 from django.shortcuts import render
 from django.templatetags.static import static
+from django.urls import reverse
 from django.views.generic import TemplateView, ListView, View
 from django.views.generic.base import ContextMixin
 from django.views.generic.edit import CreateView
@@ -24,17 +25,27 @@ from .forms import FeedbackForm
 
 
 class HomeView(TemplateView):
-    def get_template_names(self):
-        if self.request.htmx:
-            template_name = "agri/_partials/home_themes.html"
-        else:
-            template_name = "agri/home.html"
-        return [template_name]
+    template_name = "agri/home.html"
 
-    extra_context = {
-        "themes": Theme.objects.with_aides_count().order_by("-urgence", "-aides_count"),
-        "feedback_themes_sujets_form": FeedbackForm,
-    }
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        themes_and_urls = []
+
+        for theme in Theme.objects.with_aides_count().order_by(
+            "-urgence", "-aides_count"
+        ):
+            query = self.request.GET.dict()
+            query.update({"theme": theme.pk})
+            url = reverse("agri:step-2", query=query)
+            themes_and_urls.append((url, theme))
+
+        context_data.update(
+            {
+                "themes": themes_and_urls,
+                "feedback_themes_sujets_form": FeedbackForm,
+            }
+        )
+        return context_data
 
 
 class AgriMixin(ContextMixin):
@@ -87,6 +98,7 @@ class AgriMixin(ContextMixin):
                 "summary_filieres": self.filieres,
                 "summary_date_installation": self.date_installation,
                 "summary_commune": self.commune,
+                "code_effectif": self.code_effectif,
                 "summary_effectif": siret.mapping_effectif.get(self.code_effectif, None)
                 if self.code_effectif
                 else None,
@@ -161,7 +173,6 @@ class Step5View(AgriMixin, TemplateView):
         filiere = Filiere.objects.filter(code_naf=naf).first()
         context_data.update(
             {
-                "mapping_naf": siret.mapping_naf_complete_unique,
                 "mapping_tranches_effectif": siret.mapping_effectif,
                 "tranche_effectif_salarie": siret.mapping_effectif.get(
                     self.etablissement.get("tranche_effectif_salarie", ""), None
@@ -195,7 +206,7 @@ class ResultsMixin(AgriMixin):
                 siret.mapping_effectif_complete[self.code_effectif]["max"],
             )
             .select_related("organisme")
-            .prefetch_related("zones_geographiques")
+            .prefetch_related("zones_geographiques", "types")
             .order_by("-date_fin")
         )
 
