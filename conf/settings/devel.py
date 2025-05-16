@@ -31,3 +31,7 @@ EMAIL_PORT = 465
 EMAIL_HOST_USER = os.getenv("MAILTRAP_USER")
 EMAIL_HOST_PASSWORD = os.getenv("MAILTRAP_PASSWORD")
 EMAIL_USE_TLS = True
+
+STATICFILES_DIRS.append(  # noqa: F405
+    BASE_DIR / "webroot",  # noqa: F405
+)

@@ -17,7 +17,7 @@ Including another URLconf
 
 from django.conf import settings
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -29,10 +29,12 @@ urlpatterns = [
 
 if settings.DEBUG:
     from debug_toolbar.toolbar import debug_toolbar_urls
+    from django.contrib.staticfiles import views
 
     urlpatterns.extend(
-        [
+        debug_toolbar_urls()
+        + [
             path("__reload__/", include("django_browser_reload.urls")),
+            re_path(r"^(?P<path>.*)$", views.serve),
         ]
-        + debug_toolbar_urls()
     )
