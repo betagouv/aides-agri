@@ -34,6 +34,7 @@ class HomeView(TemplateView):
 
     extra_context = {
         "themes": Theme.objects.with_aides_count().order_by("-urgence", "-aides_count"),
+        "feedback_themes_sujets_form": FeedbackForm,
     }
 
 
@@ -120,7 +121,8 @@ class Step2View(AgriMixin, TemplateView):
                     for sujet in Sujet.objects.with_aides_count()
                     .filter(themes=self.theme)
                     .order_by("-aides_count")
-                }
+                },
+                "feedback_themes_sujets_form": FeedbackForm,
             }
         )
         return extra_context
@@ -339,9 +341,8 @@ class SendResultsByMailView(ResultsMixin, View):
 
 class CreateFeedbackView(CreateView):
     form_class = FeedbackForm
-    template_name = "agri/_partials/feedback_form.html"
 
     def form_valid(self, form: FeedbackForm):
         form.instance.sent_from_url = self.request.htmx.current_url
         self.object = form.save()
-        return render(self.request, "agri/_partials/feedback_ok.html")
+        return render(self.request, "agri/_partials/feedback_themes_sujets_ok.html")
