@@ -65,10 +65,6 @@
   content: none;
 }
 
-#a-propos p {
-  text-align: justify;
-}
-
 @media (min-width:62em) {
   #intro {
     background-size: auto;
