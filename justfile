@@ -41,9 +41,13 @@ makemigrations: (manage "makemigrations")
 test:
     DJANGO_SETTINGS_MODULE=conf.settings.testing uv run pytest --cov
 
-# Scalingo
+# Scalingo: SSH
+scalingo-django-ssh environment:
+    scalingo run --app aides-agri-{{environment}} bash
+
+# Scalingo: run Django command
 scalingo-django-command environment command:
     scalingo run --app aides-agri-{{environment}} python manage.py {{command}}
 
-# Scalingo
+# Scalingo: login to Django shell
 scalingo-django-shell environment: (scalingo-django-command environment "shell")
