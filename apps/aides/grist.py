@@ -61,7 +61,25 @@ class OrganismeLoader(GristLoader):
     fields = {
         "Nom": Organisme.nom,
         "Zones_geographiques": Organisme.zones_geographiques,
+        "Logo": Organisme.logo_filename,
     }
+
+    def load(self):
+        logos_filenames = {
+            attachment["id"]: attachment["fields"]["fileName"]
+            for attachment in self.gristapi.list_attachments()[1]
+        }
+        super().load()
+        for organisme in Organisme.objects.with_logo():
+            logo_id = int(
+                "".join([c for c in organisme.logo_filename if c.isnumeric()])
+            )
+            logo_filename = f"{logo_id}-{logos_filenames[logo_id]}"
+            self.gristapi.download_attachment(f"/tmp/{logo_filename}", logo_id)
+            organisme.logo_filename = logo_filename
+            with open(f"/tmp/{logo_filename}", "rb") as f:
+                organisme.logo = f.read()
+            organisme.save()
 
 
 @register_grist_loader

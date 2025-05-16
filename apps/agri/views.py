@@ -233,7 +233,8 @@ class ResultsView(ResultsMixin, ListView):
                             "title": aide.nom,
                             "description": aide.promesse,
                             "link": aide.get_absolute_url(),
-                            "image_url": static("agri/images/placeholder.1x1.svg"),
+                            "image_url": aide.organisme.get_logo_url()
+                            or static("agri/images/placeholder.1x1.svg"),
                             "ratio_class": "fr-ratio-1x1",
                             "media_badges": [
                                 {

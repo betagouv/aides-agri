@@ -231,16 +231,22 @@ def test_load_organismes(monkeypatch, organisme, zone_geographique):
                 "id": organisme.pk,
                 "Nom": "Super organisme",
                 "Zones_geographiques": ["L1", zone_geographique.external_id],
+                "Logo": None,
             },
             {
                 "id": 2,
                 "Nom": "Super second organisme",
                 "Zones_geographiques": ["L1", zone_geographique.external_id],
+                "Logo": None,
             },
         ]
 
+    def mock_list_attachments(*args, **kwargs):
+        return 200, []
+
     loader = OrganismeLoader()
     monkeypatch.setattr(loader.gristapi, "list_records", mock_list_records)
+    monkeypatch.setattr(loader.gristapi, "list_attachments", mock_list_attachments)
 
     # WHEN loading Organismes
     loader.load()

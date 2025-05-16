@@ -1,3 +1,7 @@
+#aide .fr-responsive-img {
+  width: 150px;
+}
+
 #metadata .fr-col {
   border: 2px solid var(--grey-1000-50);
 }

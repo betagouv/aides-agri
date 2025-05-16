@@ -28,7 +28,7 @@
   line-height: 1.5rem;
 }
 
-.fr-card--horizontal-fifth.fr-border-default--red-marianne .fr-card__img img {
+.fr-card--horizontal-fifth .fr-card__img img {
   object-fit: contain;
 }
 

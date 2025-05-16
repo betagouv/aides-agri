@@ -6,17 +6,29 @@ from django.urls import reverse
 from grist_loader.models import GristModel
 
 
+class OrganismeQuerySet(models.QuerySet):
+    def with_logo(self):
+        return self.exclude(logo_filename="").filter(logo_filename__isnull=False)
+
+
 class Organisme(GristModel):
     class Meta:
         verbose_name = "Organisme"
         verbose_name_plural = "Organismes"
 
+    objects = OrganismeQuerySet.as_manager()
+
     nom = models.CharField(blank=True)
     acronyme = models.CharField(blank=True)
     zones_geographiques = models.ManyToManyField("ZoneGeographique")
+    logo = models.BinaryField(blank=True)
+    logo_filename = models.CharField(blank=True, null=True)
 
     def __str__(self):
         return self.nom
+
+    def get_logo_url(self):
+        return f"/aides/organismes-logos/{self.logo_filename}"
 
 
 class ThemeQuerySet(models.QuerySet):
