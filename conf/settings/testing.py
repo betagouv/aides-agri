@@ -14,4 +14,4 @@ STORAGES["staticfiles"]["BACKEND"] = (  # noqa: F405
 # Apps specific
 AGRI_PATH_DATA = "tests/data"
 
-GRIST_PYGRISTER_CONFIG = {}
+AIDES_GRIST_LOADER_PYGRISTER_CONFIG = {}
