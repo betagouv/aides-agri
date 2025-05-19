@@ -1,6 +1,7 @@
 from datetime import date
 
 from django.db import models
+from django.templatetags.static import static
 from django.urls import reverse
 
 from grist_loader.models import GristModel
@@ -28,7 +29,10 @@ class Organisme(GristModel):
         return self.nom
 
     def get_logo_url(self):
-        return f"/aides/organismes-logos/{self.logo_filename}"
+        if self.logo_filename:
+            return f"/aides/organismes-logos/{self.logo_filename}"
+        else:
+            return static("agri/images/placeholder.1x1.svg")
 
 
 class ThemeQuerySet(models.QuerySet):
