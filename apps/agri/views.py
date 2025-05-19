@@ -208,6 +208,7 @@ class ResultsMixin(AgriMixin):
             .select_related("organisme")
             .prefetch_related("zones_geographiques", "types")
             .order_by("-date_fin")
+            .defer("organisme__logo")
         )
 
 
