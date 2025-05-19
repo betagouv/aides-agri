@@ -34,7 +34,7 @@ class UserFeedback(models.Model):
     sent_at = models.DateTimeField(auto_now_add=True, verbose_name="Date et heure")
     information_quality = models.PositiveSmallIntegerField(
         choices=Notes,
-        verbose_name="L’information qui vous a été donnée est-elle qualitative selon vous ?",
+        verbose_name="Selon vous, l’information qui vous a été donnée est-elle qualitative ?",
     )
     comments = models.TextField(
         verbose_name="Quelles sont les améliorations à effectuer selon vous ?"
