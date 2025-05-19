@@ -254,7 +254,7 @@ class Aide(GristModel):
         DEPARTEMENTAL = "Départemental", "Départemental"
         LOCAL = "Local", "Local"
 
-    slug = models.CharField(blank=True, max_length=200)
+    slug = models.CharField(blank=True, max_length=2000)
     nom = models.CharField(blank=True)
     promesse = models.CharField(blank=True)
     description = models.TextField(blank=True)
