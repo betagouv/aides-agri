@@ -21,6 +21,12 @@ class AideDetailView(DetailView):
 
         context_data.update(
             {
+                "skiplinks": [
+                    {
+                        "link": "#aide",
+                        "label": "Descriptif de l'aide",
+                    },
+                ],
                 "user_note_form": UserNoteForm(),
                 "breadcrumb_data": {
                     "links": breadcrumb_links,
