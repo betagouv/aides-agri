@@ -6,9 +6,9 @@ asgiref==3.8.1 \
     # via
     #   django
     #   django-htmx
-beautifulsoup4==4.13.3 \
-    --hash=sha256:1bd32405dacc920b42b83ba01644747ed77456a65760e285fbc47633ceddaf8b \
-    --hash=sha256:99045d7d3f08f91f0d656bc9b7efbae189426cd913d830294a15eefa0ea4df16
+beautifulsoup4==4.13.4 \
+    --hash=sha256:9bbbb14bfde9d79f38b8cd5f8c7c85f4b8f2523190ebed90e950a8dea4cb1c4b \
+    --hash=sha256:dbb3c4e1ceae6aefebdaf2423247260cd062430a410e38c66f2baa50a8437195
     # via
     #   aides-agri
     #   markdownify
@@ -35,9 +35,9 @@ charset-normalizer==3.4.2 \
     --hash=sha256:eba9904b0f38a143592d9fc0e19e2df0fa2e41c3c3745554761c5f6447eedabf \
     --hash=sha256:ef8de666d6179b009dce7bcb2ad4c4a779f113f12caf8dc77f0162c29d20490b
     # via requests
-click==8.2.0 \
-    --hash=sha256:6b303f0b2aa85f1cb4e5303078fadcbcd4e476f114fab9b5007005711839325c \
-    --hash=sha256:f5452aeddd9988eefa20f90f05ab66f17fce1ee2a36907fd30b05bbb5953814d
+click==8.1.8 \
+    --hash=sha256:63c132bbbed01578a06712a2d1f497bb62d9c1c0d329b7903a866228027263b2 \
+    --hash=sha256:ed53c9d8990d83c2a27deae68e4ee337473f6330c040a31d4225c9574d16096a
     # via typer
 colorama==0.4.6 ; sys_platform == 'win32' \
     --hash=sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44 \
@@ -124,24 +124,24 @@ packaging==25.0 \
     --hash=sha256:29572ef2b1f17581046b3a2227d5c611fb25ec70ca1ba8554b24b0e69331a484 \
     --hash=sha256:d443872c98d677bf60f6a1f2f8c1cb748e8fe762d2bf9d3148b5599295b0fc4f
     # via gunicorn
-psycopg==3.2.8 \
-    --hash=sha256:0e960f1977d77de7f1ace4b54590f686b52c2f9ab1f61fff4141887fc711d9e7 \
-    --hash=sha256:cc995d836841e400c4f615d8dea351dc39697ad29df84d428f9c38c8040222f8
+psycopg==3.2.9 \
+    --hash=sha256:01a8dadccdaac2123c916208c96e06631641c0566b22005493f09663c7a8d3b6 \
+    --hash=sha256:2fbb46fcd17bc81f993f28c47f1ebea38d66ae97cc2dbc3cad73b37cefbff700
     # via
     #   aides-agri
     #   django-grist-loader
-psycopg-binary==3.2.8 ; implementation_name != 'pypy' \
-    --hash=sha256:058cfd606f1dc0be9b5a80d208fb9b487f7b4986a955322cbb45cee7e3e8056e \
-    --hash=sha256:15d21ed3292fb19b6ab096c3522d561d196eeef3903c31f1318df7478eb96fa5 \
-    --hash=sha256:43aef90bdc201f2d375e5996d44124c588d3a7ce9f67c79f30531cdc5ead2c3d \
-    --hash=sha256:60db59a0f1676f70c027a8273b7b360af85ef87bf43cd49eb63727b72a170a9f \
-    --hash=sha256:8297d92f41e19b6794b04bdf7d53938a5ad8e68f7105b50048a078477b7ee4b8 \
-    --hash=sha256:84f03982598a6353cf70cafae34c16da28eac74ba9862cc740b6ba0dcf9721fc \
-    --hash=sha256:89eb0c15c0eec1c81256e9df3c01d9bd1067f4365872f6f81da7521ab30e19de \
-    --hash=sha256:a547d53e615776f8e79768aacd7a12c6f0131fa1d6820d2e3e848261b0ad3849 \
-    --hash=sha256:a6384f81c33a369144e4b98cbb4bf3ec4ac102ae11cfb84e70cf99aa43a44925 \
-    --hash=sha256:b60a17eca6a6906af8084c518be81bd71a3d50ddc69c0dc667d6ce9b8f4d8604 \
-    --hash=sha256:d247f55b28afc4a87b77240e733419ad0c82be2ec122a0b93fbb227ee0e6608e
+psycopg-binary==3.2.9 ; implementation_name != 'pypy' \
+    --hash=sha256:0e8aeefebe752f46e3c4b769e53f1d4ad71208fe1150975ef7662c22cca80fab \
+    --hash=sha256:2290bc146a1b6a9730350f695e8b670e1d1feb8446597bed0bbe7c3c30e0abcb \
+    --hash=sha256:25ab464bfba8c401f5536d5aa95f0ca1dd8257b5202eede04019b4415f491351 \
+    --hash=sha256:5be8292d07a3ab828dc95b5ee6b69ca0a5b2e579a577b39671f4f5b47116dfd2 \
+    --hash=sha256:72691a1615ebb42da8b636c5ca9f2b71f266be9e172f66209a361c175b7842c5 \
+    --hash=sha256:778588ca9897b6c6bab39b0d3034efff4c5438f5e3bd52fda3914175498202f9 \
+    --hash=sha256:7fc2915949e5c1ea27a851f7a472a7da7d0a40d679f0a31e42f1022f3c562e87 \
+    --hash=sha256:98bbe35b5ad24a782c7bf267596638d78aa0e87abc7837bdac5b2a2ab954179e \
+    --hash=sha256:a1fa38a4687b14f517f049477178093c39c2a10fdcced21116f47c017516498f \
+    --hash=sha256:b7e4e4dd177a8665c9ce86bc9caae2ab3aa9360b7ce7ec01827ea1baea9ff748 \
+    --hash=sha256:f0d5b3af045a187aedbd7ed5fc513bd933a97aaff78e61c3745b330792c4345b
     # via psycopg
 pygments==2.19.1 \
     --hash=sha256:61c16d2a8576dc0649d9f39e089b5f02bcd27fba10d8fb4dcc28173f7a45151f \
@@ -163,9 +163,9 @@ rich==14.0.0 \
     --hash=sha256:1c9491e1951aac09caffd42f448ee3d04e58923ffe14993f6e83068dc395d7e0 \
     --hash=sha256:82f1bc23a6a21ebca4ae0c45af9bdbc492ed20231dcb63f297d6d1021a9d5725
     # via typer
-sentry-sdk==2.28.0 \
-    --hash=sha256:14d2b73bc93afaf2a9412490329099e6217761cbab13b6ee8bc0e82927e1504e \
-    --hash=sha256:51496e6cb3cb625b99c8e08907c67a9112360259b0ef08470e532c3ab184a232
+sentry-sdk==2.29.1 \
+    --hash=sha256:8d4a0206b95fa5fe85e5e7517ed662e3888374bdc342c00e435e10e6d831aa6d \
+    --hash=sha256:90862fe0616ded4572da6c9dadb363121a1ae49a49e21c418f0634e9d10b4c19
     # via aides-agri
 shellingham==1.5.4 \
     --hash=sha256:7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686 \
@@ -175,17 +175,17 @@ six==1.17.0 \
     --hash=sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274 \
     --hash=sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81
     # via markdownify
-soupsieve==2.6 \
-    --hash=sha256:e2e68417777af359ec65daac1057404a3c8a5455bb8abc36f1a9866ab1a51abb \
-    --hash=sha256:e72c4ff06e4fb6e4b5a9f0f55fe6e81514581fca1515028625d0f299c602ccc9
+soupsieve==2.7 \
+    --hash=sha256:6e60cc5c1ffaf1cebcc12e8188320b72071e922c2e897f737cadce79ad5d30c4 \
+    --hash=sha256:ad282f9b6926286d2ead4750552c8a6142bc4c783fd66b0293547c8fe6ae126a
     # via beautifulsoup4
 sqlparse==0.5.3 \
     --hash=sha256:09f67787f56a0b16ecdbde1bfc7f5d9c3371ca683cfeaa8e6ff60b4807ec9272 \
     --hash=sha256:cf2196ed3418f3ba5de6af7e82c694a9fbdbfecccdfc72e281548517081f16ca
     # via django
-typer==0.15.3 \
-    --hash=sha256:818873625d0569653438316567861899f7e9972f2e6e0c16dab608345ced713c \
-    --hash=sha256:c86a65ad77ca531f03de08d1b9cb67cd09ad02ddddf4b34745b5008f43b239bd
+typer==0.15.4 \
+    --hash=sha256:89507b104f9b6a0730354f27c39fae5b63ccd0c95b1ce1f1a6ba0cfd329997c3 \
+    --hash=sha256:eb0651654dcdea706780c466cf06d8f174405a659ffff8f163cfbfee98c0e173
     # via pygrister
 typing-extensions==4.13.2 \
     --hash=sha256:a439e7c04b49fec3e5d3e2beaa21755cadbbdc391694e28ccdd36ca4a1408f8c \
