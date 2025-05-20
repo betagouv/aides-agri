@@ -111,7 +111,7 @@
     <div class="fr-col fr-col-12 fr-col-md-6">
       {% if stepper %}{% dsfr_stepper stepper heading_tag="div" %}{% endif %}
 
-      <h2 class="fr-h6">{% block h2 %}{% endblock h2 %}</h2>
+      {% block h2 %}{% endblock h2 %}
       {% block main_col_content %}{% endblock main_col_content %}
       {% block main_col_footer %}{% endblock main_col_footer %}
     </div>

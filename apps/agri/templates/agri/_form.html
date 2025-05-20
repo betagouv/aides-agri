@@ -1,7 +1,7 @@
 {% extends "agri/_base.html" %}
 
 {% block main_col_content %}
-<form action="{% if request.GET.next %}{{ request.GET.next }}{% else %}{% block action %}{% endblock action %}{% endif %}"
+<form id="form" action="{% if request.GET.next %}{{ request.GET.next }}{% else %}{% block action %}{% endblock action %}{% endif %}"
     {% block extra_form_attributes %}{% endblock extra_form_attributes %}
 >
 

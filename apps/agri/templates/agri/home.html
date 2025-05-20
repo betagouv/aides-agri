@@ -13,6 +13,8 @@
 {% block pagetitle %}{{ SITE_CONFIG.site_title }}{% endblock pagetitle %}
 
 {% block body %}
+  {% dsfr_skiplinks skiplinks %}
+
   {% include 'ui/blocks/header.html' %}
 
   {% dsfr_theme_modale %}

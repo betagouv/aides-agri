@@ -40,7 +40,7 @@
 
 {% block title %}Votre projet{% endblock title %}
 {% block h1 %}Votre projet.{% endblock h1 %}
-{% block h2 %}Quels sont les sujets qui correspondent à votre projet ?{% endblock %}
+{% block h2 %}{% endblock %}
 
 {% block action %}{% url 'agri:step-3' %}{% endblock action %}
 
@@ -51,10 +51,13 @@
 {% endblock extra_form_attributes %}
 
 {% block form %}
-<div class="fr-grid-row fr-grid-row--gutters"
+<fieldset class="fr-fieldset fr-grid-row fr-grid-row--gutters"
      data-controller="checkbox-group-field"
      data-checkbox-group-field-required-value="true"
 >
+  <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="checkboxes-legend">
+      <h2 class="fr-h6">Quels sont les sujets qui correspondent à votre projet ?</h2>
+  </legend>
   {% for id, sujet in sujets.items %}
   <div class="fr-col fr-col-12 sujet">
     <div class="fr-checkbox-group">
@@ -66,12 +69,12 @@
   <div class="fr-error-text fr-icon-error-line fr-hidden" data-checkbox-group-field-target="error">
     Veuillez sélectionner au moins un sujet pour passer à la suite
   </div>
-</div>
+</fieldset>
 {% endblock form %}
 
 {% block main_col_footer %}
 <div id="cta-feedback">
-  <h4 class="fr-text--lg fr-mt-5w">Vous ne trouvez pas ici votre situation actuelle ?</h4>
+  <h3 class="fr-text--lg fr-mt-5w">Vous ne trouvez pas ici votre situation actuelle ?</h3>
   <p>
     <button type="button" class="fr-btn fr-btn--tertiary" data-fr-opened="false" aria-controls="fr-modal-feedback">
       Racontez-nous votre besoin

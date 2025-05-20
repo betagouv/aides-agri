@@ -36,7 +36,7 @@
 
 {% block title %}Votre exploitation{% endblock title %}
 {% block h1 %}Votre exploitation.{% endblock h1 %}
-{% block h2 %}Afin de vous proposer des aides adéquates, nous avons besoin d’en savoir un peu plus sur votre exploitation.{% endblock %}
+{% block h2 %}<h2 class="fr-h6">Afin de vous proposer des aides adéquates, nous avons besoin d’en savoir un peu plus sur votre exploitation.</h2>{% endblock %}
 
 {% block action %}{% url 'agri:step-5' %}{% endblock action %}
 
@@ -49,57 +49,50 @@
 {% block form %}
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col">
-    <fieldset class="fr-fieldset" aria-label="SIRET de l’entreprise">
-      <div class="fr-fieldset__element">
-        <div class="fr-select-rich fr-input-group"
-             id="select-rich-siret"
-             data-controller="select-rich"
-             data-select-rich-name-value="siret"
-             data-select-rich-multi-value="false"
-             data-select-rich-required-value="true"
-             hx-trigger="change"
-             hx-get="{% url 'agri:step-4' %}"
-             hx-include="closest form"
-             hx-target="#step-4"
-             hx-select=".form-fields"
-             hx-disinherit="*"
+    <fieldset class="fr-select-rich fr-fieldset"
+               aria-label="SIRET de l’entreprise"
+               id="select-rich-siret"
+               data-controller="select-rich"
+               data-select-rich-name-value="siret"
+               data-select-rich-multi-value="false"
+               data-select-rich-required-value="true"
+               hx-trigger="change"
+               hx-get="{% url 'agri:step-4' %}"
+               hx-include="closest form"
+               hx-target="#step-4"
+               hx-select=".form-fields"
+               hx-disinherit="*"
+    >
+     <legend class="fr-label fr-mb-1w">
+        Recherchez votre entreprise (nom d’exploitation, SIRET, SIREN, etc.)
+        <span class="fr-hint-text">ex : "Maraichage Carpentras" ou "130 025 265 00013"</span>
+      </legend>
+      <div class="fr-search-bar fr-fieldset__element fr-my-2w" role="search">
+        <label class="fr-label" for="select-rich-search-siret">Rechercher</label>
+        <input type="search"
+               id="select-rich-search-siret"
+               class="fr-input"
+               placeholder="Rechercher"
+               name="siret-search"
+               autocomplete="false"
+               data-action="focus->select-rich#focus"
+               onchange="event.stopPropagation()"
         >
-         <label class="fr-label fr-mb-1w">
-            Recherchez votre entreprise (nom d’exploitation, SIRET, SIREN, etc.)
-            <span class="fr-hint-text">ex : "Maraichage Carpentras" ou "130 025 265 00013"</span>
-          </label>
-          <div class="fr-search-bar fr-my-2w" role="search">
-            <label class="fr-label" for="select-rich-search-siret">Rechercher</label>
-            <input type="search"
-                   id="select-rich-search-siret"
-                   class="fr-input"
-                   placeholder="Rechercher"
-                   name="siret-search"
-                   autocomplete="false"
-                   data-action="focus->select-rich#focus"
-                   onchange="event.stopPropagation()"
-            >
-            <button type="submit" class="fr-btn"
-                    title="Rechercher"
-                    hx-get="{% url 'agri:search-etablissement' %}"
-                    hx-target="#select-rich-options-siret"
-                    hx-include="#select-rich-search-siret"
-                    hx-disabled-elt="this"
-                    data-action="click->select-rich#externalSearch"
-            >
-              Rechercher
-            </button>
-          </div>
-          <fieldset class="fr-collapse fr-menu"
-                    data-select-rich-target="entries"
-                    id="select-rich-siret-entries"
-                    hx-on::after-settle="this.classList.add('fr-collapse--expanded')"
-          >
-            <div id="select-rich-options-siret" class="select-rich__options"></div>
-          </fieldset>
-          <p class="fr-error-text fr-hidden" data-select-rich-target="error">Veuillez sélectionner un établissement pour passer à la suite, cela nous permettra de vous proposer des aides adaptées.</p>
-        </div>
+        <button type="submit"
+                class="fr-btn"
+                hx-get="{% url 'agri:search-etablissement' %}"
+                hx-target="#select-rich-options-siret"
+                hx-include="#select-rich-search-siret"
+                hx-disabled-elt="this"
+                data-action="click->select-rich#externalSearch"
+        >
+          Rechercher
+        </button>
       </div>
+      <div class="fr-collapse fr-menu" data-select-rich-target="entries" id="select-rich-siret-entries">
+        <div id="select-rich-options-siret" class="select-rich__options"></div>
+      </div>
+      <p class="fr-error-text fr-hidden" data-select-rich-target="error">Veuillez sélectionner un établissement pour passer à la suite, cela nous permettra de vous proposer des aides adaptées.</p>
     </fieldset>
   </div>
 </div>

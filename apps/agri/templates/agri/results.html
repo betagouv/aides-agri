@@ -149,13 +149,13 @@ window.onafterprint = evt => {
   </div>
 
   <div class="fr-container fr-p-0">
-    <div class="fr-grid-row fr-grid-row--gutters fr-mb-5w">
+    <div id="recommandation" class="fr-grid-row fr-grid-row--gutters fr-mb-5w">
       {% if aides %}
         <div class="fr-col fr-col-12">
           <div class="fr-accordions-group">
           {% for type_aide, aide_list in aides.items %}
             <section class="fr-accordion">
-              <h3 class="fr-accordion__title">
+              <h2 class="fr-accordion__title">
                 <button type="button"
                         class="fr-accordion__btn"
                         aria-expanded="false"
@@ -169,7 +169,7 @@ window.onafterprint = evt => {
                     {{ aide_list|length }} aide{{ aide_list|pluralize }} disponible{{ aide_list|pluralize }}
                   </p>
                 </button>
-              </h3>
+              </h2>
               <div id="accordeon-type-{{ forloop.counter }}" class="fr-collapse">
                 {% for aide in aide_list %}
                 <div class="fr-col fr-col-12 fr-mb-1w">

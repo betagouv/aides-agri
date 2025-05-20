@@ -41,6 +41,20 @@ class HomeView(TemplateView):
 
         context_data.update(
             {
+                "skiplinks": [
+                    {
+                        "link": "#proposition",
+                        "label": "Présentation",
+                    },
+                    {
+                        "link": "#themes",
+                        "label": "Votre besoin",
+                    },
+                    {
+                        "link": "#a-propos",
+                        "label": "À propos",
+                    },
+                ],
                 "themes": themes_and_urls,
                 "feedback_themes_sujets_form": FeedbackForm,
             }
@@ -90,6 +104,16 @@ class AgriMixin(ContextMixin):
         context_data = super().get_context_data(**kwargs)
         context_data.update(
             {
+                "skiplinks": [
+                    {
+                        "link": "#summary",
+                        "label": "Rappel des informations saisies",
+                    },
+                    {
+                        "link": "#form",
+                        "label": "Formulaire",
+                    },
+                ],
                 "summary_theme": self.theme,
                 "summary_sujets": self.sujets,
                 "summary_siret": self.etablissement.get("siret")
@@ -226,10 +250,20 @@ class ResultsView(ResultsMixin, ListView):
                 aides_by_type[type_aide].add(aide)
         context_data.update(
             {
+                "skiplinks": [
+                    {
+                        "link": "#summary",
+                        "label": "Rappel des informations saisies",
+                    },
+                    {
+                        "link": "#recommandation",
+                        "label": "Notre recommandation",
+                    },
+                ],
                 "aides": {
                     type_aide: [
                         {
-                            "heading_tag": "h2",
+                            "heading_tag": "h3",
                             "extra_classes": "fr-card--horizontal fr-card--horizontal-fifth fr-card--no-icon",
                             "title": aide.nom,
                             "description": aide.promesse,
