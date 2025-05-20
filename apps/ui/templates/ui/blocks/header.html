@@ -2,18 +2,7 @@
 
 {% load i18n %}
 
-{% block header_tools %}{% endblock %}
+{% block header_tools_wrapper %}{% endblock header_tools_wrapper %}
 
-{% block main_menu %}
-<div class="fr-header__menu fr-modal" id="fr-menu-mobile" aria-labelledby="fr-btn-menu-mobile">
-  <div class="fr-container">
-    <button class="fr-btn--close fr-btn" aria-controls="fr-menu-mobile">
-      {% translate "Close" %}
-    </button>
-    <div class="fr-header__menu-links">
-    </div>
-    {% translate "Main menu" as main_menu_label %}
-    <nav role="navigation"></nav>
-  </div>
-</div>
-{% endblock %}
+{% block burger_menu %}{% endblock burger_menu %}
+{% block main_menu %}{% endblock main_menu %}
