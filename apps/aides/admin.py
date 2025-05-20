@@ -143,32 +143,7 @@ class AideAdmin(AbstractGristModelAdmin):
                 "fields": [
                     "slug",
                     "nom",
-                    "types",
-                    "organisme",
-                    "programmes",
-                    "organismes_secondaires",
-                ],
-            },
-        ),
-        (
-            "Catégorisation",
-            {
-                "fields": [
-                    "sujets",
-                ],
-            },
-        ),
-        (
-            "Conditions",
-            {
-                "fields": [
-                    "date_debut",
-                    "date_fin",
-                    "effectif_min",
-                    "effectif_max",
-                    "couverture_geographique",
-                    "zones_geographiques",
-                    "conditions",
+                    "promesse",
                 ],
             },
         ),
@@ -176,11 +151,58 @@ class AideAdmin(AbstractGristModelAdmin):
             "Présentation",
             {
                 "fields": [
-                    "promesse",
                     "description",
-                    "montant",
+                    "duree_accompagnement",
+                    "exemple_projet",
+                    "etapes",
+                ],
+            },
+        ),
+        (
+            "Caractéristiques",
+            {
+                "fields": [
+                    "types",
+                    "beneficiaires",
+                    "organisme",
+                    "organismes_secondaires",
+                    "programmes",
+                    "couverture_geographique",
+                    "zones_geographiques",
+                ],
+            },
+        ),
+        (
+            "Besoins",
+            {
+                "fields": [
+                    "sujets",
+                ],
+            },
+        ),
+        (
+            "Guichet",
+            {
+                "fields": [
                     "url_descriptif",
                     "url_demarche",
+                    "recurrence_aide",
+                    "date_debut",
+                    "date_fin",
+                    "contact",
+                ],
+            },
+        ),
+        (
+            "Éligibilité",
+            {
+                "fields": [
+                    "eligibilite_effectif_min",
+                    "eligibilite_effectif_max",
+                    "eligibilite_etape_avancement_projet",
+                    "eligibilite_age",
+                    "conditions",
+                    "filieres",
                 ],
             },
         ),

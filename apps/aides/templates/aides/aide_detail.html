@@ -56,6 +56,14 @@
         </div>
       </div>
     </div>
+    {% if object.etapes %}
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col fr-col-12">
+          <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-btn--icon-left fr-mb-2w">Étapes</h2>
+          <p>{{ object.etapes|ui_markdown|safe }}</p>
+      </div>
+    </div>
+    {% endif %}
     <div class="fr-grid-row">
       <div class="fr-col fr-col-12 fr-col-md-4 fr-m-auto">
         <a class="fr-btn fr-btn--primary"
