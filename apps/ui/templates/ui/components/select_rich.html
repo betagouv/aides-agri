@@ -1,13 +1,13 @@
 {% load dsfr_tags %}
 
-<div class="fr-select-rich fr-input-group {{ self.extra_classes }}"
+<fieldset class="fr-select-rich fr-fieldset {{ self.extra_classes }}"
      id="select-rich-{{ self.name }}"
      data-controller="select-rich"
      data-select-rich-name-value="{{ self.name }}"
      data-select-rich-multi-value="{% if self.multi %}true{% else %}false{% endif %}"
      data-select-rich-required-value="{% if self.required %}true{% else %}false{% endif %}"
 >
-  <label class="fr-label fr-mb-2v">{{ self.label }}</label>
+  <legend class="fr-label fr-mb-2v">{{ self.label }}</legend>
   {% if self.with_tags %}
     <div class="fr-select-rich__tags fr-tags-group" data-select-rich-target="tags"></div>
   {% endif %}
@@ -26,15 +26,20 @@
       Sélectionnez une option
     {% endif %}
   </button>
-  <fieldset class="fr-collapse fr-menu {% if self.multi %}fr-checkbox-group{% endif %}"
+  <div class="fr-collapse fr-menu {% if self.multi %}fr-checkbox-group{% endif %}"
             data-select-rich-target="entries"
             id="select-rich-{{ self.name }}-entries"
   >
     {% if self.searchable %}
       <div class="{% if self.search_url %}fr-search-bar{% else %}fr-input-group{% endif %} fr-my-2w" role="search">
-        {% if self.search_url %}<label class="fr-label" for="select-rich-search-{{ self.name }}">Rechercher</label>{% endif %}
+        <label class="fr-label {% if not self.search_url %}fr-sr-only{% endif %}"
+               for="select-rich-search-{{ self.name }}"
+        >
+          Rechercher
+        </label>
         {% if not self.search_url %}<div class="fr-input-wrap fr-icon-search-line">{% endif %}
-        <input type="search" id="select-rich-search-{{ self.name }}"
+        <input type="search"
+               id="select-rich-search-{{ self.name }}"
                class="fr-input"
                placeholder="{{ self.search_placeholder|default:'Rechercher' }}"
                autocomplete="false"
@@ -49,7 +54,6 @@
         {% if not self.search_url %}</div>{% endif %}
         {% if self.search_url %}
         <button type="submit" class="fr-btn"
-                title="Rechercher"
                 hx-get="{% url self.search_url %}"
                 hx-target="#select-rich-options-{{ self.name }}"
                 hx-include="#select-rich-search-{{ self.name }}"
@@ -71,7 +75,7 @@
       <p class="fr-info-text">Recherchez des options dans le champ ci-dessus</p>
     {% endif %}
     </div>
-  </fieldset>
+  </div>
 
   {% if self.helper %}
   <p class="fr-info-text" data-select-rich-target="helper">{{ self.helper }}</p>
@@ -80,4 +84,4 @@
   <p class="fr-error-text fr-hidden" data-select-rich-target="error">
     {{ self.required_error_message|default:"Ce champ est requis" }}
   </p>
-</div>
+</fieldset>

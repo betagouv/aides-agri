@@ -1,10 +1,10 @@
 {% load i18n dsfr_tags %}
 
-<div class="fr-checkbox-group-field fr-input-group"
+<fieldset class="fr-checkbox-group-field fr-fieldset"
      data-controller="checkbox-group-field"
      data-checkbox-group-field-required-value="true"
 >
-  <label class="fr-label fr-mb-2v">{{ self.label }}</label>
+  <legend class="fr-label fr-mb-2v">{{ self.label }}</legend>
   <div class="fr-container--fluid">
     <div class="fr-checkbox-group fr-grid-row fr-mt-2v">
       {% for value, label, label_long in self.options %}
@@ -35,4 +35,4 @@
   <p class="fr-error-text fr-hidden fr-mt-1v" data-checkbox-group-field-target="error">
     {{ self.required_error_message|default:"Ce champ est requis." }}
   </p>
-</div>
+</fieldset>
