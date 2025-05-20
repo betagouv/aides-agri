@@ -16,6 +16,21 @@ from .models import (
 )
 
 
+__all__ = [
+    "TypeLoader",
+    "SujetLoader",
+    "TypeLoader",
+    "OrganismeLoader",
+    "ProgrammeLoader",
+    "ZoneGeographiqueLoader",
+    "GroupementProducteursLoader",
+    "FiliereLoader",
+    "SousFiliereLoader",
+    "ProductionLoader",
+    "AideLoader",
+]
+
+
 @register_grist_loader
 class ThemeLoader(GristLoader):
     model = Theme
@@ -174,15 +189,27 @@ class AideLoader(GristLoader):
         "description": Aide.description,
         "taux_subvention_commentaire": Aide.montant,
         "condition_eligibilite": Aide.conditions,
-        "min_effectif": Aide.effectif_min,
-        "max_effectif": Aide.effectif_max,
+        "Eligibilite_effectif_minimum": Aide.eligibilite_effectif_min,
+        "Eligibilite_effectif_maximum": Aide.eligibilite_effectif_max,
+        "Eligibilite_etat_avancement_projet": Aide.eligibilite_etape_avancement_projet,
+        "Eligibilite_age": Aide.eligibilite_age,
+        "aap_ami": Aide.aap_ami,
+        "type_depense": Aide.type_depense,
         "url_descriptif": Aide.url_descriptif,
         "url_demarche": Aide.url_demarche,
+        "contact": Aide.contact,
         "types_aide": Aide.types,
         "date_ouverture": Aide.date_debut,
         "date_cloture": Aide.date_fin,
         "porteur_aide": Aide.organisme,
         "porteurs_autres": Aide.organismes_secondaires,
+        "programme_aides": Aide.programmes,
         "thematique_aide": Aide.sujets,
+        "Couverture_Geographique": Aide.couverture_geographique,
         "zone_geographique": Aide.zones_geographiques,
+        "Etapes": Aide.etapes,
+        "beneficiaires_aide": Aide.beneficiaires,
+        "Eligibilite_activites": Aide.filieres,
+        "recurrence_aide": Aide.recurrence_aide,
+        "exemple_projet": Aide.exemple_projet,
     }
