@@ -1,0 +1,35 @@
+{% extends "dsfr/footer.html" %}
+
+{% load i18n %}
+
+{% block footer_links %}
+  <li class="fr-footer__bottom-item">
+    <a class="fr-footer__bottom-link" href="{% url 'product:declaration-accessibilite' %}">
+      {% with accessibility_status=SITE_CONFIG.get_accessibility_status_display|default:"non" %}
+        {% blocktranslate %}Accessibility: {{ accessibility_status }} compliant{% endblocktranslate %}
+      {% endwith %}
+    </a>
+  </li>
+  <li class="fr-footer__bottom-item">
+    <a class="fr-footer__bottom-link" href="{% url 'product:mentions-legales' %}">{% translate "Legal notice" %}</a>
+  </li>
+  <li class="fr-footer__bottom-item">
+    <a class="fr-footer__bottom-link" href="{% url 'product:donnees-personnelles' %}">{% translate "Personal data" %}</a>
+  </li>
+  <li class="fr-footer__bottom-item">
+    <a class="fr-footer__bottom-link"
+       target="_blank"
+       href="https://github.com/betagouv/aides-agri"
+       title="Code source de ce site - {% translate 'Opens a new window' %}"
+    >Code source de ce site</a>
+  </li>
+  <li class="fr-footer__bottom-item">
+    <button type="button"
+            aria-controls="fr-theme-modal"
+            data-fr-opened="false"
+            class="fr-icon-theme-fill fr-link--icon-left fr-footer__bottom-link"
+    >
+      Paramètres d'affichage
+    </button>
+  </li>
+{% endblock footer_links %}
