@@ -1,0 +1,11 @@
+{% extends "ui/base.html" %}
+
+{% load ui_tags %}
+
+{% block title %}{{ title }}{% endblock title %}
+
+{% block breadcrumb %}{% endblock breadcrumb %}
+
+{% block content %}
+  {{ content|ui_markdown|safe }}
+{% endblock content %}
