@@ -10,7 +10,6 @@ from .views import (
 
 app_name = "ui"
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="ui/base.html"), name="home"),
     path(
         "components",
         TemplateView.as_view(template_name="ui/components.html"),
