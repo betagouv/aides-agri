@@ -2,8 +2,9 @@
   // Configure sentryOnLoad before adding the Loader Script
   window.sentryOnLoad = function () {
     Sentry.init({
+      dsn: "https://{{ UI_SENTRY_PUBLIC_KEY }}@sentry.incubateur.net/{{ UI_SENTRY_PROJECT_ID }}",
       environment: "{{ UI_ENVIRONMENT }}",
-      integrations: []
+      tracesSampleRate: 0
     });
   };
 </script>

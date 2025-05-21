@@ -15,3 +15,4 @@ if SENTRY_DSN:
     )
 
 SENTRY_UI_PUBLIC_KEY = os.getenv("SENTRY_UI_PUBLIC_KEY", "")
+SENTRY_UI_PROJECT_ID = os.getenv("SENTRY_UI_PROJECT_ID", "")
