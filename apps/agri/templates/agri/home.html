@@ -1,6 +1,6 @@
 {% extends "ui/base.html" %}
 
-{% load static dsfr_tags %}
+{% load i18n static dsfr_tags %}
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'agri/home.css' %}">
@@ -98,7 +98,7 @@
         <section class="fr-col fr-col-12 fr-col-md-8 fr-m-md-auto">
           <h3>À propos d'Aides Agri</h3>
           <p>Aides Agri a pour ambition de recenser les aides des partenaires publics à destination des agriculteurs, de les rendre visibles et d'aiguiller les agriculteurs selon leur besoin.</p>
-          <p>Ce service fait partie des solutions mises en œuvre par le Ministère de l’Agriculture et de la Souveraineté Alimentaire dans le cadre de la simplification numérique. La méthode de fabrication employée est <a class="fr-link" href="https://beta.gouv.fr/startups/plateforme-agriculteurs.html" target="_blank">la démarche dite “beta.gouv”</a> qui met l’usager au centre pour répondre vraiment à ses besoins.</p>
+          <p>Ce service fait partie des solutions mises en œuvre par le Ministère de l’Agriculture et de la Souveraineté Alimentaire dans le cadre de la simplification numérique. La méthode de fabrication employée est <a class="fr-link" href="https://beta.gouv.fr/startups/plateforme-agriculteurs.html" target="_blank" title="la démarche dite “beta.gouv” - {% translate 'Opens a new window' %}">la démarche dite “beta.gouv”</a> qui met l’usager au centre pour répondre vraiment à ses besoins.</p>
           <p>Aides Agri est aujourd’hui en phase de construction, une étape expérimentale qui signifie que le service n’est pas abouti et que nous apportons des améliorations fréquentes et importantes.</p>
         </section>
       </div>
