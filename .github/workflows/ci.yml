@@ -39,10 +39,16 @@ jobs:
         run: uv sync --all-extras --dev
       - name: Collect staticfiles
         run: uv run --no-sync manage.py collectstatic
+        env:
+          DJANGO_SETTINGS_MODULE: conf.settings.testing
+          SECRET_KEY: notsecret
       - name: Run Ruff
         run: uv run --no-sync ruff check --output-format=github .
       - name: Check migrations
         run: uv run --no-sync manage.py makemigrations --check --dry-run
+        env:
+          DJANGO_SETTINGS_MODULE: conf.settings.testing
+          SECRET_KEY: notsecret
       - name: Run tests
         run: uv run --no-sync pytest --cov
         env:
