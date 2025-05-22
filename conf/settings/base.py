@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     "widget_tweaks",
     "dsfr",
     "grist_loader",
-    "importmap",
     "ui",
     "product",
     "agri",

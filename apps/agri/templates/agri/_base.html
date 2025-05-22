@@ -6,6 +6,21 @@
   <link rel="stylesheet" href="{% static 'agri/base.css' %}">
 {% endblock extra_css %}
 
+{% block importmap %}
+<script type="importmap">
+{
+  "imports": {
+      "sentry": "{% static 'vendor/sentry.js' %}",
+      "stimulus": "{% static 'vendor/stimulus.js' %}",
+      "dsfr-form": "{% static 'ui/controllers/dsfr_form.js' %}",
+      "checkbox-group-field": "{% static 'ui/components/checkbox-group-field.js' %}",
+      "select-rich": "{% static 'ui/components/select-rich.js' %}",
+      "summary-mobile": "{% static 'agri/summary-mobile.js' %}"
+  }
+}
+</script>
+{% endblock importmap %}
+
 {% block breadcrumb %}{% endblock %}
 
 {% block content %}

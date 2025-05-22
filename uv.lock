@@ -8,7 +8,6 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "beautifulsoup4" },
-    { name = "dj-importmap" },
     { name = "django" },
     { name = "django-anymail" },
     { name = "django-dsfr" },
@@ -43,7 +42,6 @@ scalingo = [
 [package.metadata]
 requires-dist = [
     { name = "beautifulsoup4", specifier = "~=4.13" },
-    { name = "dj-importmap", specifier = "~=0.0" },
     { name = "django", specifier = "~=5.2" },
     { name = "django-anymail", extras = ["brevo"], specifier = "~=13.0" },
     { name = "django-dsfr", specifier = "~=2.1" },
@@ -176,17 +174,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/56/b0/d968ecdbe6fe0a863de7169bbe9e8a476868959f3af24981f6a10d2b6924/coverage-7.8.0-cp313-cp313t-win32.whl", hash = "sha256:379fe315e206b14e21db5240f89dc0774bdd3e25c3c58c2c733c99eca96f1ada", size = 214909, upload-time = "2025-03-30T20:36:19.644Z" },
     { url = "https://files.pythonhosted.org/packages/87/e9/d6b7ef9fecf42dfb418d93544af47c940aa83056c49e6021a564aafbc91f/coverage-7.8.0-cp313-cp313t-win_amd64.whl", hash = "sha256:2e4b6b87bb0c846a9315e3ab4be2d52fac905100565f4b92f02c445c8799e257", size = 216068, upload-time = "2025-03-30T20:36:21.282Z" },
     { url = "https://files.pythonhosted.org/packages/59/f1/4da7717f0063a222db253e7121bd6a56f6fb1ba439dcc36659088793347c/coverage-7.8.0-py3-none-any.whl", hash = "sha256:dbf364b4c5e7bae9250528167dfe40219b62e2d573c854d74be213e1e52069f7", size = 203435, upload-time = "2025-03-30T20:36:43.61Z" },
-]
-
-[[package]]
-name = "dj-importmap"
-version = "0.0.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "django" },
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/d5/8a/710f828f2af85614f3f36471000061bf962851ddd98efd27674c55643d6d/dj_importmap-0.0.2-py3-none-any.whl", hash = "sha256:30d845eb8cf863bc239554d9b84b802618536f0d12fd863c72b7ee70cda7f039", size = 30762, upload-time = "2024-10-16T08:47:29.843Z" },
 ]
 
 [[package]]

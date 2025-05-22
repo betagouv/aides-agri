@@ -1,4 +1,4 @@
-{% load i18n static dsfr_tags importmap %}<!DOCTYPE html>
+{% load i18n static dsfr_tags %}<!DOCTYPE html>
 <html lang="fr"
       data-fr-scheme="light"
       {% if SITE_CONFIG.mourning %}data-fr-mourning{% endif %}>
@@ -19,7 +19,19 @@
 
     {% block opengraph %}{% endblock opengraph %}
 
-    {% importmap %}
+    {% block importmap %}
+    <script type="importmap">
+    {
+      "imports": {
+          "sentry": "{% static 'vendor/sentry.js' %}",
+          "stimulus": "{% static 'vendor/stimulus.js' %}",
+          "dsfr-form": "{% static 'ui/controllers/dsfr_form.js' %}",
+          "checkbox-group-field": "{% static 'ui/components/checkbox-group-field.js' %}",
+          "select-rich": "{% static 'ui/components/select-rich.js' %}"
+      }
+    }
+    </script>
+    {% endblock importmap %}
 
     {% if UI_SENTRY_PUBLIC_KEY %}{% include "ui/blocks/sentry.html" %}{% endif %}
     {% if UI_MATOMO_SITE_ID %}{% include "ui/blocks/matomo.html" %}{% endif %}

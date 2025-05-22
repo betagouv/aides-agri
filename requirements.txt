@@ -43,15 +43,11 @@ colorama==0.4.6 ; sys_platform == 'win32' \
     --hash=sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44 \
     --hash=sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6
     # via click
-dj-importmap==0.0.2 \
-    --hash=sha256:30d845eb8cf863bc239554d9b84b802618536f0d12fd863c72b7ee70cda7f039
-    # via aides-agri
 django==5.2.1 \
     --hash=sha256:57fe1f1b59462caed092c80b3dd324fd92161b620d59a9ba9181c34746c97284 \
     --hash=sha256:a9b680e84f9a0e71da83e399f1e922e1ab37b2173ced046b541c72e1589a5961
     # via
     #   aides-agri
-    #   dj-importmap
     #   django-anymail
     #   django-crispy-forms
     #   django-dsfr

@@ -10,7 +10,6 @@ dependencies = [
   "django-grist-loader ~=0.3",
   "django-tasks ~=0.6",
   "django-htmx>=1.23.0",
-  "dj-importmap ~=0.0",
   "markdown ~=3.8",
   "markdownify ~=1.1",
   "mjml-python ~=1.3",
