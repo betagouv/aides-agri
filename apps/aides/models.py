@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.contrib.postgres import fields as postgres_fields
 from django.db import models
 from django.templatetags.static import static
 from django.urls import reverse
@@ -213,8 +214,14 @@ class AideQuerySet(models.QuerySet):
 
     def by_effectif(self, effectif_low: int, effectif_high: int) -> models.QuerySet:
         return self.filter(
-            (models.Q(effectif_min__lte=effectif_low) | models.Q(effectif_min=None))
-            & (models.Q(effectif_max__gte=effectif_high) | models.Q(effectif_max=None))
+            (
+                models.Q(eligibilite_effectif_min__lte=effectif_low)
+                | models.Q(eligibilite_effectif_min=None)
+            )
+            & (
+                models.Q(eligibilite_effectif_max__gte=effectif_high)
+                | models.Q(eligibilite_effectif_max=None)
+            )
         )
 
     def by_type(self, type_aide: Type):
@@ -258,12 +265,33 @@ class Aide(GristModel):
         DEPARTEMENTAL = "Départemental", "Départemental"
         LOCAL = "Local", "Local"
 
-    slug = models.CharField(blank=True, max_length=2000)
+    class Beneficiaire(models.TextChoices):
+        AGRI = "Agriculteurs"
+        CUMA = "CUMA"
+        SICA = "SICA"
+        SCA = "SCA"
+        GIEE = "GIEE"
+        OP = "Organisations de producteurs"
+
+    class Recurrence(models.TextChoices):
+        PERMANENTE = "Permanente"
+        PONCTUELLE = "Ponctuelle"
+        RECURRENTE = "Récurrente"
+        ANNUELLE = "Annuelle"
+
+    class EtatAvancementProjet(models.TextChoices):
+        CONCEPTION = "Réflexion / Conception"
+        REALISATION = "Mise en œuvre / Réalisation"
+        USAGE = "Usage / Valorisation"
+
+    slug = models.CharField(blank=True, max_length=2000, unique=True)
     nom = models.CharField(blank=True)
     promesse = models.CharField(blank=True)
     description = models.TextField(blank=True)
+    exemple_projet = models.TextField(blank=True)
     url_descriptif = models.URLField(blank=True, max_length=2000)
     url_demarche = models.URLField(blank=True, max_length=2000)
+    contact = models.CharField(blank=True)
     sujets = models.ManyToManyField(Sujet, related_name="aides")
     types = models.ManyToManyField(Type, related_name="aides")
     organisme = models.ForeignKey(Organisme, null=True, on_delete=models.CASCADE)
@@ -276,20 +304,33 @@ class Aide(GristModel):
     )
     conditions = models.TextField(blank=True)
     montant = models.CharField(blank=True)
+    participation_agriculteur = models.CharField(blank=True)
+    recurrence_aide = models.CharField(choices=Recurrence, blank=True)
     date_debut = models.DateField(null=True)
     date_fin = models.DateField(null=True)
-    effectif_min = models.PositiveIntegerField(null=True)
-    effectif_max = models.PositiveIntegerField(null=True)
+    eligibilite_effectif_min = models.PositiveIntegerField(null=True)
+    eligibilite_effectif_max = models.PositiveIntegerField(null=True)
+    eligibilite_etape_avancement_projet = postgres_fields.ArrayField(
+        models.CharField(choices=EtatAvancementProjet), null=True
+    )
+    eligibilite_age = models.CharField(blank=True)
+    type_depense = models.CharField(blank=True)
     couverture_geographique = models.CharField(
         choices=CouvertureGeographique, default=CouvertureGeographique.NATIONAL
     )
     zones_geographiques = models.ManyToManyField(ZoneGeographique, related_name="aides")
+    duree_accompagnement = models.CharField(blank=True)
+    etapes = models.TextField(blank=True)
+    beneficiaires = postgres_fields.ArrayField(
+        models.CharField(choices=Beneficiaire), null=True
+    )
+    filieres = models.ManyToManyField(Filiere)
 
     def __str__(self):
         return self.nom
 
     def get_absolute_url(self):
-        return reverse("aides:aide", kwargs={"slug": self.slug, "pk": self.pk})
+        return reverse("aides:aide", kwargs={"slug": self.slug})
 
     @property
     def is_ongoing(self) -> bool:
