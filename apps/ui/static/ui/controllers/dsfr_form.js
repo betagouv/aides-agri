@@ -1,4 +1,4 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from "stimulus"
 
 export class DsfrForm extends Controller {
   static outlets = ["checkbox-group-field", "select-rich"]

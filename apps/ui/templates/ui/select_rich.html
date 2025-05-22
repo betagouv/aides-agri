@@ -6,16 +6,8 @@
   {{ block.super }}
   <link rel="stylesheet" href="{% static 'css/dsfr-code.css' %}">
   <link rel="stylesheet" href="{% static 'ui/components/select-rich.css' %}">
-  <script type="importmap">
-  {
-    "imports": {
-      "@hotwired/stimulus": "{% static 'vendor/stimulus.js' %}",
-      "select-rich": "{% static 'ui/components/select-rich.js' %}"
-    }
-  }
-  </script>
   <script type="module">
-    import { Application } from "@hotwired/stimulus"
+    import { Application } from "stimulus"
     import { SelectRich } from "select-rich"
     window.Stimulus ??= Application.start()
 

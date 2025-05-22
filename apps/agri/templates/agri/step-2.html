@@ -8,18 +8,8 @@
 {% endblock extra_css %}
 
 {% block extra_head_js %}
-  <script type="importmap">
-  {
-    "imports": {
-      "@hotwired/stimulus": "{% static 'vendor/stimulus.js' %}",
-      "dsfr-form": "{% static 'ui/controllers/dsfr_form.js' %}",
-      "checkbox-group-field": "{% static 'ui/components/checkbox-group-field.js' %}",
-      "summary-mobile": "{% static 'agri/summary-mobile.js' %}"
-    }
-  }
-  </script>
   <script type="module">
-    import { Application } from "@hotwired/stimulus"
+    import { Application } from "stimulus"
     import { DsfrForm } from "dsfr-form"
     import { CheckboxGroupField } from "checkbox-group-field"
     import { SummaryMobile } from "summary-mobile"

@@ -1,4 +1,4 @@
-{% load i18n static dsfr_tags %}<!DOCTYPE html>
+{% load i18n static dsfr_tags importmap %}<!DOCTYPE html>
 <html lang="fr"
       data-fr-scheme="light"
       {% if SITE_CONFIG.mourning %}data-fr-mourning{% endif %}>
@@ -18,6 +18,8 @@
           content="telephone=no,date=no,address=no,email=no,url=no">
 
     {% block opengraph %}{% endblock opengraph %}
+
+    {% importmap %}
 
     {% if UI_SENTRY_PUBLIC_KEY %}{% include "ui/blocks/sentry.html" %}{% endif %}
     {% if UI_MATOMO_SITE_ID %}{% include "ui/blocks/matomo.html" %}{% endif %}
@@ -50,9 +52,8 @@
     {% block footer %}
       {% include "ui/blocks/footer.html" %}
     {% endblock footer %}
-
-    {% dsfr_js nonce=request.csp_nonce %}
-    {% block extra_js %}{% endblock extra_js %}
   {% endblock body %}
+  {% dsfr_js nonce=request.csp_nonce %}
+  {% block extra_js %}{% endblock extra_js %}
   </body>
 </html>

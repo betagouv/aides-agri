@@ -1,4 +1,4 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from "stimulus"
 
 const sanitizeForSearch = (someString) => {
   return someString.trim().toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "")
