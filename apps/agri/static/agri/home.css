@@ -1,60 +1,44 @@
-#intro {
-  background-image: url("images/home/illustration_baseline.svg"),
-                    url("images/home/illustration_baseline_bg.svg");
-  background-repeat: no-repeat, no-repeat;
-  background-size: 230px 193px, 266px 246px;
-  background-position: top right -80px;
-  padding-top: 4rem;
-  max-width: 1440px;
-  margin: auto;
+body {
+  background-image: url("images/home/background.webp");
+  background-repeat: no-repeat;
+  background-position-y: -250px;
 }
 
-#baseline {
+#proposition article {
+  border-radius: 8px;
+  text-align: left;
   text-wrap: balance;
 }
 
-#baseline h1 {
-  font-size: 32px;
-  line-height: 40px;
-  color:var(--text-title-grey);
+#fr-icon-selection-fill:after, .fr-icon-selection-fill:before{
+  -webkit-mask-image:url("images/home/selection.svg");
+  mask-image:url("images/home/selection.svg")
 }
 
-#baseline h2 {
-  font-size: 24px;
-  line-height: 32px;
-  font-weight: 400;
+#fr-icon-orientation-fill:after, .fr-icon-orientation-fill:before{
+  -webkit-mask-image:url("images/home/orientation.svg");
+  mask-image:url("images/home/orientation.svg")
 }
 
-#proposition {
-  background-color: var(--background-default-grey);
-  box-shadow: var(--lifted-shadow);
+#themes {
+  border-radius: 8px;
 }
 
-#proposition h3, #a-propos h3, #cta-feedback {
+#themes .fr-tile--shadow {
+  filter: drop-shadow(var(--lifted-shadow));
+}
+
+#intro, #a-propos h2, #cta-feedback {
   text-align: center;
+}
+
+#themes .fr-tile--horizontal .fr-tile__header {
+  margin: 0;
 }
 
 #themes .fr-tile--horizontal .fr-tile__img {
   width: 0;
   margin: 0;
-}
-
-#themes .fr-tile--horizontal.fr-tile--with-icon .fr-tile__img {
-  width: unset;
-  align-items: flex-start;
-}
-
-#themes .fr-tile--horizontal.fr-tile--with-icon .fr-tile__img .fr-responsive-img {
-  width: 0;
-}
-
-#themes .fr-tile--horizontal.fr-tile--with-icon .fr-tile__img::before {
-  content: "";
-  mask-image: url("/static/dsfr/dist/icons/system/alarm-warning-line.svg");
-  mask-size: cover;
-  background-color: var(--text-action-high-blue-france);
-  width: 30px;
-  height: 30px;
 }
 
 #themes .fr-tile--horizontal .fr-tile__content {
@@ -66,24 +50,7 @@
 }
 
 @media (min-width:62em) {
-  #intro {
-    background-size: auto;
-    background-position: top 53px right 120px, bottom right;
-    min-height: 737px;
-  }
-
-  #baseline h1 {
-    font-size: 48px;
-    line-height: 56px;
-    color:var(--text-title-grey);
-  }
-
-  #baseline h2 {
-    font-size: 28px;
-    line-height: 36px;
-  }
-
-  #baseline > div {
-    padding-top: 10rem !important;
+  #content {
+    background-position-y: -300px;
   }
 }
