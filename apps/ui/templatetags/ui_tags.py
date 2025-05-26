@@ -36,6 +36,7 @@ def ui_checkbox_group_field(*args, **kwargs) -> dict:
         "label",
         "name",
         "options",
+        "required",
         "required_error_message",
     ]
     tag_data = parse_tag_args(args, kwargs, allowed_keys)
