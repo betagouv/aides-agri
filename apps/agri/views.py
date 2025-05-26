@@ -1,5 +1,6 @@
 import datetime
 from collections import defaultdict
+from copy import copy
 
 from django.db.models import Q
 from django.shortcuts import render
@@ -63,7 +64,13 @@ class HomeView(TemplateView):
 
 
 class AgriMixin(ContextMixin):
+    STEPS = {
+        2: "Veuillez préciser votre besoin.",
+        3: "Renseignez votre exploitation.",
+        4: "Décrivez votre activité.",
+    }
     STEP = None
+    BREADCRUMB_TITLE = ""
     theme = None
     sujets = []
     etablissement = None
@@ -100,10 +107,42 @@ class AgriMixin(ContextMixin):
                 pk__in=groupements_ids
             )
 
+    def _get_breadcrumb_data(self):
+        querydict = copy(self.request.GET)
+        querydict.pop("siret-search", None)
+        querydict.pop("commune-search", None)
+        querydict.pop("filieres", None)
+        querydict.pop("tranche_effectif_salarie", None)
+        querydict.pop("regroupements", None)
+        query_step_5 = copy(querydict)
+        querydict.pop("siret", None)
+        querydict.pop("commune", None)
+        querydict.pop("date_installation", None)
+        query_step_3 = copy(querydict)
+        querydict.pop("sujets", None)
+        return {
+            "links": [
+                {
+                    "url": reverse("agri:step-2", query=querydict),
+                    "title": Step2View.BREADCRUMB_TITLE,
+                },
+                {
+                    "url": reverse("agri:step-3", query=query_step_3),
+                    "title": Step3View.BREADCRUMB_TITLE,
+                },
+                {
+                    "url": reverse("agri:step-5", query=query_step_5),
+                    "title": Step5View.BREADCRUMB_TITLE,
+                },
+            ][0 : self.STEP - 2 if self.STEP else 3],
+            "current": self.BREADCRUMB_TITLE,
+        }
+
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data.update(
             {
+                "breadcrumb_data": self._get_breadcrumb_data(),
                 "skiplinks": [
                     {
                         "link": "#summary",
@@ -135,6 +174,7 @@ class AgriMixin(ContextMixin):
                 {
                     "stepper": {
                         "current_step_id": self.STEP,
+                        "current_step_title": self.STEPS[self.STEP],
                         "total_steps": 4,
                     },
                 }
@@ -146,6 +186,7 @@ class AgriMixin(ContextMixin):
 class Step2View(AgriMixin, TemplateView):
     template_name = "agri/step-2.html"
     STEP = 2
+    BREADCRUMB_TITLE = "Besoin"
 
     def get_context_data(self, **kwargs):
         extra_context = super().get_context_data(**kwargs)
@@ -166,6 +207,7 @@ class Step2View(AgriMixin, TemplateView):
 class Step3View(AgriMixin, TemplateView):
     template_name = "agri/step-3.html"
     STEP = 3
+    BREADCRUMB_TITLE = "Exploitation"
 
 
 class Step4View(AgriMixin, TemplateView):
@@ -188,6 +230,7 @@ class Step4View(AgriMixin, TemplateView):
 class Step5View(AgriMixin, TemplateView):
     template_name = "agri/step-5.html"
     STEP = 4
+    BREADCRUMB_TITLE = "Activité"
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -238,6 +281,7 @@ class ResultsMixin(AgriMixin):
 
 class ResultsView(ResultsMixin, ListView):
     template_name = "agri/results.html"
+    BREADCRUMB_TITLE = "Sélection personnalisée"
 
     def get_queryset(self):
         return self.get_results()
