@@ -37,15 +37,13 @@
 {% endblock extra_form_attributes %}
 
 {% block form %}
-<h2 class="fr-h6 fr-icon-seedling-fill fr-heading--soft fr-btn--icon-left fr-mb-2w">Votre activité</h2>
-<div class="fr-highlight fr-mb-4w">
-  <p class="fr-mb-2v">Vérifiez et complétez les informations suivantes déduites de votre SIRET.</p>
-  <p class="fr-mb-2v">Toutes les questions ci-dessous nécessitent une réponse afin de vous proposer des dispositifs pertinents.</p>
+<div class="fr-alert fr-alert--info fr-alert--sm fr-mb-3w">
+  <p>Veuillez vérifier et compléter les champs ci-dessous. Ils nous permettront de sélectionner les dispositifs pertinents.</p>
 </div>
 <div class="fr-grid-row">
   <fieldset class="fr-fieldset fr-col">
     <div class="fr-fieldset__element fr-mb-3w fr-select-group">
-      <label for="input-effectif" class="fr-label fr-mb-2v">Effectif de l’exploitation</label>
+      <label for="input-effectif" class="fr-label fr-mb-2v">Effectifs</label>
       {% if tranche_effectif_salarie %}
         {% dsfr_tag label=tranche_effectif_salarie is_dismissable=True onclick="this.nextElementSibling.classList.remove('fr-hidden')" %}
       {% else %}
@@ -67,7 +65,7 @@
       {% ui_select_rich_multi label="Filières" name="filieres" required=True options=filieres initials=filieres_initials searchable=True search_placeholder="élevage, légumes, etc." with_tags=True helper=filieres_helper %}
     </div>
     <div class="fr-fieldset__element">
-      {% ui_checkbox_group_field label="Faites-vous partie d’un ou plusieurs regroupements ?" name="regroupements" options=groupements error_message="Ce champ est requis pour passer à la suite." %}
+      {% ui_checkbox_group_field label="Faites-vous partie d’un ou plusieurs regroupements ?" name="regroupements" options=groupements required=False %}
     </div>
   </fieldset>
 </div>

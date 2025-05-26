@@ -29,17 +29,19 @@
     <input type="hidden" name="regroupements" value="{{ regroupement.pk }}">
   {% endfor %}
 
-  <section class="fr-container fr-p-0 fr-mb-4w form-fields">
+  <section class="fr-container fr-p-0 form-fields">
     {% block form %}{% endblock form %}
   </section>
 
-  {# action buttons #}
-  <section class="fr-container fr-p-0">
+  {% block form_buttons %}
+  {# form buttons #}
+  <section id="form-buttons" class="fr-container fr-p-0">
     <div class="fr-grid-row fr-grid-row--space-between">
       <button type="button" class="fr-btn fr-btn--secondary" onclick="history.back()">Retour</button>
       <button type="submit" class="fr-btn" aria-label="Valider">→</button>
     </div>
   </section>
+  {% endblock form_buttons %}
 
 </form>
 {% endblock main_col_content %}

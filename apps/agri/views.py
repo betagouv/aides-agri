@@ -192,6 +192,7 @@ class Step2View(AgriMixin, TemplateView):
         extra_context = super().get_context_data(**kwargs)
         extra_context.update(
             {
+                "theme": self.theme,
                 "sujets": {
                     f"sujet-{sujet.pk}": sujet
                     for sujet in Sujet.objects.with_aides_count()
@@ -316,17 +317,6 @@ class ResultsView(ResultsMixin, ListView):
                             if aide.organisme_id
                             else static("agri/images/placeholder.1x1.svg"),
                             "ratio_class": "fr-ratio-1x1",
-                            "media_badges": [
-                                {
-                                    "extra_classes": "fr-badge--green-emeraude",
-                                    "label": "En cours",
-                                }
-                                if aide.is_ongoing
-                                else {
-                                    "extra_classes": "fr-badge--pink-tuile",
-                                    "label": "Clôturé",
-                                }
-                            ],
                             "top_detail": {
                                 "tags": [
                                     {

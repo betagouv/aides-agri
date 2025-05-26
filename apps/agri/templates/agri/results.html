@@ -105,30 +105,13 @@ window.onafterprint = evt => {
 {% endif %}
 {% endblock modals %}
 
-{% block aside_tools %}
-  {% if aides %}
-  <button type="button"
-          class="fr-btn fr-btn--icon-left fr-btn--sm fr-pl-0 fr-btn--tertiary-no-outline fr-icon-mail-line"
-          aria-controls="modal-send-by-mail"
-          data-fr-opened="false"
-  >
-    M’envoyer la recherche
-  </button>
-  <button type="button"
-          class="fr-btn fr-btn--icon-left fr-btn--sm fr-pl-0 fr-btn--tertiary-no-outline fr-icon-file-pdf-line"
-          onclick="window.print()"
-  >
-    Télécharger en PDF
-  </button>
-  {% endif %}
-{% endblock aside_tools %}
-
-{% block title %}Nos recommandations{% endblock title %}
-{% block h1 %}Pour votre besoin et profil d’exploitant.{% endblock h1 %}
+{% block title %}Votre sélection personnalisée.{% endblock title %}
 
 {% block main_col %}
 <div class="fr-col fr-col-12 fr-col-md-9">
-  <div class="fr-highlight">
+  <h1 class="fr-h1">Votre sélection personnalisée.</h1>
+
+  <div class="fr-alert fr-alert--info fr-alert--sm">
     {% if aides %}
       <p>La recommandation de ces dispositifs se base sur les informations que vous nous avez fournies en amont. Elle n’assure pas votre éligibilité.</p>
       <p>Nous nous efforçons de recenser et mettre à jour notre catalogue encore en construction. Il se peut que certaines aides ne soient pas encore recensées par notre équipe.</p>
@@ -138,6 +121,24 @@ window.onafterprint = evt => {
       <p>Nous nous efforçons de recenser et mettre à jour notre catalogue encore en construction. Il se peut également qu'aucune aide ne soit proposée pour le moment par nos partenaires publics.</p>
     {% endif %}
   </div>
+
+  {% if aides %}
+  <div id="actions" class="fr-container--fluid fr-my-2w">
+      <button type="button"
+              class="fr-btn fr-btn--icon-left fr-btn--sm fr-pl-4v fr-btn--secondary fr-icon-mail-line"
+              aria-controls="modal-send-by-mail"
+              data-fr-opened="false"
+      >
+        Recevoir par e-mail
+      </button>
+      <button type="button"
+              class="fr-btn fr-btn--icon-left fr-btn--sm fr-pl-4v fr-btn--secondary fr-icon-file-pdf-line"
+              onclick="window.print()"
+      >
+        Enregistrer en PDF
+      </button>
+  </div>
+  {% endif %}
 
   <div class="fr-container fr-p-0">
     <div id="recommandation" class="fr-grid-row fr-grid-row--gutters fr-mb-5w">

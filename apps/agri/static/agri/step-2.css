@@ -1,3 +1,7 @@
+#theme .fr-tile__title::before {
+  background: none;
+}
+
 .sujet {
   border-bottom: 1px solid var(--border-contrast-grey);
 }
