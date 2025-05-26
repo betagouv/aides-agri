@@ -1,13 +1,33 @@
 from django import template
 from dsfr.utils import parse_tag_args
 from markdown import markdown
+from markdown.extensions.tables import TableExtension, TableProcessor
+import xml.etree.ElementTree as etree
+
 
 register = template.Library()
 
 
+class DsfrTableProcessor(TableProcessor):
+    def run(self, parent, *args):
+        super().run(parent, *args)
+        div = etree.SubElement(parent, "div")
+        div.attrib["class"] = "fr-table"
+        added_table = parent.find("table[last()]")
+        parent.remove(added_table)
+        div.append(added_table)
+
+
+class DsfrTableExtension(TableExtension):
+    def extendMarkdown(self, md):
+        super().extendMarkdown(md)
+        processor = DsfrTableProcessor(md.parser, self.getConfigs())
+        md.parser.blockprocessors.register(processor, "table", 100)
+
+
 @register.filter
 def ui_markdown(content: str) -> str:
-    return markdown(content)
+    return markdown(content, extensions=[DsfrTableExtension()])
 
 
 @register.inclusion_tag("ui/components/checkbox_group_field.html")
