@@ -71,7 +71,9 @@ export class SelectRich extends Controller {
   }
 
   focus() {
-    this.entriesTarget.classList.add("fr-collapse--expanded")
+    if (this.hasOptionTarget) {
+      this.entriesTarget.classList.add("fr-collapse--expanded")
+    }
   }
 
   search() {
@@ -92,6 +94,12 @@ export class SelectRich extends Controller {
 
   externalSearch(evt) {
     this._unsetErrorState()
+  }
+
+  optionTargetConnected() {
+    if (this.hasSearchButtonTarget) {
+      this.focus()
+    }
   }
 
   _updateButton() {

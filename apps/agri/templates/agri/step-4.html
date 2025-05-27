@@ -25,8 +25,6 @@
 {% endblock extra_head_js %}
 
 {% block title %}Votre exploitation{% endblock title %}
-{% block h1 %}Votre exploitation.{% endblock h1 %}
-{% block h2 %}<h2 class="h6">Afin de vous proposer des aides adéquates, nous avons besoin d’en savoir un peu plus sur votre exploitation.</h2>{% endblock h2 %}
 
 {% block action %}{% url 'agri:step-5' %}{% endblock action %}
 
@@ -36,15 +34,13 @@
 {% endblock extra_form_attributes %}
 
 {% block form %}
-<h3 class="fr-h6 fr-icon-identity-fill fr-heading--soft fr-btn--icon-left fr-mb-2w">Identité de l’exploitation</h3>
-<div class="fr-highlight fr-mb-4w">
-  <p class="fr-mb-2v">Vérifiez et complétez les informations suivantes déduites de votre SIRET.</p>
-  <p class="fr-mb-2v">Toutes les questions ci-dessous nécessitent une réponse afin de vous proposer des dispositifs pertinents.</p>
+<div class="fr-alert fr-alert--info fr-alert--sm fr-mb-4w">
+  <p>Veuillez vérifier et compléter les champs ci-dessous. Ils nous permettront de sélectionner les dispositifs pertinents.</p>
 </div>
 <div class="fr-grid-row">
   <fieldset class="fr-fieldset fr-col">
     <div class="fr-fieldset__element fr-mt-2v">
-      <span class="fr-label fr-mb-2v">Nom de l’exploitation et SIRET</span>
+      <span class="fr-label fr-mb-2v">Nom de l’exploitation</span>
       {% comment %}
       TODO reenable when https://github.com/numerique-gouv/django-dsfr/pull/213 is merged
       {% dsfr_tag label=etablissement.nom|default_if_none:etablissement.societe.nom_complet is_dismissable=True onclick="history.back()" %}
