@@ -24,66 +24,68 @@
     {% dsfr_notice title=SITE_CONFIG.notice_title description=SITE_CONFIG.notice_description link=SITE_CONFIG.notice_link type=SITE_CONFIG.notice_type icon=SITE_CONFIG.notice_icon_class is_collapsible=SITE_CONFIG.notice_is_collapsible %}
   {% endif %}
 
-  <main id="content" class="fr-container">
-    <section id="intro" class="fr-grid-row fr-grid-row--gutters fr-pt-6w fr-pt-md-12w">
-      <div class="fr-col">
-        <h1>Agriculteurs :<br>un projet, une difficulté ?</h1>
-        <p class="fr-text--xl fr-text--regular">{{ SITE_CONFIG.site_title }} vous oriente vers les dispositifs les plus pertinents pour votre exploitation : aide financière, formation, accompagnement, etc.</p>
-        <a class="fr-btn fr-btn--lg fr-mt-4w fr-mt-md-12w" href="#themes">Découvrez les dispositifs !</a>
-      </div>
-    </section>
-    <section id="proposition" class="fr-grid-row fr-grid-row--gutters fr-mt-6w fr-mt-md-16w">
-      <div class="fr-col fr-col-12 fr-col-md-4">
-        <article class="fr-card fr-p-3w fr-background-default--grey">
-          <span class="fr-icon-bookmark-fill fr-mb-2w" aria-hidden="true"></span>
-          <strong>Une centralisation des aides publiques</strong>
-          à destination des agriculteurs mises à jour.
-        </article>
-      </div>
-      <div class="fr-col fr-col-12 fr-col-md-4">
-        <article class="fr-card fr-p-3w fr-background-default--grey">
-          <span class="fr-icon-selection-fill fr-mb-2w" aria-hidden="true"></span>
-          <strong>Une sélection personnalisée de dispositifs</strong>
-          adaptée à votre situation en seulement 4 étapes.
-        </article>
-      </div>
-      <div class="fr-col fr-col-12 fr-col-md-4">
-        <article class="fr-card fr-p-3w fr-background-default--grey">
-          <span class="fr-icon-orientation-fill fr-mb-2w" aria-hidden="true"></span>
-          <strong>Une orientation</strong>
-          vers les interlocuteurs pertinents pour déposer votre dossier.
-        </article>
-      </div>
-    </section>
-    <section class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-mt-12w">
-      <div class="fr-col">
-        <div id="themes" class="fr-background-default--grey fr-border-plain--grey fr-px-2w fr-px-md-12w fr-py-6w">
-          <h2 class="fr-h1 fr-mb-2w">Pour commencer, <br>sélectionnez votre besoin.</h2>
-          <p class="fr-text--sm fr-mb-1w">Étape 1 sur 4</p>
-          <div class="fr-container--fluid fr-mx-n3w fr-py-2w">
-            <div class="fr-grid-row fr-grid-row--gutters fr-p-3w">
-              {% for url, theme in themes %}
-                <div class="fr-col-12 fr-col-sm-6 fr-py-1v">
-                  {% if theme.urgence %}
-                    {% dsfr_tile heading_tag="p" title=theme.nom description=theme.description url=url extra_classes="fr-tile--horizontal fr-p-4w fr-background-alt--blue-ecume fr-tile--shadow" %}
-                  {% else %}
-                    {% dsfr_tile heading_tag="p" title=theme.nom description=theme.description url=url extra_classes="fr-tile--horizontal fr-p-4w" %}
-                  {% endif %}
+  <main id="content">
+    <div class="fr-container">
+      <section id="intro" class="fr-grid-row fr-grid-row--gutters fr-pt-6w fr-pt-md-12w">
+        <div class="fr-col">
+          <h1>Agriculteurs :<br>un projet, une difficulté ?</h1>
+          <p class="fr-text--xl fr-text--regular">{{ SITE_CONFIG.site_title }} vous oriente vers les dispositifs les plus pertinents pour votre exploitation : aide financière, formation, accompagnement, etc.</p>
+          <a class="fr-btn fr-btn--lg fr-mt-4w fr-mt-md-12w" href="#themes">Découvrez les dispositifs !</a>
+        </div>
+      </section>
+      <section id="proposition" class="fr-grid-row fr-grid-row--gutters fr-mt-6w fr-mt-md-16w">
+        <div class="fr-col fr-col-12 fr-col-md-4">
+          <article class="fr-card fr-p-3w fr-background-default--grey">
+            <span class="fr-icon-bookmark-fill fr-mb-2w" aria-hidden="true"></span>
+            <strong>Une centralisation des aides publiques</strong>
+            à destination des agriculteurs mises à jour.
+          </article>
+        </div>
+        <div class="fr-col fr-col-12 fr-col-md-4">
+          <article class="fr-card fr-p-3w fr-background-default--grey">
+            <span class="fr-icon-selection-fill fr-mb-2w" aria-hidden="true"></span>
+            <strong>Une sélection personnalisée de dispositifs</strong>
+            adaptée à votre situation en seulement 4 étapes.
+          </article>
+        </div>
+        <div class="fr-col fr-col-12 fr-col-md-4">
+          <article class="fr-card fr-p-3w fr-background-default--grey">
+            <span class="fr-icon-orientation-fill fr-mb-2w" aria-hidden="true"></span>
+            <strong>Une orientation</strong>
+            vers les interlocuteurs pertinents pour déposer votre dossier.
+          </article>
+        </div>
+      </section>
+      <section class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-mt-12w">
+        <div class="fr-col">
+          <div id="themes" class="fr-background-default--grey fr-border-plain--grey fr-px-2w fr-px-md-12w fr-py-6w">
+            <h2 class="fr-h1 fr-mb-2w">Pour commencer, <br>sélectionnez votre besoin.</h2>
+            <p class="fr-text--sm fr-mb-1w">Étape 1 sur 4</p>
+            <div class="fr-container--fluid fr-mx-n3w fr-py-2w">
+              <div class="fr-grid-row fr-grid-row--gutters fr-p-3w">
+                {% for url, theme in themes %}
+                  <div class="fr-col-12 fr-col-sm-6 fr-py-1v">
+                    {% if theme.urgence %}
+                      {% dsfr_tile heading_tag="p" title=theme.nom description=theme.description url=url extra_classes="fr-tile--horizontal fr-p-4w fr-background-alt--blue-ecume fr-tile--shadow" %}
+                    {% else %}
+                      {% dsfr_tile heading_tag="p" title=theme.nom description=theme.description url=url extra_classes="fr-tile--horizontal fr-p-4w" %}
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+              <div class="fr-grid-row--gutters">
+                <div id="cta-feedback" class="fr-col fr-col-12 fr-col-md-6 fr-mx-auto">
+                  <h3 class="fr-h6 fr-mt-3w">Vous ne trouvez pas votre besoin ?</h3>
+                  <button type="button" class="fr-btn fr-btn--tertiary" data-fr-opened="false" aria-controls="fr-modal-feedback">
+                    Expliquez-nous.
+                  </button>
                 </div>
-              {% endfor %}
-            </div>
-            <div class="fr-grid-row--gutters">
-              <div id="cta-feedback" class="fr-col fr-col-12 fr-col-md-6 fr-mx-auto">
-                <h3 class="fr-h6 fr-mt-3w">Vous ne trouvez pas votre besoin ?</h3>
-                <button type="button" class="fr-btn fr-btn--tertiary" data-fr-opened="false" aria-controls="fr-modal-feedback">
-                  Expliquez-nous.
-                </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   </main>
 
   <aside id="a-propos" class="fr-background-alt--blue-ecume fr-mt-4w">
