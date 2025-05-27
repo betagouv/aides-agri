@@ -1,0 +1,60 @@
+{% extends "ui/base.html" %}
+
+{% load dsfr_tags aides_tags %}
+
+{% block title %}Pilotage de l’intégration des aides{% endblock title %}
+
+{% block body %}
+  <div class="fr-table fr-table--sm fr-table--bordered" id="table-complex-component">
+    <div class="fr-table__wrapper">
+      <div class="fr-table__container">
+        <div class="fr-table__content">
+          <table id="table-complex">
+            <caption>
+              Liste des aides brutes par sujet, type et département pilote
+              <div class="fr-table__caption__desc">
+              </div>
+            </caption>
+            <thead>
+              <tr>
+                <th class="fr-cell--fixed" role="columnheader" rowspan="2" id="complex-thead-0-col-0">
+                  <span class="fr-sr-only">Sujets</span>
+                </th>
+                {% for id_type, label_type in types.items %}
+                <th id="complex-thead-0-col-{{ id_type }}" colspan="3">
+                  {{ label_type }}
+                </th>
+                {% endfor %}
+              </tr>
+              <tr>
+                {% for id_type, label_type in types.items %}
+                  {% for id_dept, nom_dept in departements.items %}
+                    <th headers="complex-thead-0-col-{{ id_type }}" id="complex-thead-1-col-{{ id_type }}-{{ id_dept }}">
+                      {{ nom_dept }}
+                    </th>
+                  {% endfor %}
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+            {% for id_sujet, label_sujet in sujets.items %}
+              <tr data-row-key="{{ id_sujet }}">
+                <th class="fr-cell--fixed" id="complex-row-{{ id_sujet }}" headers="complex-thead-0-col-0">
+                  {{ label_sujet }}
+                </th>
+                {% for id_type, label_type in types.items %}
+                  {% for id_dept, nom_dept in departements.items %}
+                    <td headers="complex-row-{{ id_sujet }} complex-thead-0-col-{{ id_type }} complex-thead-1-col-{{ id_type }}-{{ id_dept }}">
+                      {% aides_by_sujet_and_type_and_departement aides id_sujet id_type id_dept %}
+                    </td>
+                  {% endfor %}
+                {% endfor %}
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock body %}
