@@ -30,6 +30,7 @@
 
 #intro, #a-propos h2, #cta-feedback {
   text-align: center;
+  text-wrap: balance;
 }
 
 #themes .fr-tile--horizontal .fr-tile__header {
