@@ -146,9 +146,9 @@ packaging==25.0 \
     --hash=sha256:29572ef2b1f17581046b3a2227d5c611fb25ec70ca1ba8554b24b0e69331a484 \
     --hash=sha256:d443872c98d677bf60f6a1f2f8c1cb748e8fe762d2bf9d3148b5599295b0fc4f
     # via gunicorn
-phonenumberslite==8.13.55 \
-    --hash=sha256:3daa107c7d89576effa8ecc0ed17f0e8845055836590a96fa5f1fdac5dd475e0 \
-    --hash=sha256:b961bb36d32688bcf28ec308f8f11f502353c9aa5f9fb18261b215c6b0e6b898
+phonenumberslite==9.0.6 \
+    --hash=sha256:204f9b169dbcf6fba17c504840974d77bddeaf5dfbcfae74ddc7feb3105b9b2d \
+    --hash=sha256:36406b55cc25535dc2750e4c958dc8e05b883c11677dae87c4be162e1be44232
     # via django-two-factor-auth
 psycopg==3.2.9 \
     --hash=sha256:01a8dadccdaac2123c916208c96e06631641c0566b22005493f09663c7a8d3b6 \
