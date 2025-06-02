@@ -40,8 +40,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "anymail",
     "django_htmx",
+    "django_otp",
+    "django_otp.plugins.otp_static",
+    "django_otp.plugins.otp_totp",
     "django_tasks",
     "django_tasks.backends.database",
+    "two_factor",
     "widget_tweaks",
     "dsfr",
     "grist_loader",
@@ -60,6 +64,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_otp.middleware.OTPMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
 ]
 
@@ -118,6 +123,8 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+LOGIN_URL = "two_factor:login"
 
 
 # Internationalization

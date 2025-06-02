@@ -17,6 +17,7 @@ Including another URLconf
 
 from django.conf import settings
 from django.urls import path, include, re_path
+from two_factor.urls import urlpatterns as two_factors_urls
 
 from .admin import admin_site
 
@@ -25,6 +26,7 @@ urlpatterns = [
     path("", include("agri.urls")),
     path("", include("aides.urls")),
     path("", include("product.urls")),
+    path("", include(two_factors_urls)),
     path("ui/", include("ui.urls")),
 ]
 
