@@ -54,3 +54,9 @@
     background-position-y: -300px;
   }
 }
+
+@media (min-width:1921px) {
+  #content {
+    background-size: cover;
+  }
+}
