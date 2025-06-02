@@ -10,6 +10,10 @@ html {
   justify-content: space-between;
 }
 
+.fr-grid-row.fr-grid-row--reverse {
+  flex-direction: row-reverse;
+}
+
 .fr-icon-identity-fill::after,
 .fr-icon-identity-fill::before {
   -webkit-mask-image:url("icons/fr--identity-fill.svg");
