@@ -116,9 +116,7 @@ class GristAidesBySujetsTypesAndDepartementView(TemplateView):
                                 aide["Id_solution"]
                                 + " (Valide "
                                 + ("✅" if aide["Valide"] else "❌")
-                                + ", Édito "
-                                + ("✅" if aide["A_publier"] else "❌")
-                                + ")"
+                                + f", Statut : {aide['Statut']})"
                             )
 
         context_data.update(
