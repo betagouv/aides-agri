@@ -21,15 +21,31 @@
 </script>
 {% endblock importmap %}
 
-{% block content %}
-  <div class="fr-grid-row fr-grid-row--gutters">
+{% block content_wrapper %}
+  <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--reverse">
+    {# main column #}
+    {% block main_col %}
+    <main id="content" role="main" aria-label="Contenu"
+          class="fr-col fr-col-12 fr-col-md-6 fr-col-offset-md-3--right"
+    >
+      {% if stepper %}{% dsfr_stepper stepper heading_tag="h1" %}{% endif %}
+
+      {% block main_col_content %}{% endblock main_col_content %}
+      {% block main_col_footer %}{% endblock main_col_footer %}
+    </main>
+    {% endblock main_col %}
+
     {# left column #}
     <div id="left-column" class="fr-col fr-col-0 fr-col-md-3">
       {% if summary_theme or summary_sujets %}
-      <aside id="summary" class="fr-card--shadow fr-px-md-5v fr-py-md-4v fr-text--sm"
+      <aside id="summary"
+             role="note"
+             aria-labelledby="summary-label"
+             class="fr-card--shadow fr-px-md-5v fr-py-md-4v fr-text--sm"
              data-controller="summary-mobile"
       >
-        <div class="fr-text--bold fr-text--md fr-mb-3v">Votre besoin :</div>
+        <h2 class="fr-sr-only" id="summary-label">Rappel des informations saisies</h2>
+        <h3 class="fr-text--bold fr-text--md fr-mb-3v">Votre besoin :</h3>
         <div class="fr-mb-2v">
           {% dsfr_tag label=summary_theme.nom_court extra_classes="fr-tag--sm" %}
         </div>
@@ -48,7 +64,7 @@
           </div>
         {% endif %}
         {% if summary_siret %}
-          <div class="fr-text--bold fr-text--md fr-mb-3v">Votre exploitation et activités :</div>
+          <h3 class="fr-text--bold fr-text--md fr-mb-3v">Votre exploitation et activités :</h3>
           <div class="fr-mb-2v">
             {% dsfr_tag label=summary_siret extra_classes="fr-tag--sm" %}
           </div>
@@ -102,16 +118,6 @@
       </aside>
       {% endif %}
     </div>
-
-    {# main column #}
-    {% block main_col %}
-    <div class="fr-col fr-col-12 fr-col-md-6">
-      {% if stepper %}{% dsfr_stepper stepper heading_tag="h1" %}{% endif %}
-
-      {% block main_col_content %}{% endblock main_col_content %}
-      {% block main_col_footer %}{% endblock main_col_footer %}
-    </div>
-    {% endblock main_col %}
   </div>
   {% block aftercontent %}{% endblock aftercontent %}
-{% endblock content %}
+{% endblock content_wrapper %}

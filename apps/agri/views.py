@@ -316,6 +316,7 @@ class ResultsView(ResultsMixin, ListView):
                             "image_url": aide.organisme.get_logo_url()
                             if aide.organisme_id
                             else static("agri/images/placeholder.1x1.svg"),
+                            "image_alt": aide.organisme.nom,
                             "ratio_class": "fr-ratio-1x1",
                             "top_detail": {
                                 "tags": [

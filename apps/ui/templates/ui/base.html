@@ -56,9 +56,12 @@
       {% block breadcrumb %}
         {% dsfr_breadcrumb %}
       {% endblock breadcrumb %}
-      <main id="content" role="main">
+
+      {% block content_wrapper %}
+      <main id="content" role="main" aria-label="Contenu">
         {% block content %}{% endblock content %}
       </main>
+      {% endblock content_wrapper %}
     </div>
 
     {% block footer %}

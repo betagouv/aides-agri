@@ -24,7 +24,7 @@
     {% dsfr_notice title=SITE_CONFIG.notice_title description=SITE_CONFIG.notice_description link=SITE_CONFIG.notice_link type=SITE_CONFIG.notice_type icon=SITE_CONFIG.notice_icon_class is_collapsible=SITE_CONFIG.notice_is_collapsible %}
   {% endif %}
 
-  <main id="content">
+  <main id="content" role="main" aria-label="Contenu">
     <div class="fr-container">
       <section id="intro" class="fr-grid-row fr-grid-row--gutters fr-pt-6w fr-pt-md-12w">
         <div class="fr-col">
@@ -88,7 +88,7 @@
     </div>
   </main>
 
-  <aside id="a-propos" class="fr-background-alt--blue-ecume fr-mt-4w">
+  <aside id="a-propos" class="fr-background-alt--blue-ecume fr-mt-4w" aria-label="À propos">
     <div class="fr-container">
       <section class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-mb-0">
         <div class="fr-col fr-col-12 fr-col-md-8 fr-m-md-auto">

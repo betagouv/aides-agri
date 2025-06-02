@@ -16,14 +16,14 @@
   }
 
   #left-column {
-    position: relative;
+    position: absolute;
   }
 
   #summary {
     position: absolute;
     width: 285px;
-    top: -20px;
-    left: -293px;
+    top: 50px;
+    left: -95vh;
     filter: none;
     background-color: var(--artwork-decorative-blue-france);
     padding: .5rem .5rem .5rem 2.5rem !important;

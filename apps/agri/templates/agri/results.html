@@ -108,7 +108,7 @@ window.onafterprint = evt => {
 {% block title %}Votre sélection personnalisée.{% endblock title %}
 
 {% block main_col %}
-<div class="fr-col fr-col-12 fr-col-md-9">
+<main id="content" role="main" aria-label="Contenu" class="fr-col fr-col-12 fr-col-md-9">
   <h1 class="fr-h1">Votre sélection personnalisée.</h1>
 
   <div class="fr-alert fr-alert--info fr-alert--sm">
@@ -178,7 +178,7 @@ window.onafterprint = evt => {
       {% endif %}
     </div>
   </div>
-</div>
+</main>
 {% endblock main_col %}
 
 {% block aftercontent %}
