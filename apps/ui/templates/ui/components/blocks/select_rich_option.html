@@ -5,7 +5,7 @@
          type="{% if self.multi %}checkbox{% else %}radio{% endif %}"
          value="{{ value }}"
          {% if self.multi and value in self.initials or not self.multi and value == self.initial %}checked{% endif %}
-         data-action="change->select-rich#changed"
+         data-action="{% if self.multi %}change{% else %}click{% endif %}->select-rich#changed"
          data-select-rich-target="option"
          data-label="{{ label_short }}"
   >

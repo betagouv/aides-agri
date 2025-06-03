@@ -49,17 +49,6 @@ class SelectRichView(TemplateView):
                         "required": True,
                     },
                     {
-                        "name": "select_rich_multi_tags",
-                        "label": "Sélection multiple, avec tags",
-                        "with_tags": True,
-                        "options": [
-                            (f"value{i}", f"Option {i}, libellé long", f"Option {i}")
-                            for i in range(1, 10)
-                        ],
-                        "initials": ("value2", "value3"),
-                        "required": True,
-                    },
-                    {
                         "name": "select_rich_multi_search_internal",
                         "label": "Sélection multiple, recherche interne",
                         "searchable": True,
@@ -77,6 +66,39 @@ class SelectRichView(TemplateView):
                         "search_url": "ui:components-search-options-multi",
                         "search_field_name": "q",
                         "required": True,
+                    },
+                    {
+                        "name": "select_rich_multi_tags",
+                        "label": "Sélection multiple, avec tags",
+                        "with_tags": True,
+                        "add_button_label": "Ajouter une option",
+                        "options": [
+                            (f"value{i}", f"Option {i}, libellé long", f"Option {i}")
+                            for i in range(1, 10)
+                        ],
+                        "initials": ("value2", "value3"),
+                        "required": True,
+                    },
+                    {
+                        "name": "select_rich_multi_search_internal_tags",
+                        "label": "Sélection multiple, recherche interne, avec tags",
+                        "searchable": True,
+                        "options": [
+                            (f"value{i}", f"Option {i}, libellé long", f"Option {i}")
+                            for i in range(1, 10)
+                        ],
+                        "initials": ("value2", "value3"),
+                        "required": True,
+                        "with_tags": True,
+                    },
+                    {
+                        "name": "select_rich_multi_search_ajax_tags",
+                        "label": "Sélection multiple, recherche AJAX, avec tags",
+                        "searchable": True,
+                        "search_url": "ui:components-search-options-multi",
+                        "search_field_name": "q",
+                        "required": True,
+                        "with_tags": True,
                     },
                 ],
             }
@@ -97,7 +119,7 @@ class AbstractSelectRichSearchOptionsView(TemplateView):
                 "options": {
                     (value, label_long, label_short)
                     for value, label_long, label_short in self.options
-                    if self.request.GET.get("q") in label_long
+                    if self.request.GET.get("q").lower() in label_long.lower()
                 }
             }
         )
@@ -134,6 +156,7 @@ class SelectRichMultiSelectRichSearchOptionsView(AbstractSelectRichSearchOptions
                     "searchable": True,
                     "search_url": "ui:components-search-options-multi",
                     "search_field_name": "q",
+                    "with_tags": bool(self.request.GET.get("with_tags", False)),
                 },
             }
         )

@@ -81,6 +81,7 @@ def ui_select_rich_multi(*args, **kwargs) -> dict:
         "search_field_name",
         "search_placeholder",
         "with_tags",
+        "add_button_label",
         "extra_classes",
     ]
     tag_data = parse_tag_args(args, kwargs, allowed_keys)
