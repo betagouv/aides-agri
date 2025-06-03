@@ -209,12 +209,12 @@ export class SelectRich extends Controller {
     }
 
     this.errorTarget.classList.remove("fr-hidden")
-    this.element.classList.add("fr-input-group--error")
+    this.element.classList.add("fr-select-group--error")
   }
 
   _unsetErrorState() {
     this.errorTarget.classList.add("fr-hidden")
-    this.element.classList.remove("fr-input-group--error")
+    this.element.classList.remove("fr-select-group--error")
   }
 
   validate() {

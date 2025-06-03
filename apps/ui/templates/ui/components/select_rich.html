@@ -1,13 +1,19 @@
 {% load dsfr_tags %}
 
-<fieldset class="fr-select-rich fr-fieldset {{ self.extra_classes }}"
+<fieldset class="fr-select-rich fr-fieldset fr-select-group {{ self.extra_classes }}"
      id="select-rich-{{ self.name }}"
      data-controller="select-rich"
      data-select-rich-name-value="{{ self.name }}"
      data-select-rich-multi-value="{% if self.multi %}true{% else %}false{% endif %}"
      data-select-rich-required-value="{% if self.required %}true{% else %}false{% endif %}"
 >
-  <legend class="fr-label fr-mb-2v">{{ self.label }}</legend>
+  <legend class="fr-label">
+    {{ self.label }}
+    {% if self.helper %}
+    <span class="fr-hint-text fr-info-text" data-select-rich-target="helper">{{ self.helper }}</span>
+    {% endif %}
+  </legend>
+
   {% if self.with_tags %}
     <div class="fr-select-rich__tags fr-tags-group" data-select-rich-target="tags">
       <button type="button"
@@ -85,10 +91,6 @@
     {% endif %}
     </div>
   </div>
-
-  {% if self.helper %}
-  <p class="fr-info-text" data-select-rich-target="helper">{{ self.helper }}</p>
-  {% endif %}
 
   <p class="fr-error-text fr-hidden" data-select-rich-target="error">
     {{ self.required_error_message|default:"Ce champ est requis" }}

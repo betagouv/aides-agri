@@ -65,10 +65,14 @@
   background-color: var(--hover);
 }
 
-.fr-select-rich.fr-input-group.fr-input-group--error label.fr-select-rich__option {
+.fr-select-rich.fr-select-group.fr-select-group--error legend {
+  color: var(--text-default-error);
+}
+
+.fr-select-rich.fr-select-group.fr-select-group--error label.fr-select-rich__option {
   color: unset;
 }
 
-.fr-select-rich.fr-input-group.fr-input-group--error input.fr-input[type=search] {
+.fr-select-rich.fr-input-group.fr-select-group--error input.fr-input[type=search] {
   box-shadow: unset;
 }
