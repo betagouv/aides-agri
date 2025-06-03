@@ -6,6 +6,12 @@
   text-align: center;
 }
 
+.summary-dl {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
 @media screen and (max-width: 576px) {
   body > div.fr-container {
     margin-top: 0 !important;
@@ -20,10 +26,11 @@
   }
 
   #summary {
+    --summary-mobile-shift: 285px;
     position: absolute;
     width: 285px;
     top: 50px;
-    left: -95vh;
+    left: calc(-100vw - var(--summary-mobile-shift) + 42px - 16px);  /* 42 (button to open summary on mobile) - 16 (padding of container) */
     filter: none;
     background-color: var(--artwork-decorative-blue-france);
     padding: .5rem .5rem .5rem 2.5rem !important;

@@ -35,7 +35,7 @@
 {% block form %}
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col">
-    <fieldset class="fr-select-rich fr-fieldset"
+    <fieldset class="fr-select-rich fr-fieldset fr-select-group"
                aria-label="SIRET de l’entreprise"
                id="select-rich-siret"
                data-controller="select-rich"
@@ -49,11 +49,11 @@
                hx-select=".form-fields, #form-buttons"
                hx-disinherit="*"
     >
-      <legend class="fr-label fr-mb-1w">
+      <legend class="fr-label">
         Recherchez votre entreprise
         <span class="fr-hint-text">Par nom, par SIRET ou SIREN ; par ex. : "Maraichage Carpentras" ou "130 025 265 00013"</span>
       </legend>
-      <div class="fr-fieldset__content">
+      <div class="fr-fieldset__element fr-pl-0">
         <div class="fr-search-bar fr-search-bar--lg fr-my-2w" role="search">
           <label class="fr-label" for="select-rich-search-siret">Rechercher</label>
           <input type="search"

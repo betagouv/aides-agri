@@ -43,11 +43,14 @@
 <div class="fr-grid-row">
   <fieldset class="fr-fieldset fr-col">
     <div class="fr-fieldset__element fr-mb-3w fr-select-group">
-      <label for="input-effectif" class="fr-label fr-mb-2v">Effectifs</label>
+      <label for="input-effectif" class="fr-label fr-mb-2v">
+        Effectifs
+        {% if not tranche_effectif_salarie %}
+        <span class="fr-hint-text fr-info-text">Nous n’avons pas trouvé l’effectif de votre exploitation, veuillez l’indiquer ici.</span>
+        {% endif %}
+      </label>
       {% if tranche_effectif_salarie %}
         {% dsfr_tag label=tranche_effectif_salarie is_dismissable=True onclick="this.nextElementSibling.classList.remove('fr-hidden')" %}
-      {% else %}
-        <span class="fr-info-text">Nous n’avons pas pu trouver l’effectif de votre exploitation, veuillez l’indiquer ici</span>
       {% endif %}
       <select id="input-effectif"
               class="fr-select {% if tranche_effectif_salarie %}fr-hidden{% endif %}"
@@ -61,7 +64,7 @@
       </select>
       <span class="fr-error-text fr-hidden">Ce champ est requis pour passer à la suite</span>
     </div>
-    <div class="fr-fieldset__element fr-input-group fr-mb-3w">
+    <div class="fr-fieldset__element">
       {% ui_select_rich_multi label="Filières" name="filieres" required=True options=filieres initials=filieres_initials searchable=True search_placeholder="élevage, légumes, etc." with_tags=True helper=filieres_helper %}
     </div>
     <div class="fr-fieldset__element">

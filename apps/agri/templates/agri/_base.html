@@ -46,55 +46,51 @@
       >
         <h2 class="fr-sr-only" id="summary-label">Rappel des informations saisies</h2>
         <h3 class="fr-text--bold fr-text--md fr-mb-3v">Votre besoin :</h3>
-        <div class="fr-mb-2v">
-          {% dsfr_tag label=summary_theme.nom_court extra_classes="fr-tag--sm" %}
-        </div>
-        {% if summary_sujets %}
-          <div class="fr-mb-3v">
+        <dl class="fr-p-0 summary-dl">
+          <dt class="fr-sr-only">Thème</dt>
+          <dd class="fr-tag fr-tag--sm">{{ summary_theme.nom_court }}</dd>
+          {% if summary_sujets %}
+            <dt class="fr-sr-only">Sujets</dt>
             <span class="fr-tags-group">
               {% for sujet in summary_sujets %}
-                {% dsfr_tag label=sujet.nom_court extra_classes="fr-tag--sm fr-mb-0" %}
+                <dd class="fr-tag fr-tag--sm">{{ sujet.nom_court }}</dd>
               {% endfor %}
             </span>
-          </div>
-          <div class="fr-mb-3v">
-            <a class="fr-btn fr-btn--tertiary fr-link--sm fr-px-2w" href="{% url 'agri:step-2' %}{% querystring sujets=None next=request.path %}">
-              Explorer d’autres besoins
-            </a>
-          </div>
-        {% endif %}
-        {% if summary_siret %}
-          <h3 class="fr-text--bold fr-text--md fr-mb-3v">Votre exploitation et activités :</h3>
-          <div class="fr-mb-2v">
-            {% dsfr_tag label=summary_siret extra_classes="fr-tag--sm" %}
-          </div>
-          {% if summary_commune %}
-          <div class="fr-mb-2v">
-            {% dsfr_tag label=summary_commune.nom extra_classes="fr-tag--sm" %}
-          </div>
+        </dl>
+        <div>
+          <a class="fr-btn fr-btn--tertiary fr-link--sm fr-px-2w" href="{% url 'agri:step-2' %}{% querystring sujets=None next=request.path %}">
+            Explorer d’autres besoins
+          </a>
+        </div>
           {% endif %}
-          {% if summary_filieres %}
-          <div class="fr-mb-2v">
-            <span class="fr-tags-group">
-              {% for filiere in summary_filieres %}
-                {% dsfr_tag label=filiere.nom extra_classes="fr-tag--sm fr-mb-0" %}
-              {% endfor %}
-            </span>
-          </div>
+        {% if summary_siret %}
+          <h3 class="fr-text--bold fr-text--md fr-my-3v">Votre exploitation et activités :</h3>
+          <dl class="fr-p-0 summary-dl">
+            <dt class="fr-sr-only">Numéro de Siret</dt>
+            <dd class="fr-tag fr-tag--sm">Siret {{ summary_siret }}</dd>
+          {% if summary_commune %}
+            <dt class="fr-sr-only">Commune</dt>
+            <dd class="fr-tag fr-tag--sm">{{ summary_commune.nom }}</dd>
           {% endif %}
           {% if summary_effectif %}
-          <div class="fr-mb-2v">
-            {% dsfr_tag label=summary_effectif extra_classes="fr-tag--sm" %}
-          </div>
+            <dt class="fr-sr-only">Filières</dt>
+            <dd class="fr-tag fr-tag--sm">{{ summary_effectif }}</dd>
+          {% endif %}
+          {% if summary_filieres %}
+            <dt class="fr-sr-only">Filières</dt>
+            <span class="fr-tags-group">
+            {% for filiere in summary_filieres %}
+              <dd class="fr-tag fr-tag--sm">{{ filiere.nom }}</dd>
+            {% endfor %}
+            </span>
           {% endif %}
           {% if summary_regroupements %}
-          <div class="fr-mb-3v">
-            <span class="fr-tags-group">
-              {% for regroupement in summary_regroupements %}
-                {% dsfr_tag label=regroupement.nom extra_classes="fr-tag--sm fr-mb-0" %}
-              {% endfor %}
+            <dt class="fr-sr-only">Regroupements</dt>
+            <span class="fr-tags-group fr-mt-n2v">
+            {% for regroupement in summary_regroupements %}
+              <dd class="fr-tag fr-tag--sm">{{ regroupement.nom }}</dd>
+            {% endfor %}
             </span>
-          </div>
           {% endif %}
           <div>
             <a class="fr-btn fr-btn--tertiary fr-link--sm fr-px-2w" href="{% url 'agri:step-3' %}{% querystring siret=None commune=None date_installation=None regroupements=None filieres=None tranche_effectif_salarie=None %}">
