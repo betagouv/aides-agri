@@ -8,9 +8,9 @@
   },
   "private": true,
   "dependencies": {
-    "@hotwired/stimulus": "^3.0",
-    "htmx.org": "^2.0",
-    "@sentry/browser": "^9.0"
+    "@hotwired/stimulus": "^3",
+    "htmx.org": "^2",
+    "@sentry/browser": "^9"
   },
   "devDependencies": {
     "esbuild": "^0.25"
