@@ -4,10 +4,14 @@
   background-position-y: -250px;
 }
 
+#intro h1, #intro p {
+  color: #161616;
+}
+
 #proposition article {
   border-radius: 8px;
   text-align: left;
-  text-wrap: balance;
+  height: 100%;
 }
 
 #fr-icon-selection-fill:after, .fr-icon-selection-fill:before{
