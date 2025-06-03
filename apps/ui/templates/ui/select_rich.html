@@ -16,8 +16,6 @@
 
     Stimulus.register("select-rich", SelectRich)
   </script>
-
-  <script type="module" src="{% static 'vendor/htmx.esm.js' %}"></script>
 {% endblock extra_head_js %}
 
 {% block title %}Liste déroulante riche{% endblock title %}
@@ -136,7 +134,7 @@
   {% for component in select_rich_multi %}
     <form class="fr-mb-4w" onsubmit="if (!Stimulus.getControllerForElementAndIdentifier(this.querySelector('[data-controller=select-rich]'), 'select-rich').validate()) {event.preventDefault()}">
       <h2 id="{{ component.name }}">{{ component.label }}</h2>
-      {% ui_select_rich_multi label=component.label name=component.name options=component.options initials=component.initials required=component.required searchable=component.searchable search_url=component.search_url search_field_name=component.search_field_name with_tags=component.with_tags %}
+      {% ui_select_rich_multi label=component.label name=component.name options=component.options initials=component.initials required=component.required searchable=component.searchable search_url=component.search_url search_field_name=component.search_field_name with_tags=component.with_tags add_button_label=component.add_button_label %}
       <div class="fr-accordion fr-mt-2w">
         <h3 class="fr-accordion__title">
           <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-{{ component.name }}">En savoir plus</button>
@@ -147,7 +145,7 @@
             <ul>
               <li>
                 <strong>Templatetag</strong>
-                {% spaceless %}<pre class="dsfr-code"><code>{% templatetag openblock %} ui_select_rich_multi name="{{ component.name }}"{% if component.options %} options=options{% endif %}{% if component.initials %} initials=initials{% endif %}{% if component.required %} required=True{% endif %}{% if component.searchable %} searchable=True{% endif %}{% if component.search_url %} search_url="{{ component.search_url }}"{% endif %}{% if component.search_field_name %} search_field_name="{{ component.search_field_name }}"{% endif %}{% if component.search_placeholder %} search_placeholder="{{ component.search_placeholder }}"{% endif %}{% if component.with_tags %} with_tags=True{% endif %} {% templatetag closeblock %}</code></pre>{% endspaceless %}
+                {% spaceless %}<pre class="dsfr-code"><code>{% templatetag openblock %} ui_select_rich_multi name="{{ component.name }}"{% if component.options %} options=options{% endif %}{% if component.initials %} initials=initials{% endif %}{% if component.required %} required=True{% endif %}{% if component.searchable %} searchable=True{% endif %}{% if component.search_url %} search_url="{{ component.search_url }}"{% endif %}{% if component.search_field_name %} search_field_name="{{ component.search_field_name }}"{% endif %}{% if component.search_placeholder %} search_placeholder="{{ component.search_placeholder }}"{% endif %}{% if component.with_tags %} with_tags=True{% endif %} {% if component.add_button_label %} add_button_label="{{ add_button_label }}"{% endif %} {% templatetag closeblock %}</code></pre>{% endspaceless %}
               </li>
               {% if component.options %}
                 <li>

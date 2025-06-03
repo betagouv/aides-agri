@@ -7,10 +7,6 @@
 <link rel="stylesheet" href="{% static 'product/base.css' %}">
 {% endblock extra_css %}
 
-{% block extra_head_js %}
-  <script type="module" src="{% static 'vendor/htmx.esm.js' %}"></script>
-{% endblock extra_head_js %}
-
 {% block title %}{{ object.nom }}{% endblock title %}
 
 {% block content %}

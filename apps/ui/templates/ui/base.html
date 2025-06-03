@@ -33,6 +33,9 @@
     </script>
     {% endblock importmap %}
 
+    <script type="module" src="{% static 'vendor/htmx.esm.js' %}"></script>
+    <meta name="htmx-config" content='{"allowEval":false}'>
+
     {% if UI_SENTRY_PUBLIC_KEY %}{% include "ui/blocks/sentry.html" %}{% endif %}
     {% if UI_MATOMO_SITE_ID %}{% include "ui/blocks/matomo.html" %}{% endif %}
     {% block extra_head_js %}{% endblock extra_head_js %}
