@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from django.conf import settings
 from django.views.generic import DetailView, TemplateView
 from pygrister.api import GristApi
@@ -88,6 +90,9 @@ class GristAidesBySujetsTypesAndDepartementView(TemplateView):
                         id_departement
                     ] = []
 
+        aides_count = 0
+        valid_aides_count = 0
+        aides_count_by_status = defaultdict(int)
         for aide in aides:
             if aide["Couverture_Geographique"] != "National" and (
                 not aide["Departements"]
@@ -100,6 +105,10 @@ class GristAidesBySujetsTypesAndDepartementView(TemplateView):
             ):
                 continue
 
+            aides_count += 1
+            if aide["Valide"]:
+                valid_aides_count += 1
+            aides_count_by_status[aide["Statut"]] += 1
             if not aide["thematique_aide"]:
                 aide["thematique_aide"] = ["L", 9999]
             if not aide["types_aide"]:
@@ -125,6 +134,11 @@ class GristAidesBySujetsTypesAndDepartementView(TemplateView):
                 "types": types_aides,
                 "departements": departements,
                 "aides": aides_by_sujet_and_type_and_departement,
+                "aides_count": aides_count,
+                "valid_aides_count": valid_aides_count,
+                "aides_count_by_status": sorted(
+                    [(k, v) for k, v in aides_count_by_status.items()]
+                ),
             }
         )
 

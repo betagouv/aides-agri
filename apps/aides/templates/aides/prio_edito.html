@@ -5,16 +5,22 @@
 {% block title %}Pilotage de l’intégration des aides{% endblock title %}
 
 {% block body %}
+  <h1 class="fr-h2">Liste des aides brutes par sujet, type et département pilote.</h1>
+  <details>
+    <summary>{{ aides_count }} aides trouvées  (cliquer pour les compteurs)</summary>
+    <ul>
+      <li>Valides : {{ valid_aides_count }}</li>
+    {% for status, count in aides_count_by_status %}
+      <li>{{ status }} : {{ count }}</li>
+    {% endfor %}
+    </ul>
+  </details>
   <div class="fr-table fr-table--sm fr-table--bordered" id="table-complex-component">
     <div class="fr-table__wrapper">
       <div class="fr-table__container">
         <div class="fr-table__content">
           <table id="table-complex">
-            <caption>
-              Liste des aides brutes par sujet, type et département pilote
-              <div class="fr-table__caption__desc">
-              </div>
-            </caption>
+            <caption class="fr-sr-only">Liste des aides brutes par sujet, type et département pilote.</caption>
             <thead>
               <tr>
                 <th class="fr-cell--fixed" role="columnheader" rowspan="2" id="complex-thead-0-col-0">
