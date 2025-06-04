@@ -76,3 +76,7 @@
 .fr-select-rich.fr-input-group.fr-select-group--error input.fr-input[type=search] {
   box-shadow: unset;
 }
+
+.fr-select-rich__error {
+  width: 100%;
+}

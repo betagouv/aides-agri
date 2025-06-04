@@ -144,6 +144,10 @@ export class SelectRich extends Controller {
     }
   }
 
+  clickOnTag(evt) {
+    document.getElementById(evt.target.dataset.input).click()
+  }
+
   _updateButtons() {
     this._updateButton()
     if (this.hasTagsTarget) {
@@ -226,4 +230,6 @@ export class SelectRich extends Controller {
       return true
     }
   }
+
+  noop() {}
 }

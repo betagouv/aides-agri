@@ -1,4 +1,4 @@
-<script type="module">
+<script type="module" nonce="{{ request.csp_nonce }}">
   import { Sentry } from "sentry"
   window.Sentry = Sentry
   window.onload = function () {

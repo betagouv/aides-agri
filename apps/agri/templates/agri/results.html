@@ -8,21 +8,8 @@
   <link rel="stylesheet" href="{% static 'product/base.css' %}">
 {% endblock extra_css %}
 
-{% block extra_head_js %}
-  <script type="module">
-    import { Application } from "stimulus"
-    import { DsfrForm } from "dsfr-form"
-    import { SummaryMobile } from "summary-mobile"
-
-    window.Stimulus = Application.start()
-
-    Stimulus.register("dsfr-form", DsfrForm)
-    Stimulus.register("summary-mobile", SummaryMobile)
-  </script>
-{% endblock extra_head_js %}
-
 {% block extra_js %}
-<script>
+<script nonce="{{ request.csp_nonce }}">
 window.onbeforeprint = evt => {
   document.querySelectorAll(".fr-collapse:not(.fr-collapse--expanded)").forEach(elt => {
     elt.classList.add("fr-collapse--expanded")
@@ -34,6 +21,9 @@ window.onafterprint = evt => {
     elt.classList.remove("fr-collapse--expanded")
     elt.classList.remove("fr-collapse--expanded-for-print")
   })
+}
+document.onreadystatechange = evt => {
+  document.getElementById("button-print").onclick = () => window.print()
 }
 </script>
 {% endblock extra_js %}
@@ -131,7 +121,7 @@ window.onafterprint = evt => {
       </button>
       <button type="button"
               class="fr-btn fr-btn--icon-left fr-btn--sm fr-pl-4v fr-btn--secondary fr-icon-file-pdf-line"
-              onclick="window.print()"
+              id="button-print"
       >
         Enregistrer en PDF
       </button>

@@ -7,6 +7,14 @@
 <link rel="stylesheet" href="{% static 'product/base.css' %}">
 {% endblock extra_css %}
 
+{% block extra_head_js %}
+<script nonce="{{ request.csp_nonce }}">
+document.onreadystatechange = evt => {
+  document.getElementById("button-print").onclick = () => window.print()
+}
+</script>
+{% endblock extra_head_js %}
+
 {% block title %}{{ object.nom }}{% endblock title %}
 
 {% block content %}
@@ -28,7 +36,7 @@
         </div>
         <button type="button"
                 class="fr-btn fr-btn--icon-left fr-btn--sm fr-btn--tertiary fr-icon-file-pdf-line"
-                onclick="window.print()"
+                id="button-print"
         >
           Télécharger la fiche aide
         </button>

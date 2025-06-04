@@ -9,7 +9,7 @@
 {% endblock extra_css %}
 
 {% block extra_head_js %}
-  <script type="module">
+  <script type="module" nonce="{{ request.csp_nonce }}">
     import { Application } from "stimulus"
     import { SelectRich } from "select-rich"
     window.Stimulus ??= Application.start()
@@ -83,7 +83,7 @@
   <div class="fr-col fr-col-12 fr-col-md-8">
 
   {% for component in select_rich_single %}
-    <form class="fr-mb-4w" onsubmit="if (!Stimulus.getControllerForElementAndIdentifier(this.querySelector('[data-controller=select-rich]'), 'select-rich').validate()) {event.preventDefault()}">
+    <form class="fr-mb-4w">
       <h2 id="{{ component.name }}">{{ component.label }}</h2>
       {% ui_select_rich_single label=component.label name=component.name options=component.options initial=component.initial required=component.required search_url=component.search_url search_field_name=component.search_field_name %}
       <div class="fr-accordion fr-mt-2w">
@@ -132,7 +132,7 @@
   {% endfor %}
 
   {% for component in select_rich_multi %}
-    <form class="fr-mb-4w" onsubmit="if (!Stimulus.getControllerForElementAndIdentifier(this.querySelector('[data-controller=select-rich]'), 'select-rich').validate()) {event.preventDefault()}">
+    <form class="fr-mb-4w">
       <h2 id="{{ component.name }}">{{ component.label }}</h2>
       {% ui_select_rich_multi label=component.label name=component.name options=component.options initials=component.initials required=component.required searchable=component.searchable search_url=component.search_url search_field_name=component.search_field_name with_tags=component.with_tags add_button_label=component.add_button_label %}
       <div class="fr-accordion fr-mt-2w">
@@ -181,7 +181,7 @@
 {% endblock content %}
 
 {% block extra_js %}
-<script>
+<script nonce="{{ request.csp_nonce }}">
 // Fonction de démonstration des valeurs des champs
 updateValueAsString = elt => {
   const name = elt.name
@@ -200,6 +200,15 @@ updateValueAsString = elt => {
     }
   }
   document.getElementById(`${name}_value`).textContent = valueAsString
+}
+document.onreadystatechange = evt => {
+  document.querySelectorAll("form").forEach(form => {
+    form.addEventListener("submit", evt => {
+      if (!Stimulus.getControllerForElementAndIdentifier(form.querySelector('[data-controller=select-rich]'), 'select-rich').validate()) {
+        evt.preventDefault()
+      }
+    })
+  })
 }
 </script>
 {% endblock extra_js %}

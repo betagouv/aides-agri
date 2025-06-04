@@ -20,7 +20,7 @@
     {% block opengraph %}{% endblock opengraph %}
 
     {% block importmap %}
-    <script type="importmap">
+    <script type="importmap" nonce="{{ request.csp_nonce }}">
     {
       "imports": {
           "sentry": "{% static 'vendor/sentry.js' %}",
@@ -34,7 +34,7 @@
     {% endblock importmap %}
 
     <script type="module" src="{% static 'vendor/htmx.esm.js' %}"></script>
-    <meta name="htmx-config" content='{"allowEval":false}'>
+    <meta name="htmx-config" content='{"allowEval":false, "includeIndicatorStyles":false}'>
 
     {% if UI_SENTRY_PUBLIC_KEY %}{% include "ui/blocks/sentry.html" %}{% endif %}
     {% if UI_MATOMO_SITE_ID %}{% include "ui/blocks/matomo.html" %}{% endif %}

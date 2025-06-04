@@ -59,7 +59,6 @@
                autocomplete="false"
                {% if self.search_url %}
                name="{{ self.search_field_name|default_if_none:'q' }}"
-               onchange="event.stopPropagation()"
                data-action="focus->select-rich#toggleExternalSearchFocus blur->select-rich#toggleExternalSearchFocus"
                {% else %}
                data-select-rich-target="search"
@@ -92,7 +91,7 @@
     </div>
   </div>
 
-  <p class="fr-error-text fr-hidden" data-select-rich-target="error">
+  <p class="fr-select-rich__error fr-error-text fr-hidden" data-select-rich-target="error">
     {{ self.required_error_message|default:"Ce champ est requis" }}
   </p>
 </fieldset>

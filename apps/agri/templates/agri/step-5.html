@@ -8,30 +8,13 @@
   <link rel="stylesheet" href="{% static 'ui/components/checkbox-group-field.css' %}">
 {% endblock extra_css %}
 
-{% block extra_head_js %}
-  <script type="module">
-    import { Application } from "stimulus"
-    import { DsfrForm } from "dsfr-form"
-    import { CheckboxGroupField } from "checkbox-group-field"
-    import { SelectRich } from "select-rich"
-    import { SummaryMobile } from "summary-mobile"
-
-    window.Stimulus = Application.start()
-
-    Stimulus.register("dsfr-form", DsfrForm)
-    Stimulus.register("checkbox-group-field", CheckboxGroupField)
-    Stimulus.register("select-rich", SelectRich)
-    Stimulus.register("summary-mobile", SummaryMobile)
-  </script>
-{% endblock extra_head_js %}
-
 {% block title %}Votre exploitation{% endblock title %}
 {% block h1 %}Votre exploitation.{% endblock h1 %}
 
 {% block action %}{% url 'agri:results' %}{% endblock action %}
 
 {% block extra_form_attributes %}
-  data-controller="dsfr-form"
+  data-controller="dsfr-form steps"
   data-dsfr-form-select-rich-outlet="[data-controller=select-rich]"
   data-dsfr-form-checkbox-group-field-outlet="[data-controller=checkbox-group-field]"
 {% endblock extra_form_attributes %}
@@ -50,7 +33,13 @@
         {% endif %}
       </label>
       {% if tranche_effectif_salarie %}
-        {% dsfr_tag label=tranche_effectif_salarie is_dismissable=True onclick="this.nextElementSibling.classList.remove('fr-hidden')" %}
+        <button type="button"
+                class="fr-tag fr-tag--dismiss"
+                aria-label="Tranche d‘effectif salarié trouvée pour l’exploitation choisie : {{ etablissement.date_creation|date:"SHORT_DATE_FORMAT" }}. Cliquer ici pour en choisir une autre."
+                data-action="click->steps#overrideEffectif"
+        >
+          {{ tranche_effectif_salarie }}
+        </button>
       {% endif %}
       <select id="input-effectif"
               class="fr-select {% if tranche_effectif_salarie %}fr-hidden{% endif %}"

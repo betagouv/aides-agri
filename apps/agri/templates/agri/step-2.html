@@ -7,21 +7,6 @@
   <link rel="stylesheet" href="{% static 'agri/step-2.css' %}">
 {% endblock extra_css %}
 
-{% block extra_head_js %}
-  <script type="module">
-    import { Application } from "stimulus"
-    import { DsfrForm } from "dsfr-form"
-    import { CheckboxGroupField } from "checkbox-group-field"
-    import { SummaryMobile } from "summary-mobile"
-
-    window.Stimulus = Application.start()
-
-    Stimulus.register("dsfr-form", DsfrForm)
-    Stimulus.register("checkbox-group-field", CheckboxGroupField)
-    Stimulus.register("summary-mobile", SummaryMobile)
-  </script>
-{% endblock extra_head_js %}
-
 {% block modals %}
   {% include 'agri/blocks/modal_feedback_themes_sujets.html' %}
 {% endblock modals %}

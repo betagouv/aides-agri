@@ -7,27 +7,12 @@
   <link rel="stylesheet" href="{% static 'ui/components/select-rich.css' %}">
 {% endblock extra_css %}
 
-{% block extra_head_js %}
-  <script type="module">
-    import { Application } from "stimulus"
-    import { DsfrForm } from "dsfr-form"
-    import { SelectRich } from "select-rich"
-    import { SummaryMobile } from "summary-mobile"
-
-    window.Stimulus = Application.start()
-
-    Stimulus.register("dsfr-form", DsfrForm)
-    Stimulus.register("select-rich", SelectRich)
-    Stimulus.register("summary-mobile", SummaryMobile)
-  </script>
-{% endblock extra_head_js %}
-
 {% block title %}Votre exploitation{% endblock title %}
 
 {% block action %}{% url 'agri:step-5' %}{% endblock action %}
 
 {% block extra_form_attributes %}
-  data-controller="dsfr-form"
+  data-controller="dsfr-form steps"
   data-action="change->dsfr-form#validateCustomFields"
   data-dsfr-form-select-rich-outlet="[data-controller=select-rich]"
 {% endblock extra_form_attributes %}
@@ -42,9 +27,9 @@
                data-select-rich-name-value="siret"
                data-select-rich-multi-value="false"
                data-select-rich-required-value="true"
-               hx-trigger="change"
+               hx-trigger="change target:input[type=radio]"
                hx-get="{% url 'agri:step-4' %}"
-               hx-include="closest form"
+               hx-include="this"
                hx-target="#step-4"
                hx-select=".form-fields, #form-buttons"
                hx-disinherit="*"
@@ -62,9 +47,7 @@
                  placeholder="Rechercher"
                  name="siret-search"
                  autocomplete="false"
-                 data-action="focus->select-rich#focus"
-                 data-select-rich-target="searchButton"
-                 onchange="event.stopPropagation()"
+                 data-action="change->select-rich#noop:stop"
           >
           <button type="submit"
                   class="fr-btn"
@@ -72,6 +55,7 @@
                   hx-target="#select-rich-options-siret"
                   hx-include="#select-rich-search-siret"
                   hx-disabled-elt="this"
+                  data-select-rich-target="searchButton"
                   data-action="click->select-rich#externalSearch"
           >
             Rechercher
@@ -85,7 +69,7 @@
     </fieldset>
   </div>
 </div>
-<div id="step-4"></div>
+<div id="step-4" data-steps-target="step4Placeholder"></div>
 {% endblock form %}
 
 {% block form_buttons %}{% endblock form_buttons %}

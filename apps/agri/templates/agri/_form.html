@@ -37,7 +37,7 @@
   {# form buttons #}
   <section id="form-buttons" class="fr-container fr-p-0">
     <div class="fr-grid-row fr-grid-row--space-between">
-      <button type="button" class="fr-btn fr-btn--secondary" onclick="history.back()">Retour</button>
+      <a class="fr-btn fr-btn--secondary" href="{{ request.META.HTTP_REFERER }}">Retour</a>
       <button type="submit" class="fr-btn" aria-label="Valider">→</button>
     </div>
   </section>

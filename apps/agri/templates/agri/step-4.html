@@ -7,21 +7,6 @@
   <link rel="stylesheet" href="{% static 'ui/components/select-rich.css' %}">
 {% endblock extra_css %}
 
-{% block extra_head_js %}
-  <script type="module">
-    import { Application } from "stimulus"
-    import { DsfrForm } from "dsfr-form"
-    import { SelectRich } from "select-rich"
-    import { SummaryMobile } from "summary-mobile"
-
-    window.Stimulus = Application.start()
-
-    Stimulus.register("dsfr-form", DsfrForm)
-    Stimulus.register("select-rich", SelectRich)
-    Stimulus.register("summary-mobile", SummaryMobile)
-  </script>
-{% endblock extra_head_js %}
-
 {% block title %}Votre exploitation{% endblock title %}
 
 {% block action %}{% url 'agri:step-5' %}{% endblock action %}
@@ -39,18 +24,24 @@
   <fieldset class="fr-fieldset fr-col">
     <div class="fr-fieldset__element fr-mt-2v">
       <span class="fr-label fr-mb-2v">Nom de l’exploitation</span>
-      {% comment %}
-      TODO reenable when https://github.com/numerique-gouv/django-dsfr/pull/213 is merged
-      {% dsfr_tag label=etablissement.nom|default_if_none:etablissement.societe.nom_complet is_dismissable=True onclick="history.back()" %}
-      {% endcomment %}
-      <button type="button" class="fr-tag fr-tag--dismiss" aria-label="Retirer le filtre Label of the tag item" onclick="document.getElementById('step-4').innerHTML = ''">
+      <button type="button"
+              class="fr-tag fr-tag--dismiss"
+              aria-label="Annuler le choix de l’établissement"
+              data-action="click->steps#cancelEtablissement:prevent"
+      >
         {{ etablissement.nom|default_if_none:etablissement.societe.nom_complet }} - {{ etablissement.siret }}
       </button>
     </div>
     <div class="fr-fieldset__element">
       <span class="fr-label fr-mb-2v">Commune</span>
       {% if commune %}
-        {% dsfr_tag label=commune.code_postal|add:" "|add:commune.nom is_dismissable=True onclick="this.parentElement.removeChild(this.previousElementSibling);this.parentElement.removeChild(this.nextElementSibling);this.nextElementSibling.classList.remove('fr-hidden')" %}
+        <button type="button"
+                class="fr-tag fr-tag--dismiss"
+                aria-label="Commune trouvée attachée à l’exploitation choisie : {{ commune.code_postal }} {{ commune.nom }}. Cliquer ici pour en choisir une autre."
+                data-action="click->steps#overrideCommune"
+        >
+          {{ commune.code_postal }} {{ commune.nom }}
+        </button>
         <input type="hidden" name="commune" value="{{ commune.numero }}">
         {% ui_select_rich_single label="Commune" name="commune" required=True search_url="agri:search-commune" search_field_name="commune-search" extra_classes="fr-hidden" %}
       {% else %}
@@ -60,7 +51,13 @@
     </div>
     <div class="fr-fieldset__element fr-mt-2v">
       <label for="input-date-installation" class="fr-label fr-mb-2v">Date d’installation</label>
-      {% dsfr_tag label=etablissement.date_creation|date:"SHORT_DATE_FORMAT" is_dismissable=True onclick="this.nextElementSibling.classList.remove('fr-hidden')" %}
+      <button type="button"
+              class="fr-tag fr-tag--dismiss"
+              aria-label="Date d’installation trouvée pour l’exploitation choisie : {{ etablissement.date_creation|date:"SHORT_DATE_FORMAT" }}. Cliquer ici pour en choisir une autre."
+              data-action="click->steps#overrideDateInstallation"
+      >
+        {{ etablissement.date_creation|date:"SHORT_DATE_FORMAT" }}
+      </button>
       <input type="date" id="input-date-installation"
               class="fr-input fr-hidden"
              name="date_installation"

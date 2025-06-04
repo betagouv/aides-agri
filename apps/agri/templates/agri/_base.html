@@ -7,7 +7,7 @@
 {% endblock extra_css %}
 
 {% block importmap %}
-<script type="importmap">
+<script type="importmap" nonce="{{ request.csp_nonce }}">
 {
   "imports": {
       "sentry": "{% static 'vendor/sentry.js' %}",
@@ -15,11 +15,31 @@
       "dsfr-form": "{% static 'ui/controllers/dsfr_form.js' %}",
       "checkbox-group-field": "{% static 'ui/components/checkbox-group-field.js' %}",
       "select-rich": "{% static 'ui/components/select-rich.js' %}",
-      "summary-mobile": "{% static 'agri/summary-mobile.js' %}"
+      "summary-mobile": "{% static 'agri/summary-mobile.js' %}",
+      "steps": "{% static 'agri/steps.js' %}"
   }
 }
 </script>
 {% endblock importmap %}
+
+{% block extra_head_js %}
+<script type="module" nonce="{{ request.csp_nonce }}">
+  import { Application } from "stimulus"
+  import { DsfrForm } from "dsfr-form"
+  import { CheckboxGroupField } from "checkbox-group-field"
+  import { SelectRich } from "select-rich"
+  import { SummaryMobile } from "summary-mobile"
+  import { Steps } from "steps"
+
+  window.Stimulus = Application.start()
+
+  Stimulus.register("dsfr-form", DsfrForm)
+  Stimulus.register("checkbox-group-field", CheckboxGroupField)
+  Stimulus.register("select-rich", SelectRich)
+  Stimulus.register("summary-mobile", SummaryMobile)
+  Stimulus.register("steps", Steps)
+</script>
+{% endblock extra_head_js %}
 
 {% block content_wrapper %}
   <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--reverse">
