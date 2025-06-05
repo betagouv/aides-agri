@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-# Scalingo deployment relies on requirements.txt,
-# which we don't have when using uv.
-# So let's generate/update it and add it to the current commit!
-uv export --no-dev --group=scalingo > requirements.txt
-git add requirements.txt

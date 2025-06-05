@@ -21,8 +21,6 @@ install-talisman:
 
 # Install deployment tools for Scalingo
 @install-deployment-scalingo:
-    echo "Setup Git hook for generating requirements.txt..."
-    cp deployment/scalingo/git-hooks/* .git/hooks/
     echo "Ensure Scalingo CLI is installed"
     scalingo --version || (curl -s -O https://cli-dl.scalingo.com/install && bash install)
 
