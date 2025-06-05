@@ -28,6 +28,7 @@ def test_load_themes(monkeypatch, theme):
                 "Libelle_court": "Super",
                 "Biscuit2": "ouais ouais",
                 "Urgence": True,
+                "A_publier": True,
             },
             {
                 "id": 2,
@@ -35,6 +36,7 @@ def test_load_themes(monkeypatch, theme):
                 "Libelle_court": "Super second",
                 "Biscuit2": "ouais ouais second",
                 "Urgence": False,
+                "A_publier": True,
             },
         ]
 
@@ -73,12 +75,14 @@ def test_load_sujets(monkeypatch, theme, theme_2, sujet):
                 "Libelle": "Super sujet",
                 "Libelle_court": "Super",
                 "Themes": ["L1", theme.external_id],
+                "A_publier": True,
             },
             {
                 "id": 2,
                 "Libelle": "Super second sujet",
                 "Libelle_court": "Super second",
                 "Themes": ["L2", theme.external_id, theme_2.external_id],
+                "A_publier": True,
             },
         ]
 
