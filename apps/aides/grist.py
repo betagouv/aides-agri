@@ -41,6 +41,7 @@ class ThemeLoader(GristLoader):
         "Libelle_court": Theme.nom_court,
         "Biscuit2": Theme.description,
         "Urgence": Theme.urgence,
+        "A_publier": Theme.published,
     }
 
 
@@ -53,6 +54,7 @@ class SujetLoader(GristLoader):
         "Libelle": Sujet.nom,
         "Libelle_court": Sujet.nom_court,
         "Themes": Sujet.themes,
+        "A_publier": Sujet.published,
     }
 
 

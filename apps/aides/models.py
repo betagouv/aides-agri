@@ -37,6 +37,9 @@ class Organisme(GristModel):
 
 
 class ThemeQuerySet(models.QuerySet):
+    def published(self):
+        return self.filter(published=True)
+
     def with_aides_count(self):
         return self.annotate(aides_count=models.Count("sujets__aides"))
 
@@ -52,12 +55,16 @@ class Theme(GristModel):
     nom_court = models.CharField(blank=True)
     description = models.TextField(blank=True)
     urgence = models.BooleanField(default=False)
+    published = models.BooleanField(default=True)
 
     def __str__(self):
         return self.nom
 
 
 class SujetQuerySet(models.QuerySet):
+    def published(self):
+        return self.filter(published=True)
+
     def with_aides_count(self):
         return self.annotate(aides_count=models.Count("aides"))
 
@@ -72,6 +79,7 @@ class Sujet(GristModel):
     nom = models.CharField(blank=True)
     nom_court = models.CharField(blank=True)
     themes = models.ManyToManyField(Theme, related_name="sujets")
+    published = models.BooleanField(default=True)
 
     def __str__(self):
         return self.nom
