@@ -20,54 +20,54 @@ document.onreadystatechange = evt => {
 {% block content %}
   <div class="fr-container--fluid" id="aide">
     <div class="fr-grid-row fr-mb-3w">
-      <div class="fr-col fr-col-9">
-        {% dsfr_badge badge_data %}
-        <h1 class="fr-h2 fr-mt-1w">{{ object.nom }}</h1>
-              <div class="fr-tags-group">
-                {% dsfr_tag label=object.organisme.nom extra_classes="fr-tag--sm" %}
-                {% for sujet in object.sujets.all %}
-                  {% dsfr_tag label=sujet.nom_court extra_classes="fr-tag--sm" %}
-                {% endfor %}
-        </div>
-      </div>
-      <div class="fr-col fr-col-3">
-        <div class="fr-mb-2w">
+      <div class="fr-col fr-col-8">
+        <div>
           <img src="{{ object.organisme.get_logo_url }}" alt="" class="fr-responsive-img">
+        </div>
+        {% for type_aide in object.types.all %}
+          {% dsfr_badge label=type_aide.nom extra_classes="fr-badge--info fr-badge--sm" %}
+        {% endfor %}
+        <h1 class="fr-h2 fr-mt-1w">{{ object.nom }}</h1>
+        <div class="fr-tags-group">
+          {% dsfr_tag label=object.organisme.nom extra_classes="fr-tag--sm" %}
+          {% for sujet in object.sujets.all %}
+            {% dsfr_tag label=sujet.nom_court extra_classes="fr-tag--sm" %}
+          {% endfor %}
         </div>
         <button type="button"
                 class="fr-btn fr-btn--icon-left fr-btn--sm fr-btn--tertiary fr-icon-file-pdf-line"
                 id="button-print"
         >
-          Télécharger la fiche aide
+          Télécharger cette fiche
         </button>
       </div>
+      <div class="fr-col fr-col-4"></div>
     </div>
     <div class="fr-grid-row fr-grid-row--gutters">
-      <div class="fr-col fr-col-12 fr-col-md-6">
-        <div class="fr-background-action-low--blue-france fr-px-2w fr-py-1w">
-          {% for type_aide in object.types.all %}
-            <strong>{{ type_aide.nom }}</strong>
-          {% endfor %}
-        </div>
-        <p>{{ object.promesse }}</p>
-        <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-arrow-right-down-circle-fill fr-btn--icon-left fr-pl-2v fr-mb-2w">Description</h2>
+      <div class="fr-col fr-col-12 fr-col-md-8 fr-pr-3w fr-py-0">
+        <p class="fr-background-default--grey fr-border-plain--blue-france fr-p-2w fr-text--bold">
+          {{ object.promesse }}
+        </p>
+        <p>
+          {% if aide.date_fin %}Date d’échéance :
+            <time datetime="{{ aide.date_fin|date:"c" }}">{{ aide.date_fin|date:"SHORT_DATE_FORMAT" }}</time>
+          {% endif %}
+        </p>
+        <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-arrow-right-down-circle-fill fr-btn--icon-left fr-mb-2w">Description</h2>
         <p>{{ object.description|ui_markdown|safe }}</p>
-      </div>
-      <div class="fr-col fr-col-12 fr-col-md-6">
-        <div class="fr-mt-3w">
-          <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-btn--icon-left fr-mb-2w">Critères d'éligibilité</h2>
-          <p>{{ object.conditions|ui_markdown|safe }}</p>
-        </div>
-      </div>
-    </div>
-    {% if object.etapes %}
-    <div class="fr-grid-row fr-grid-row--gutters">
-      <div class="fr-col fr-col-12">
+        {% if object.etapes %}
           <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-btn--icon-left fr-mb-2w">Étapes</h2>
           <p>{{ object.etapes|ui_markdown|safe }}</p>
+        {% endif %}
+      </div>
+      <div class="fr-col fr-col-12 fr-col-md-4 fr-py-3w fr-px-4w fr-background-alt--blue-ecume">
+        <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-btn--icon-left fr-mb-2w">Critères d'éligibilité</h2>
+        <div class="fr-text--sm" id="conditions">
+          {{ object.conditions|ui_markdown|safe }}
+          {{ object.type_depense|ui_markdown|safe }}
+        </div>
       </div>
     </div>
-    {% endif %}
     <div class="fr-grid-row">
       <div class="fr-col fr-col-12 fr-col-md-4 fr-m-auto">
         <a class="fr-btn fr-btn--primary"

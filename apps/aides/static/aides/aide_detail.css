@@ -6,9 +6,8 @@
   border: 2px solid var(--grey-1000-50);
 }
 
-#conditions {
-  background-color: var(--background-default-grey);
-  box-shadow: var(--lifted-shadow);
+#conditions p {
+  font-size: 14px;
 }
 
 .fr-icon-arrow-right-down-circle-fill:before {
