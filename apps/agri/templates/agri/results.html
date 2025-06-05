@@ -41,8 +41,8 @@ document.onreadystatechange = evt => {
           <form method="post"
                 action="{% url 'agri:send-results-by-mail' %}{% querystring %}"
                 hx-boost="true"
-                hx-target="#content"
-                hx-swap="beforebegin show:none"
+                hx-target="#alert-placeholder"
+                hx-swap="innerHTML show:none"
                 hx-push-url="false"
           >
             {% csrf_token %}
@@ -96,6 +96,7 @@ document.onreadystatechange = evt => {
 {% block title %}Votre sélection personnalisée.{% endblock title %}
 
 {% block main_col %}
+<div class="fr-col fr-col-12" id="alert-placeholder"></div>
 <main id="content" role="main" aria-label="Contenu" class="fr-col fr-col-12 fr-col-md-9">
   <h1 class="fr-h1">Votre sélection personnalisée.</h1>
 

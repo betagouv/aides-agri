@@ -1,3 +1,16 @@
 {% load dsfr_tags %}
 
-{% dsfr_alert type="success" is_collapsible=True extra_classes="fr-alert--sm fr-mb-4w" title="Succès de l’envoi" content="Cette recherche devrait arriver dans votre boîte e-mail dans quelques instants ; pensez à vérifier votre dossier Spam." %}
+<div class="fr-alert fr-alert--success"
+     role="alert"
+     id="alert-success-send-results-by-mail"
+     data-controller="alert"
+>
+  <p class="fr-alert__title">Succès de l’envoi</p>
+  <p>Cette recherche devrait arriver dans votre boîte e-mail dans quelques instants ; pensez à vérifier votre dossier Spam.</p>
+  <button type="button"
+          class="fr-btn--close fr-btn"
+          title="Fermer"
+          aria-controls="alert-success-send-results-by-mail"
+          data-action="click->alert#close"
+  >Fermer</button>
+</div>

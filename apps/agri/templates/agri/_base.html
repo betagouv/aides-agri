@@ -12,6 +12,7 @@
   "imports": {
       "sentry": "{% static 'vendor/sentry.js' %}",
       "stimulus": "{% static 'vendor/stimulus.js' %}",
+      "alert": "{% static 'ui/controllers/alert.js' %}",
       "dsfr-form": "{% static 'ui/controllers/dsfr_form.js' %}",
       "checkbox-group-field": "{% static 'ui/components/checkbox-group-field.js' %}",
       "select-rich": "{% static 'ui/components/select-rich.js' %}",
@@ -25,6 +26,7 @@
 {% block extra_head_js %}
 <script type="module" nonce="{{ request.csp_nonce }}">
   import { Application } from "stimulus"
+  import { Alert } from "alert"
   import { DsfrForm } from "dsfr-form"
   import { CheckboxGroupField } from "checkbox-group-field"
   import { SelectRich } from "select-rich"
@@ -33,6 +35,7 @@
 
   window.Stimulus = Application.start()
 
+  Stimulus.register("alert", Alert)
   Stimulus.register("dsfr-form", DsfrForm)
   Stimulus.register("checkbox-group-field", CheckboxGroupField)
   Stimulus.register("select-rich", SelectRich)
