@@ -1,6 +1,6 @@
 {% extends "agri/_base.html" %}
 
-{% load static dsfr_tags %}
+{% load static i18n dsfr_tags %}
 
 {% block extra_css %}
   {{ block.super }}
@@ -102,7 +102,23 @@ document.onreadystatechange = evt => {
 
   <div class="fr-alert fr-alert--info fr-alert--sm">
     {% if aides %}
-      <p>La recommandation de ces dispositifs se base sur les informations que vous nous avez fournies en amont. Elle n’assure pas votre éligibilité.</p>
+      <p>
+        La recommandation de ces dispositifs se base sur les informations que vous nous avez fournies en amont. Elle n’assure pas votre éligibilité.
+        <button type="button"
+                class="fr-btn--tooltip fr-btn"
+                aria-describedby="tooltip-legal"
+        >
+          {% translate "Contextual information" %}
+        </button>
+        <span class="fr-tooltip fr-placement"
+              id="tooltip-legal"
+              role="tooltip"
+              aria-hidden="true"
+        >
+          Aides-Agri recense à titre informatif la plupart des aides susceptibles de soutenir votre exploitation agricole. Les informations fournies ne garantissent pas que vous êtes éligible à l’aide ou au dispositif, ni ne constituent une décision d’attribution de l’aide.
+          Pour vérifier votre éligibilité, vous pouvez prendre contact avec l’organisme qui déploie le dispositif ou verse l’aide.
+        </span>
+      </p>
       <p>Nous nous efforçons de recenser et mettre à jour notre catalogue encore en construction. Il se peut que certaines aides ne soient pas encore recensées par notre équipe.</p>
     {% else %}
       <p>La recommandation de dispositifs se base sur les informations que vous nous avez fournies en amont.</p>

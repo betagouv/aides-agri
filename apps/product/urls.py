@@ -25,6 +25,14 @@ urlpatterns = [
         name="mentions-legales",
     ),
     path(
+        "pages/cgu",
+        StaticPageView.as_view(
+            title="Conditions Générales d’Utilisation",
+            content_filename="cgu",
+        ),
+        name="cgu",
+    ),
+    path(
         "pages/donnees-personnelles",
         StaticPageView.as_view(
             title="Données personnelles",

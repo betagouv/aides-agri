@@ -1,33 +1,32 @@
-# Mentions légales
+# Mentions Légales « Aides-Agri »
 
-Mis à jour le 22/05/2025
+Date de mise à jour : 03/06/2025
 
-## 1. Éditeur
+## Éditeur de la plateforme
 
-Conformément aux dispositions de l’article 6-I 1° de la loi n°2004-575 du 21 juin 2004 relative à la confiance dans l’économie numérique, le site [https://aides-agri.beta.gouv.fr](https://aides-agri.beta.gouv.fr) est édité par le Ministère de l’Agriculture et de la Souveraineté Alimentaire, ayant son siège social au :
+La plateforme « Aides-Agri » est éditée par la Ruche numérique rattachée au Secrétariat Général du Ministère de l’Agriculture, de la Souveraineté Alimentaire, située :
+78 rue de Varenne 75007 
+Paris – FRANCE
 
-  **78, rue de Varenne - 75349 Paris 07 SP**
+### Directrice de la publication
 
-## 2. Publication
+La directrice de la publication est Madame Cécile BIGOT-DEKEYZER, secrétaire générale du Ministère de l’Agriculture et de la Souveraineté Alimentaire.
 
-Le directeur de la publication est XXXXXXXX, en qualité de XXXXXXXXXXXXX.
+## Hébergement de la plateforme
 
-La personne responsable de l’accès aux documents administratifs et des questions relatives à la réutilisation des informations est XXXXXXXXXXx en qualité de XXXXXXXXXXXXXXXXXX.
+Cette plateforme est hébergée par :
+Scalingo, dont le siège social est situé 13 rue Jacques Peirotes 67000 Strasbourg, France.
 
-## 3. Hébergement
+## Accessibilité
 
-Le prestataire assurant le stockage direct du site [https://aides-agri.beta.gouv.fr](https://aides-agri.beta.gouv.fr) est **Scalingo**, dont le siège social est situé : 13 rue Jacques Peirotes 67000 Strasbourg, France.
+La conformité aux normes d’accessibilité numérique est un objectif ultérieur, mais nous tâchons de rendre cette plateforme accessible à toutes et à tous. Pour en savoir plus sur la politique d’accessibilité numérique de l’État : [https://accessibilite.numerique.gouv.fr/](https://accessibilite.numerique.gouv.fr/). 
 
-## 4. Accessibilité
+Pour nous signaler un défaut d’accessibilité vous empêchant d’accéder à un contenu ou une fonctionnalité de la plateforme, merci de nous en faire part à l’adresse suivante : [aides-agri@beta.gouv.fr](mailto:aides-agri@beta.gouv.fr) 
 
-La conformité aux normes d’accessibilité numérique est un objectif ultérieur mais le Ministère de l’Agriculture et de la Souveraineté Alimentaire tâche de rendre ces sites accessibles à toutes et tous, conformément à l’article 47 de la loi n°2005-102 du 11 février 2005.
+Si vous n’obtenez pas de réponse rapide de notre part, vous êtes en droit de faire parvenir vos doléances ou une demande de saisine au Défenseur des droits.
 
-## 5. Signaler un dysfonctionnement
+Plus de détails sur [cette page dédiée](declaration-accessibilite).
 
-Si vous rencontrez un défaut d’accessibilité vous empêchant d’accéder à un contenu ou une fonctionnalité des sites, merci de nous en faire part [aides-agri@beta.gouv.fr](mailto:aides-agri@beta.gouv.fr). Si vous n’obtenez pas de réponse rapide de notre part, vous êtes en droit de faire parvenir vos doléances ou une demande de saisine au Défenseur des droits.
+## Sécurité
 
-Pour en savoir plus sur la politique d’accessibilité numérique de l’État : [http://references.modernisation.gouv.fr/accessibilite-numerique](http://references.modernisation.gouv.fr/accessibilite-numerique)
-
-## 6. Sécurité
-
-Les sites sont protégés par un certificat électronique, matérialisé pour la grande majorité des navigateurs par un cadenas. Cette protection participe à la confidentialité des échanges. En aucun cas les services associés à la plateforme ne seront à l’origine d’envoi de courriels pour demander la saisie d’informations personnelles.
+La plateforme est protégée par un certificat électronique, matérialisé pour la grande majorité des navigateurs par un cadenas. Cette protection participe à la confidentialité des échanges. En aucun cas, les services associés à la plateforme ne seront à l’origine d’envoi de courriels pour vous demander la saisie d’informations personnelles.

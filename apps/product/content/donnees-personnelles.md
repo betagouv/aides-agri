@@ -1,110 +1,88 @@
-# Politique de confidentialité
+# Politique de confidentialité de « Aides-Agri »
 
+Date de mise à jour : 03/06/2025
 
-## Qui est responsable de Aides Agri ?
+## I - Qui est responsable de traitement ?
 
-La start-up Aides Agri est portée par le Ministère de l’Agriculture et de la Souveraineté Alimentaire.
+La plateforme « Aides-Agri » est développée au sein de la Ruche numérique du Ministère de l’Agriculture et de la Souveraineté Alimentaire.
 
-Des données à caractère personnel sont traitées dans le cadre de ces services numériques.
+Le responsable de traitement est le Secrétariat Général du Ministère de l’Agriculture et de la Souveraineté alimentaire représenté par sa secrétaire générale, Madame Cécile BIGOT-DEKEYZER.
 
-Le responsable de traitement est le Ministère de l’Agriculture et de la Souveraineté Alimentaire représenté par XXXXXXXXXXXXXX, en qualité de XXXXXXXXXX.
+## II - Pourquoi traitons-nous ces données ?
 
-## Quelles sont les données que nous traitons et pour quelles finalités ?
+Aides-Agri traite des données à caractère personnel pour les raisons suivantes :
 
-Aides Agri traite des données à caractère personnel pour les raisons suivantes :
+- Proposer un parcours afin d’orienter les utilisateurs vers des dispositifs d’aides adaptés à leurs besoins et problématiques ;
+- Contacter les utilisateurs.
 
-| Données                                                                                                                                                              | Finalités |
-|----------------------------------------------------------------------------------------------------------------------------------------------------------------------| --- |
-| Nom et prénom des acteurs locaux qui sont point de contact pour les agriculteurs (uniquement si ces données sont présentes au sein de la dénomination sociale) | * Identifier les acteurs locaux de la réparation et du réemploi * Mettre à disposition du public ces informations |
+## III - Quelles sont les données que nous traitons ?
 
-Ces données sont soit collectées auprès de vous, soit auprès de notre réseau (uniquement concernant les dénominations sociales des personnes concernées).
+Aides-Agri traite les données à caractère personnel suivantes :
 
-**Qu’est-ce qui nous autorise à traiter ces données ?**
--------------------------------------------------------
+- Données relatives à l’exploitation agricole : effectifs, filières agricoles, localisation géographique, SIRET
+- Données de contact : adresse électronique, uniquement pour les personnes qui souhaitent recevoir la recommandation d'Aides Agri par courriel
 
-Aides Agri traite des données à caractère personnel en se basant sur :
+## IV - Qu’est-ce qui nous autorise à traiter ces données ?
 
-* L’exécution d’une mission d’intérêt public ou relevant de l’exercice de l’autorité publique dont est investi le responsable de traitement au sens de l’article 6-1 e) du RPGD (ou autre base légale).
+Aides-Agri traite des données à caractère personnel en se basant sur de l’exécution d’une mission d’intérêt public ou relevant de l’exercice de l’autorité publique dont est investi le responsable de traitement au sens de l’article 6-1 e) du RPGD.
 
-Cette mission d’intérêt public est mise en œuvre à l’article L. 131-3 du code de l’environnement qui prévoit que l’ADEME a pour mission « 2° La prévention de la production de déchets, dont la lutte contre le gaspillage alimentaire ; la gestion des déchets ; la transition vers l’économie circulaire ; la protection des sols et la remise en état des sites pollués ».
+Cette mission d’intérêt public se traduit par le décret n° 2025-30 du 8 janvier 2025 relatif aux attributions du ministre de l'agriculture et de la souveraineté alimentaire et l’article 7 de l’arrêté du 30 juin 2008 portant organisation et attributions du secrétariat général du ministère chargé de l'agriculture.
 
-**Pendant combien de temps conservons-nous ces données ?**
-----------------------------------------------------------
+## V - Pendant combien de temps conservons-nous ces données ?
 
-| Données | Durée de conservation |
-| --- | --- |
-| Nom et prénom des acteurs locaux de la réparation et du réemploi (uniquement si ces données sont présentes au sein de la dénomination sociale) | 1 mois à compter de la cessation d’activité de la structure |
-| Nom et prénom des personnes contactant Aides Agri, adresse e-mail, champ libre | 6 mois à compter de la collecte (à l’issue de cette durée seul le « champ libre » est conservé sans possibilité de réidentification) |
+| Type de données                                                                  | 	Durée de la conservation                                      |
+|----------------------------------------------------------------------------------|----------------------------------------------------------------|
+| Données relatives à l’exploitation agricole                                      | 1 an un compter de la date d’enregistrement dans la plateforme |
+| Données de contact                                                               | 1 an un compter de la date d’enregistrement dans la plateforme |
 
-**Quels droits avez-vous ?**
-----------------------------
+## VI - Quels droits avez-vous ?
 
 Vous disposez :
 
-* D’un droit d’information et d’un droit d’accès à vos données ;
-* D’un droit de rectification ;
-* D’un droit d’opposition ;
-* D’un droit à la limitation du traitement.
+- D’un droit d’information et d’un droit d’accès à vos données ;
+- D’un droit de rectification ;
+- D’un droit d’opposition ;
+- D’un droit à la limitation du traitement.
 
-Pour les exercer, contactez-nous à : [aides-agri@beta.gouv.fr](mailto:aides-agri@beta.gouv.fr).
+Pour les exercer, contactez-nous à : [aides-agri@beta.gouv.fr](mailto:aides-agri@beta.gouv.fr)
 
 Puisque ce sont des droits personnels, nous ne traiterons votre demande que si nous sommes en mesure de vous identifier. Dans le cas où nous ne parvenons pas à vous identifier, nous pouvons être amenés à vous demander une preuve de votre identité.
 
-Pour vous aider dans votre démarche, vous trouverez un modèle de courrier élaboré par la CNIL [ici](https://www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces).
+Pour vous aider dans votre démarche, vous trouverez un modèle de courrier élaboré par la CNIL ici : [https://www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces](https://www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces)
 
 Nous nous engageons à vous répondre dans un délai raisonnable qui ne saurait dépasser 1 mois à compter de la réception de votre demande.
 
-Vous pouvez adresser une plainte à la CNIL à [cette adresse](https://www.cnil.fr/fr/plaintes).
+## VII - Qui va avoir accès à ces données ?
 
-**Qui va avoir accès à ces données à caractère personnel ?**
-------------------------------------------------------------
+Les accès aux données sont strictement encadrés et juridiquement justifiés. Les personnes suivantes vont avoir accès aux données :
+- Les personnes habilitées de l’équipe d’Aides Agri
 
-Les accès aux données sont strictement encadrés et juridiquement justifiés. Seuls les membres habilités de l’équipe produit de Aides Agri ont accès aux données. Le public n’a accès qu’aux dénominations sociales.
-
-**Quelles mesures de sécurité mettons-nous en place ?**
--------------------------------------------------------
-
-Nous mettons en place plusieurs mesures pour sécuriser les données :
-
-* Stockage des données en base de données ;
-* Cloisonnement des données ;
-* Mesures de traçabilité ;
-* Surveillance ;
-* Protection contre les virus, malwares et logiciels espions ;
-* Protection des réseaux ;
-* Sauvegarde ;
-* Mesures restrictives limitant l’accès physiques aux données à caractère personnel.
-
-**Qui nous aide à traiter les données ?**
------------------------------------------
+## VIII - Qui nous aide à traiter les données ?
 
 Certaines des données sont envoyées à d’autres acteurs, appelés “sous-traitants de données”, pour qu’ils nous aident à les manipuler. Nous nous assurons qu’ils respectent strictement le RGPD et qu’ils apportent des garanties suffisantes en matière de sécurité.
 
-| Sous-traitants | Pays destinataire | Traitement réalisé | Garanties |
-| --- | --- | --- | --- |
-| Prestataires membres de l’équipe produit | France | Administration des services numériques de Aides Agri | Garanties présentes au sein des contrats de prestation |
-| Scalingo | France | Hébergement des services numériques | [Lien vers les garanties](https://scalingo.com/fr/contrat-gestion-traitements-donnees-personnelles) |
+| Sous-traitant | Pays destinataire | Traitement réalisé | Garanties                                                                                                                                            |
+|---------------|-------------------|--------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Scalingo      | France            | Hébergeur          | [https://scalingo.com/fr/contrat-gestion-traitements-donnees-personnelles](https://scalingo.com/fr/contrat-gestion-traitements-donnees-personnelles) | 
+| Brevo         | France            | Envoi d’e-mail     | [https://www.brevo.com/fr/legal/privacypolicy/](https://www.brevo.com/fr/legal/privacypolicy/)                                                                                                    | 
 
-**Cookies**
------------
+## IX - Cookies
 
 Un cookie est un fichier déposé sur votre terminal lors de la visite d’un site. Il a pour but de collecter des informations relatives à votre navigation et de vous adresser des services adaptés à votre terminal (ordinateur, mobile ou tablette).
 
-En application de l’article 5(3) de la directive 2002/58/CE modifiée concernant le traitement des données à caractère personnel et la protection de la vie privée dans le secteur des communications électroniques, transposée à l’article 82 de la loi n°78-17 du 6 janvier 1978 relative à l’informatique, aux fichiers et aux libertés, les traceurs ou cookies suivent deux régimes distincts.
+En application de l’article 5(3) de la directive 2002/58/CE modifiée concernant le traitement des données à caractère personnel et la protection de la vie privée dans le secteur des communications électroniques, transposée à l’article 82 de la loi n° 78-17 du 6 janvier 1978 relative à l’informatique, aux fichiers et aux libertés, les traceurs ou cookies suivent deux régimes distincts.
 
-Les cookies strictement nécessaires au service ou ayant pour finalité exclusive de faciliter la communication par voie électronique sont dispensés de consentement préalable au titre de l’article 82 de la loi n°78-17 du 6 janvier 1978.
+- Les cookies strictement nécessaires au service ou ayant pour finalité exclusive de faciliter la communication par voie électronique sont dispensés de consentement préalable au titre de l’article 82 de la loi n° 78-17 du 6 janvier 1978.
+- Les cookies n’étant pas strictement nécessaires au service ou n’ayant pas pour finalité exclusive de faciliter la communication par voie électronique doivent être consenti par l’utilisateur. Ce consentement de la personne concernée pour une ou plusieurs finalités spécifiques constitue une base légale au sens du RGPD et doit être entendu au sens de l'article 6-1 a) du RGPD et à la libre circulation des données.
 
-Les cookies n’étant pas strictement nécessaires au service ou n’ayant pas pour finalité exclusive de faciliter la communication par voie électronique doivent être consenti par l’utilisateur.
+La plateforme Aides-Agri ne dépose que des cookies et traceurs strictement nécessaires au fonctionnement du service et la solution de mesure d’audience “Matomo”, configurée en mode “exempté” et ne nécessitant pas de recueil du consentement, conformément aux recommandations de la CNIL.
 
-Ce consentement de la personne concernée pour une ou plusieurs finalités spécifiques constitue une base légale au sens du RGPD et doit être entendu au sens de l’article 6-a du Règlement (UE) 2016/679 du Parlement européen et du Conseil du 27 avril 2016 relatif à la protection des personnes physiques à l’égard du traitement des données à caractère personnel et à la libre circulation de ces données.
+Toutefois, vous pouvez, à tout moment, refuser d'être suivi de manière anonyme en décochant la case ci-dessous :
 
-Des cookies relatifs aux statistiques publiques et anonymes sont également déposés.
+Vous êtes suivi(e) de manière anonyme. Décochez cette case pour vous exclure du suivi.
 
-Les services numériques de Aides Agri utilisent Matomo et PostHog sans que vous puissiez être identifiés.
+À tout moment, vous pouvez refuser l’utilisation des cookies et désactiver le dépôt sur votre ordinateur en utilisant la fonction dédiée de votre navigateur (fonction disponible notamment sur Microsoft Internet Explorer 11, Google Chrome, Mozilla Firefox, Apple Safari et Opera).
+Pour aller plus loin, vous pouvez consulter les ﬁches proposées par la Commission Nationale de l'Informatique et des Libertés (CNIL) :
 
-À tout moment, vous pouvez refuser l’utilisation des cookies anonymes en nous contactant à l’adresse suivante [aides-agri@beta.gouv.fr](mailto:aides-agri@beta.gouv.fr) ou désactiver le dépôt sur votre ordinateur en utilisant la fonction dédiée de votre navigateur (fonction disponible notamment sur Microsoft Edge, Google Chrome, Mozilla Firefox et Apple Safari).
-
-Pour aller plus loin, vous pouvez consulter les ﬁches proposées par la Commission Nationale de l’Informatique et des Libertés (CNIL) :
-
-* [Cookies et traceurs : que dit la loi ?](https://www.cnil.fr/fr/cookies-traceurs-que-dit-la-loi)
-* [Cookies : les outils pour les maîtriser](https://www.cnil.fr/fr/cookies-les-outils-pour-les-maitriser)
+- [Cookies & traceurs : que dit la loi ?](https://www.cnil.fr/fr/cookies-traceurs-que-dit-la-loi)
+- [Cookies : les outils pour les maîtriser](https://www.cnil.fr/fr/cookies-les-outils-pour-les-maitriser)
