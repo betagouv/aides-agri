@@ -239,6 +239,9 @@ class AideQuerySet(models.QuerySet):
         return self.filter(types__contains=types)
 
     def by_zone_geographique(self, commune: ZoneGeographique) -> models.QuerySet:
+        if not commune:
+            return self
+
         departement = commune.parent
         return self.filter(
             # Nationales

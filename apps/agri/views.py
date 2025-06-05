@@ -3,6 +3,7 @@ from collections import defaultdict
 from copy import copy
 
 from django.db.models import Q
+from django.http.response import Http404
 from django.shortcuts import render
 from django.templatetags.static import static
 from django.urls import reverse
@@ -238,6 +239,10 @@ class Step5View(AgriMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
+
+        if not self.etablissement:
+            raise Http404("Cette étape nécessite d’avoir sélectionné une exploitation.")
+
         naf = self.etablissement.get("activite_principale", "")
         if naf[-1].isalpha():
             naf = naf[:-1]
