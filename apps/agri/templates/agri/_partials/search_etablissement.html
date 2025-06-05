@@ -1,3 +1,4 @@
+<div role="alert">
 {% for hit in hits %}
   {% for etablissement in hit.matching_etablissements %}
     {% include "agri/blocks/search_etablissement/etablissement.html" with self=self hit=hit etablissement=etablissement value=etablissement.siret label_short=etablissement.siret only %}
@@ -13,3 +14,4 @@
 {% for error in errors %}
   <p class="fr-error-text">{{ error }}</p>
 {% endfor %}
+</div>
