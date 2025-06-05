@@ -16,6 +16,7 @@
   </label>
   {% if self.with_tags %}
     <button class="fr-tag fr-tag--dismiss fr-tag--icon-left fr-icon-close-line fr-hidden"
+            aria-label="Désélectionner l’option {{ label_short }}"
             data-action="click->select-rich#clickOnTag"
             data-input="select-rich-{{ self.name }}-option-{{ value }}"
     >
