@@ -202,6 +202,7 @@ class AideAdmin(AbstractGristModelAdmin):
                     "eligibilite_etape_avancement_projet",
                     "eligibilite_age",
                     "conditions",
+                    "type_depense",
                     "filieres",
                 ],
             },
