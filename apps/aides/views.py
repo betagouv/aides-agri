@@ -79,7 +79,7 @@ class GristAidesBySujetsTypesAndDepartementView(TemplateView):
         }
         departements[9999] = "National"
         ids_departements = departements.keys()
-        aides = gristapi.list_records(AideLoader.table)[1]
+        aides = gristapi.list_records(AideLoader.table, filter={"Valide": [True]})[1]
         aides_by_sujet_and_type_and_departement = dict()
         for id_sujet in sujets:
             aides_by_sujet_and_type_and_departement[id_sujet] = dict()
@@ -122,10 +122,7 @@ class GristAidesBySujetsTypesAndDepartementView(TemplateView):
                             aides_by_sujet_and_type_and_departement[sujet][type_aide][
                                 id_departement
                             ].append(
-                                aide["Id_solution"]
-                                + " (Valide "
-                                + ("✅" if aide["Valide"] else "❌")
-                                + f", Statut : {aide['Statut']})"
+                                aide["Id_solution"] + f" (Statut : {aide['Statut']})"
                             )
 
         context_data.update(

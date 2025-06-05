@@ -5,11 +5,10 @@
 {% block title %}Pilotage de l’intégration des aides{% endblock title %}
 
 {% block body %}
-  <h1 class="fr-h2">Liste des aides brutes par sujet, type et département pilote.</h1>
+  <h1 class="fr-h2">Liste des aides valides par sujet, type et département pilote.</h1>
   <details>
-    <summary>{{ aides_count }} aides trouvées  (cliquer pour les compteurs)</summary>
+    <summary>{{ aides_count }} aides valides trouvées  (cliquer pour les compteurs)</summary>
     <ul>
-      <li>Valides : {{ valid_aides_count }}</li>
     {% for status, count in aides_count_by_status %}
       <li>{{ status }} : {{ count }}</li>
     {% endfor %}
