@@ -16,12 +16,14 @@ dependencies = [
     { name = "django-htmx" },
     { name = "django-tasks" },
     { name = "django-two-factor-auth", extra = ["phonenumberslite"] },
+    { name = "gunicorn" },
     { name = "markdown" },
     { name = "markdownify" },
     { name = "mjml-python" },
     { name = "psycopg", extra = ["binary"] },
     { name = "requests" },
     { name = "sentry-sdk", extra = ["django"] },
+    { name = "whitenoise" },
 ]
 
 [package.dev-dependencies]
@@ -36,10 +38,6 @@ dev = [
     { name = "requests-mock" },
     { name = "ruff" },
 ]
-scalingo = [
-    { name = "gunicorn" },
-    { name = "whitenoise" },
-]
 
 [package.metadata]
 requires-dist = [
@@ -49,15 +47,17 @@ requires-dist = [
     { name = "django-csp", specifier = "~=4.0" },
     { name = "django-dsfr", specifier = "~=2.1" },
     { name = "django-grist-loader", specifier = "~=0.3" },
-    { name = "django-htmx", specifier = ">=1.23.0" },
+    { name = "django-htmx", specifier = "~=1.23" },
     { name = "django-tasks", specifier = "~=0.6" },
-    { name = "django-two-factor-auth", extras = ["phonenumberslite"], specifier = ">=1.17.0" },
+    { name = "django-two-factor-auth", extras = ["phonenumberslite"], specifier = "~=1.17" },
+    { name = "gunicorn", specifier = "~=23.0" },
     { name = "markdown", specifier = "~=3.8" },
     { name = "markdownify", specifier = "~=1.1" },
     { name = "mjml-python", specifier = "~=1.3" },
     { name = "psycopg", extras = ["binary"], specifier = "~=3.0" },
     { name = "requests", specifier = "~=2.32" },
     { name = "sentry-sdk", extras = ["django"], specifier = "~=2.26" },
+    { name = "whitenoise", specifier = "~=6.8" },
 ]
 
 [package.metadata.requires-dev]
@@ -71,10 +71,6 @@ dev = [
     { name = "pytest-factoryboy" },
     { name = "requests-mock" },
     { name = "ruff" },
-]
-scalingo = [
-    { name = "gunicorn", specifier = "~=23.0" },
-    { name = "whitenoise", specifier = "~=6.8" },
 ]
 
 [[package]]
