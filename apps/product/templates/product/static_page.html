@@ -23,7 +23,7 @@ function setOptOutText(element) {
 
 document.onreadystatechange = () => {
   const matomoOptoutContainer = document.getElementById("matomo-optout-container")
-  if (matomoOptoutContainer !== undefined) {
+  if (matomoOptoutContainer !== null) {
     matomoOptoutContainer.innerHTML = '<div class="fr-checkbox-group fr-mb-2w"><input type="checkbox" id="matomo-optout"><label for="matomo-optout"></label></div>'
     const optout = document.getElementById("matomo-optout")
     optout.addEventListener("click", evt => {
