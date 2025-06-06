@@ -11,6 +11,10 @@ on:
 concurrency: 
   group: ${{ github.head_ref || github.ref }}
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   validate:
     name: Validation (test + code style)
