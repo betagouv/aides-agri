@@ -1,6 +1,7 @@
 from django import template
 from dsfr.utils import parse_tag_args
 from markdown import markdown
+from markdown.extensions.attr_list import AttrListExtension
 from markdown.extensions.tables import TableExtension, TableProcessor
 import xml.etree.ElementTree as etree
 
@@ -27,7 +28,7 @@ class DsfrTableExtension(TableExtension):
 
 @register.filter
 def ui_markdown(content: str) -> str:
-    return markdown(content, extensions=[DsfrTableExtension()])
+    return markdown(content, extensions=[DsfrTableExtension(), AttrListExtension()])
 
 
 @register.inclusion_tag("ui/components/checkbox_group_field.html")

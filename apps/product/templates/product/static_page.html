@@ -9,3 +9,32 @@
 {% block content %}
   {{ content|ui_markdown|safe }}
 {% endblock content %}
+
+{% block extra_js %}
+<script nonce="{{ request.csp_nonce }}">
+function setOptOutText(element) {
+  _paq.push([function() {
+    element.checked = !this.isUserOptedOut()
+    element.nextElementSibling.innerHTML = this.isUserOptedOut()
+      ? '<span role="alert">Vous n’êtes actuellement pas suivi ; cliquez ici pour accepter le suivi.</span>'
+      : '<span role="alert">Vous êtes actuellement suivi ; cliquez ici pour refuser le suivi.</span>';
+  }])
+}
+
+document.onreadystatechange = () => {
+  const matomoOptoutContainer = document.getElementById("matomo-optout-container")
+  if (matomoOptoutContainer !== undefined) {
+    matomoOptoutContainer.innerHTML = '<div class="fr-checkbox-group fr-mb-2w"><input type="checkbox" id="matomo-optout"><label for="matomo-optout"></label></div>'
+    const optout = document.getElementById("matomo-optout")
+    optout.addEventListener("click", evt => {
+      if (evt.target.checked) {
+        _paq.push(['forgetUserOptOut'])
+      } else {
+        _paq.push(['optUserOut'])
+      }
+      setOptOutText(optout)
+    });
+    setOptOutText(optout)
+  }
+}
+</script>{% endblock extra_js %}

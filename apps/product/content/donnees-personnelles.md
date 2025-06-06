@@ -75,11 +75,12 @@ En application de l’article 5(3) de la directive 2002/58/CE modifiée concerna
 - Les cookies strictement nécessaires au service ou ayant pour finalité exclusive de faciliter la communication par voie électronique sont dispensés de consentement préalable au titre de l’article 82 de la loi n° 78-17 du 6 janvier 1978.
 - Les cookies n’étant pas strictement nécessaires au service ou n’ayant pas pour finalité exclusive de faciliter la communication par voie électronique doivent être consenti par l’utilisateur. Ce consentement de la personne concernée pour une ou plusieurs finalités spécifiques constitue une base légale au sens du RGPD et doit être entendu au sens de l'article 6-1 a) du RGPD et à la libre circulation des données.
 
-La plateforme Aides-Agri ne dépose que des cookies et traceurs strictement nécessaires au fonctionnement du service et la solution de mesure d’audience “Matomo”, configurée en mode “exempté” et ne nécessitant pas de recueil du consentement, conformément aux recommandations de la CNIL.
+La plateforme Aides Agri ne dépose que des cookies et traceurs strictement nécessaires au fonctionnement du service et la solution de mesure d’audience “Matomo”, configurée en mode “exempté” et ne nécessitant pas de recueil du consentement, conformément aux recommandations de la CNIL.
 
 Toutefois, vous pouvez, à tout moment, refuser d'être suivi de manière anonyme en décochant la case ci-dessous :
 
-Vous êtes suivi(e) de manière anonyme. Décochez cette case pour vous exclure du suivi.
+*Ici doit s'afficher le formulaire permettant de refuser le suivi Matomo*{: #matomo-optout-container }
+
 
 À tout moment, vous pouvez refuser l’utilisation des cookies et désactiver le dépôt sur votre ordinateur en utilisant la fonction dédiée de votre navigateur (fonction disponible notamment sur Microsoft Internet Explorer 11, Google Chrome, Mozilla Firefox, Apple Safari et Opera).
 Pour aller plus loin, vous pouvez consulter les ﬁches proposées par la Commission Nationale de l'Informatique et des Libertés (CNIL) :
