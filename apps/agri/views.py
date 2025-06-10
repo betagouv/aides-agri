@@ -18,6 +18,7 @@ from aides.models import (
     ZoneGeographique,
     GroupementProducteurs,
     Filiere,
+    Type,
 )
 from product.forms import UserNoteForm
 
@@ -297,7 +298,7 @@ class ResultsView(ResultsMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        aides_by_type = defaultdict(set)
+        aides_by_type = {type_aide: set() for type_aide in Type.objects.all()}
         for aide in self.get_queryset():
             for type_aide in aide.types.all():
                 aides_by_type[type_aide].add(aide)
