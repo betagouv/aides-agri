@@ -2,7 +2,12 @@
 
 {% load i18n %}
 
-{% block header_tools_wrapper %}{% endblock header_tools_wrapper %}
+{% block header_tools_links %}
+  <div class="fr-print-only fr-text--xs">
+    Pour revenir ici, scannez ce code :
+    {{ qrcode|safe }}
+  </div>
+{% endblock header_tools_links %}
 
 {% block burger_menu %}{% endblock burger_menu %}
 {% block main_menu %}{% endblock main_menu %}
