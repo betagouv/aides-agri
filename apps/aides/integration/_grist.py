@@ -327,3 +327,29 @@ class AbstractRawFields(enum.Enum):
     @property
     def name_full(self):
         return f"raw_{self.name}"
+
+
+def duplicate_aide_departements(id_solution: str):
+    cols_to_ignore = ["id"] + [
+        col["id"]
+        for col in gristapi.list_cols(AideLoader.table)[1]
+        if col["fields"]["isFormula"]
+    ]
+    departements = [
+        d["id"]
+        for d in gristapi.list_records(
+            ZoneGeographiqueLoader.table, filter={"Type": ["Département"]}
+        )[1]
+    ]
+
+    aide = gristapi.list_records(AideLoader.table, filter={"Id_solution": id_solution})[
+        1
+    ]
+    new_aides = []
+    for id_departement in departements:
+        new_aide = {k: v for k, v in aide.items() if k not in cols_to_ignore}
+        new_aide.update(
+            {"zone_geographique": ["L", id_departement], "parent": aide["id"]}
+        )
+        new_aides.append(new_aide)
+    gristapi.add_records(AideLoader.table, new_aides)
