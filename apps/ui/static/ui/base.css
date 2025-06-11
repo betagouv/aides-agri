@@ -14,6 +14,10 @@ html {
   flex-direction: row-reverse;
 }
 
+.fr-print-only {
+  display: none !important;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .fr-enlarge-link:hover {
     background-color: var(--hover) !important;
@@ -27,5 +31,11 @@ html {
 @media (prefers-reduced-motion) {
   html {
     scroll-behavior: auto;
+  }
+}
+
+@media print {
+  .fr-print-only {
+    display: inherit !important;
   }
 }
