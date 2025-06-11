@@ -14,18 +14,6 @@ html {
   flex-direction: row-reverse;
 }
 
-.fr-icon-identity-fill::after,
-.fr-icon-identity-fill::before {
-  -webkit-mask-image:url("icons/fr--identity-fill.svg");
-  mask-image:url("icons/fr--identity-fill.svg");
-}
-
-.fr-icon-seedling-fill::after,
-.fr-icon-seedling-fill::before {
-  -webkit-mask-image:url("icons/fr--seedling-fill.svg");
-  mask-image:url("icons/fr--seedling-fill.svg");
-}
-
 @media (hover: hover) and (pointer: fine) {
   .fr-enlarge-link:hover {
     background-color: var(--hover) !important;
