@@ -18,6 +18,9 @@ class OrganismeQuerySet(WithAidesCounterQuerySet):
     def with_logo(self):
         return self.exclude(logo_filename="").filter(logo_filename__isnull=False)
 
+    def without_logo(self):
+        return self.defer("logo")
+
 
 class Organisme(models.Model):
     class Meta:
