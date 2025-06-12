@@ -52,6 +52,9 @@ class WithAidesCounterQuerySet(models.QuerySet):
 class OrganismeQuerySet(WithAidesCounterQuerySet, WithIllustrationQuerySet):
     pass
 
+    def without_logo(self):
+        return self.defer("logo")
+
 
 class Organisme(WithIllustration, models.Model):
     class Meta:
