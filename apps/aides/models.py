@@ -12,6 +12,9 @@ class OrganismeQuerySet(models.QuerySet):
     def having_logo(self):
         return self.exclude(logo_filename="").filter(logo_filename__isnull=False)
 
+    def without_logo(self):
+        return self.defer("logo")
+
 
 class Organisme(GristModel):
     class Meta:
