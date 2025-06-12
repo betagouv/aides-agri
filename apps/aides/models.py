@@ -309,7 +309,9 @@ class Aide(GristModel):
     contact = models.CharField(blank=True)
     sujets = models.ManyToManyField(Sujet, related_name="aides")
     types = models.ManyToManyField(Type, related_name="aides")
-    organisme = models.ForeignKey(Organisme, null=True, on_delete=models.CASCADE)
+    organisme = models.ForeignKey(
+        Organisme, null=True, on_delete=models.CASCADE, related_name="aides"
+    )
     organismes_secondaires = models.ManyToManyField(
         Organisme, related_name="aides_secondaires"
     )
