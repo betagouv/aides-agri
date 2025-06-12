@@ -10,7 +10,7 @@ from grist_loader.models import GristModel
 
 
 class OrganismeQuerySet(models.QuerySet):
-    def with_logo(self):
+    def having_logo(self):
         return self.exclude(logo_filename="").filter(logo_filename__isnull=False)
 
 
