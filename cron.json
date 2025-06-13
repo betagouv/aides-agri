@@ -1,0 +1,7 @@
+{
+  "jobs": [
+    {
+      "command": "0 4 * * * python manage.py aides_unpublish_aides_having_invalid_link"
+    }
+  ]
+}
