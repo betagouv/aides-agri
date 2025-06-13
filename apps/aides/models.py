@@ -217,6 +217,9 @@ class GroupementProducteurs(GristModel):
 
 
 class AideQuerySet(models.QuerySet):
+    def published(self):
+        return self.filter(published=True)
+
     def by_sujets(self, sujets: list[Sujet]) -> models.QuerySet:
         return self.filter(sujets__in=sujets)
 
@@ -295,6 +298,7 @@ class Aide(GristModel):
         REALISATION = "Mise en œuvre / Réalisation"
         USAGE = "Usage / Valorisation"
 
+    published = models.BooleanField(default=True)
     slug = models.CharField(blank=True, max_length=2000, unique=True)
     nom = models.CharField(blank=True)
     promesse = models.CharField(blank=True)

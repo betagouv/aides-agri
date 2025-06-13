@@ -275,7 +275,8 @@ class Step5View(AgriMixin, TemplateView):
 class ResultsMixin(AgriMixin):
     def get_results(self):
         return (
-            Aide.objects.by_sujets(self.sujets)
+            Aide.objects.published()
+            .by_sujets(self.sujets)
             .by_zone_geographique(self.commune)
             .by_effectif(
                 siret.mapping_effectif_complete[self.code_effectif]["min"],

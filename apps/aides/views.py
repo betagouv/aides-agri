@@ -11,7 +11,7 @@ from .models import Aide
 
 
 class AideDetailView(DetailView):
-    model = Aide
+    queryset = Aide.objects.published()
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
