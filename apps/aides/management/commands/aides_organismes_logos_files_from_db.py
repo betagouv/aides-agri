@@ -5,7 +5,7 @@ from ...models import Organisme
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        for organisme in Organisme.objects.with_logo():
+        for organisme in Organisme.objects.having_logo():
             with open(
                 f"webroot/aides/organismes-logos/{organisme.logo_filename}", "wb"
             ) as f:

@@ -87,7 +87,7 @@ class OrganismeLoader(GristLoader):
             for attachment in self.gristapi.list_attachments()[1]
         }
         super().load()
-        for organisme in Organisme.objects.with_logo():
+        for organisme in Organisme.objects.having_logo():
             logo_id = int(
                 "".join([c for c in organisme.logo_filename if c.isnumeric()])
             )
