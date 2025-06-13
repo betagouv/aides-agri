@@ -1,32 +1,32 @@
-# Politique de confidentialité de « Aides-Agri »
+# Politique de confidentialité de « Aides Agri »
 
 Date de mise à jour : 03/06/2025
 
 ## I - Qui est responsable de traitement ?
 
-La plateforme « Aides-Agri » est développée au sein de la Ruche numérique du Ministère de l’Agriculture et de la Souveraineté Alimentaire.
+La plateforme « Aides Agri » est développée au sein de la Ruche numérique du Ministère de l’Agriculture et de la Souveraineté Alimentaire.
 
 Le responsable de traitement est le Secrétariat Général du Ministère de l’Agriculture et de la Souveraineté alimentaire représenté par sa secrétaire générale, Madame Cécile BIGOT-DEKEYZER.
 
 ## II - Pourquoi traitons-nous ces données ?
 
-Aides-Agri traite des données à caractère personnel pour les raisons suivantes :
+Aides Agri traite des données à caractère personnel pour les raisons suivantes :
 
 - Proposer un parcours afin d’orienter les utilisateurs vers des dispositifs d’aides adaptés à leurs besoins et problématiques ;
 - Contacter les utilisateurs.
 
 ## III - Quelles sont les données que nous traitons ?
 
-Aides-Agri traite les données à caractère personnel suivantes :
+Aides Agri traite les données à caractère personnel suivantes :
 
 - Données relatives à l’exploitation agricole : effectifs, filières agricoles, localisation géographique, SIRET
 - Données de contact : adresse électronique, uniquement pour les personnes qui souhaitent recevoir la recommandation d'Aides Agri par courriel
 
 ## IV - Qu’est-ce qui nous autorise à traiter ces données ?
 
-Aides-Agri traite des données à caractère personnel en se basant sur de l’exécution d’une mission d’intérêt public ou relevant de l’exercice de l’autorité publique dont est investi le responsable de traitement au sens de l’article 6-1 e) du RPGD.
+Aides Agri traite des données à caractère personnel en se basant sur de l’exécution d’une mission d’intérêt public ou relevant de l’exercice de l’autorité publique dont est investi le responsable de traitement au sens de l’article 6-1 e) du RPGD.
 
-Cette mission d’intérêt public se traduit par le décret n° 2025-30 du 8 janvier 2025 relatif aux attributions du ministre de l'agriculture et de la souveraineté alimentaire et l’article 7 de l’arrêté du 30 juin 2008 portant organisation et attributions du secrétariat général du ministère chargé de l'agriculture.
+Cette mission d’intérêt public se traduit par le décret n° 2025-30 du 8 janvier 2025 relatif aux attributions du Ministre de l’Agriculture et de la Souveraineté Alimentaire et l’article 7 de l’arrêté du 30 juin 2008 portant organisation et attributions du Secrétariat Général du Ministère chargé de l’Agriculture.
 
 ## V - Pendant combien de temps conservons-nous ces données ?
 
@@ -48,7 +48,7 @@ Pour les exercer, contactez-nous à : [aides-agri@beta.gouv.fr](mailto:aides-ag
 
 Puisque ce sont des droits personnels, nous ne traiterons votre demande que si nous sommes en mesure de vous identifier. Dans le cas où nous ne parvenons pas à vous identifier, nous pouvons être amenés à vous demander une preuve de votre identité.
 
-Pour vous aider dans votre démarche, vous trouverez un modèle de courrier élaboré par la CNIL ici : [https://www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces](https://www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces)
+Pour vous aider dans votre démarche, vous trouverez un modèle de courrier élaboré par la CNIL ici : [https://www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces](https://www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces "https://www.cnil.fr/fr/modele/courrier/exercer-son-droit-dacces (ouvre un nouvel onglet)"){target="_blank"}
 
 Nous nous engageons à vous répondre dans un délai raisonnable qui ne saurait dépasser 1 mois à compter de la réception de votre demande.
 
@@ -85,5 +85,5 @@ Toutefois, vous pouvez, à tout moment, refuser d'être suivi de manière anonym
 À tout moment, vous pouvez refuser l’utilisation des cookies et désactiver le dépôt sur votre ordinateur en utilisant la fonction dédiée de votre navigateur (fonction disponible notamment sur Microsoft Internet Explorer 11, Google Chrome, Mozilla Firefox, Apple Safari et Opera).
 Pour aller plus loin, vous pouvez consulter les ﬁches proposées par la Commission Nationale de l'Informatique et des Libertés (CNIL) :
 
-- [Cookies & traceurs : que dit la loi ?](https://www.cnil.fr/fr/cookies-traceurs-que-dit-la-loi)
-- [Cookies : les outils pour les maîtriser](https://www.cnil.fr/fr/cookies-les-outils-pour-les-maitriser)
+- [Cookies & traceurs : que dit la loi ?](https://www.cnil.fr/fr/cookies-traceurs-que-dit-la-loi "Cookies & traceurs : que dit la loi ? (ouvre un nouvel onglet)"){target="_blank"}
+- [Cookies : les outils pour les maîtriser](https://www.cnil.fr/fr/cookies-les-outils-pour-les-maitriser "Cookies : les outils pour les maîtriser (ouvre un nouvel onglet)"){target="_blank"}

@@ -1,10 +1,10 @@
-# Conditions Générales d’Utilisation « Aides-Agri »
+# Conditions Générales d’Utilisation « Aides Agri »
 
 Date de mise à jour : 03/06/2025
 
 ## Article 1 - Champ d’application
 
-Les présentes conditions générales d’utilisation (ci-après « CGU ») précisent le cadre juridique du service numérique Aides-Agri (ci-après la « Plateforme »).
+Les présentes conditions générales d’utilisation (ci-après « CGU ») précisent le cadre juridique du service numérique Aides Agri (ci-après la « Plateforme »).
 
 ## Article 2 - Objet de la Plateforme
 

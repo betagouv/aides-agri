@@ -4,7 +4,7 @@
 
 Ministère de l’Agriculture et de la Souveraineté Alimentaire s’engage à rendre son service accessible, conformément à l’article 47 de la loi n° 2005-102 du 11 février 2005.
 
-Cette déclaration d’accessibilité s’applique à **Aides Agri** (https://aides-agri.beta.gouv.fr).
+Cette déclaration d’accessibilité s’applique à **Aides Agri** [https://aides-agri.beta.gouv.fr](https://aides-agri.beta.gouv.fr).
 
 ## État de conformité
 
@@ -24,10 +24,10 @@ Cette procédure est à utiliser dans le cas suivant : vous avez signalé au re
 
 Vous pouvez :
 
-- Écrire un message au [Défenseur des droits](https://formulaire.defenseurdesdroits.fr/)
-- Contacter [le délégué du Défenseur des droits dans votre région](https://www.defenseurdesdroits.fr/saisir/delegues)
+- Écrire un message au [Défenseur des droits](https://formulaire.defenseurdesdroits.fr/ "Défenseur des droits (ouvre un nouvel onglet)"){target="_blank"}
+- Contacter [le délégué du Défenseur des droits dans votre région](https://www.defenseurdesdroits.fr/saisir/delegues "le délégué du Défenseur des droits dans votre région (ouvre un nouvel onglet)"){target="_blank"}
 - Envoyer un courrier par la poste (gratuit, ne pas mettre de timbre) :
 
     Défenseur des droits Libre réponse 71120 75342 Paris CEDEX 07
 
-Cette déclaration d’accessibilité a été créé le 21 mai 2025 grâce au [Générateur de Déclaration d’Accessibilité](https://betagouv.github.io/a11y-generateur-declaration/#create).
+Cette déclaration d’accessibilité a été créé le 21 mai 2025 grâce au [Générateur de Déclaration d’Accessibilité](https://betagouv.github.io/a11y-generateur-declaration/#create "Générateur de Déclaration d’Accessibilité (ouvre un nouvel onglet)"){target="_blank"}.
