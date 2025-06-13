@@ -30,3 +30,7 @@ Plus de détails sur [cette page dédiée](declaration-accessibilite).
 ## Sécurité
 
 La plateforme est protégée par un certificat électronique, matérialisé pour la grande majorité des navigateurs par un cadenas. Cette protection participe à la confidentialité des échanges. En aucun cas, les services associés à la plateforme ne seront à l’origine d’envoi de courriels pour vous demander la saisie d’informations personnelles.
+
+## Crédits
+
+- Photo de la page d'accueil : [Samuel F](https://unsplash.com/fr/@samuel_f "Samuel F (ouvre un nouvel onglet)"){target="_blank"} sur [Unsplash](https://unsplash.com/ "Unsplash (ouvre un nouvel onglet)"){target="_blank"}.
