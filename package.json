@@ -13,6 +13,9 @@
     "@sentry/browser": "^9"
   },
   "devDependencies": {
-    "esbuild": "^0.25"
+    "esbuild": "^0.25",
+    "cypress": "^14",
+    "@lhci/cli": "^0.15",
+    "@testing-library/cypress": "^10"
   }
 }
