@@ -39,8 +39,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version-file: "pyproject.toml"
-      - name: Install dependencies
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install Python dependencies
         run: uv sync --all-extras --dev
+      - name: Install JS dependencies for E2E testing
+        run: npm install
       - name: Collect staticfiles
         run: uv run --no-sync manage.py collectstatic
         env:
@@ -58,3 +64,20 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: conf.settings.testing
           SECRET_KEY: notsecret
+      - name: Load fixtures for E2E testing
+        run: |
+          uv run --no-sync manage.py migrate
+          uv run --no-sync manage.py loaddata conf/fixtures/dsfr_config.json conf/fixtures/aides_01_sujets.json conf/fixtures/aides_02_filieres.json conf/fixtures/aides_03_zones_geographiques.json
+        env:
+          DJANGO_SETTINGS_MODULE: conf.settings.testing
+          SECRET_KEY: notsecret
+      - name: Run website for E2E tests
+        run: |
+          uv run --no-sync manage.py runserver --noreload --insecure --settings conf.settings.testing
+        env:
+          DJANGO_SETTINGS_MODULE: conf.settings.testing
+          SECRET_KEY: notsecret
+      - name: Run Lighthouse
+        run: npx lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
