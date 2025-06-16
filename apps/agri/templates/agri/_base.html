@@ -60,7 +60,7 @@
 
     {# left column #}
     <div id="left-column" class="fr-col fr-col-0 fr-col-md-3">
-      {% if summary_theme or summary_sujets %}
+      {% if summary_theme or summary_siret %}
       <aside id="summary"
              role="note"
              aria-labelledby="summary-label"
@@ -73,19 +73,19 @@
           <dt class="fr-sr-only">Thème</dt>
           <dd class="fr-tag fr-tag--sm">{{ summary_theme.nom_court }}</dd>
           {% if summary_sujets %}
-            <dt class="fr-sr-only">Sujets</dt>
-            <span class="fr-tags-group">
+            <div class="fr-tags-group">
+              <dt class="fr-sr-only">Sujets</dt>
               {% for sujet in summary_sujets %}
                 <dd class="fr-tag fr-tag--sm">{{ sujet.nom_court }}</dd>
               {% endfor %}
-            </span>
+            </div>
+          {% endif %}
         </dl>
-        <div>
+        <div class="fr-mt-2w">
           <a class="fr-btn fr-btn--tertiary fr-link--sm fr-px-2w" href="{% url 'agri:step-2' %}{% querystring sujets=None next=request.path %}">
             Explorer d’autres besoins
           </a>
         </div>
-          {% endif %}
         {% if summary_siret %}
           <h3 class="fr-text--bold fr-text--md fr-my-3v">Votre exploitation et activités :</h3>
           <dl class="fr-p-0 summary-dl">
@@ -100,22 +100,23 @@
             <dd class="fr-tag fr-tag--sm">{{ summary_effectif }}</dd>
           {% endif %}
           {% if summary_filieres %}
-            <dt class="fr-sr-only">Filières</dt>
-            <span class="fr-tags-group">
-            {% for filiere in summary_filieres %}
-              <dd class="fr-tag fr-tag--sm">{{ filiere.nom }}</dd>
-            {% endfor %}
-            </span>
+            <div class="fr-tags-group">
+              <dt class="fr-sr-only">Filières</dt>
+              {% for filiere in summary_filieres %}
+                <dd class="fr-tag fr-tag--sm">{{ filiere.nom }}</dd>
+              {% endfor %}
+            </div>
           {% endif %}
           {% if summary_regroupements %}
-            <dt class="fr-sr-only">Regroupements</dt>
-            <span class="fr-tags-group fr-mt-n2v">
-            {% for regroupement in summary_regroupements %}
-              <dd class="fr-tag fr-tag--sm">{{ regroupement.nom }}</dd>
-            {% endfor %}
-            </span>
+            <div class="fr-tags-group fr-mt-n2v">
+              <dt class="fr-sr-only">Regroupements</dt>
+              {% for regroupement in summary_regroupements %}
+                <dd class="fr-tag fr-tag--sm">{{ regroupement.nom }}</dd>
+              {% endfor %}
+            </div>
           {% endif %}
-          <div>
+          </dl>
+          <div class="fr-mt-2w">
             <a class="fr-btn fr-btn--tertiary fr-link--sm fr-px-2w" href="{% url 'agri:step-3' %}{% querystring siret=None commune=None date_installation=None regroupements=None filieres=None tranche_effectif_salarie=None %}">
               Modifier
             </a>
