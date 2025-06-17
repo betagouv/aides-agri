@@ -47,6 +47,16 @@ dump-fixtures:
 test:
     DJANGO_SETTINGS_MODULE=conf.settings.testing uv run pytest --cov
 
+runserver-for-e2e-tests:
+    uv run --no-sync manage.py collectstatic --noinput --settings conf.settings.testing
+    uv run --no-sync manage.py runserver --noreload --insecure --settings conf.settings.testing
+
+lighthouse:
+    npx lhci autorun
+
+cypress:
+    npx cypress run
+
 # Scalingo: SSH
 scalingo-django-ssh environment:
     scalingo run --app aides-agri-{{environment}} bash
