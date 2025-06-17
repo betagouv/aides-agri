@@ -73,7 +73,7 @@ jobs:
           SECRET_KEY: notsecret
       - name: Run website for E2E tests
         run: |
-          uv run --no-sync manage.py runserver --noreload --insecure --settings conf.settings.testing
+          uv run --no-sync manage.py runserver --noreload --insecure --settings conf.settings.testing &
         env:
           DJANGO_SETTINGS_MODULE: conf.settings.testing
           SECRET_KEY: notsecret
