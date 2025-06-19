@@ -69,7 +69,11 @@
     </fieldset>
   </div>
 </div>
-<div id="step-4" data-steps-target="step4Placeholder"></div>
+<div id="step-4" data-steps-target="step4Placeholder">
+  <a href="{% url 'agri:step-4' %}{% querystring %}" class="fr-btn fr-btn--secondary fr-btn--sm">
+    Je n’ai pas de numéro Siret
+  </a>
+</div>
 {% endblock form %}
 
 {% block form_buttons %}{% endblock form_buttons %}

@@ -2,7 +2,6 @@ import datetime
 from copy import copy
 
 from django.db.models import Q
-from django.http.response import Http404
 from django.shortcuts import render
 from django.templatetags.static import static
 from django.urls import reverse
@@ -217,7 +216,7 @@ class Step3View(AgriMixin, TemplateView):
 
 class Step4View(AgriMixin, TemplateView):
     template_name = "agri/step-4.html"
-    STEP = 4
+    STEP = 3
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -226,7 +225,9 @@ class Step4View(AgriMixin, TemplateView):
                 "etablissement": self.etablissement,
                 "commune": ZoneGeographique.objects.communes()
                 .filter(numero=self.etablissement.get("commune"))
-                .first(),
+                .first()
+                if self.etablissement
+                else None,
             }
         )
         return context_data
@@ -240,19 +241,21 @@ class Step5View(AgriMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        if not self.etablissement:
-            raise Http404("Cette étape nécessite d’avoir sélectionné une exploitation.")
-
-        naf = self.etablissement.get("activite_principale", "")
-        if naf[-1].isalpha():
-            naf = naf[:-1]
-        filiere = Filiere.objects.filter(code_naf=naf).first()
+        if self.etablissement:
+            naf = self.etablissement.get("activite_principale", "")
+            if naf[-1].isalpha():
+                naf = naf[:-1]
+            filiere = Filiere.objects.filter(code_naf=naf).first()
+        else:
+            filiere = None
         context_data.update(
             {
                 "mapping_tranches_effectif": siret.mapping_effectif,
                 "tranche_effectif_salarie": siret.mapping_effectif.get(
                     self.etablissement.get("tranche_effectif_salarie", ""), None
-                ),
+                )
+                if self.etablissement
+                else None,
                 "etablissement": self.etablissement,
                 "groupements": [
                     (g.pk, g.nom, g.libelle)
@@ -264,7 +267,7 @@ class Step5View(AgriMixin, TemplateView):
                 ],
                 "filieres_initials": [filiere.pk] if filiere else [],
                 "filieres_helper": "Nous n'avons pas trouvé la filière de votre exploitation, veuillez l’indiquer ici."
-                if not filiere
+                if self.etablissement and not filiere
                 else "",
             }
         )
