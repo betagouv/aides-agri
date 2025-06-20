@@ -86,11 +86,13 @@
             Explorer d’autres besoins
           </a>
         </div>
-        {% if summary_siret %}
+        {% if summary_commune %}
           <h3 class="fr-text--bold fr-text--md fr-my-3v">Votre exploitation et activités :</h3>
           <dl class="fr-p-0 summary-dl">
-            <dt class="fr-sr-only">Numéro de Siret</dt>
-            <dd class="fr-tag fr-tag--sm">Siret {{ summary_siret }}</dd>
+            {% if summary_siret %}
+              <dt class="fr-sr-only">Numéro de Siret</dt>
+              <dd class="fr-tag fr-tag--sm">Siret {{ summary_siret }}</dd>
+            {% endif %}
             {% if summary_commune %}
               <dt class="fr-sr-only">Commune</dt>
               <dd class="fr-tag fr-tag--sm">{{ summary_commune.nom }}</dd>

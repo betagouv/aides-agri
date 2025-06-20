@@ -28,7 +28,7 @@
     <div class="fr-fieldset__element fr-mb-3w fr-select-group">
       <label for="input-effectif" class="fr-label fr-mb-2v">
         Effectifs
-        {% if not tranche_effectif_salarie %}
+        {% if etablissement and not tranche_effectif_salarie %}
         <span class="fr-hint-text fr-info-text">Nous n’avons pas trouvé l’effectif de votre exploitation, veuillez l’indiquer ici.</span>
         {% endif %}
       </label>
