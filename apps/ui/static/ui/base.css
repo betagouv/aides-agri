@@ -18,6 +18,21 @@ html {
   display: none !important;
 }
 
+.fr-icon-search-eye-fill:after, .fr-icon-search-eye-fill:before {
+  -webkit-mask-image: url(icons/search-eye-fill.svg);
+  mask-image: url(icons/search-eye-fill.svg)
+}
+
+.fr-icon-service-fill:after, .fr-icon-service-fill:before {
+  -webkit-mask-image: url(icons/service-fill.svg);
+  mask-image: url(icons/service-fill.svg)
+}
+
+.fr-icon-percent-fill:after, .fr-icon-percent-fill:before {
+  -webkit-mask-image: url(icons/percent-fill.svg);
+  mask-image: url(icons/percent-fill.svg)
+}
+
 @media (hover: hover) and (pointer: fine) {
   .fr-enlarge-link:hover {
     background-color: var(--hover) !important;
