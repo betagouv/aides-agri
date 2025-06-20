@@ -120,11 +120,15 @@ def test_load_types(monkeypatch, type_aide):
                 "id": type_aide.pk,
                 "Type_aide": "Super type",
                 "Description": "Super description pour un super type !",
+                "icon_name": "service",
+                "urgence": True,
             },
             {
                 "id": 2,
                 "Type_aide": "Super second type",
                 "Description": "Super description pour un super second type !",
+                "icon_name": "search-eye",
+                "urgence": False,
             },
         ]
 

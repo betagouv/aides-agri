@@ -89,10 +89,15 @@ class Type(GristModel):
     class Meta:
         verbose_name = "Type d'aides"
         verbose_name_plural = "Types d'aides"
-        ordering = ("nom",)
+        ordering = (
+            "-urgence",
+            "nom",
+        )
 
     nom = models.CharField(blank=True)
     description = models.CharField(blank=True)
+    urgence = models.BooleanField(default=False)
+    icon_name = models.CharField(blank=True)
 
     def __str__(self):
         return self.nom

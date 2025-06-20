@@ -66,6 +66,8 @@ class TypeLoader(GristLoader):
     fields = {
         "Type_aide": Type.nom,
         "Description": Type.description,
+        "icon_name": Type.icon_name,
+        "urgence": Type.urgence,
     }
 
 
