@@ -1,5 +1,4 @@
 import datetime
-from collections import defaultdict
 from copy import copy
 
 from django.db.models import Q
