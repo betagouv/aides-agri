@@ -25,7 +25,7 @@ document.onreadystatechange = evt => {
           <img src="{{ object.organisme.get_logo_url }}" alt="" class="fr-responsive-img">
         </div>
         {% for type_aide in object.types.all %}
-          {% dsfr_badge label=type_aide.nom extra_classes="fr-badge--info fr-badge--sm" %}
+          {% dsfr_badge label=type_aide.nom extra_classes="fr-badge--icon-left fr-badge--sm  fr-icon-"|add:type_aide.icon_name|add:"-fill" %}
         {% endfor %}
         <h1 class="fr-h2 fr-mt-1w">{{ object.nom }}</h1>
         <div class="fr-tags-group">
