@@ -334,6 +334,7 @@ class Aide(GristModel):
         models.CharField(choices=EtatAvancementProjet), null=True
     )
     eligibilite_age = models.CharField(blank=True)
+    eligibilite_cumulable = models.CharField(blank=True)
     type_depense = models.CharField(blank=True)
     couverture_geographique = models.CharField(
         choices=CouvertureGeographique, default=CouvertureGeographique.NATIONAL

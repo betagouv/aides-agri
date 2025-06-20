@@ -197,6 +197,7 @@ class AideLoader(GristLoader):
         "Eligibilite_effectif_maximum": Aide.eligibilite_effectif_max,
         "Eligibilite_etat_avancement_projet": Aide.eligibilite_etape_avancement_projet,
         "Eligibilite_age": Aide.eligibilite_age,
+        "Eligibilite_cumulable": Aide.eligibilite_cumulable,
         "aap_ami": Aide.aap_ami,
         "type_depense": Aide.type_depense,
         "url_descriptif": Aide.url_descriptif,

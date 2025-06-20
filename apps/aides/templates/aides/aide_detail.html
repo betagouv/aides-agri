@@ -64,7 +64,33 @@ document.onreadystatechange = evt => {
         <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-btn--icon-left fr-mb-2w">Critères d'éligibilité</h2>
         <div class="fr-text--sm" id="conditions">
           {{ object.conditions|ui_markdown|safe }}
-          {{ object.type_depense|ui_markdown|safe }}
+          {% if object.eligibilite_effectif_min or object.eligibilite_effectif_max %}
+            <h3 class="fr-text--bold fr-text--md">Effectifs salariés :</h3>
+            <ul>
+            {% if object.eligibilite_effectif_min %}
+              <li>Au moins {{ object.eligibilite_effectif_min }}</li>
+            {% endif %}
+            {% if object.eligibilite_effectif_max %}
+              <li>Au plus {{ object.eligibilite_effectif_max }}</li>
+            {% endif %}
+            </ul>
+          {% endif %}
+          {% if object.type_depense %}
+            <h3 class="fr-text--bold fr-text--md">Dépenses éligibles :</h3>
+            {{ object.type_depense|ui_markdown|safe }}
+          {% endif %}
+          {% if object.eligibilite_etape_avancement_projet %}
+            <h3 class="fr-text--bold fr-text--md">Étapes de votre projet auxquelles cette aide intervient :</h3>
+            <ul>
+            {% for etape_projet in object.eligibilite_etape_avancement_projet %}
+              <li>{{ etape_projet }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+          {% if object.eligibilite_cumulable %}
+            <h3 class="fr-text--bold fr-text--md">Cette aide est-elle cumulable avec d’autres dispositifs ?</h3>
+            {{ object.eligibilite_cumulable|ui_markdown|safe }}
+          {% endif %}
         </div>
       </div>
     </div>
