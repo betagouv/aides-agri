@@ -119,7 +119,7 @@ class Programme(models.Model):
 
 class ZoneGeographiqueQuerySet(models.QuerySet):
     def departements(self):
-        return self.filter(type=ZoneGeographique.Type.DEPARTEMENT).order_by("numero")
+        return self.filter(type=ZoneGeographique.Type.DEPARTEMENT).order_by("code")
 
     def communes(self):
         return self.filter(type=ZoneGeographique.Type.COMMUNE)
@@ -144,7 +144,7 @@ class ZoneGeographique(models.Model):
         COMMUNE = "Commune", "Commune"
 
     nom = models.CharField(blank=True)
-    numero = models.CharField(max_length=5, blank=True)
+    code = models.CharField(blank=True)
     type = models.CharField(choices=Type)
     parent = models.ForeignKey(
         "ZoneGeographique", null=True, on_delete=models.CASCADE, related_name="enfants"

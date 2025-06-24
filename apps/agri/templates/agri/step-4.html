@@ -50,7 +50,7 @@
         >
           {{ commune.code_postal }} {{ commune.nom }}
         </button>
-        <input type="hidden" name="commune" value="{{ commune.numero }}">
+        <input type="hidden" name="commune" value="{{ commune.code }}">
         {% ui_select_rich_single label="Commune" name="commune" required=True search_url="agri:search-commune" search_field_name="commune-search" extra_classes="fr-hidden" %}
       {% else %}
         {% if etablissement %}

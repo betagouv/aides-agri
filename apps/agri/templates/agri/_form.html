@@ -14,7 +14,7 @@
     <input type="hidden" name="siret" value="{{ summary_siret }}">
   {% endif %}
   {% if summary_commune %}
-    <input type="hidden" name="commune" value="{{ summary_commune.numero }}">
+    <input type="hidden" name="commune" value="{{ summary_commune.code }}">
   {% endif %}
   {% if summary_date_installation %}
     <input type="hidden" name="date_installation" value="{{ summary_date_installation|date:"c" }}">

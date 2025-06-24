@@ -91,7 +91,7 @@ class AgriMixin(ContextMixin):
             self.etablissement = siret.get(code_siret)
         code_commune = request.GET.get("commune", None)
         if code_commune:
-            self.commune = ZoneGeographique.objects.communes().get(numero=code_commune)
+            self.commune = ZoneGeographique.objects.communes().get(code=code_commune)
         self.code_effectif = request.GET.get("tranche_effectif_salarie", None)
         date_installation = request.GET.get("date_installation", None)
         if date_installation:
@@ -219,7 +219,7 @@ class Step4View(AgriMixin, TemplateView):
             {
                 "etablissement": self.etablissement,
                 "commune": ZoneGeographique.objects.communes()
-                .filter(numero=self.etablissement.get("commune"))
+                .filter(code=self.etablissement.get("commune"))
                 .first()
                 if self.etablissement
                 else None,
@@ -390,7 +390,7 @@ class SearchCommuneView(TemplateView):
                 {
                     "name": "commune",
                     "options": [
-                        (zone.numero, zone, zone)
+                        (zone.code, zone, zone)
                         for zone in ZoneGeographique.objects.communes().filter(
                             Q(code_postal__icontains=q) | Q(nom__icontains=q)
                         )
