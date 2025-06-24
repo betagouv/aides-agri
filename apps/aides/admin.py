@@ -82,12 +82,14 @@ class OrganismeAdmin(admin.ModelAdmin):
 @admin.register(ZoneGeographique)
 class ZoneGeographiqueAdmin(admin.ModelAdmin):
     list_display = (
-        "nom",
         "type",
-        "parent",
-        "epci",
+        "code",
+        "nom",
     )
-    list_display_links = ("nom",)
+    list_display_links = (
+        "code",
+        "nom",
+    )
     list_filter = ("type",)
     list_select_related = ("parent", "epci")
     fields = ("parent", "type", "nom", "epci")

@@ -84,7 +84,7 @@ def test_search_commune(requests_mock, client, zone_geographique_commune_75001):
 
     # WHEN requesting search company with that Siret
     querydict = QueryDict(mutable=True)
-    querydict.update({"q": zone_geographique_commune_75001.numero})
+    querydict.update({"q": zone_geographique_commune_75001.code})
     url = reverse("agri:search-commune") + "?" + querydict.urlencode()
     response = client.get(url)
 
@@ -133,7 +133,7 @@ def test_results(
         {
             "theme": sujet.themes.first().pk,
             "siret": fake_siret,
-            "commune": zone_geographique_commune_75001.numero,
+            "commune": zone_geographique_commune_75001.code,
             "tranche_effectif_salarie": "01",
         }
     )
