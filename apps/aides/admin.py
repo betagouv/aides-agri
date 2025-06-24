@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 
+from product.admin import ReadOnlyModelAdmin
+
 from .models import (
     Theme,
     Sujet,
@@ -80,7 +82,7 @@ class OrganismeAdmin(admin.ModelAdmin):
 
 
 @admin.register(ZoneGeographique)
-class ZoneGeographiqueAdmin(admin.ModelAdmin):
+class ZoneGeographiqueAdmin(ReadOnlyModelAdmin):
     list_display = (
         "type",
         "code",
@@ -93,6 +95,8 @@ class ZoneGeographiqueAdmin(admin.ModelAdmin):
     list_filter = ("type",)
     list_select_related = ("parent", "epci")
     fields = ("parent", "type", "nom", "epci")
+    fields = ("parent", "type", "code", "nom", "epci", "code_postal")
+    search_fields = ("nom", "code_postal")
 
 
 @admin.register(GroupementProducteurs)
