@@ -118,6 +118,12 @@ class Programme(models.Model):
 
 
 class ZoneGeographiqueQuerySet(models.QuerySet):
+    def regions(self):
+        return self.filter(type=ZoneGeographique.Type.REGION).order_by("code")
+
+    def coms(self):
+        return self.filter(type=ZoneGeographique.Type.COM).order_by("code")
+
     def departements(self):
         return self.filter(type=ZoneGeographique.Type.DEPARTEMENT).order_by("code")
 
@@ -129,19 +135,17 @@ class ZoneGeographique(models.Model):
     class Meta:
         verbose_name = "Zone géographique"
         verbose_name_plural = "Zones géographiques"
+        unique_together = ("type", "code")
+        ordering = ("type", "code")
 
     objects = ZoneGeographiqueQuerySet.as_manager()
 
     class Type(models.TextChoices):
-        REGION = "Région", "Région"
-        DEPARTEMENT = "Département", "Département"
-        COM = "Collectivité d'outre-mer", "Collectivité d'outre-mer"
-        CSG = "Collectivité sui generis", "Collectivité sui generis"
-        METRO = "Métropole", "Métropole"
-        CU = "Communauté Urbaine", "Communauté Urbaine"
-        CA = "Communauté d'Agglo", "Communauté d'Agglo"
-        CC = "Communauté de communes", "Communauté de communes"
-        COMMUNE = "Commune", "Commune"
+        REGION = "01 Région", "Région"
+        DEPARTEMENT = "03 Département", "Département"
+        COM = "02 Collectivité d'outre-mer", "Collectivité d'outre-mer"
+        EPCI = "04 EPCI", "EPCI"
+        COMMUNE = "05 Commune", "Commune"
 
     nom = models.CharField(blank=True)
     code = models.CharField(blank=True)
