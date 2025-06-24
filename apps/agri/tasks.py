@@ -43,7 +43,7 @@ def send_results_by_mail(
         {
             "theme": theme.pk,
             "siret": etablissement["siret"],
-            "commune": commune.numero,
+            "commune": commune.code,
             "date_installation": date_installation,
             "tranche_effectif_salarie": effectif[0],
         }
