@@ -46,7 +46,7 @@ class ZoneGeographiqueFactory(factory.django.DjangoModelFactory):
 
     type = models.ZoneGeographique.Type.REGION
     nom = factory.Sequence(lambda n: f"Zone Geographique {n}")
-    numero = factory.Sequence(lambda n: str(n))
+    code = factory.Sequence(lambda n: str(n))
     parent = None
 
 
