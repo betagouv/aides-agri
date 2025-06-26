@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.sitemaps",
     "django.contrib.staticfiles",
+    "admin_extra_buttons",
     "anymail",
     "csp",
     "django_htmx",
