@@ -39,10 +39,11 @@ class ThemeAdmin(VersionAdmin):
         "aides_count",
     )
     list_display_links = ("nom",)
-    fields = ("nom", "nom_court", "description", "urgence")
 
     def aides_count(self, obj):
         return obj.aides_count
+
+    aides_count.short_description = "Nombre d’aides"
 
     def get_queryset(self, request):
         return super().get_queryset(request).with_aides_count()
@@ -51,12 +52,12 @@ class ThemeAdmin(VersionAdmin):
 @admin.register(Sujet)
 class SujetAdmin(VersionAdmin):
     list_display = ("nom", "aides_count")
-    list_display_links = ("nom",)
     list_filter = ("themes",)
-    fields = ("nom", "nom_court", "themes")
 
     def aides_count(self, obj):
         return obj.aides_count
+
+    aides_count.short_description = "Nombre d’aides"
 
     def get_queryset(self, request):
         return super().get_queryset(request).with_aides_count()
@@ -64,100 +65,67 @@ class SujetAdmin(VersionAdmin):
 
 @admin.register(Type)
 class TypeAdmin(VersionAdmin):
-    list_display = ("nom",)
-    list_display_links = ("nom",)
-    fields = ("nom", "description")
+    list_display = ("nom", "description", "urgence")
 
 
 @admin.register(Programme)
 class ProgrammeAdmin(VersionAdmin):
-    list_display = ("nom",)
-    list_display_links = ("nom",)
-    fields = ("nom",)
+    pass
 
 
 @admin.register(Organisme)
 class OrganismeAdmin(VersionAdmin):
-    list_display = ("nom",)
-    list_display_links = ("nom",)
-    fields = ("nom", "zones_geographiques")
-    search_fields = ("nom",)
+    list_display = ("nom", "acronyme")
+    list_display_links = ("nom", "acronyme")
+    search_fields = ("nom", "acronyme")
+    autocomplete_fields = ("zones_geographiques",)
+    readonly_fields = ("logo_filename",)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).defer("logo")
 
 
 @admin.register(ZoneGeographique)
 class ZoneGeographiqueAdmin(ReadOnlyModelAdmin):
-    list_display = (
-        "type",
-        "code",
-        "nom",
-    )
-    list_display_links = (
-        "code",
-        "nom",
-    )
+    list_display = ("type", "code", "nom")
+    list_display_links = ("code", "nom")
     list_filter = ("type",)
-    fields = ("parent", "type", "code", "nom", "epci", "code_postal")
     search_fields = ("nom", "code_postal")
 
 
 @admin.register(GroupementProducteurs)
 class GroupementProducteursAdmin(VersionAdmin):
-    list_display = (
-        "nom",
-        "libelle",
-        "is_real",
-    )
-    list_display_links = ("nom",)
-    fields = ("nom", "libelle")
+    list_display = ("nom", "libelle")
 
 
 @admin.register(Filiere)
 class FiliereAdmin(VersionAdmin):
-    list_display = (
-        "nom",
-        "position",
-    )
+    list_display = ("nom", "position")
     list_display_links = ("nom",)
-    fields = ("nom", "position")
 
 
 @admin.register(SousFiliere)
 class SousFiliereAdmin(VersionAdmin):
-    list_display = (
-        "nom",
-        "filiere",
-    )
+    list_display = ("nom", "filiere")
     list_display_links = ("nom",)
     list_filter = ("filiere",)
     list_select_related = ("filiere",)
-    fields = ("nom", "filiere")
 
 
 @admin.register(Production)
 class ProductionAdmin(VersionAdmin):
-    list_display = (
-        "nom",
-        "sous_filiere",
-    )
+    list_display = ("nom", "sous_filiere")
     list_display_links = ("nom",)
     list_filter = ("sous_filiere",)
     list_select_related = ("sous_filiere",)
-    fields = ("nom", "sous_filiere")
 
 
 @admin.register(Aide)
 class AideAdmin(ExtraButtonsMixin, VersionAdmin):
-    list_display = (
-        "nom",
-        "organisme",
-    )
+    list_display = ("nom", "organisme")
     list_display_links = ("nom",)
     list_filter = ("sujets", "types")
-    autocomplete_fields = (
-        "zones_geographiques",
-        "organisme",
-        "organismes_secondaires",
-    )
+    autocomplete_fields = ("zones_geographiques", "organisme", "organismes_secondaires")
     readonly_fields = ("raw_data",)
     fieldsets = [
         (
