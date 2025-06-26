@@ -67,6 +67,7 @@ class OrganismeAdmin(admin.ModelAdmin):
     list_display = ("nom",)
     list_display_links = ("nom",)
     fields = ("nom", "zones_geographiques")
+    search_fields = ("nom",)
 
 
 @admin.register(ZoneGeographique)
@@ -81,8 +82,6 @@ class ZoneGeographiqueAdmin(ReadOnlyModelAdmin):
         "nom",
     )
     list_filter = ("type",)
-    list_select_related = ("parent", "epci")
-    fields = ("parent", "type", "nom", "epci")
     fields = ("parent", "type", "code", "nom", "epci", "code_postal")
     search_fields = ("nom", "code_postal")
 
@@ -140,6 +139,11 @@ class AideAdmin(admin.ModelAdmin):
     )
     list_display_links = ("nom",)
     list_filter = ("sujets", "types")
+    autocomplete_fields = (
+        "zones_geographiques",
+        "organisme",
+        "organismes_secondaires",
+    )
     readonly_fields = ("raw_data",)
     fieldsets = [
         (
