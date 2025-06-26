@@ -1,3 +1,4 @@
+from django.http.response import HttpResponsePermanentRedirect
 from django.views.generic import DetailView
 
 from product.forms import UserNoteForm
@@ -6,7 +7,18 @@ from .models import Aide
 
 
 class AideDetailView(DetailView):
-    queryset = Aide.objects.published()
+    def get_queryset(self):
+        if self.request.user and self.request.user.has_perm("aides.view_aide"):
+            return Aide.objects.all()
+        else:
+            return Aide.objects.published()
+
+    def get(self, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.slug != self.kwargs["slug"]:
+            return HttpResponsePermanentRedirect(self.object.get_absolute_url())
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)

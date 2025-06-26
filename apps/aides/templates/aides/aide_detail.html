@@ -17,6 +17,12 @@ document.onreadystatechange = evt => {
 
 {% block title %}{{ object.nom }}{% endblock title %}
 
+{% block other_notices %}
+  {% if not object.is_published %}
+    {% dsfr_notice type="warning" description="Ceci est une prévisualisation de la fiche d’aide. Elle n’est pas publiée. Tu la vois parce que tu es connecté⋅e à l’outil d’édition des aides." %}
+  {% endif %}
+{% endblock other_notices %}
+
 {% block content %}
   <div class="fr-container--fluid" id="aide">
     <div class="fr-grid-row fr-mb-3w">
