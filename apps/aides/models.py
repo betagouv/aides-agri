@@ -315,13 +315,13 @@ class Aide(models.Model):
     url_descriptif = models.URLField(blank=True, max_length=2000)
     url_demarche = models.URLField(blank=True, max_length=2000)
     contact = models.CharField(blank=True)
-    sujets = models.ManyToManyField(Sujet, related_name="aides")
-    types = models.ManyToManyField(Type, related_name="aides")
+    sujets = models.ManyToManyField(Sujet, related_name="aides", blank=True)
+    types = models.ManyToManyField(Type, related_name="aides", blank=True)
     organisme = models.ForeignKey(Organisme, null=True, on_delete=models.CASCADE)
     organismes_secondaires = models.ManyToManyField(
-        Organisme, related_name="aides_secondaires"
+        Organisme, related_name="aides_secondaires", blank=True
     )
-    programmes = models.ManyToManyField(Programme, related_name="aides")
+    programmes = models.ManyToManyField(Programme, related_name="aides", blank=True)
     aap_ami = models.BooleanField(
         default=False, verbose_name="Appel à projet ou manifestation d'intérêt"
     )
@@ -329,27 +329,31 @@ class Aide(models.Model):
     montant = models.CharField(blank=True)
     participation_agriculteur = models.CharField(blank=True)
     recurrence_aide = models.CharField(choices=Recurrence, blank=True)
-    date_debut = models.DateField(null=True)
-    date_fin = models.DateField(null=True)
-    eligibilite_effectif_min = models.PositiveIntegerField(null=True)
-    eligibilite_effectif_max = models.PositiveIntegerField(null=True)
+    date_debut = models.DateField(null=True, blank=True)
+    date_fin = models.DateField(null=True, blank=True)
+    eligibilite_effectif_min = models.PositiveIntegerField(null=True, blank=True)
+    eligibilite_effectif_max = models.PositiveIntegerField(null=True, blank=True)
     eligibilite_etape_avancement_projet = postgres_fields.ArrayField(
-        models.CharField(choices=EtatAvancementProjet), null=True
+        models.CharField(choices=EtatAvancementProjet), null=True, blank=True
     )
     eligibilite_age = models.CharField(blank=True)
     eligibilite_cumulable = models.CharField(blank=True)
     type_depense = models.CharField(blank=True)
     couverture_geographique = models.CharField(
-        choices=CouvertureGeographique, default=CouvertureGeographique.NATIONAL
+        choices=CouvertureGeographique,
+        default=CouvertureGeographique.NATIONAL,
+        blank=True,
     )
-    zones_geographiques = models.ManyToManyField(ZoneGeographique, related_name="aides")
+    zones_geographiques = models.ManyToManyField(
+        ZoneGeographique, related_name="aides", blank=True
+    )
     duree_accompagnement = models.CharField(blank=True)
     etapes = models.TextField(blank=True)
     beneficiaires = postgres_fields.ArrayField(
-        models.CharField(choices=Beneficiaire), null=True
+        models.CharField(choices=Beneficiaire), null=True, blank=True
     )
-    filieres = models.ManyToManyField(Filiere)
-    raw_data = postgres_fields.HStoreField(null=True)
+    filieres = models.ManyToManyField(Filiere, blank=True)
+    raw_data = postgres_fields.HStoreField(null=True, blank=True)
 
     def __str__(self):
         return self.nom
