@@ -140,6 +140,7 @@ class AideAdmin(ExtraButtonsMixin, VersionAdmin):
             "Présentation",
             {
                 "fields": [
+                    "promesse",
                     "description",
                     "duree_accompagnement",
                     "exemple_projet",
@@ -152,8 +153,7 @@ class AideAdmin(ExtraButtonsMixin, VersionAdmin):
             {
                 "fields": [
                     "types",
-                    "beneficiaires",
-                    "organisme",
+                    ("beneficiaires", "filieres"),
                     "organismes_secondaires",
                     "programmes",
                     "couverture_geographique",
@@ -173,12 +173,9 @@ class AideAdmin(ExtraButtonsMixin, VersionAdmin):
             "Guichet",
             {
                 "fields": [
-                    "url_descriptif",
-                    "url_demarche",
-                    "recurrence_aide",
-                    "date_debut",
-                    "date_fin",
+                    ("url_descriptif", "url_demarche"),
                     "contact",
+                    ("recurrence_aide", "date_debut", "date_fin"),
                 ],
             },
         ),
@@ -186,23 +183,16 @@ class AideAdmin(ExtraButtonsMixin, VersionAdmin):
             "Éligibilité",
             {
                 "fields": [
-                    "eligibilite_effectif_min",
-                    "eligibilite_effectif_max",
-                    "eligibilite_etape_avancement_projet",
-                    "eligibilite_age",
+                    ("eligibilite_effectif_min", "eligibilite_effectif_max"),
+                    ("eligibilite_etape_avancement_projet", "eligibilite_age"),
                     "conditions",
                     "type_depense",
-                    "filieres",
                 ],
             },
         ),
         (
             "Données brutes",
-            {
-                "fields": [
-                    "raw_data",
-                ],
-            },
+            {"fields": ["raw_data"]},
         ),
         ("Cycle de vie", {"fields": ["status"]}),
     ]
