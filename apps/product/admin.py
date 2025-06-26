@@ -1,12 +1,21 @@
 from django.contrib import admin
 
-# Register your models here.
-
 from .models import UserFeedback, UserNote
 
 
+class ReadOnlyModelAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
 @admin.register(UserNote)
-class UserNoteAdmin(admin.ModelAdmin):
+class UserNoteAdmin(ReadOnlyModelAdmin):
     list_display = (
         "sent_at",
         "usefulness",
@@ -21,7 +30,7 @@ class UserNoteAdmin(admin.ModelAdmin):
 
 
 @admin.register(UserFeedback)
-class UserFeedbackAdmin(admin.ModelAdmin):
+class UserFeedbackAdmin(ReadOnlyModelAdmin):
     list_display = (
         "sent_at",
         "information_quality",
