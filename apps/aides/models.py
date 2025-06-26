@@ -184,7 +184,7 @@ class Filiere(models.Model):
 class SousFiliere(models.Model):
     class Meta:
         verbose_name = "Sous-filière"
-        verbose_name_plural = "Sous-filières"
+        verbose_name_plural = "Filières > Sous-filières"
 
     nom = models.CharField(max_length=100, blank=True)
     filiere = models.ForeignKey(Filiere, on_delete=models.CASCADE, null=True)
@@ -196,7 +196,7 @@ class SousFiliere(models.Model):
 class Production(models.Model):
     class Meta:
         verbose_name = "Détail de production"
-        verbose_name_plural = "Détails de production"
+        verbose_name_plural = "Filières > Sous-filières > Détails de production"
 
     nom = models.CharField(max_length=100, blank=True)
     sous_filiere = models.ForeignKey(SousFiliere, on_delete=models.CASCADE, null=True)
