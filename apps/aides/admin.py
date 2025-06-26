@@ -140,6 +140,7 @@ class AideAdmin(admin.ModelAdmin):
     )
     list_display_links = ("nom",)
     list_filter = ("sujets", "types")
+    readonly_fields = ("raw_data",)
     fieldsets = [
         (
             "Infos de base",
@@ -208,6 +209,14 @@ class AideAdmin(admin.ModelAdmin):
                     "conditions",
                     "type_depense",
                     "filieres",
+                ],
+            },
+        ),
+        (
+            "Données brutes",
+            {
+                "fields": [
+                    "raw_data",
                 ],
             },
         ),

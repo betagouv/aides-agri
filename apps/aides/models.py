@@ -350,6 +350,7 @@ class Aide(models.Model):
         models.CharField(choices=Beneficiaire), null=True
     )
     filieres = models.ManyToManyField(Filiere)
+    raw_data = postgres_fields.HStoreField(null=True)
 
     def __str__(self):
         return self.nom
