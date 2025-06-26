@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     "two_factor",
     "widget_tweaks",
     "dsfr",
-    "grist_loader",
     "ui",
     "product",
     "agri",

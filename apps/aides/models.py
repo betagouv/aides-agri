@@ -6,15 +6,13 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.timezone import now
 
-from grist_loader.models import GristModel
-
 
 class OrganismeQuerySet(models.QuerySet):
     def with_logo(self):
         return self.exclude(logo_filename="").filter(logo_filename__isnull=False)
 
 
-class Organisme(GristModel):
+class Organisme(models.Model):
     class Meta:
         verbose_name = "Organisme"
         verbose_name_plural = "Organismes"
@@ -45,7 +43,7 @@ class ThemeQuerySet(models.QuerySet):
         return self.annotate(aides_count=models.Count("sujets__aides"))
 
 
-class Theme(GristModel):
+class Theme(models.Model):
     class Meta:
         verbose_name = "Thème"
         verbose_name_plural = "Thèmes"
@@ -70,7 +68,7 @@ class SujetQuerySet(models.QuerySet):
         return self.annotate(aides_count=models.Count("aides"))
 
 
-class Sujet(GristModel):
+class Sujet(models.Model):
     class Meta:
         verbose_name = "Sujet"
         verbose_name_plural = "Sujets"
@@ -86,7 +84,7 @@ class Sujet(GristModel):
         return self.nom
 
 
-class Type(GristModel):
+class Type(models.Model):
     class Meta:
         verbose_name = "Type d'aides"
         verbose_name_plural = "Types d'aides"
@@ -104,7 +102,7 @@ class Type(GristModel):
         return self.nom
 
 
-class Programme(GristModel):
+class Programme(models.Model):
     class Meta:
         verbose_name = "Programme d'aides"
         verbose_name_plural = "Programmes d'aides"
@@ -124,7 +122,7 @@ class ZoneGeographiqueQuerySet(models.QuerySet):
         return self.filter(type=ZoneGeographique.Type.COMMUNE)
 
 
-class ZoneGeographique(GristModel):
+class ZoneGeographique(models.Model):
     class Meta:
         verbose_name = "Zone géographique"
         verbose_name_plural = "Zones géographiques"
@@ -162,7 +160,7 @@ class ZoneGeographique(GristModel):
         return f"{prefix} {self.nom}"
 
 
-class Filiere(GristModel):
+class Filiere(models.Model):
     class Meta:
         verbose_name = "Filière"
         verbose_name_plural = "Filières"
@@ -176,7 +174,7 @@ class Filiere(GristModel):
         return self.nom
 
 
-class SousFiliere(GristModel):
+class SousFiliere(models.Model):
     class Meta:
         verbose_name = "Sous-filière"
         verbose_name_plural = "Sous-filières"
@@ -188,7 +186,7 @@ class SousFiliere(GristModel):
         return self.nom
 
 
-class Production(GristModel):
+class Production(models.Model):
     class Meta:
         verbose_name = "Détail de production"
         verbose_name_plural = "Détails de production"
@@ -200,7 +198,7 @@ class Production(GristModel):
         return self.nom
 
 
-class GroupementProducteurs(GristModel):
+class GroupementProducteurs(models.Model):
     class Meta:
         verbose_name = "Groupement de producteurs"
         verbose_name_plural = "Groupement de producteurs"
@@ -270,7 +268,7 @@ class AideQuerySet(models.QuerySet):
         )
 
 
-class Aide(GristModel):
+class Aide(models.Model):
     class Meta:
         verbose_name = "Aide"
         verbose_name_plural = "Aides"
