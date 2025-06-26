@@ -21,7 +21,7 @@ class Organisme(models.Model):
 
     nom = models.CharField(blank=True)
     acronyme = models.CharField(blank=True)
-    zones_geographiques = models.ManyToManyField("ZoneGeographique")
+    zones_geographiques = models.ManyToManyField("ZoneGeographique", blank=True)
     logo = models.BinaryField(blank=True)
     logo_filename = models.CharField(blank=True, null=True)
 
@@ -209,19 +209,10 @@ class GroupementProducteurs(models.Model):
     class Meta:
         verbose_name = "Groupement de producteurs"
         verbose_name_plural = "Groupement de producteurs"
-        ordering = ("-is_real", "nom")
+        ordering = ("nom",)
 
     nom = models.CharField(max_length=100, blank=True)
     libelle = models.CharField(max_length=200, blank=True)
-    is_real = models.GeneratedField(
-        expression=models.Case(
-            models.When(libelle="", then=False),
-            default=True,
-            output_field=models.BooleanField(),
-        ),
-        output_field=models.BooleanField(),
-        db_persist=True,
-    )
 
     def __str__(self):
         return self.nom
