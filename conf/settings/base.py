@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "django_otp.plugins.otp_totp",
     "django_tasks",
     "django_tasks.backends.database",
+    "markdownx",
     "reversion",
     "two_factor",
     "widget_tweaks",
