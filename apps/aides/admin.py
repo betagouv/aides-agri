@@ -13,6 +13,7 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.safestring import mark_safe
+from reversion.admin import VersionAdmin
 
 from product.admin import ReadOnlyModelAdmin
 
@@ -33,7 +34,7 @@ from .tasks import enrich_aide
 
 
 @admin.register(Theme)
-class ThemeAdmin(admin.ModelAdmin):
+class ThemeAdmin(VersionAdmin):
     list_display = (
         "nom",
         "urgence",
@@ -58,7 +59,7 @@ class ThemeAdmin(admin.ModelAdmin):
 
 
 @admin.register(Sujet)
-class SujetAdmin(admin.ModelAdmin):
+class SujetAdmin(VersionAdmin):
     list_display = ("nom", "aides_count")
     list_display_links = ("nom",)
     list_filter = ("themes",)
@@ -74,21 +75,21 @@ class SujetAdmin(admin.ModelAdmin):
 
 
 @admin.register(Type)
-class TypeAdmin(admin.ModelAdmin):
+class TypeAdmin(VersionAdmin):
     list_display = ("nom",)
     list_display_links = ("nom",)
     fields = ("nom", "description")
 
 
 @admin.register(Programme)
-class ProgrammeAdmin(admin.ModelAdmin):
+class ProgrammeAdmin(VersionAdmin):
     list_display = ("nom",)
     list_display_links = ("nom",)
     fields = ("nom",)
 
 
 @admin.register(Organisme)
-class OrganismeAdmin(admin.ModelAdmin):
+class OrganismeAdmin(VersionAdmin):
     list_display = ("nom",)
     list_display_links = ("nom",)
     fields = ("nom", "zones_geographiques")
@@ -112,7 +113,7 @@ class ZoneGeographiqueAdmin(ReadOnlyModelAdmin):
 
 
 @admin.register(GroupementProducteurs)
-class GroupementProducteursAdmin(admin.ModelAdmin):
+class GroupementProducteursAdmin(VersionAdmin):
     list_display = (
         "nom",
         "libelle",
@@ -123,7 +124,7 @@ class GroupementProducteursAdmin(admin.ModelAdmin):
 
 
 @admin.register(Filiere)
-class FiliereAdmin(admin.ModelAdmin):
+class FiliereAdmin(VersionAdmin):
     list_display = (
         "nom",
         "position",
@@ -133,7 +134,7 @@ class FiliereAdmin(admin.ModelAdmin):
 
 
 @admin.register(SousFiliere)
-class SousFiliereAdmin(admin.ModelAdmin):
+class SousFiliereAdmin(VersionAdmin):
     list_display = (
         "nom",
         "filiere",
@@ -145,7 +146,7 @@ class SousFiliereAdmin(admin.ModelAdmin):
 
 
 @admin.register(Production)
-class ProductionAdmin(admin.ModelAdmin):
+class ProductionAdmin(VersionAdmin):
     list_display = (
         "nom",
         "sous_filiere",
@@ -157,7 +158,7 @@ class ProductionAdmin(admin.ModelAdmin):
 
 
 @admin.register(Aide)
-class AideAdmin(ExtraButtonsMixin, admin.ModelAdmin):
+class AideAdmin(ExtraButtonsMixin, VersionAdmin):
     list_display = (
         "nom",
         "organisme",
