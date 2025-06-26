@@ -7,10 +7,12 @@ from django import forms
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import UploadedFile
+from django.db import models
 from django.db.models import QuerySet
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.text import slugify
+from markdownx.widgets import AdminMarkdownxWidget
 from reversion.admin import VersionAdmin
 
 from product.admin import ReadOnlyModelAdmin
@@ -201,7 +203,11 @@ class AideAdmin(ExtraButtonsMixin, VersionAdmin):
 
     actions = ["perform_auto_enrich"]
 
-    @button(label="Importer un fichier CSV d'aides")
+    formfield_overrides = {
+        models.TextField: {"widget": AdminMarkdownxWidget},
+    }
+
+    @button(label="Importer un fichier CSV d'aides", html_attrs={"class": "addlink"})
     def upload(self, request):
         context = self.get_common_context(request)
         if request.method == "POST":
