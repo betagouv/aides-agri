@@ -29,6 +29,7 @@ sitemaps = {"aides": AidesSitemap, "agri": AgriSitemap}
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="django-sitemap"),
+    path("markdownx/", include("markdownx.urls")),
     path("", include("agri.urls")),
     path("", include("aides.urls")),
     path("", include("product.urls")),
