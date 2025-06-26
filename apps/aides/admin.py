@@ -144,9 +144,7 @@ class AideAdmin(ExtraButtonsMixin, VersionAdmin):
             "Infos de base",
             {
                 "fields": [
-                    "slug",
-                    "nom",
-                    "promesse",
+                    ("nom", "organisme"),
                 ],
             },
         ),
@@ -218,6 +216,7 @@ class AideAdmin(ExtraButtonsMixin, VersionAdmin):
                 ],
             },
         ),
+        ("Cycle de vie", {"fields": ["status"]}),
     ]
 
     list_select_related = ("organisme",)

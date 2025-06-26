@@ -4,6 +4,7 @@ from django.contrib.postgres import fields as postgres_fields
 from django.db import models
 from django.templatetags.static import static
 from django.urls import reverse
+from django.utils.text import slugify
 from django.utils.timezone import now
 
 
@@ -220,7 +221,7 @@ class GroupementProducteurs(models.Model):
 
 class AideQuerySet(models.QuerySet):
     def published(self):
-        return self.filter(published=True)
+        return self.filter(status=Aide.Status.PUBLISHED)
 
     def by_sujets(self, sujets: list[Sujet]) -> models.QuerySet:
         return self.filter(sujets__in=sujets)
@@ -267,8 +268,15 @@ class Aide(models.Model):
     class Meta:
         verbose_name = "Aide"
         verbose_name_plural = "Aides"
+        unique_together = ("organisme", "nom")
 
     objects = AideQuerySet.as_manager()
+
+    class Status(models.TextChoices):
+        DRAFT = "01 À traiter", "01 À traiter"
+        CANDIDATE = "02 À relire", "02 À relire"
+        PUBLISHED = "03 Publiée", "03 Publiée"
+        UNPUBLISHED = "04 Dépubliée", "04 Dépubliée"
 
     class CouvertureGeographique(models.TextChoices):
         NATIONAL = "National", "National"
@@ -297,9 +305,9 @@ class Aide(models.Model):
         REALISATION = "Mise en œuvre / Réalisation"
         USAGE = "Usage / Valorisation"
 
-    published = models.BooleanField(default=True)
+    status = models.CharField(choices=Status, default=Status.DRAFT)
     last_published_at = models.DateTimeField(null=True, blank=True, editable=False)
-    slug = models.CharField(blank=True, max_length=2000, unique=True)
+    slug = models.SlugField(max_length=2000)
     nom = models.CharField(blank=True)
     promesse = models.CharField(blank=True)
     description = models.TextField(blank=True)
@@ -346,13 +354,18 @@ class Aide(models.Model):
     def __str__(self):
         return self.nom
 
+    def is_published(self):
+        return self.status == Aide.Status.PUBLISHED
+
     def save(self, *args, **kwargs):
-        if self.published:
+        if not self.slug:
+            self.slug = f"{slugify(self.organisme.nom)}-{slugify(self.nom)}"
+        if self.is_published():
             self.last_published_at = now()
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("aides:aide", kwargs={"slug": self.slug})
+        return reverse("aides:aide", kwargs={"pk": self.pk, "slug": self.slug})
 
     @property
     def is_ongoing(self) -> bool:
