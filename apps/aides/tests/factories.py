@@ -7,7 +7,6 @@ class OrganismeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Organisme
 
-    external_id = factory.Sequence(lambda n: n)
     nom = factory.Sequence(lambda n: f"Organisme {n}")
 
 
@@ -15,7 +14,6 @@ class ThemeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Theme
 
-    external_id = factory.Sequence(lambda n: n)
     nom = factory.Sequence(lambda n: f"Thème {n}")
 
 
@@ -24,7 +22,6 @@ class SujetFactory(factory.django.DjangoModelFactory):
         model = models.Sujet
         skip_postgeneration_save = True
 
-    external_id = factory.Sequence(lambda n: n)
     nom = factory.Sequence(lambda n: f"Sujet {n}")
 
     @factory.post_generation
@@ -39,7 +36,6 @@ class TypeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Type
 
-    external_id = factory.Sequence(lambda n: n)
     nom = factory.Sequence(lambda n: f"Type d'aide {n}")
     description = factory.Faker("sentence")
 
@@ -48,10 +44,9 @@ class ZoneGeographiqueFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.ZoneGeographique
 
-    external_id = factory.Sequence(lambda n: n)
     type = models.ZoneGeographique.Type.REGION
     nom = factory.Sequence(lambda n: f"Zone Geographique {n}")
-    numero = factory.Sequence(lambda n: str(n))
+    code = factory.Sequence(lambda n: str(n))
     parent = None
 
 
@@ -59,5 +54,4 @@ class AideFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Aide
 
-    external_id = factory.Sequence(lambda n: n)
     nom = factory.Sequence(lambda n: f"Aide {n}")
