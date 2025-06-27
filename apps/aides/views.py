@@ -20,7 +20,7 @@ class AideDetailView(DetailView):
             breadcrumb_links.append(
                 {
                     "url": self.request.META["HTTP_REFERER"],
-                    "title": "Notre recommandation",
+                    "title": "Sélection personnalisée",
                 }
             )
 
