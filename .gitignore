@@ -11,3 +11,4 @@ __pycache__/
 
 # Aides Agri
 /.data/
+webroot/robots.txt

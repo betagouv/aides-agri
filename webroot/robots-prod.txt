@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aides-agri.beta.gouv.fr/sitemap.xml

@@ -1,3 +1,3 @@
-web: python manage.py aides_organismes_logos_files_from_db && gunicorn conf.wsgi --log-file -
+web: bash deployment/scalingo/bin/start-web.sh
 worker: python manage.py db_worker
-postdeploy: bash deployment/scalingo/bin/post_deploy.sh
+postdeploy: python manage.py migrate
