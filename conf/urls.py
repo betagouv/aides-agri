@@ -16,13 +16,17 @@ Including another URLconf
 """
 
 from django.conf import settings
+from django.contrib.sitemaps.views import sitemap
 from django.urls import path, include, re_path
 from two_factor.urls import urlpatterns as two_factors_urls
 
 from .admin import admin_site
 
+sitemaps = {}
+
 urlpatterns = [
     path("admin/", admin_site.urls),
+    path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="django-sitemap"),
     path("", include("agri.urls")),
     path("", include("aides.urls")),
     path("", include("product.urls")),
