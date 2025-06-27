@@ -4,6 +4,7 @@ from django.contrib.postgres import fields as postgres_fields
 from django.db import models
 from django.templatetags.static import static
 from django.urls import reverse
+from django.utils.timezone import now
 
 from grist_loader.models import GristModel
 
@@ -304,6 +305,7 @@ class Aide(GristModel):
         USAGE = "Usage / Valorisation"
 
     published = models.BooleanField(default=True)
+    last_published_at = models.DateTimeField(null=True, blank=True, editable=False)
     slug = models.CharField(blank=True, max_length=2000, unique=True)
     nom = models.CharField(blank=True)
     promesse = models.CharField(blank=True)
@@ -349,6 +351,11 @@ class Aide(GristModel):
 
     def __str__(self):
         return self.nom
+
+    def save(self, *args, **kwargs):
+        if self.published:
+            self.last_published_at = now()
+        super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse("aides:aide", kwargs={"slug": self.slug})
