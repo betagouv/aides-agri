@@ -69,10 +69,16 @@
     </fieldset>
   </div>
 </div>
-<div id="step-4" data-steps-target="step4Placeholder">
-  <a href="{% url 'agri:step-4' %}{% querystring %}" class="fr-btn fr-btn--secondary fr-btn--sm">
-    Je n’ai pas de numéro Siret
-  </a>
+<div id="step-4" class="fr-mt-4w" data-steps-target="step4Placeholder">
+  <p class="fr-background-alt--grey fr-p-2w">
+    <strong>Pas de numéro Siret ?</strong>
+    <br>
+    Pas d’inquiétude, un parcours adapté est prévu pour vous.
+    <br>
+    <a href="{% url 'agri:step-4' %}{% querystring %}" class="fr-btn fr-btn--secondary fr-btn--sm fr-mt-2v">
+      C’est par ici.
+    </a>
+  </p>
 </div>
 {% endblock form %}
 

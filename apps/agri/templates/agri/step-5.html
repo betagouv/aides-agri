@@ -21,7 +21,13 @@
 
 {% block form %}
 <div class="fr-alert fr-alert--info fr-alert--sm fr-mb-3w">
-  <p>Veuillez vérifier et compléter les champs ci-dessous. Ils nous permettront de sélectionner les dispositifs pertinents.</p>
+  <p>
+    {% if etablissement %}
+      Veuillez vérifier et compléter les champs ci-dessous. Ils nous permettront de sélectionner les dispositifs pertinents.
+    {% else %}
+      Nous avons encore besoin de quelques informations concernant votre exploitation pour sélectionner les dispositifs pertinents.
+    {% endif %}
+  </p>
 </div>
 <div class="fr-grid-row">
   <fieldset class="fr-fieldset fr-col">
