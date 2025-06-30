@@ -15,6 +15,7 @@ from django.utils.text import slugify
 from django.utils.safestring import mark_safe
 from reversion.admin import VersionAdmin
 
+from admin_concurrency.admin import ConcurrentModelAdmin
 from product.admin import ReadOnlyModelAdmin
 
 from .models import (
@@ -211,7 +212,7 @@ class ProductionAdmin(VersionAdmin):
 
 
 @admin.register(Aide)
-class AideAdmin(ExtraButtonsMixin, VersionAdmin):
+class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     class Media:
         js = ["admin/aides/aide/trix_form.js"]
 
