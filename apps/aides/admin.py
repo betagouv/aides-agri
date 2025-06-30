@@ -17,7 +17,7 @@ from django.utils.safestring import mark_safe
 from markdownx.widgets import AdminMarkdownxWidget
 from reversion.admin import VersionAdmin
 
-from product.admin import ReadOnlyModelAdmin
+from product.admin import ReadOnlyModelAdmin, ConcurrentModelAdmin
 
 from .models import (
     Theme,
@@ -135,7 +135,7 @@ class ProductionAdmin(VersionAdmin):
 
 
 @admin.register(Aide)
-class AideAdmin(ExtraButtonsMixin, VersionAdmin):
+class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     class Media:
         css = {
             "all": ["admin/aides/aide.css"],
