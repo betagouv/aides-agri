@@ -369,16 +369,16 @@ wheels = [
 
 [[package]]
 name = "django-tasks"
-version = "0.7.0"
+version = "0.8.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
     { name = "django-stubs-ext" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/86/d2/09aa8cac81e5eb1719bed0fdfa865501e739a384830772a01954dc59e192/django_tasks-0.7.0.tar.gz", hash = "sha256:499f80d1a051566443cfa88a300d8b03435af7fc5708cad4d8da6d285614f739", size = 29581, upload-time = "2025-04-27T17:02:58.462Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/23/fb/2421e248c00c7bc317163e4b4c41286e15c91ea4ad9a8479b5d0b9a180d0/django_tasks-0.8.0.tar.gz", hash = "sha256:7dcb9445ea70b8c9a5a7f4a467c5e704512ad86e29823744b1d088cc2c0003c5", size = 32324, upload-time = "2025-06-24T08:09:32.653Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/11/e2/1079d177654bd3d4200040d031e9e42831fab532ac4ea8354db15b3280b5/django_tasks-0.7.0-py3-none-any.whl", hash = "sha256:8a8d64f2dc6e29ac2f45092d90e2dd82dc1dca100dfe3a4f2ce1209db99f3527", size = 39970, upload-time = "2025-04-27T17:02:57.181Z" },
+    { url = "https://files.pythonhosted.org/packages/4b/19/e44e29e5c682d2935c7a31d54e03c62b0fffac214e5e15de2e07320808d9/django_tasks-0.8.0-py3-none-any.whl", hash = "sha256:d83c69b0e8c59f56bd451eafbfd58e34221c0627fa3eb8082fb34a0ece3ac6bf", size = 43771, upload-time = "2025-06-24T08:09:31.158Z" },
 ]
 
 [[package]]
