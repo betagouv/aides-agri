@@ -36,9 +36,9 @@ Plateforme permet aux Utilisateurs via un champ libre d’exprimer leurs attente
 
 ### 5.1 Responsabilités de l’Éditeur
 
-Les informations présentent sur la Plateforme ne constituent pas une décision d’attribution d’aide, ni ne vaut décision d’éligibilité aux dispositifs. La Plateforme met à disposition une simple information qui n'est pas créatrice de droits, ni d'obligations et nécessite une instruction par les services compétents.
+Les informations présentes sur la Plateforme ne constituent pas une décision d’attribution d’aide, ni ne valent décision d’éligibilité aux dispositifs. La Plateforme met à disposition une simple information qui n'est pas créatrice de droits, ni d'obligations et nécessite une instruction par les services compétents.
 
-Les sources des informations diffusées sur la Plateforme sont réputées fiables mais elle ne garantit pas être exempte de défauts, d’erreurs ou d’omissions. L’Editeur fait son possible pour centraliser l’ensemble des dispositifs existants mais ne s’engage pas à recenser l’intégralité des dispositifs existants.
+Les sources des informations diffusées sur la Plateforme sont réputées fiables. Toutefois, la Plateforme ne garantit pas être exempte de défauts, d’erreurs ou d’omissions. L’Éditeur fait son possible pour centraliser l’ensemble des dispositifs existants mais ne s’engage pas à recenser l’intégralité des dispositifs existants.
 
 L’Éditeur s’engage à la sécurisation de la Plateforme, notamment en prenant toutes les mesures nécessaires permettant de garantir la sécurité et la confidentialité des informations fournies.
 
@@ -52,8 +52,8 @@ L'Utilisateur déclare être pleinement informé et conscient que la Plateforme 
 
 Dans le cadre de l'utilisation de la Plateforme, l'Utilisateur s'engage à :
 
-- ne pas divulguer via la Plateforme des propos ou des contenus illicites, et notamment tous contenus contrefaits, diffamatoires, injurieux, insultants, obscènes, offensants, discriminatoires, violents, xénophobes, incitant à la haine raciale ou faisant l'apologie du terrorisme, ou tout autre contenu contraire à la législation et réglementation applicable ainsi qu'aux bonnes mœurs et aux règles de bienséance ;
-- ne pas intégrer et diffuser via la Plateforme du contenu qui serait contraire à la finalité de celui-ci ;
+- ne pas divulguer sur la Plateforme des propos ou des contenus illicites, et notamment tous contenus contrefaits, diffamatoires, injurieux, insultants, obscènes, offensants, discriminatoires, violents, xénophobes, incitant à la haine raciale ou faisant l'apologie du terrorisme, ou tout autre contenu contraire à la législation et réglementation applicable ainsi qu'aux bonnes mœurs et aux règles de bienséance ;
+- ne pas intégrer et diffuser sur la Plateforme du contenu qui serait contraire à la finalité de celui-ci ;
 - ne pas communiquer ou envoyer, par l'intermédiaire de la Plateforme , du contenu, quel qu'il soit, qui comprendrait des liens pointant vers des sites internet illicites, offensants ou incompatibles avec la finalité de la Plateforme ;
 - ne pas utiliser la Plateforme pour envoyer massivement des messages non sollicités (publicitaires ou autres).
 

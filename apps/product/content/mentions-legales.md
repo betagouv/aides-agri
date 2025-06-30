@@ -15,7 +15,7 @@ La directrice de la publication est Madame Cécile BIGOT-DEKEYZER, secrétaire g
 ## Hébergement de la plateforme
 
 Cette plateforme est hébergée par :
-Scalingo, dont le siège social est situé 13 rue Jacques Peirotes 67000 Strasbourg, France.
+Scalingo, dont le siège social est situé 13 rue Jacques Peirotes 67000 Strasbourg, France.
 
 ## Accessibilité
 
