@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 
 
@@ -39,3 +40,14 @@ class UserFeedback(models.Model):
     comments = models.TextField(
         verbose_name="Quelles sont les améliorations à effectuer selon vous ?"
     )
+
+
+class AdminConcurrency(models.Model):
+    class Mode(models.TextChoices):
+        READ = "Lecture", "Lecture"
+        WRITE = "Modification", "Modification"
+
+    obj = models.CharField()
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    mode = models.CharField(choices=Mode, default=Mode.READ)
+    last_seen = models.DateTimeField(auto_now=True)
