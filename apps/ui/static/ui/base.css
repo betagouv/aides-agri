@@ -2,6 +2,14 @@ html {
   scroll-behavior: smooth;
 }
 
+body > .fr-notice.fr-notice--info {
+	--idle: transparent;
+	--hover: var(--background-contrast-green-emeraude-hover);
+	--active: var(--background-contrast-green-emeraude-active);
+  background-color: var(--background-contrast-green-emeraude);
+	color: var(--text-label-green-emeraude);
+}
+
 .fr-breadcrumb {
   margin-bottom: 1rem;
 }
