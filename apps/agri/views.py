@@ -333,14 +333,6 @@ class ResultsView(ResultsMixin, ListView):
                             else static("agri/images/placeholder.1x1.svg"),
                             "image_alt": aide.organisme.nom,
                             "ratio_class": "fr-ratio-1x1",
-                            "top_detail": {
-                                "tags": [
-                                    {
-                                        "label": aide.couverture_geographique,
-                                        "extra_classes": "fr-tag--sm",
-                                    }
-                                ],
-                            },
                         }
                         for aide in aides
                     ]
