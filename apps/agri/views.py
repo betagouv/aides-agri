@@ -280,6 +280,7 @@ class ResultsMixin(AgriMixin):
                 siret.mapping_effectif_complete[self.code_effectif]["min"],
                 siret.mapping_effectif_complete[self.code_effectif]["max"],
             )
+            .by_filieres(self.filieres)
             .select_related("organisme")
             .prefetch_related("zones_geographiques", "types")
             .order_by("-date_fin")
