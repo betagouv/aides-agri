@@ -32,11 +32,7 @@ class HomeView(TemplateView):
         context_data = super().get_context_data(**kwargs)
         themes_and_urls = []
 
-        for theme in (
-            Theme.objects.published()
-            .with_aides_count()
-            .order_by("-urgence", "-aides_count")
-        ):
+        for theme in Theme.objects.published().order_by("-urgence", "-aides_count"):
             query = self.request.GET.dict()
             query.update({"theme": theme.pk})
             url = reverse("agri:step-2", query=query)
@@ -198,7 +194,6 @@ class Step2View(AgriMixin, TemplateView):
                 "sujets": {
                     f"sujet-{sujet.pk}": sujet
                     for sujet in Sujet.objects.published()
-                    .with_aides_count()
                     .filter(themes=self.theme)
                     .order_by("-aides_count")
                 },
