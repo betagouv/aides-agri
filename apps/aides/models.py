@@ -41,8 +41,11 @@ class ThemeQuerySet(models.QuerySet):
     def published(self):
         return self.filter(published=True)
 
+    def with_sujets_count(self):
+        return self.annotate(sujets_count=models.Count("sujets", distinct=True))
+
     def with_aides_count(self):
-        return self.annotate(aides_count=models.Count("sujets__aides"))
+        return self.annotate(aides_count=models.Count("sujets__aides", distinct=True))
 
 
 class Theme(GristModel):
@@ -67,7 +70,7 @@ class SujetQuerySet(models.QuerySet):
         return self.filter(published=True)
 
     def with_aides_count(self):
-        return self.annotate(aides_count=models.Count("aides"))
+        return self.annotate(aides_count=models.Count("aides", distinct=True))
 
 
 class Sujet(GristModel):
