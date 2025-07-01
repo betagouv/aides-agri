@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.urls import reverse
+from django.utils.safestring import mark_safe
 
 from grist_loader.admin import AbstractGristModelAdmin
 
@@ -22,16 +24,24 @@ class ThemeAdmin(AbstractGristModelAdmin):
     list_display = AbstractGristModelAdmin.list_display + (
         "nom",
         "urgence",
+        "sujets_count",
         "aides_count",
     )
     list_display_links = AbstractGristModelAdmin.list_display_links + ("nom",)
     fields = ("nom", "nom_court", "description", "urgence")
 
+    def sujets_count(self, obj):
+        return mark_safe(
+            f'<a href="{reverse("admin:aides_sujet_changelist")}?themes__external_id__exact={obj.pk}">{obj.sujets_count}</a>'
+        )
+
     def aides_count(self, obj):
-        return obj.aides_count
+        return mark_safe(
+            f'<a href="{reverse("admin:aides_aide_changelist")}?sujets__themes__external_id__exact={obj.pk}">{obj.aides_count}</a>'
+        )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).with_aides_count()
+        return super().get_queryset(request).with_sujets_count().with_aides_count()
 
 
 @admin.register(Sujet)
@@ -42,7 +52,9 @@ class SujetAdmin(AbstractGristModelAdmin):
     fields = ("nom", "nom_court", "themes")
 
     def aides_count(self, obj):
-        return obj.aides_count
+        return mark_safe(
+            f'<a href="{reverse("admin:aides_aide_changelist")}?sujets__external_id__exact={obj.pk}">{obj.aides_count}</a>'
+        )
 
     def get_queryset(self, request):
         return super().get_queryset(request).with_aides_count()
@@ -135,7 +147,7 @@ class AideAdmin(AbstractGristModelAdmin):
         "organisme",
     )
     list_display_links = AbstractGristModelAdmin.list_display_links + ("nom",)
-    list_filter = ("sujets", "types")
+    list_filter = ("sujets", "sujets__themes", "types")
     fieldsets = [
         (
             "Infos de base",
