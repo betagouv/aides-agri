@@ -98,7 +98,7 @@ class AgriMixin(ContextMixin):
             self.date_installation = datetime.date.fromisoformat(date_installation)
         filieres_ids = request.GET.getlist("filieres", [])
         if filieres_ids:
-            self.filieres = Filiere.objects.filter(pk__in=filieres_ids)
+            self.filieres = Filiere.objects.published().filter(pk__in=filieres_ids)
         groupements_ids = request.GET.getlist("regroupements", [])
         if groupements_ids:
             self.groupements = GroupementProducteurs.objects.filter(
@@ -240,7 +240,7 @@ class Step5View(AgriMixin, TemplateView):
             naf = self.etablissement.get("activite_principale", "")
             if naf[-1].isalpha():
                 naf = naf[:-1]
-            filiere = Filiere.objects.filter(code_naf=naf).first()
+            filiere = Filiere.objects.published().filter(code_naf=naf).first()
         else:
             filiere = None
         context_data.update(
@@ -258,7 +258,7 @@ class Step5View(AgriMixin, TemplateView):
                 ],
                 "filieres": [
                     (pk, nom, nom)
-                    for pk, nom in Filiere.objects.values_list("pk", "nom")
+                    for pk, nom in Filiere.objects.published().values_list("pk", "nom")
                 ],
                 "filieres_initials": [filiere.pk] if filiere else [],
                 "filieres_helper": "Nous n'avons pas trouvé la filière de votre exploitation, veuillez l’indiquer ici."
