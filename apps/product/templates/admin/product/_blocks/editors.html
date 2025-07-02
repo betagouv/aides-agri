@@ -1,0 +1,5 @@
+{% if editors %}
+<li class="warning">
+  Cet objet est en train d’être modifié par {% for editor in editors %}{{ editor.user.username }}, vu la dernière fois à {{ editor.last_seen|date:"SHORT_DATETIME_FORMAT" }}{% endfor %}
+</li>
+{% endif %}
