@@ -9,7 +9,12 @@ from django.utils.timezone import now
 from product.fields import VendoredTrixRichTextField as RichTextField
 
 
-class OrganismeQuerySet(models.QuerySet):
+class WithAidesCounterQuerySet(models.QuerySet):
+    def with_aides_count(self):
+        return self.annotate(aides_count=models.Count("aides", distinct=True))
+
+
+class OrganismeQuerySet(WithAidesCounterQuerySet):
     def with_logo(self):
         return self.exclude(logo_filename="").filter(logo_filename__isnull=False)
 
@@ -19,16 +24,40 @@ class Organisme(models.Model):
         verbose_name = "Organisme"
         verbose_name_plural = "Organismes"
 
+    class Famille(models.TextChoices):
+        OPERATEUR = "Opérateur", "Opérateur"
+        COLLECTIVITE = "Collectivité", "Collectivité"
+        ETAT = "État", "État"
+        UE = "UE", "UE"
+        GAL = "GAL", "GAL"
+        CHAMBRE_CONSULAIRE = "Chambre consulaire", "Chambre consulaire"
+        INTERPROFESSIONS = "Interprofessions", "Interprofessions"
+        MIXTE = "Mixte", "Mixte"
+
+    class Secteur(models.TextChoices):
+        ECONOMIE = "Finance, économie", "Finance, économie"
+        AGRICULTURE = "Agriculture", "Agriculture"
+        ENVIRONNEMENT = "Environnement", "Environnement"
+        EMPLOI = "Emploi", "Emploi"
+        ENSEIGNEMENT = "Enseignement, formation", "Enseignement, formation"
+        TOUS = "Tous", "Tous"
+
     objects = OrganismeQuerySet.as_manager()
 
     nom = models.CharField(blank=True)
     acronyme = models.CharField(blank=True)
+    famille = models.CharField(blank=True, choices=Famille)
+    secteurs = postgres_fields.ArrayField(
+        models.CharField(blank=True, choices=Secteur), null=True, blank=True
+    )
     zones_geographiques = models.ManyToManyField("ZoneGeographique", blank=True)
     logo = models.BinaryField(blank=True)
-    logo_filename = models.CharField(blank=True, null=True)
+    logo_filename = models.CharField(blank=True)
+    url = models.URLField(blank=True)
+    courriel = models.EmailField(blank=True)
 
     def __str__(self):
-        return self.nom
+        return self.acronyme or self.nom
 
     def get_logo_url(self):
         if self.logo_filename:
@@ -62,15 +91,12 @@ class Theme(models.Model):
     published = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.nom
+        return self.nom_court
 
 
-class SujetQuerySet(models.QuerySet):
+class SujetQuerySet(WithAidesCounterQuerySet):
     def published(self):
         return self.with_aides_count().filter(published=True, aides_count__gt=0)
-
-    def with_aides_count(self):
-        return self.annotate(aides_count=models.Count("aides", distinct=True))
 
 
 class Sujet(models.Model):
@@ -86,7 +112,11 @@ class Sujet(models.Model):
     published = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.nom
+        return self.nom_court
+
+
+class TypeQuerySet(WithAidesCounterQuerySet):
+    pass
 
 
 class Type(models.Model):
@@ -98,6 +128,8 @@ class Type(models.Model):
             "nom",
         )
 
+    objects = TypeQuerySet.as_manager()
+
     nom = models.CharField(blank=True)
     description = models.CharField(blank=True)
     urgence = models.BooleanField(default=False)
@@ -107,11 +139,17 @@ class Type(models.Model):
         return self.nom
 
 
+class ProgrammeQuerySet(WithAidesCounterQuerySet):
+    pass
+
+
 class Programme(models.Model):
     class Meta:
         verbose_name = "Programme d'aides"
         verbose_name_plural = "Programmes d'aides"
         ordering = ("nom",)
+
+    objects = ProgrammeQuerySet.as_manager()
 
     nom = models.CharField(blank=True)
 
@@ -119,7 +157,7 @@ class Programme(models.Model):
         return self.nom
 
 
-class ZoneGeographiqueQuerySet(models.QuerySet):
+class ZoneGeographiqueQuerySet(WithAidesCounterQuerySet):
     def regions(self):
         return self.filter(type=ZoneGeographique.Type.REGION).order_by("code")
 
@@ -145,7 +183,7 @@ class ZoneGeographique(models.Model):
     class Type(models.TextChoices):
         REGION = "01 Région", "Région"
         DEPARTEMENT = "03 Département", "Département"
-        COM = "02 Collectivité d'outre-mer", "Collectivité d'outre-mer"
+        COM = "02 Collectivité d’outre-mer", "Collectivité d'outre-mer"
         EPCI = "04 EPCI", "EPCI"
         COMMUNE = "05 Commune", "Commune"
 
@@ -169,14 +207,22 @@ class ZoneGeographique(models.Model):
         return f"{prefix} {self.nom}"
 
 
+class FiliereQuerySet(WithAidesCounterQuerySet):
+    def published(self):
+        return self.filter(published=True)
+
+
 class Filiere(models.Model):
     class Meta:
         verbose_name = "Filière"
         verbose_name_plural = "Filières"
         ordering = ("position",)
 
+    objects = FiliereQuerySet.as_manager()
+
     nom = models.CharField(max_length=100, blank=True)
-    position = models.IntegerField(unique=True, default=0)
+    published = models.BooleanField(default=True)
+    position = models.IntegerField(default=99)
     code_naf = models.CharField(max_length=10, blank=True)
 
     def __str__(self):
@@ -318,7 +364,9 @@ class Aide(models.Model):
     contact = RichTextField(blank=True)
     sujets = models.ManyToManyField(Sujet, related_name="aides", blank=True)
     types = models.ManyToManyField(Type, related_name="aides", blank=True)
-    organisme = models.ForeignKey(Organisme, null=True, on_delete=models.CASCADE)
+    organisme = models.ForeignKey(
+        Organisme, null=True, related_name="aides", on_delete=models.CASCADE
+    )
     organismes_secondaires = models.ManyToManyField(
         Organisme, related_name="aides_secondaires", blank=True
     )
@@ -353,7 +401,7 @@ class Aide(models.Model):
     beneficiaires = postgres_fields.ArrayField(
         models.CharField(choices=Beneficiaire), null=True, blank=True
     )
-    filieres = models.ManyToManyField(Filiere, blank=True)
+    filieres = models.ManyToManyField(Filiere, blank=True, related_name="aides")
     raw_data = postgres_fields.HStoreField(null=True, blank=True)
 
     def __str__(self):
