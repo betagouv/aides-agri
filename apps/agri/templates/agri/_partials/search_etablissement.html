@@ -6,12 +6,17 @@
     {% include "agri/blocks/search_etablissement/etablissement.html" with self=self hit=hit etablissement=hit.siege value=hit.siege.siret label_short=hit.siege.siret only %}
   {% endfor %}
 {% empty %}
-  <li class="fr-select-rich__item">
-    <div class="fr-p-2w fr-icon-error-line">Votre recherche n’a donné aucun résultat. Veuillez réessayer ou visiter <a href="https://annuaire-entreprises.data.gouv.fr/" target="_blank">https://annuaire-entreprises.data.gouv.fr/</a> pour trouver votre exploitation.</div>
-  </li>
+  {% if not error %}
+  <p class="fr-select-rich__item fr-p-2w fr-icon-error-line">
+    Votre recherche n’a donné aucun résultat. Veuillez réessayer (peut-être en précisant le nom de votre commune ?) ou visiter <a href="https://annuaire-entreprises.data.gouv.fr/" target="_blank">https://annuaire-entreprises.data.gouv.fr/</a> pour trouver votre exploitation.
+  </p>
+  {% endif %}
 {% endfor %}
 
-{% for error in errors %}
-  <p class="fr-error-text">{{ error }}</p>
-{% endfor %}
+{% if error %}
+  <p id="select-rich-error-{{ self.name }}"
+     class="fr-error-text fr-px-2w"
+     hx-swap-oob="true"
+  >{{ error }}</p>
+{% endif %}
 </div>

@@ -362,13 +362,11 @@ class SearchEtablissementView(TemplateView):
             except siret.SearchUnavailable:
                 context_data.update(
                     {
-                        "errors": [
-                            "La recherche de SIRET est impossible pour le moment. Vous pouvez visiter https://annuaire-entreprises.data.gouv.fr/ à la place."
-                        ]
+                        "error": "La recherche d’entreprise est indisponible pour le moment. Vous pouvez continuer votre parcours en saisissant les quelques données nécessaires manuellement comme si vous n’aviez pas de numéro de Siret en cliquant sur le bouton ci-dessous. Veuillez nous excuser pour la gêne occasionnée.",
                     }
                 )
         else:
-            context_data.update({"errors": ["Veuillez saisir une recherche"]})
+            context_data.update({"error": "Veuillez saisir une recherche"})
         return context_data
 
 
