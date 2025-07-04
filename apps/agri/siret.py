@@ -54,6 +54,10 @@ def search(query: str) -> list[dict]:
         r.raise_for_status()
         hits = []
         for hit in r.json()["results"]:
+            if (
+                hit["matching_etablissements"] and hit["nombre_etablissements"] == 0
+            ):  # corrupted data from API
+                raise SearchUnavailable()
             for etablissement in hit["matching_etablissements"]:
                 try:
                     libelle_naf = mapping_naf_short[
