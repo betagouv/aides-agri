@@ -91,7 +91,10 @@
     </div>
   </div>
 
-  <p class="fr-select-rich__error fr-error-text fr-hidden" data-select-rich-target="error">
+  <p id="select-rich-error-{{ self.name }}"
+     class="fr-select-rich__error fr-error-text fr-hidden"
+     data-select-rich-target="error"
+  >
     {{ self.required_error_message|default:"Ce champ est requis" }}
   </p>
 </fieldset>
