@@ -1,4 +1,9 @@
 User-agent: *
-Allow: /
+Disallow: /etape
+Disallow: /resultats
+Disallow: /trouver-mon-entreprise
+Disallow: /trouver-ma-commune
+Disallow: /envoyer-les-resultats-par-courriel
+Disallow: /feedback-themes-sujets
 
 Sitemap: https://aides-agri.beta.gouv.fr/sitemap.xml
