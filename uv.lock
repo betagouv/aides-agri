@@ -8,6 +8,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "beautifulsoup4" },
+    { name = "dj-importmap" },
     { name = "django" },
     { name = "django-admin-extra-buttons" },
     { name = "django-anymail" },
@@ -46,6 +47,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "beautifulsoup4", specifier = "~=4.13" },
+    { name = "dj-importmap", specifier = "~=1.0" },
     { name = "django", specifier = "~=5.2" },
     { name = "django-admin-extra-buttons", specifier = "~=2.1" },
     { name = "django-anymail", extras = ["brevo"], specifier = "~=13.0" },
@@ -221,6 +223,18 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/c9/76/44ba876e0942b4e62fdde23ccb029ddb16d19ba1bef081edd00857ba0b16/coverage-7.11.0-cp314-cp314t-win_amd64.whl", hash = "sha256:b56efee146c98dbf2cf5cffc61b9829d1e94442df4d7398b26892a53992d3547", size = 220687, upload-time = "2025-10-15T15:15:02.322Z" },
     { url = "https://files.pythonhosted.org/packages/b9/0c/0df55ecb20d0d0ed5c322e10a441775e1a3a5d78c60f0c4e1abfe6fcf949/coverage-7.11.0-cp314-cp314t-win_arm64.whl", hash = "sha256:b5c2705afa83f49bd91962a4094b6b082f94aef7626365ab3f8f4bd159c5acf3", size = 218711, upload-time = "2025-10-15T15:15:04.575Z" },
     { url = "https://files.pythonhosted.org/packages/5f/04/642c1d8a448ae5ea1369eac8495740a79eb4e581a9fb0cbdce56bbf56da1/coverage-7.11.0-py3-none-any.whl", hash = "sha256:4b7589765348d78fb4e5fb6ea35d07564e387da2fc5efff62e0222971f155f68", size = 207761, upload-time = "2025-10-15T15:15:06.439Z" },
+]
+
+[[package]]
+name = "dj-importmap"
+version = "1.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e3/34/a29ec305ce16002af6eaa59a885ecc395a0ebc778e24f052b28c6d9f392f/dj_importmap-1.0.0.tar.gz", hash = "sha256:6d2ae02d0e66fc34d73d6341670566452d712110f64fc00309792beac7da6af5", size = 18054, upload-time = "2025-11-03T14:20:47.455Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b7/20/71e19afe963e2a81433145189afa66632986829a0e70a78540f6e8fb045d/dj_importmap-1.0.0-py3-none-any.whl", hash = "sha256:6d892504d6199fa4904ffffb9c7ba490708bb263ed24372618b374fc1d297187", size = 18504, upload-time = "2025-11-03T14:20:46.096Z" },
 ]
 
 [[package]]
