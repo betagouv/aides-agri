@@ -6,6 +6,7 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.timezone import now
+from prose.fields import RichTextField
 
 
 class OrganismeQuerySet(models.QuerySet):
@@ -310,11 +311,11 @@ class Aide(models.Model):
     slug = models.SlugField(max_length=2000)
     nom = models.CharField(blank=True)
     promesse = models.CharField(blank=True)
-    description = models.TextField(blank=True)
-    exemple_projet = models.TextField(blank=True)
+    description = RichTextField(blank=True)
+    exemple_projet = RichTextField(blank=True)
     url_descriptif = models.URLField(blank=True, max_length=2000)
     url_demarche = models.URLField(blank=True, max_length=2000)
-    contact = models.CharField(blank=True)
+    contact = RichTextField(blank=True)
     sujets = models.ManyToManyField(Sujet, related_name="aides", blank=True)
     types = models.ManyToManyField(Type, related_name="aides", blank=True)
     organisme = models.ForeignKey(Organisme, null=True, on_delete=models.CASCADE)
@@ -325,9 +326,9 @@ class Aide(models.Model):
     aap_ami = models.BooleanField(
         default=False, verbose_name="Appel à projet ou manifestation d'intérêt"
     )
-    conditions = models.TextField(blank=True)
-    montant = models.CharField(blank=True)
-    participation_agriculteur = models.CharField(blank=True)
+    conditions = RichTextField(blank=True)
+    montant = RichTextField(blank=True)
+    participation_agriculteur = RichTextField(blank=True)
     recurrence_aide = models.CharField(choices=Recurrence, blank=True)
     date_debut = models.DateField(null=True, blank=True)
     date_fin = models.DateField(null=True, blank=True)
@@ -336,9 +337,9 @@ class Aide(models.Model):
     eligibilite_etape_avancement_projet = postgres_fields.ArrayField(
         models.CharField(choices=EtatAvancementProjet), null=True, blank=True
     )
-    eligibilite_age = models.CharField(blank=True)
-    eligibilite_cumulable = models.CharField(blank=True)
-    type_depense = models.CharField(blank=True)
+    eligibilite_age = RichTextField(blank=True)
+    eligibilite_cumulable = RichTextField(blank=True)
+    type_depense = RichTextField(blank=True)
     couverture_geographique = models.CharField(
         choices=CouvertureGeographique,
         default=CouvertureGeographique.NATIONAL,
@@ -348,7 +349,7 @@ class Aide(models.Model):
         ZoneGeographique, related_name="aides", blank=True
     )
     duree_accompagnement = models.CharField(blank=True)
-    etapes = models.TextField(blank=True)
+    etapes = RichTextField(blank=True)
     beneficiaires = postgres_fields.ArrayField(
         models.CharField(choices=Beneficiaire), null=True, blank=True
     )
