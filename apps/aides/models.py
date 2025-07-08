@@ -6,7 +6,7 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.timezone import now
-from prose.fields import RichTextField
+from product.fields import VendoredTrixRichTextField as RichTextField
 
 
 class OrganismeQuerySet(models.QuerySet):
