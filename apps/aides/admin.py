@@ -7,14 +7,12 @@ from django import forms
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import UploadedFile
-from django.db import models
 from django.db.models import QuerySet
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.safestring import mark_safe
-from markdownx.widgets import AdminMarkdownxWidget
 from reversion.admin import VersionAdmin
 
 from product.admin import ReadOnlyModelAdmin
@@ -137,14 +135,13 @@ class ProductionAdmin(VersionAdmin):
 @admin.register(Aide)
 class AideAdmin(ExtraButtonsMixin, VersionAdmin):
     class Media:
-        css = {
-            "all": ["admin/aides/aide.css"],
-        }
+        js = ["admin/aides/aide/trix_form.js"]
 
     list_display = ("nom", "organisme")
     list_display_links = ("nom",)
     list_filter = ("sujets", "sujets__themes", "types")
     autocomplete_fields = ("zones_geographiques", "organisme", "organismes_secondaires")
+    change_form_template = "admin/aides/aide/change_form.html"
     readonly_fields = ("raw_data",)
     fieldsets = [
         (
@@ -219,10 +216,6 @@ class AideAdmin(ExtraButtonsMixin, VersionAdmin):
     list_select_related = ("organisme",)
 
     actions = ["perform_auto_enrich"]
-
-    formfield_overrides = {
-        models.TextField: {"widget": AdminMarkdownxWidget},
-    }
 
     @button(label="Importer un fichier CSV d'aides", html_attrs={"class": "addlink"})
     def upload(self, request):

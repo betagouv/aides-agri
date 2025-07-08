@@ -10,6 +10,11 @@ CONTENT_SECURITY_POLICY = {
             "stats.beta.gouv.fr",  # Matomo
             NONCE,  # page-specific entry-points
         ],
+        "style-src": [
+            SELF,
+            "stats.beta.gouv.fr",  # Matomo
+            NONCE,  # page-specific entry-points
+        ],
         "connect-src": [
             SELF,
             "stats.beta.gouv.fr",  # Matomo
