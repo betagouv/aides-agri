@@ -15,6 +15,7 @@ dependencies = [
     { name = "django-dsfr" },
     { name = "django-grist-loader" },
     { name = "django-htmx" },
+    { name = "django-pgtrigger" },
     { name = "django-prose" },
     { name = "django-reversion" },
     { name = "django-tasks" },
@@ -53,6 +54,7 @@ requires-dist = [
     { name = "django-dsfr", specifier = "~=2.1" },
     { name = "django-grist-loader", specifier = "~=0.3" },
     { name = "django-htmx", specifier = "~=1.23" },
+    { name = "django-pgtrigger", specifier = "~=4.15" },
     { name = "django-prose", specifier = "~=2.1" },
     { name = "django-reversion", specifier = "~=5.1" },
     { name = "django-tasks", specifier = "~=0.6" },
@@ -370,6 +372,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/a7/45/6b4e3041f78c5b8c3d3d91c90255298115732ae8f6cdf78e0295972dbad4/django_otp-1.6.0.tar.gz", hash = "sha256:13762d5d0ce52f68a9250ab186d36d9971d67271c05f15f533d73b09f2014667", size = 73830, upload-time = "2025-04-02T22:40:33.965Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0f/d6/4e9eee89d4f374fcb20b7b58003c29a71517bed4f5eef376afe693a0c2a0/django_otp-1.6.0-py3-none-any.whl", hash = "sha256:34d9c478ced2d8c8d952428066565c7a9a96722b7f4ec8e041d161e82a85528f", size = 81565, upload-time = "2025-04-02T22:40:31.921Z" },
+]
+
+[[package]]
+name = "django-pgtrigger"
+version = "4.15.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f8/7b/02669dcf6e49d2e6ffee87c7989b49c2a2d47fd4bbe1709c897e6281ee5b/django_pgtrigger-4.15.3.tar.gz", hash = "sha256:235e07487d7953e85d9a9ecd8079d04072650ccad119148da96267cb2be80e09", size = 33082, upload-time = "2025-06-12T12:29:31.96Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b9/08/4325f2b2a204f2503a31af201d780aa6f2b65c37238368a0112daa1e879c/django_pgtrigger-4.15.3-py3-none-any.whl", hash = "sha256:f710514e6eba28b5db4e5a27ed83abc18eae26cf9a82e0201b0c8d5d29b46c46", size = 36434, upload-time = "2025-06-12T12:29:30.596Z" },
 ]
 
 [[package]]
