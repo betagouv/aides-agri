@@ -370,6 +370,48 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                 context,
             )
 
+    @button(
+        label="Décliner dans chaque département",
+        visible=lambda widget: widget.context["original"].couverture_geographique
+        == Aide.CouvertureGeographique.DEPARTEMENTAL
+        and not widget.context["original"].zones_geographiques.exists(),
+    )
+    def create_variants_for_departements(self, request, object_id):
+        aide = Aide.objects.get(pk=object_id)
+        if request.method == "POST":
+            sujets = aide.sujets.all()
+            organismes_secondaires = aide.organismes_secondaires.all()
+            programmes = aide.programmes.all()
+            filieres = aide.filieres.all()
+            departements = ZoneGeographique.objects.departements()
+            for departement in departements:
+                aide.pk = None
+                aide.slug = f"{aide.slug}-{departement.code}"
+                aide.save()
+                aide.zones_geographiques.add(departement)
+                aide.sujets.set(sujets)
+                aide.organismes_secondaires.set(organismes_secondaires)
+                aide.programmes.set(programmes)
+                aide.filieres.set(filieres)
+            self.message_user(
+                request,
+                f"L’aide <a href='../{aide.pk}/change'>{aide.nom} portée par {aide.organisme.nom}</a> a bien été déclinée pour {departements.count()} départements.",
+            )
+            return None
+        else:
+            context = self.get_common_context(request)
+            context.update(
+                {
+                    "title": "Décliner une aide pour tous les départements",
+                    "original": aide,
+                }
+            )
+            return TemplateResponse(
+                request,
+                "admin/create_variants_for_departements.html",
+                context,
+            )
+
 
 def validate_content_type_csv(value: UploadedFile):
     if value.content_type != "text/csv":

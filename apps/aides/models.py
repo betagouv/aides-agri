@@ -315,7 +315,6 @@ class Aide(models.Model):
     class Meta:
         verbose_name = "Aide"
         verbose_name_plural = "Aides"
-        unique_together = ("organisme", "nom")
 
     objects = AideQuerySet.as_manager()
 
