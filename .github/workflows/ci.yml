@@ -67,7 +67,7 @@ jobs:
       - name: Load fixtures for E2E testing
         run: |
           uv run --no-sync manage.py migrate
-          uv run --no-sync manage.py loaddata conf/fixtures/dsfr_config.json conf/fixtures/aides_01_sujets.json conf/fixtures/aides_02_filieres.json conf/fixtures/aides_03_zones_geographiques.json
+          uv run --no-sync manage.py loaddata conf/fixtures/dsfr_config.json cypress/e2e/fixtures/aides_01_sujets.json cypress/e2e/fixtures/aides_02_filieres.json cypress/e2e/fixtures/aides_03_zones_geographiques.json
         env:
           DJANGO_SETTINGS_MODULE: conf.settings.testing
           SECRET_KEY: notsecret
