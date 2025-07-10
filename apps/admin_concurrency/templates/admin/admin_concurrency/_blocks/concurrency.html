@@ -1,0 +1,25 @@
+{% load humanize %}
+
+{% if write %}
+  {% if write.user == request.user %}
+    <li class="info">
+      Tu es désormais éditeur de cet objet ; les autres le savent et ne peuvent rien modifier.
+    </li>
+  {% else %}
+    <li class="warning" data-concurrency>
+      Cet objet est en train d’être modifié par {{ write.user.username }} ({{ write.last_seen|naturaltime }}).
+      Le formulaire est donc pour toi en lecture seule.
+      <form action="../concurrency/force" method="POST">
+        {% csrf_token %}
+        <button type="submit">Forcer la récupération de l’édition (virer {{ write.user.username }})</button>
+      </form>
+    </li>
+  {% endif %}
+{% endif %}
+
+{% if reads %}
+<li class="info">
+  D’autres utilisateurs sont également présents sur cette page :
+  {% for read in reads %}{{ read.user.username }} ({{ read.last_seen|naturaltime }}){% endfor %}
+</li>
+{% endif %}
