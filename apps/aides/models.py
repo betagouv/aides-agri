@@ -44,17 +44,22 @@ class Organisme(models.Model):
 
     objects = OrganismeQuerySet.as_manager()
 
-    nom = models.CharField(blank=True)
-    acronyme = models.CharField(blank=True)
-    famille = models.CharField(blank=True, choices=Famille)
+    nom = models.CharField(verbose_name="Nom")
+    acronyme = models.CharField(blank=True, verbose_name="Acronyme")
+    famille = models.CharField(blank=True, choices=Famille, verbose_name="Famille")
     secteurs = postgres_fields.ArrayField(
-        models.CharField(blank=True, choices=Secteur), null=True, blank=True
+        models.CharField(blank=True, choices=Secteur),
+        null=True,
+        blank=True,
+        verbose_name="Secteurs",
     )
-    zones_geographiques = models.ManyToManyField("ZoneGeographique", blank=True)
-    logo = models.BinaryField(blank=True)
+    zones_geographiques = models.ManyToManyField(
+        "ZoneGeographique", blank=True, verbose_name="Zones géographiques"
+    )
+    logo = models.BinaryField(blank=True, verbose_name="Logo")
     logo_filename = models.CharField(blank=True)
-    url = models.URLField(blank=True)
-    courriel = models.EmailField(blank=True)
+    url = models.URLField(blank=True, verbose_name="Lien")
+    courriel = models.EmailField(blank=True, verbose_name="Adresse courriel")
 
     def __str__(self):
         return self.acronyme or self.nom
@@ -84,11 +89,11 @@ class Theme(models.Model):
 
     objects = ThemeQuerySet.as_manager()
 
-    nom = models.CharField(blank=True)
-    nom_court = models.CharField(blank=True)
-    description = models.TextField(blank=True)
-    urgence = models.BooleanField(default=False)
-    published = models.BooleanField(default=True)
+    nom = models.CharField(verbose_name="Nom")
+    nom_court = models.CharField(verbose_name="Nom court")
+    description = models.TextField(blank=True, verbose_name="Description")
+    urgence = models.BooleanField(default=False, verbose_name="Urgence")
+    published = models.BooleanField(default=False, verbose_name="Publié")
 
     def __str__(self):
         return self.nom_court
@@ -106,10 +111,10 @@ class Sujet(models.Model):
 
     objects = SujetQuerySet.as_manager()
 
-    nom = models.CharField(blank=True)
-    nom_court = models.CharField(blank=True)
-    themes = models.ManyToManyField(Theme, related_name="sujets")
-    published = models.BooleanField(default=True)
+    nom = models.CharField(verbose_name="Nom")
+    nom_court = models.CharField(verbose_name="Nom court")
+    themes = models.ManyToManyField(Theme, related_name="sujets", verbose_name="Thèmes")
+    published = models.BooleanField(default=False, verbose_name="Publié")
 
     def __str__(self):
         return self.nom_court
@@ -130,10 +135,10 @@ class Type(models.Model):
 
     objects = TypeQuerySet.as_manager()
 
-    nom = models.CharField(blank=True)
-    description = models.CharField(blank=True)
-    urgence = models.BooleanField(default=False)
-    icon_name = models.CharField(blank=True)
+    nom = models.CharField(verbose_name="Nom")
+    description = models.CharField(blank=True, verbose_name="Description")
+    urgence = models.BooleanField(default=False, verbose_name="Urgence")
+    icon_name = models.CharField(blank=True, verbose_name="(technique) Nom de l’icône")
 
     def __str__(self):
         return self.nom
@@ -151,7 +156,7 @@ class Programme(models.Model):
 
     objects = ProgrammeQuerySet.as_manager()
 
-    nom = models.CharField(blank=True)
+    nom = models.CharField(blank=True, verbose_name="Nom")
 
     def __str__(self):
         return self.nom
@@ -187,16 +192,40 @@ class ZoneGeographique(models.Model):
         EPCI = "04 EPCI", "EPCI"
         COMMUNE = "05 Commune", "Commune"
 
-    nom = models.CharField(blank=True)
-    code = models.CharField(blank=True)
-    type = models.CharField(choices=Type)
+    nom = models.CharField(verbose_name="Nom")
+    code = models.CharField(blank=True, verbose_name="Code")
+    type = models.CharField(choices=Type, verbose_name="Type")
     parent = models.ForeignKey(
-        "ZoneGeographique", null=True, on_delete=models.CASCADE, related_name="enfants"
+        "ZoneGeographique",
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="enfants",
+        verbose_name="Zone géographique parente (département ou région)",
     )
     epci = models.ForeignKey(
-        "ZoneGeographique", null=True, on_delete=models.CASCADE, related_name="membres"
+        "ZoneGeographique",
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="membres",
+        verbose_name="EPCI",
     )
-    code_postal = models.CharField(max_length=5, blank=True)
+    code_postal = models.CharField(max_length=5, blank=True, verbose_name="Code postal")
+
+    @property
+    def is_region(self):
+        return self.type == self.__class__.Type.REGION
+
+    @property
+    def is_com(self):
+        return self.type == self.__class__.Type.COM
+
+    @property
+    def is_departement(self):
+        return self.type == self.__class__.Type.DEPARTEMENT
+
+    @property
+    def is_epci(self):
+        return self.type == self.__class__.Type.EPCI
 
     @property
     def is_commune(self):
@@ -220,10 +249,12 @@ class Filiere(models.Model):
 
     objects = FiliereQuerySet.as_manager()
 
-    nom = models.CharField(max_length=100, blank=True)
-    published = models.BooleanField(default=True)
-    position = models.IntegerField(default=99)
-    code_naf = models.CharField(max_length=10, blank=True)
+    nom = models.CharField(max_length=100, verbose_name="Nom")
+    published = models.BooleanField(default=False, verbose_name="Publié")
+    position = models.IntegerField(default=99, verbose_name="Position pour le tri")
+    code_naf = models.CharField(
+        max_length=10, blank=True, verbose_name="Code NAF associé"
+    )
 
     def __str__(self):
         return self.nom
@@ -234,8 +265,10 @@ class SousFiliere(models.Model):
         verbose_name = "Sous-filière"
         verbose_name_plural = "Filières > Sous-filières"
 
-    nom = models.CharField(max_length=100, blank=True)
-    filiere = models.ForeignKey(Filiere, on_delete=models.CASCADE, null=True)
+    nom = models.CharField(max_length=100, verbose_name="Nom")
+    filiere = models.ForeignKey(
+        Filiere, on_delete=models.CASCADE, verbose_name="Filière"
+    )
 
     def __str__(self):
         return self.nom
@@ -246,8 +279,8 @@ class Production(models.Model):
         verbose_name = "Détail de production"
         verbose_name_plural = "Filières > Sous-filières > Détails de production"
 
-    nom = models.CharField(max_length=100, blank=True)
-    sous_filiere = models.ForeignKey(SousFiliere, on_delete=models.CASCADE, null=True)
+    nom = models.CharField(max_length=100, verbose_name="Nom")
+    sous_filiere = models.ForeignKey(SousFiliere, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.nom
@@ -259,8 +292,10 @@ class GroupementProducteurs(models.Model):
         verbose_name_plural = "Groupement de producteurs"
         ordering = ("nom",)
 
-    nom = models.CharField(max_length=100, blank=True)
-    libelle = models.CharField(max_length=200, blank=True)
+    nom = models.CharField(max_length=100, verbose_name="Nom court")
+    libelle = models.CharField(
+        max_length=200, blank=True, verbose_name="Nom complet ou explication"
+    )
 
     def __str__(self):
         return self.nom
@@ -319,10 +354,28 @@ class Aide(models.Model):
     objects = AideQuerySet.as_manager()
 
     class Status(models.TextChoices):
-        DRAFT = "01 À traiter", "01 À traiter"
-        CANDIDATE = "02 À relire", "02 À relire"
-        PUBLISHED = "03 Publiée", "03 Publiée"
-        UNPUBLISHED = "04 Dépubliée", "04 Dépubliée"
+        TODO = "0. À faire", "0. À faire"
+        SCANNED = "1. Scanné (au moins pertinence OK)", "1. Scanné"
+        CANDIDATE = "2. Éditorialisé", "2. Éditorialisé"
+        REVIEW_WANTED = "2.2 Repasse nécessaire", "2.2 Repasse nécessaire"
+        STANDBY = "2.3 En attente", "2.3 En attente"
+        PUBLISHED = "3. OK Publication", "3. OK Publication"
+        CANCELED = "4. Désactivé", "4. Désactivé"
+
+    class RaisonDesactivation(models.TextChoices):
+        OFF_TOPIC = "Hors-sujet", "Hors-sujet"
+        CLOSED = "Clôturé", "Clôturé"
+        PENDING = "En attente d'ouverture", "En attente d'ouverture"
+        ERROR = "Erreur", "Erreur"
+        IRRELEVANT = "Pas la bonne cible", "Pas la bonne cible"
+
+    class IntegrationMethod(models.TextChoices):
+        MANUAL = "Manuel", "Manuel"
+        SCRAPING = "Scraping", "Scraping"
+        PARTNERSHIP = "Partenariat", "Partenariat"
+        API = "API", "API"
+        FORM = "Formulaire", "Formulaire"
+        BULK_IMPORT = "Import BDD", "Import BDD"
 
     class CouvertureGeographique(models.TextChoices):
         NATIONAL = "National", "National"
@@ -351,68 +404,140 @@ class Aide(models.Model):
         REALISATION = "Mise en œuvre / Réalisation"
         USAGE = "Usage / Valorisation"
 
-    status = models.CharField(choices=Status, default=Status.DRAFT)
-    last_published_at = models.DateTimeField(null=True, blank=True, editable=False)
-    slug = models.SlugField(max_length=2000)
-    nom = models.CharField(blank=True)
-    promesse = models.CharField(blank=True)
-    description = RichTextField(blank=True)
-    exemple_projet = RichTextField(blank=True)
-    url_descriptif = models.URLField(blank=True, max_length=2000)
-    url_demarche = models.URLField(blank=True, max_length=2000)
-    contact = RichTextField(blank=True)
-    sujets = models.ManyToManyField(Sujet, related_name="aides", blank=True)
-    types = models.ManyToManyField(Type, related_name="aides", blank=True)
+    status = models.CharField(choices=Status, default=Status.TODO, verbose_name="État")
+    source = models.CharField(blank=True, verbose_name="Origine source de la donnée")
+    integration_method = models.CharField(
+        blank=True,
+        choices=IntegrationMethod,
+        verbose_name="Mode de récolte de la donnée",
+    )
+    date_created = models.DateTimeField(
+        auto_now_add=True, editable=False, verbose_name="Date d’intégration"
+    )
+    date_modified = models.DateTimeField(
+        auto_now=True, editable=False, verbose_name="Date de modification"
+    )
+    raison_desactivation = models.CharField(
+        choices=RaisonDesactivation,
+        blank=True,
+        default="",
+        verbose_name="Raison de la désactivation",
+    )
+    internal_comments = models.TextField(
+        blank=True, default="", verbose_name="Commentaires internes"
+    )
+    last_published_at = models.DateTimeField(
+        null=True, editable=False, verbose_name="Date de publication"
+    )
+    slug = models.SlugField(max_length=2000, verbose_name="Slug")
+    nom = models.CharField(verbose_name="Nom")
+    promesse = models.CharField(blank=True, verbose_name="Promesse")
+    description = RichTextField(blank=True, verbose_name="Description")
+    exemple_projet = RichTextField(
+        blank=True, verbose_name="Exemple de projet ou d’application"
+    )
+    url_descriptif = models.URLField(
+        blank=True, max_length=2000, verbose_name="Lien vers le descriptif"
+    )
+    url_demarche = models.URLField(
+        blank=True, max_length=2000, verbose_name="Lien vers la démarche"
+    )
+    contact = RichTextField(blank=True, verbose_name="Contacts")
+    sujets = models.ManyToManyField(
+        Sujet, related_name="aides", blank=True, verbose_name="Sujets"
+    )
+    types = models.ManyToManyField(
+        Type, related_name="aides", blank=True, verbose_name="Types d’aides"
+    )
     organisme = models.ForeignKey(
-        Organisme, null=True, related_name="aides", on_delete=models.CASCADE
+        Organisme,
+        null=True,
+        related_name="aides",
+        on_delete=models.CASCADE,
+        verbose_name="Organisme porteur",
     )
     organismes_secondaires = models.ManyToManyField(
-        Organisme, related_name="aides_secondaires", blank=True
+        Organisme,
+        related_name="aides_secondaires",
+        blank=True,
+        verbose_name="Organismes porteurs secondaires",
     )
-    programmes = models.ManyToManyField(Programme, related_name="aides", blank=True)
+    programmes = models.ManyToManyField(
+        Programme, related_name="aides", blank=True, verbose_name="Programmes"
+    )
     aap_ami = models.BooleanField(
         default=False, verbose_name="Appel à projet ou manifestation d'intérêt"
     )
-    conditions = RichTextField(blank=True)
-    montant = RichTextField(blank=True)
-    participation_agriculteur = RichTextField(blank=True)
-    recurrence_aide = models.CharField(choices=Recurrence, blank=True)
-    date_debut = models.DateField(null=True, blank=True)
-    date_fin = models.DateField(null=True, blank=True)
-    eligibilite_effectif_min = models.PositiveIntegerField(null=True, blank=True)
-    eligibilite_effectif_max = models.PositiveIntegerField(null=True, blank=True)
-    eligibilite_etape_avancement_projet = postgres_fields.ArrayField(
-        models.CharField(choices=EtatAvancementProjet), null=True, blank=True
+    conditions = RichTextField(blank=True, verbose_name="Conditions d’éligibilité")
+    montant = RichTextField(blank=True, verbose_name="Montaux ou taux de l’aide")
+    participation_agriculteur = RichTextField(
+        blank=True, verbose_name="Participation ou coût pour les bénéficiaires"
     )
-    eligibilite_age = RichTextField(blank=True)
-    eligibilite_cumulable = RichTextField(blank=True)
-    type_depense = RichTextField(blank=True)
+    recurrence_aide = models.CharField(
+        choices=Recurrence, blank=True, verbose_name="Récurrence"
+    )
+    date_debut = models.DateField(
+        null=True, blank=True, verbose_name="Date d’ouverture"
+    )
+    date_fin = models.DateField(null=True, blank=True, verbose_name="Date de clôture")
+    eligibilite_effectif_min = models.PositiveIntegerField(
+        null=True, blank=True, verbose_name="Éligibilité : effectif salarié minimum"
+    )
+    eligibilite_effectif_max = models.PositiveIntegerField(
+        null=True, blank=True, verbose_name="Éligibilité : effectif salarié maximum"
+    )
+    eligibilite_etape_avancement_projet = postgres_fields.ArrayField(
+        models.CharField(choices=EtatAvancementProjet),
+        null=True,
+        blank=True,
+        verbose_name="Éligibilité : étape d’avancement du projet",
+    )
+    eligibilite_age = RichTextField(
+        blank=True, verbose_name="Éligibilité : âge de l’exploitation"
+    )
+    eligibilite_cumulable = RichTextField(
+        blank=True, verbose_name="Éligibilité : dispositif cumulable ?"
+    )
+    type_depense = RichTextField(blank=True, verbose_name="Types de dépenses éligibles")
     couverture_geographique = models.CharField(
         choices=CouvertureGeographique,
         default=CouvertureGeographique.NATIONAL,
-        blank=True,
+        verbose_name="Couverture géographique",
     )
     zones_geographiques = models.ManyToManyField(
-        ZoneGeographique, related_name="aides", blank=True
+        ZoneGeographique,
+        related_name="aides",
+        blank=True,
+        verbose_name="Zones géographiques",
     )
-    duree_accompagnement = models.CharField(blank=True)
-    etapes = RichTextField(blank=True)
+    duree_accompagnement = models.CharField(
+        blank=True, verbose_name="Durée de l’accompagnement"
+    )
+    etapes = RichTextField(blank=True, verbose_name="Étapes")
     beneficiaires = postgres_fields.ArrayField(
-        models.CharField(choices=Beneficiaire), null=True, blank=True
+        models.CharField(choices=Beneficiaire),
+        null=True,
+        blank=True,
+        verbose_name="Bénéficiaires",
     )
-    filieres = models.ManyToManyField(Filiere, blank=True, related_name="aides")
-    raw_data = postgres_fields.HStoreField(null=True, blank=True)
+    filieres = models.ManyToManyField(
+        Filiere, blank=True, related_name="aides", verbose_name="Filières"
+    )
+    raw_data = postgres_fields.HStoreField(
+        null=True, blank=True, verbose_name="Données brutes issues de l’intégration"
+    )
 
     def __str__(self):
         return self.nom
 
+    @property
     def is_published(self):
         return self.status == Aide.Status.PUBLISHED
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = f"{slugify(self.organisme.nom)}-{slugify(self.nom)}"
-        if self.is_published():
+            self.slug = f"{slugify(self.organisme.nom) if self.organisme_id else 'organisme-inconnu'}-{slugify(self.nom)}"
+        if self.is_published:
             self.last_published_at = now()
         super().save(*args, **kwargs)
 

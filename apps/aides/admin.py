@@ -1,4 +1,5 @@
 import csv
+from copy import copy
 
 from admin_extra_buttons.api import ExtraButtonsMixin, button
 from django.contrib import admin
@@ -46,6 +47,7 @@ class ThemeAdmin(VersionAdmin):
     )
     list_display_links = ("pk", "nom_court")
     list_filter = ("published",)
+    ordering = ("pk",)
 
     def sujets_count(self, obj):
         return mark_safe(
@@ -66,14 +68,10 @@ class ThemeAdmin(VersionAdmin):
 
 @admin.register(Sujet)
 class SujetAdmin(VersionAdmin):
-    list_display = (
-        "pk",
-        "nom",
-        "published",
-        "aides_count",
-    )
+    list_display = ("pk", "nom", "published", "aides_count")
     list_display_links = ("pk", "nom")
     list_filter = ("published", "themes")
+    ordering = ("pk",)
 
     def aides_count(self, obj):
         return mark_safe(
@@ -90,6 +88,7 @@ class SujetAdmin(VersionAdmin):
 class TypeAdmin(VersionAdmin):
     list_display = ("pk", "nom", "urgence", "aides_count")
     list_display_links = ("pk", "nom")
+    ordering = ("pk",)
 
     def aides_count(self, obj):
         return mark_safe(
@@ -151,6 +150,7 @@ class OrganismeAdmin(VersionAdmin):
     search_fields = ("nom", "acronyme")
     autocomplete_fields = ("zones_geographiques",)
     exclude = ("logo_filename",)
+    ordering = ("pk",)
 
     form = OrganismeForm
 
@@ -167,15 +167,28 @@ class OrganismeAdmin(VersionAdmin):
 
 @admin.register(ZoneGeographique)
 class ZoneGeographiqueAdmin(ReadOnlyModelAdmin):
-    list_display = ("type", "code", "nom")
+    list_display = ("type", "code", "nom", "aides_count")
     list_display_links = ("code", "nom")
     list_filter = ("type",)
     search_fields = ("nom", "code_postal")
+
+    def aides_count(self, obj):
+        if obj.aides_count == 0:
+            return ""
+        return mark_safe(
+            f'<a href="{reverse("admin:aides_aide_changelist")}?zones_geographiques__id__exact={obj.pk}">{obj.aides_count}</a>'
+        )
+
+    aides_count.short_description = "Nombre d’aides"
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).with_aides_count()
 
 
 @admin.register(GroupementProducteurs)
 class GroupementProducteursAdmin(VersionAdmin):
     list_display = ("nom", "libelle")
+    ordering = ("pk",)
 
 
 @admin.register(Filiere)
@@ -183,6 +196,7 @@ class FiliereAdmin(VersionAdmin):
     list_display = ("pk", "nom", "published", "position", "aides_count")
     list_display_links = ("pk", "nom")
     list_filter = ("published",)
+    ordering = ("pk",)
 
     def aides_count(self, obj):
         return mark_safe(
@@ -201,6 +215,7 @@ class SousFiliereAdmin(VersionAdmin):
     list_display_links = ("nom",)
     list_filter = ("filiere",)
     list_select_related = ("filiere",)
+    ordering = ("pk",)
 
 
 @admin.register(Production)
@@ -209,33 +224,37 @@ class ProductionAdmin(VersionAdmin):
     list_display_links = ("nom",)
     list_filter = ("sous_filiere",)
     list_select_related = ("sous_filiere",)
+    ordering = ("pk",)
 
 
 @admin.register(Aide)
 class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     class Media:
+        css = {"screen": ["admin/aides/aide/form.css"]}
         js = ["admin/aides/aide/trix_form.js"]
 
-    list_display = ("nom", "organisme")
+    list_display = ("pk", "nom", "organisme", "is_published")
     list_display_links = ("nom",)
+    ordering = ("pk",)
     list_filter = (
+        "status",
         "sujets",
         "sujets__themes",
         "types",
         "programmes",
         "organisme",
         "filieres",
+        ("zones_geographiques", admin.RelatedOnlyFieldListFilter),
     )
     autocomplete_fields = ("zones_geographiques", "organisme", "organismes_secondaires")
     change_form_template = "admin/aides/aide/change_form.html"
-    readonly_fields = ("raw_data",)
+    readonly_fields = ("raw_data", "date_created", "date_modified", "last_published_at")
+    search_fields = ("nom", "promesse")
     fieldsets = [
         (
             "Infos de base",
             {
-                "fields": [
-                    ("nom", "organisme"),
-                ],
+                "fields": ["nom", "organisme"],
             },
         ),
         (
@@ -258,24 +277,22 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                     ("beneficiaires", "filieres"),
                     "organismes_secondaires",
                     "programmes",
-                    "couverture_geographique",
-                    "zones_geographiques",
+                    ("couverture_geographique", "zones_geographiques"),
                 ],
             },
         ),
         (
             "Besoins",
             {
-                "fields": [
-                    "sujets",
-                ],
+                "fields": ["sujets"],
             },
         ),
         (
             "Guichet",
             {
                 "fields": [
-                    ("url_descriptif", "url_demarche"),
+                    "url_descriptif",
+                    "url_demarche",
                     "contact",
                     ("recurrence_aide", "date_debut", "date_fin"),
                 ],
@@ -294,12 +311,35 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         ),
         (
             "Données brutes",
-            {"fields": ["raw_data"]},
+            {"classes": ["collapse"], "fields": ["raw_data"]},
         ),
-        ("Cycle de vie", {"fields": ["status"]}),
+        (
+            "Cycle de vie",
+            {
+                "fields": [
+                    ("date_created", "date_modified"),
+                    ("source", "integration_method"),
+                    ("status", "last_published_at"),
+                    "raison_desactivation",
+                    "internal_comments",
+                ],
+            },
+        ),
     ]
 
     list_select_related = ("organisme",)
+
+    def get_form(self, *args, **kwargs):
+        form = super().get_form(*args, **kwargs)
+        if "beneficiaires" in form.base_fields:
+            form.base_fields["beneficiaires"].widget = ArrayFieldCheckboxSelectMultiple(
+                choices=Aide.Beneficiaire.choices
+            )
+        return form
+
+    @admin.display(boolean=True, description="Publiée")
+    def is_published(self, obj):
+        return obj.is_published
 
     actions = ["perform_auto_enrich"]
 
@@ -321,8 +361,13 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                             raw_data=row,
                         )
                     )
-                Aide.objects.bulk_create(to_create)
-                return redirect(admin_urlname(context["opts"], "changelist"))
+                objs = Aide.objects.bulk_create(to_create)
+                return redirect(
+                    reverse(
+                        admin_urlname(context["opts"], "changelist"),
+                        query={"id__exact": [obj.pk for obj in objs]},
+                    )
+                )
         else:
             form = UploadForm()
         context.update({"form": form, "title": "Importer un fichier CSV d'aides"})
@@ -378,28 +423,40 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     )
     def create_variants_for_departements(self, request, object_id):
         aide = Aide.objects.get(pk=object_id)
+        context = self.get_common_context(request)
         if request.method == "POST":
             sujets = aide.sujets.all()
             organismes_secondaires = aide.organismes_secondaires.all()
             programmes = aide.programmes.all()
             filieres = aide.filieres.all()
+            types = aide.types.all()
             departements = ZoneGeographique.objects.departements()
+            pks = []
             for departement in departements:
-                aide.pk = None
-                aide.slug = f"{aide.slug}-{departement.code}"
-                aide.save()
-                aide.zones_geographiques.add(departement)
-                aide.sujets.set(sujets)
-                aide.organismes_secondaires.set(organismes_secondaires)
-                aide.programmes.set(programmes)
-                aide.filieres.set(filieres)
+                new_aide = copy(aide)
+                new_aide.pk = None
+                new_aide.slug = f"{aide.slug}-{departement.code}"
+                new_aide.save()
+                pks.append(new_aide.pk)
+                new_aide.zones_geographiques.add(departement)
+                new_aide.sujets.set(sujets)
+                new_aide.organismes_secondaires.set(organismes_secondaires)
+                new_aide.programmes.set(programmes)
+                new_aide.filieres.set(filieres)
+                new_aide.types.set(types)
             self.message_user(
                 request,
-                f"L’aide <a href='../{aide.pk}/change'>{aide.nom} portée par {aide.organisme.nom}</a> a bien été déclinée pour {departements.count()} départements.",
+                mark_safe(
+                    f"L’aide <a href='../{aide.pk}/change'>{aide.nom} portée par {aide.organisme.nom}</a> a bien été déclinée pour {departements.count()} départements."
+                ),
             )
-            return None
+            return redirect(
+                reverse(
+                    admin_urlname(context["opts"], "changelist"),
+                    query={"id__exact": pks},
+                )
+            )
         else:
-            context = self.get_common_context(request)
             context.update(
                 {
                     "title": "Décliner une aide pour tous les départements",

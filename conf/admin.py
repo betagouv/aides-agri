@@ -10,6 +10,9 @@ from two_factor.admin import AdminSiteOTPRequiredMixin
 
 
 class AidesAgriAdminSite(AdminSiteOTPRequiredMixin, admin.AdminSite):
+    site_title = "Aides Agri"
+    site_header = "Administration Aides Agri"
+
     def login(self, request, extra_context=None):
         redirect_to = request.POST.get(
             REDIRECT_FIELD_NAME, request.GET.get(REDIRECT_FIELD_NAME)
