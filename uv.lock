@@ -13,7 +13,6 @@ dependencies = [
     { name = "django-anymail" },
     { name = "django-csp" },
     { name = "django-dsfr" },
-    { name = "django-grist-loader" },
     { name = "django-htmx" },
     { name = "django-pgtrigger" },
     { name = "django-prose" },
@@ -25,6 +24,7 @@ dependencies = [
     { name = "markdownify" },
     { name = "mjml-python" },
     { name = "psycopg", extra = ["binary"] },
+    { name = "pygrister" },
     { name = "qrcode" },
     { name = "requests" },
     { name = "sentry-sdk", extra = ["django"] },
@@ -52,7 +52,6 @@ requires-dist = [
     { name = "django-anymail", extras = ["brevo"], specifier = "~=13.0" },
     { name = "django-csp", specifier = "~=4.0" },
     { name = "django-dsfr", specifier = "~=2.1" },
-    { name = "django-grist-loader", specifier = "~=0.3" },
     { name = "django-htmx", specifier = "~=1.23" },
     { name = "django-pgtrigger", specifier = "~=4.15" },
     { name = "django-prose", specifier = "~=2.1" },
@@ -64,6 +63,7 @@ requires-dist = [
     { name = "markdownify", specifier = "~=1.1" },
     { name = "mjml-python", specifier = "~=1.3" },
     { name = "psycopg", extras = ["binary"], specifier = "~=3.0" },
+    { name = "pygrister", specifier = "~=0.7" },
     { name = "qrcode", specifier = "~=7.4" },
     { name = "requests", specifier = "~=2.32" },
     { name = "sentry-sdk", extras = ["django"], specifier = "~=2.26" },
@@ -333,20 +333,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/73/f8/bb9b228fc33230186f3612a6fc96274a81bab3509817498f2632d7aa6367/django-formtools-2.5.1.tar.gz", hash = "sha256:47cb34552c6efca088863d693284d04fc36eaaf350eb21e1a1d935e0df523c93", size = 88637, upload-time = "2023-12-19T10:30:59.78Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/12/63/91a107e3aaaf3987bad036494dfd8cc2675f4a66d22e65ffd6711f84ba70/django_formtools-2.5.1-py3-none-any.whl", hash = "sha256:bce9b64eda52cc1eef6961cc649cf75aacd1a707c2fff08d6c3efcbc8e7e761a", size = 170651, upload-time = "2023-12-19T10:30:02.816Z" },
-]
-
-[[package]]
-name = "django-grist-loader"
-version = "0.3.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "django" },
-    { name = "psycopg", extra = ["binary"] },
-    { name = "pygrister" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/fc/5b/f54cf7e7943c1c45298a433b14c479e8f49b8a1588966b54f769f58ca866/django_grist_loader-0.3.0.tar.gz", hash = "sha256:9c7b694c00a6c2128a9e2fd33597b5de063633dfa1f3409403f98f760d8547c2", size = 6463, upload-time = "2025-04-28T14:09:01.36Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/3c/be/f4545c9927caf4e223f511c6497e3df8dc487b0519ec1d4742bf986696f9/django_grist_loader-0.3.0-py3-none-any.whl", hash = "sha256:5892e85181c5f9e84763c92d1e5843d06d425c6046ca6ba30fcbcd4fd9bdfe2d", size = 6862, upload-time = "2025-04-28T14:08:59.745Z" },
 ]
 
 [[package]]
