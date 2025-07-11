@@ -1,10 +1,8 @@
-import datetime
-import functools
 import logging
 
 from markdownify import markdownify as md
 
-from ._grist import GristIntegration, AbstractAidesSource, AbstractRawFields
+from ._base import AbstractAidesSource, AbstractRawFields
 from ._utils import get_soup_from_url
 
 
@@ -90,55 +88,3 @@ class RegionBretagne(AbstractAidesSource):
     @classmethod
     def map_types(cls, raw_types: str):
         return [cls.mapping_types[raw_type] for raw_type in raw_types.split(",")]
-
-    @functools.cached_property
-    def _region_bretagne(self) -> tuple[str, str]:
-        return self.grist_integration.build_grist_region("Bretagne")
-
-    @functools.cached_property
-    def _organisme_bretagne(self) -> tuple[str, str]:
-        return self.grist_integration.build_grist_organisme(
-            "Conseil régional de Bretagne"
-        )
-
-    def _enrich_aide(self, aide: dict) -> None:
-        columns = GristIntegration.VisibleSolutionsColumns
-        date_cloture = None
-        if aide[Fields.DATE_CLOTURE.name_full]:
-            try:
-                date_cloture = (
-                    datetime.datetime.strptime(
-                        aide[Fields.DATE_CLOTURE.name_full], "%d/%m/%Y"
-                    )
-                    .date()
-                    .isoformat()
-                )
-            except ValueError:
-                pass
-        aide.update(
-            {
-                columns.ZONE_GEOGRAPHIQUE.value: self._region_bretagne,
-                columns.ORGANISME.value: self._organisme_bretagne,
-                columns.NOM.value: aide[Fields.NOM.name_full],
-                columns.URL_DESCRIPTIF.value: aide[Fields.URL.name_full],
-                columns.PROMESSE.value: aide[Fields.INTRO.name_full],
-                columns.MONTANT_TAUX.value: aide[Fields.MONTANT.name_full]
-                .replace("### Montant de l'aide", "")
-                .strip(),
-                columns.CONDITIONS.value: aide[Fields.CRITERES.name_full]
-                .replace("### Critères de sélection", "")
-                .strip(),
-                columns.TYPE_DEPENSE.value: aide[Fields.DEPENSES.name_full]
-                .replace("### Dépenses éligibles", "")
-                .strip(),
-                columns.DESCRIPTION.value: (
-                    aide[Fields.CONTEXTE.name_full]
-                    + "\n"
-                    + aide[Fields.OBJECTIFS.name_full]
-                ),
-                columns.TYPES.value: self.grist_integration.build_grist_types(
-                    self.map_types(aide[Fields.TYPE.name_full])
-                ),
-                columns.DATE_CLOTURE.value: date_cloture,
-            }
-        )

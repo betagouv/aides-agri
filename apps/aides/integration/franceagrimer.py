@@ -1,13 +1,11 @@
 import datetime
-import functools
 import logging
-import re
 
 import requests.exceptions
 from bs4 import BeautifulSoup
 from markdownify import markdownify as md
 
-from ._grist import AbstractAidesSource, AbstractRawFields
+from ._base import AbstractAidesSource, AbstractRawFields
 from ._utils import get_soup_from_url
 
 logger = logging.getLogger(__name__)
@@ -100,50 +98,3 @@ class FranceAgrimer(AbstractAidesSource):
             soup = get_soup_from_url(f"{self.BASE_URL}{url}", with_cache=False)
             aides.extend(self._scrape_rubrique(url, soup))
         return aides
-
-    @functools.cached_property
-    def _organisme(self) -> tuple[str, str]:
-        return self.grist_integration.build_grist_organisme("FranceAgrimer")
-
-    def _get_programme_from_raw_nom(
-        self, raw_nom_programme: str
-    ) -> tuple[str, str] | None:
-        nom_programme = self.__class__.PROGRAMMES.get(raw_nom_programme, None)
-        return (
-            self.grist_integration.build_grist_programme(nom_programme)
-            if nom_programme
-            else None
-        )
-
-    def _enrich_aide(self, aide: dict) -> None:
-        columns = self.grist_integration.__class__.VisibleSolutionsColumns
-        aide[columns.ORGANISME.value] = self._organisme
-        aide[columns.NOM.value] = aide[Fields.NOM.name_full]
-        aide[columns.URL_DESCRIPTIF.value] = aide[Fields.URL.name_full]
-        aide[columns.PROGRAMMES.value] = self._get_programme_from_raw_nom(
-            aide[Fields.PROGRAMME.name_full]
-        )
-        aide[columns.CONDITIONS.value] = aide[Fields.CIBLE.name_full]
-        aide[columns.DATE_OUVERTURE.value] = aide[Fields.DATE_DEBUT.name_full]
-        aide[columns.DATE_CLOTURE.value] = aide[Fields.DATE_FIN.name_full]
-
-        # find montant in description
-        string_montant = "**Montant de l’aide**"
-        description = aide[Fields.DESCRIPTION.name_full]
-        try:
-            position_montant = description.index(string_montant) + len(string_montant)
-            aide[columns.DESCRIPTION.value] = description[
-                : position_montant - len(string_montant)
-            ].strip()
-            aide[columns.MONTANT_TAUX.value] = description[
-                position_montant : description.index("\n\n**", position_montant)
-            ].strip()
-        except ValueError:
-            aide[columns.DESCRIPTION.value] = description
-
-        # find url_demarche in procedure
-        m_lien = re.search(
-            r"téléprocédure.{,100}(http[^\s]+)", aide[Fields.PROCEDURE.name_full]
-        )
-        if m_lien:
-            aide[columns.URL_DEMARCHE.value] = m_lien.groups()[0]
