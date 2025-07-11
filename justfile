@@ -40,9 +40,9 @@ makemigrations: (manage "makemigrations")
 
 # Testing
 dump-fixtures:
-    uv run --no-sync manage.py dumpdata --natural-primary --natural-foreign aides.Theme aides.Sujet --output=conf/fixtures/aides_01_sujets.json
-    uv run --no-sync manage.py dumpdata --natural-primary --natural-foreign aides.Filiere aides.SousFiliere aides.Production aides.GroupementProducteurs --output=conf/fixtures/aides_02_filieres.json
-    uv run --no-sync manage.py dumpdata --natural-primary --natural-foreign aides.ZoneGeographique --pks=13,26,265,5754 --output=conf/fixtures/aides_03_zones_geographiques.json
+    uv run --no-sync manage.py dumpdata --natural-primary --natural-foreign aides.Theme aides.Sujet --output=cypress/e2e/fixtures/aides_01_sujets.json
+    uv run --no-sync manage.py dumpdata --natural-primary --natural-foreign aides.Filiere aides.SousFiliere aides.Production aides.GroupementProducteurs --output=cypress/e2e/fixtures/aides_02_filieres.json
+    uv run --no-sync manage.py dumpdata --natural-primary --natural-foreign aides.ZoneGeographique --pks=13,26,265,5754 --output=cypress/e2e/fixtures/aides_03_zones_geographiques.json
 
 test:
     DJANGO_SETTINGS_MODULE=conf.settings.testing uv run pytest --cov
