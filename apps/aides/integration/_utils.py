@@ -1,8 +1,13 @@
+import logging
+
 from pathlib import Path
 from urllib.parse import urlparse
 
 import requests
 from bs4 import BeautifulSoup
+
+
+logger = logging.getLogger(__name__)
 
 
 def do_request(
@@ -16,6 +21,7 @@ def do_request(
         headers = dict()
     headers.update({"User-Agent": "AidesAgri/1.0 ; david.guillot@beta.gouv.fr"})
 
+    logger.info(f"Integration: HTTP call to {method} {url}")
     response = requests.request(
         method, url, params=params, headers=headers, timeout=5, verify=verify_tls
     )
