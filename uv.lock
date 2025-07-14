@@ -46,7 +46,7 @@ requires-dist = [
     { name = "django", specifier = "~=5.2" },
     { name = "django-anymail", extras = ["brevo"], specifier = "~=13.0" },
     { name = "django-csp", specifier = "~=4.0" },
-    { name = "django-dsfr", specifier = "~=2.1" },
+    { name = "django-dsfr", specifier = "~=3.0" },
     { name = "django-grist-loader", specifier = "~=0.3" },
     { name = "django-htmx", specifier = "~=1.23" },
     { name = "django-tasks", specifier = "~=0.6" },
@@ -278,7 +278,7 @@ wheels = [
 
 [[package]]
 name = "django-dsfr"
-version = "2.4.0"
+version = "3.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
@@ -286,9 +286,9 @@ dependencies = [
     { name = "django-widget-tweaks" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b8/97/27da719c708d310f2e147de5b9a432d44f9192afed5f9a5988ff20e550d3/django_dsfr-2.4.0.tar.gz", hash = "sha256:7ed256f30da90a91c9fb6a72dab4994de3df3db37aa0f363f96c959a90acead6", size = 2578857, upload-time = "2025-05-05T09:44:19.731Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/89/37/62fb9b6af83df88035ba883dbc9a3ef7f8f1160d6d696e64487f081a6a26/django_dsfr-3.0.0.tar.gz", hash = "sha256:0e15a7e1eb788b2fd396dc0e5c14764a01578aeb8e3d57b5c816e5a76dbc7db0", size = 2571458, upload-time = "2025-07-08T14:29:52.483Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c3/e0/ee4c133c1e75980e9e01fe41bc57a1ed6424e7faa88c2b7c2f863c6eae6b/django_dsfr-2.4.0-py3-none-any.whl", hash = "sha256:ba79b2a40fc23946fcccac66e2448cc7bda15a2dc35cec8fd51b85c96e21b80f", size = 3170148, upload-time = "2025-05-05T09:44:18.286Z" },
+    { url = "https://files.pythonhosted.org/packages/7a/75/7d7caafa5150e475af1567feb7c2684af5183483834d82d590a6802f3276/django_dsfr-3.0.0-py3-none-any.whl", hash = "sha256:c1a1afac410ac9721f73d28138ab5d9a4537f3119fb7f133bc570b1c257df538", size = 3118535, upload-time = "2025-07-08T14:29:50.682Z" },
 ]
 
 [[package]]
