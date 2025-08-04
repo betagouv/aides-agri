@@ -1,0 +1,33 @@
+name: Vendor JS dependencies
+on: pull_request
+
+concurrency:
+  group: ${{ github.head_ref || github.ref }}
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  build:
+    name: JS dependencies vendoring
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install JS dependencies
+        run: npm install
+      - name: Compile JS dependencies
+        run: |
+          echo 'export * as Sentry from "@sentry/browser"' | ./node_modules/.bin/esbuild --bundle --minify --format=esm --outfile=static/vendor/sentry.js
+      - uses: stefanzweifel/git-auto-commit-action@v6
+        with:
+          file_pattern: 'static/vendor/*.js'
+          commit_message: 'chore(deps): vendor dependencies'
