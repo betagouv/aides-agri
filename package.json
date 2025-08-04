@@ -10,7 +10,7 @@
   "dependencies": {
     "@hotwired/stimulus": "^3",
     "htmx.org": "^2",
-    "@sentry/browser": "^9"
+    "@sentry/browser": "^10"
   },
   "devDependencies": {
     "esbuild": "^0.25",
