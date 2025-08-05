@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.conf import settings
 from django.contrib.postgres import fields as postgres_fields
 from django.db import models
 from django.templatetags.static import static
@@ -404,6 +405,14 @@ class Aide(models.Model):
         USAGE = "Usage / Valorisation"
 
     status = models.CharField(choices=Status, default=Status.TODO, verbose_name="État")
+    assigned_to = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        verbose_name="Assigné à",
+    )
+    priority = models.PositiveSmallIntegerField(default=1, verbose_name="Priorité")
     source = models.CharField(blank=True, verbose_name="Origine source de la donnée")
     integration_method = models.CharField(
         blank=True,
