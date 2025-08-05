@@ -276,31 +276,39 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
 
     list_display = ("pk", "nom", "organisme", "is_published", "priority")
     list_display_links = ("nom",)
+    list_select_related = ("organisme",)
     ordering = ("priority", "pk")
     list_filter = (
         "status",
         "sujets",
         "sujets__themes",
         "types",
-        "programmes",
-        "organisme",
-        "filieres",
+        ("programmes", admin.RelatedOnlyFieldListFilter),
+        ("organisme", admin.RelatedOnlyFieldListFilter),
+        ("filieres", admin.RelatedOnlyFieldListFilter),
         ("zones_geographiques", admin.RelatedOnlyFieldListFilter),
+        ("assigned_to", admin.RelatedOnlyFieldListFilter),
     )
     autocomplete_fields = ("zones_geographiques", "organisme", "organismes_secondaires")
-    change_form_template = "admin/aides/aide/change_form.html"
-    readonly_fields = ("raw_data", "date_created", "date_modified", "last_published_at")
+    readonly_fields = (
+        "slug",
+        "raw_data",
+        "date_created",
+        "date_modified",
+        "last_published_at",
+    )
     search_fields = ("nom", "promesse")
     fieldsets = [
         (
             "Infos de base",
             {
-                "fields": ["nom", "organisme"],
+                "fields": ["nom", "organisme", "slug"],
             },
         ),
         (
             "Présentation",
             {
+                "classes": ["collapse"],
                 "fields": [
                     "promesse",
                     "description",
@@ -313,11 +321,15 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         (
             "Caractéristiques",
             {
+                "classes": ["collapse"],
                 "fields": [
                     "types",
-                    ("beneficiaires", "filieres"),
                     "organismes_secondaires",
                     "programmes",
+                    "aap_ami",
+                    ("beneficiaires", "filieres"),
+                    ("montant", "participation_agriculteur"),
+                    "duree_accompagnement",
                     ("couverture_geographique", "zones_geographiques"),
                 ],
             },
@@ -325,12 +337,14 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         (
             "Besoins",
             {
+                "classes": ["collapse"],
                 "fields": ["sujets"],
             },
         ),
         (
             "Guichet",
             {
+                "classes": ["collapse"],
                 "fields": [
                     "url_descriptif",
                     "url_demarche",
@@ -342,11 +356,13 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         (
             "Éligibilité",
             {
+                "classes": ["collapse"],
                 "fields": [
                     ("eligibilite_effectif_min", "eligibilite_effectif_max"),
                     ("eligibilite_etape_avancement_projet", "eligibilite_age"),
                     "conditions",
                     "type_depense",
+                    "eligibilite_cumulable",
                 ],
             },
         ),
@@ -357,6 +373,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         (
             "Cycle de vie",
             {
+                "classes": ["collapse"],
                 "fields": [
                     ("source", "integration_method", "priority"),
                     ("date_created", "date_modified", "last_published_at"),

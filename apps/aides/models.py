@@ -141,7 +141,7 @@ class Type(models.Model):
     icon_name = models.CharField(blank=True, verbose_name="(technique) Nom de l’icône")
 
     def __str__(self):
-        return self.nom
+        return f"{self.nom} ({self.description})"
 
 
 class ProgrammeQuerySet(WithAidesCounterQuerySet):
