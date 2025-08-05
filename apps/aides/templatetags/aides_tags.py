@@ -4,7 +4,6 @@ from django.contrib.admin.utils import lookup_field
 from django.contrib.postgres.fields import HStoreField
 from django.db.models import Model
 from django.utils.safestring import mark_safe
-from prose.fields import RichTextField
 
 
 register = template.Library()
@@ -40,7 +39,5 @@ def readonly_hstore_field_or_contents(
         return mark_safe(
             f"<table><thead><tr><th>Champ brut</th><th>Valeur</th></tr></thead><tbody>{''.join(rows)}</tbody></table>"
         )
-    elif isinstance(f, RichTextField):
-        return mark_safe(value)
     else:
         return readonlyfield.contents()

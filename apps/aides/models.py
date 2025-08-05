@@ -6,7 +6,6 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.timezone import now
-from product.fields import VendoredTrixRichTextField as RichTextField
 
 
 class WithAidesCounterQuerySet(models.QuerySet):
@@ -432,8 +431,8 @@ class Aide(models.Model):
     slug = models.SlugField(max_length=2000, verbose_name="Slug")
     nom = models.CharField(verbose_name="Nom")
     promesse = models.CharField(blank=True, verbose_name="Promesse")
-    description = RichTextField(blank=True, verbose_name="Description")
-    exemple_projet = RichTextField(
+    description = models.TextField(blank=True, verbose_name="Description")
+    exemple_projet = models.TextField(
         blank=True, verbose_name="Exemple de projet ou d’application"
     )
     url_descriptif = models.URLField(
@@ -442,7 +441,7 @@ class Aide(models.Model):
     url_demarche = models.URLField(
         blank=True, max_length=2000, verbose_name="Lien vers la démarche"
     )
-    contact = RichTextField(blank=True, verbose_name="Contacts")
+    contact = models.TextField(blank=True, verbose_name="Contacts")
     sujets = models.ManyToManyField(
         Sujet, related_name="aides", blank=True, verbose_name="Sujets"
     )
@@ -468,9 +467,9 @@ class Aide(models.Model):
     aap_ami = models.BooleanField(
         default=False, verbose_name="Appel à projet ou manifestation d'intérêt"
     )
-    conditions = RichTextField(blank=True, verbose_name="Conditions d’éligibilité")
-    montant = RichTextField(blank=True, verbose_name="Montaux ou taux de l’aide")
-    participation_agriculteur = RichTextField(
+    conditions = models.TextField(blank=True, verbose_name="Conditions d’éligibilité")
+    montant = models.TextField(blank=True, verbose_name="Montaux ou taux de l’aide")
+    participation_agriculteur = models.TextField(
         blank=True, verbose_name="Participation ou coût pour les bénéficiaires"
     )
     recurrence_aide = models.CharField(
@@ -492,13 +491,15 @@ class Aide(models.Model):
         blank=True,
         verbose_name="Éligibilité : étape d’avancement du projet",
     )
-    eligibilite_age = RichTextField(
+    eligibilite_age = models.TextField(
         blank=True, verbose_name="Éligibilité : âge de l’exploitation"
     )
-    eligibilite_cumulable = RichTextField(
+    eligibilite_cumulable = models.TextField(
         blank=True, verbose_name="Éligibilité : dispositif cumulable ?"
     )
-    type_depense = RichTextField(blank=True, verbose_name="Types de dépenses éligibles")
+    type_depense = models.TextField(
+        blank=True, verbose_name="Types de dépenses éligibles"
+    )
     couverture_geographique = models.CharField(
         choices=CouvertureGeographique,
         default=CouvertureGeographique.NATIONAL,
@@ -513,7 +514,7 @@ class Aide(models.Model):
     duree_accompagnement = models.CharField(
         blank=True, verbose_name="Durée de l’accompagnement"
     )
-    etapes = RichTextField(blank=True, verbose_name="Étapes")
+    etapes = models.TextField(blank=True, verbose_name="Étapes")
     beneficiaires = postgres_fields.ArrayField(
         models.CharField(choices=Beneficiaire),
         null=True,

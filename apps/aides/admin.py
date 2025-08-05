@@ -1,4 +1,5 @@
 import csv
+import json
 from copy import copy
 
 from admin_extra_buttons.api import ExtraButtonsMixin, button
@@ -8,7 +9,7 @@ from django import forms
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import UploadedFile
-from django.db.models import QuerySet
+from django.db.models import QuerySet, TextField
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -227,11 +228,51 @@ class ProductionAdmin(VersionAdmin):
     ordering = ("pk",)
 
 
+class EasyMDEWidget(forms.widgets.Textarea):
+    def render(self, name, value, attrs=None, renderer=None):
+        if "class" not in attrs.keys():
+            attrs["class"] = ""
+
+        attrs["class"] += " easymde-box"
+        attrs["data-easymde-options"] = json.dumps(
+            {
+                "inputStyle": "contenteditable",
+                "toolbar": [
+                    "bold",
+                    "italic",
+                    "link",
+                    "|",
+                    "heading-3",
+                    "unordered-list",
+                    "ordered-list",
+                    "|",
+                    "table",
+                    "|",
+                    "undo",
+                    "redo",
+                    "|",
+                    "guide",
+                ],
+                "spellChecker": False,
+                "nativeSpellCheck": True,
+                "status": ["lines", "words", "cursor"],
+            }
+        )
+
+        html = super().render(name, value, attrs, renderer=renderer)
+
+        return mark_safe(html)
+
+    class Media:
+        js = ("vendor/easymde.min.js",)
+        css = {"all": ("vendor/easymde.min.css",)}
+
+
 @admin.register(Aide)
 class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     class Media:
         css = {"screen": ["admin/aides/aide/form.css"]}
-        js = ["admin/aides/aide/trix_form.js"]
+        js = ["admin/aides/aide/init_easymde.js"]
 
     list_display = ("pk", "nom", "organisme", "is_published")
     list_display_links = ("nom",)
@@ -326,8 +367,9 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             },
         ),
     ]
-
-    list_select_related = ("organisme",)
+    formfield_overrides = {
+        TextField: {"widget": EasyMDEWidget},
+    }
 
     def get_form(self, *args, **kwargs):
         form = super().get_form(*args, **kwargs)
