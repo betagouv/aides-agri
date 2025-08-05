@@ -4,7 +4,6 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db.models import QuerySet, Q
 from django.utils.functional import cached_property
-from markdown import markdown
 from pygrister.api import GristApi
 
 from ...models import (
@@ -253,18 +252,16 @@ class Command(BaseCommand):
             aide = Aide.objects.create(
                 nom=row["nom_aide"],
                 promesse=row["promesse"],
-                description=markdown(row["description"]),
-                exemple_projet=markdown(row["exemple_projet"]),
+                description=row["description"],
+                exemple_projet=row["exemple_projet"],
                 url_descriptif=row["url_descriptif"],
                 url_demarche=row["url_demarche"],
-                contact=markdown(row["contact"]),
+                contact=row["contact"],
                 organisme=self._find_organismes([row["porteur_aide"]]).first(),
                 aap_ami=row["aap_ami"],
-                conditions=markdown(row["condition_eligibilite"]),
-                montant=markdown(row["taux_subvention_commentaire"]),
-                participation_agriculteur=markdown(
-                    row["Participation_de_l_agriculteur"]
-                ),
+                conditions=row["condition_eligibilite"],
+                montant=row["taux_subvention_commentaire"],
+                participation_agriculteur=row["Participation_de_l_agriculteur"],
                 recurrence_aide=row["recurrence_aide"],
                 date_debut=datetime.datetime.fromtimestamp(row["date_ouverture"])
                 if row["date_ouverture"]
@@ -278,11 +275,11 @@ class Command(BaseCommand):
                     "Eligibilite_etat_avancement_projet"
                 ],
                 eligibilite_age=row["Eligibilite_age"],
-                eligibilite_cumulable=markdown(row["Eligibilite_cumulable"]),
-                type_depense=markdown(row["type_depense"]),
+                eligibilite_cumulable=row["Eligibilite_cumulable"],
+                type_depense=row["type_depense"],
                 couverture_geographique=row["Couverture_Geographique"],
                 duree_accompagnement=row["duree_aide"],
-                etapes=markdown(row["Etapes"]),
+                etapes=row["Etapes"],
                 beneficiaires=row["beneficiaires_aide"][1:]
                 if row["beneficiaires_aide"]
                 else [],
