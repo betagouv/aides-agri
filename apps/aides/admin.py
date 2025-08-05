@@ -274,9 +274,9 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         css = {"screen": ["admin/aides/aide/form.css"]}
         js = ["admin/aides/aide/init_easymde.js"]
 
-    list_display = ("pk", "nom", "organisme", "is_published")
+    list_display = ("pk", "nom", "organisme", "is_published", "priority")
     list_display_links = ("nom",)
-    ordering = ("pk",)
+    ordering = ("priority", "pk")
     list_filter = (
         "status",
         "sujets",
@@ -358,9 +358,9 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             "Cycle de vie",
             {
                 "fields": [
-                    ("date_created", "date_modified"),
-                    ("source", "integration_method"),
-                    ("status", "last_published_at"),
+                    ("source", "integration_method", "priority"),
+                    ("date_created", "date_modified", "last_published_at"),
+                    ("status", "assigned_to"),
                     "raison_desactivation",
                     "internal_comments",
                 ],
