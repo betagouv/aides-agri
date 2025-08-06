@@ -396,6 +396,24 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             )
         return form
 
+    def get_fieldsets(self, request, obj=None):
+        if not obj:
+            return [
+                ("Infos de base", {"fields": ("nom", "organisme", "url_descriptif")}),
+                (
+                    "Cycle de vie",
+                    {
+                        "classes": ["collapse"],
+                        "fields": [
+                            ("source", "integration_method", "priority"),
+                            ("status", "assigned_to"),
+                            "internal_comments",
+                        ],
+                    },
+                ),
+            ]
+        return super().get_fieldsets(request, obj=obj)
+
     @admin.display(boolean=True, description="Publiée")
     def is_published(self, obj):
         return obj.is_published
