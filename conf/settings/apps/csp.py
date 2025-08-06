@@ -10,6 +10,16 @@ CONTENT_SECURITY_POLICY = {
             "stats.beta.gouv.fr",  # Matomo
             NONCE,  # page-specific entry-points
         ],
+        "style-src": [
+            SELF,
+            "stats.beta.gouv.fr",  # Matomo
+            "maxcdn.bootstrapcdn.com",  # EasyMDE needs FontAwesome from Bootstrap CDN
+            NONCE,  # page-specific entry-points
+        ],
+        "font-src": [
+            SELF,
+            "maxcdn.bootstrapcdn.com",  # EasyMDE needs FontAwesome from Bootstrap CDN
+        ],
         "connect-src": [
             SELF,
             "stats.beta.gouv.fr",  # Matomo
