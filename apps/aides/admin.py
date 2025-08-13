@@ -10,6 +10,7 @@ from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import UploadedFile
 from django.db.models import QuerySet, TextField
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -375,7 +376,8 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             {
                 "classes": ["collapse"],
                 "fields": [
-                    ("source", "integration_method", "priority"),
+                    ("source", "integration_method"),
+                    ("priority", "date_target_publication"),
                     ("date_created", "date_modified", "last_published_at"),
                     ("status", "assigned_to"),
                     "raison_desactivation",
@@ -405,7 +407,8 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                     {
                         "classes": ["collapse"],
                         "fields": [
-                            ("source", "integration_method", "priority"),
+                            ("source", "integration_method"),
+                            ("priority", "date_target_publication"),
                             ("status", "assigned_to"),
                             "internal_comments",
                         ],
@@ -545,6 +548,31 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                 "admin/create_variants_for_departements.html",
                 context,
             )
+
+    @button(label="Vue Kanban")
+    def dashboard(self, request):
+        context = self.get_common_context(request)
+        context.update(
+            {
+                "title": "Vue des aides en Kanban",
+                "aides_by_status": {
+                    status: Aide.objects.filter(status=status)
+                    .select_related("organisme", "assigned_to")
+                    .order_by("date_target_publication", "priority")
+                    for status in Aide.Status
+                },
+            }
+        )
+        if request.GET.get("mine", None):
+            for status, qs in context["aides_by_status"].items():
+                context["aides_by_status"][status] = qs.filter(assigned_to=request.user)
+        return TemplateResponse(request, "admin/dashboard.html", context)
+
+    def response_post_save_change(self, request, obj):
+        if "_save_and_back_to_dashboard" in request.POST:
+            return HttpResponseRedirect(reverse("admin:aides_aide_dashboard"))
+        else:
+            return super().response_post_save_change(request, obj)
 
 
 def validate_content_type_csv(value: UploadedFile):

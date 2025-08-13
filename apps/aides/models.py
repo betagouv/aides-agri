@@ -70,6 +70,10 @@ class Organisme(models.Model):
         else:
             return static("agri/images/placeholder.1x1.svg")
 
+    @property
+    def nom_court(self):
+        return self.acronyme or self.nom
+
 
 class ThemeQuerySet(models.QuerySet):
     def published(self):
@@ -413,6 +417,9 @@ class Aide(models.Model):
         verbose_name="Assigné à",
     )
     priority = models.PositiveSmallIntegerField(default=1, verbose_name="Priorité")
+    date_target_publication = models.DateField(
+        null=True, blank=True, verbose_name="Date cible de publication"
+    )
     source = models.CharField(blank=True, verbose_name="Origine source de la donnée")
     integration_method = models.CharField(
         blank=True,
