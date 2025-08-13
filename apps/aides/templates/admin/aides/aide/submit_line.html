@@ -1,0 +1,8 @@
+{% extends "admin/submit_line.html" %}
+
+{% block submit-row %}
+  {% if request.GET.from_dashboard %}
+    <input type="submit" value="Enregistrer et retour au Kanban" name="_save_and_back_to_dashboard">
+  {% endif %}
+  {{ block.super }}
+{% endblock %}

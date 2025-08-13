@@ -1,0 +1,68 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static admin_urls %}
+
+{% block extrastyle %}
+  <link rel="stylesheet" href="{% static 'admin/aides/aide/dashboard.css' %}">
+{% endblock %}
+
+{% block extrahead %}
+  <script src="{% static 'admin/aides/aide/dashboard.js' %}"></script>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+&rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+&rsaquo; Vue Kanban
+</div>
+{% endblock %}
+
+{% block content %}
+<ul class="object-tools">
+  <li>
+    {% if request.GET.mine %}
+      <a href="?">Toutes</a>
+    {% else %}
+      <a href="?mine=1">Seulement les miennes</a>
+    {% endif %}
+  </li>
+</ul>
+<div class="dashboard">
+{% for status, aides in aides_by_status.items %}
+  <section class="status">
+    <h2>{{ status }}</h2>
+    <ul class="status__aides">
+    {% for aide in aides %}
+      <li class="aide" data-aide-id="{{ aide.pk }}">
+        {{ aide.nom }}
+        <span class="aide__badges">
+          <span class="badge">{{ aide.organisme.nom_court }}</span>
+        </span>
+        <span class="aide__badges">
+          <span class="badge priority-{{ aide.priority }}">P{{ aide.priority }}</span>
+          {% if aide.date_target_publication %}
+            {% now "c" as today %}
+            <time datetime="{{ aide.date_target_publication|date:"c" }}"
+                  class="badge {% if aide.date_target_publication|date:"c" < today %} overdue{% endif %}"
+            >
+              {{ aide.date_target_publication|date:"SHORT_DATE_FORMAT" }}
+            </time>
+          {% endif %}
+          {% if aide.assigned_to %}
+          <span class="badge">{{ aide.assigned_to.first_name }}</span>
+          {% endif %}
+        </span>
+        <dialog id="dialog-{{ aide.id }}">
+          <h2>{{ aide.nom }}</h2>
+          <h3>{{ aide.organisme.nom_court }}</h3>
+          <p>{{ aide.internal_comments }}</p>
+          <a href="{% url 'admin:aides_aide_change' aide.pk %}?from_dashboard=1">Travailler sur cette aide</a>
+        </dialog>
+      </li>
+    {% endfor %}
+    </ul>
+  </section>
+{% endfor %}
+</div>
+{% endblock %}
