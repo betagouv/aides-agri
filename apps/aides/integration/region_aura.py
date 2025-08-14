@@ -1,9 +1,8 @@
-import functools
 import logging
 
 from markdownify import markdownify as md
 
-from ._grist import GristIntegration, AbstractAidesSource, AbstractRawFields
+from ._base import AbstractAidesSource, AbstractRawFields
 from ._utils import get_soup_from_url
 
 
@@ -62,24 +61,3 @@ class RegionAURA(AbstractAidesSource):
         for url in aides_urls:
             aides.append(self._scrape_aide(f"{self.base_url}{url}"))
         return aides
-
-    @functools.cached_property
-    def _region_aura(self) -> tuple[str, str]:
-        return self.grist_integration.build_grist_region("Auvergne-Rhône-Alpes")
-
-    @functools.cached_property
-    def _organisme_aura(self) -> tuple[str, str]:
-        return self.grist_integration.build_grist_organisme(
-            "Conseil régional d'Auvergne-Rhône-Alpes"
-        )
-
-    def _enrich_aide(self, aide: dict) -> None:
-        columns = GristIntegration.VisibleSolutionsColumns
-        aide.update(
-            {
-                columns.NOM.value: aide[Fields.NOM.name_full],
-                columns.URL_DESCRIPTIF.value: aide[Fields.URL.name_full],
-                columns.ZONE_GEOGRAPHIQUE.value: self._region_aura,
-                columns.ORGANISME.value: self._organisme_aura,
-            }
-        )

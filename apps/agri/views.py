@@ -91,14 +91,14 @@ class AgriMixin(ContextMixin):
             self.etablissement = siret.get(code_siret)
         code_commune = request.GET.get("commune", None)
         if code_commune:
-            self.commune = ZoneGeographique.objects.communes().get(numero=code_commune)
+            self.commune = ZoneGeographique.objects.communes().get(code=code_commune)
         self.code_effectif = request.GET.get("tranche_effectif_salarie", None)
         date_installation = request.GET.get("date_installation", None)
         if date_installation:
             self.date_installation = datetime.date.fromisoformat(date_installation)
         filieres_ids = request.GET.getlist("filieres", [])
         if filieres_ids:
-            self.filieres = Filiere.objects.filter(pk__in=filieres_ids)
+            self.filieres = Filiere.objects.published().filter(pk__in=filieres_ids)
         groupements_ids = request.GET.getlist("regroupements", [])
         if groupements_ids:
             self.groupements = GroupementProducteurs.objects.filter(
@@ -219,7 +219,7 @@ class Step4View(AgriMixin, TemplateView):
             {
                 "etablissement": self.etablissement,
                 "commune": ZoneGeographique.objects.communes()
-                .filter(numero=self.etablissement.get("commune"))
+                .filter(code=self.etablissement.get("commune"))
                 .first()
                 if self.etablissement
                 else None,
@@ -240,7 +240,7 @@ class Step5View(AgriMixin, TemplateView):
             naf = self.etablissement.get("activite_principale", "")
             if naf[-1].isalpha():
                 naf = naf[:-1]
-            filiere = Filiere.objects.filter(code_naf=naf).first()
+            filiere = Filiere.objects.published().filter(code_naf=naf).first()
         else:
             filiere = None
         context_data.update(
@@ -258,7 +258,7 @@ class Step5View(AgriMixin, TemplateView):
                 ],
                 "filieres": [
                     (pk, nom, nom)
-                    for pk, nom in Filiere.objects.values_list("pk", "nom")
+                    for pk, nom in Filiere.objects.published().values_list("pk", "nom")
                 ],
                 "filieres_initials": [filiere.pk] if filiere else [],
                 "filieres_helper": "Nous n'avons pas trouvé la filière de votre exploitation, veuillez l’indiquer ici."
@@ -390,7 +390,7 @@ class SearchCommuneView(TemplateView):
                 {
                     "name": "commune",
                     "options": [
-                        (zone.numero, zone, zone)
+                        (zone.code, zone, zone)
                         for zone in ZoneGeographique.objects.communes().filter(
                             Q(code_postal__icontains=q) | Q(nom__icontains=q)
                         )

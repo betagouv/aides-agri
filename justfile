@@ -11,9 +11,9 @@ install-python:
 install-js:
     npm install
     # For JS deps that distribute a bundle, just vendorize it
-    while read jsfile; do cp "node_modules/$jsfile" "static/vendor/"; echo "Vendorized $jsfile"; done <vendorize.txt
+    while read jsfile; do cp "node_modules/$jsfile" "static/vendor/" && echo "Vendorized $jsfile"; done <vendor.txt
     # For JS deps that don't, build'em then vendorize the bundle
-    echo 'export * as Sentry from "@sentry/browser"' | esbuild --bundle --minify --format=esm --outfile=static/vendor/sentry.js
+    echo 'export * as Sentry from "@sentry/browser"' | ./node_modules/.bin/esbuild --bundle --minify --format=esm --outfile=static/vendor/sentry.js
 
 # Install Talisman as pre-push hook
 install-talisman:
@@ -40,9 +40,9 @@ makemigrations: (manage "makemigrations")
 
 # Testing
 dump-fixtures:
-    uv run --no-sync manage.py dumpdata --natural-primary --natural-foreign aides.Theme aides.Sujet --output=conf/fixtures/aides_01_sujets.json
-    uv run --no-sync manage.py dumpdata --natural-primary --natural-foreign aides.Filiere aides.SousFiliere aides.Production aides.GroupementProducteurs --output=conf/fixtures/aides_02_filieres.json
-    uv run --no-sync manage.py dumpdata --natural-primary --natural-foreign aides.ZoneGeographique --pks=13,26,265,5754 --output=conf/fixtures/aides_03_zones_geographiques.json
+    uv run --no-sync manage.py dumpdata --natural-primary --natural-foreign aides.Theme aides.Sujet --output=cypress/e2e/fixtures/aides_01_sujets.json
+    uv run --no-sync manage.py dumpdata --natural-primary --natural-foreign aides.Filiere aides.SousFiliere aides.Production aides.GroupementProducteurs --output=cypress/e2e/fixtures/aides_02_filieres.json
+    uv run --no-sync manage.py dumpdata --natural-primary --natural-foreign aides.ZoneGeographique --pks=13,26,265,5754 --output=cypress/e2e/fixtures/aides_03_zones_geographiques.json
 
 test:
     DJANGO_SETTINGS_MODULE=conf.settings.testing uv run pytest --cov

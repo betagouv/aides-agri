@@ -1,0 +1,61 @@
+.dashboard {
+  display: flex;
+  gap: 24px;
+}
+
+.status {
+  width: 12.5%;
+}
+
+.status > h2 {
+  height: 40px;
+}
+
+.status__aides {
+  list-style: none;
+  padding-left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.aide {
+  list-style: none;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--darkened-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.aide__badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 2px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--selected-bg);
+}
+
+.badge.priority-1 {
+  background-color: var(--message-error-bg);
+}
+
+.badge.priority-2 {
+  background-color: var(--message-warning-bg);
+}
+
+.badge.priority-3 {
+  background-color: var(--message-success-bg);
+}
+
+.badge.overdue {
+  background-color: var(--delete-button-bg);
+}

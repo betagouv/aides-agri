@@ -1,2 +1,4 @@
 @hotwired/stimulus/dist/stimulus.js
 htmx.org/dist/htmx.esm.js
+easymde/dist/easymde.min.css
+easymde/dist/easymde.min.js
