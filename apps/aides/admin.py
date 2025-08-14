@@ -313,7 +313,6 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                 "fields": [
                     "promesse",
                     "description",
-                    "duree_accompagnement",
                     "exemple_projet",
                     "etapes",
                 ],
@@ -395,6 +394,12 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         if "beneficiaires" in form.base_fields:
             form.base_fields["beneficiaires"].widget = ArrayFieldCheckboxSelectMultiple(
                 choices=Aide.Beneficiaire.choices
+            )
+        if "eligibilite_etape_avancement_projet" in form.base_fields:
+            form.base_fields[
+                "eligibilite_etape_avancement_projet"
+            ].widget = ArrayFieldCheckboxSelectMultiple(
+                choices=Aide.EtatAvancementProjet.choices
             )
         return form
 
@@ -560,6 +565,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                     .select_related("organisme", "assigned_to")
                     .order_by("date_target_publication", "priority")
                     for status in Aide.Status
+                    if status not in (Aide.Status.ARCHIVED, Aide.Status.REJECTED)
                 },
             }
         )

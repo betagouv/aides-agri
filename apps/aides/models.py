@@ -358,13 +358,16 @@ class Aide(models.Model):
     objects = AideQuerySet.as_manager()
 
     class Status(models.TextChoices):
-        TODO = "0. À faire", "0. À faire"
-        SCANNED = "1. Scanné (au moins pertinence OK)", "1. Scanné"
-        CANDIDATE = "2. Éditorialisé", "2. Éditorialisé"
-        REVIEW_WANTED = "2.2 Repasse nécessaire", "2.2 Repasse nécessaire"
-        STANDBY = "2.3 En attente", "2.3 En attente"
-        PUBLISHED = "3. OK Publication", "3. OK Publication"
-        CANCELED = "4. Désactivé", "4. Désactivé"
+        TODO = "01. À trier", "01. À trier"
+        CANDIDATE = "02. En analyse", "02. En analyse"
+        CHOSEN = "03. Retenue - à structurer", "03. Retenue - à structurer"
+        STRUCTURED = "04. À éditorialiser", "04. À éditorialiser"
+        REVIEW = "05. À valider", "05. À valider"
+        VALIDATED = "06. À publier", "06. À publier"
+        PUBLISHED = "07. Publiée", "07. Publiée"
+        NEEDS_UPDATE = "08. À mettre à jour", "08. À mettre à jour"
+        REJECTED = "98. Non retenue", "98. Non retenue"
+        ARCHIVED = "99. Archivée", "99. Archivée"
 
     class RaisonDesactivation(models.TextChoices):
         OFF_TOPIC = "Hors-sujet", "Hors-sujet"
