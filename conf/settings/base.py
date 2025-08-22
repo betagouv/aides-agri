@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "django_otp.plugins.otp_totp",
     "django_tasks",
     "django_tasks.backends.database",
+    "importmap",
     "two_factor",
     "widget_tweaks",
     "dsfr",
