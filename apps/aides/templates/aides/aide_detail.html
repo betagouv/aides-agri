@@ -60,7 +60,17 @@ document.onreadystatechange = evt => {
           {% endif %}
         </p>
         <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-arrow-right-down-circle-fill fr-btn--icon-left fr-mb-2w">Description</h2>
-        <p>{{ object.description|ui_markdown|safe }}</p>
+        <p>
+          {{ object.description|ui_markdown|safe }}
+          {% if object.url_descriptif and object.url_descriptif != object.url_demarche %}
+            <a class="fr-btn fr-btn--primary fr-mb-1w"
+               target="_blank"
+               href="{{ object.url_descriptif }}"
+            >
+              Voir le détail
+            </a>
+          {% endif %}
+        </p>
         {% if object.montant %}
           <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-btn--icon-left fr-mb-2w">Montant ou taux de l’aide</h2>
           <p>{{ object.montant|ui_markdown|safe }}</p>
@@ -112,15 +122,20 @@ document.onreadystatechange = evt => {
         </div>
       </div>
     </div>
-    <div class="fr-grid-row">
-      <div class="fr-col fr-col-12 fr-col-md-4 fr-m-auto">
-        <a class="fr-btn fr-btn--primary"
-           target="_blank"
-           href="{{ object.url_descriptif }}"
-           id="link-to-origin"
-        >
-          Voir le détail
-        </a>
+    <div class="fr-grid-row fr-grid-row--gutters fr-mt-4w">
+      <div class="fr-col fr-col-12 fr-py-3w fr-px-4w fr-background-alt--blue-ecume">
+        <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-btn--icon-left fr-mb-2w">Contacts</h2>
+        <p class="fr-text--sm">
+          {{ object.contact|ui_markdown|safe }}
+          {% if object.url_demarche %}
+            <a class="fr-btn fr-btn--primary fr-mb-1w"
+               target="_blank"
+               href="{{ object.url_demarche }}"
+            >
+              Déposer mon dossier
+            </a>
+          {% endif %}
+        </p>
       </div>
     </div>
   </div>
