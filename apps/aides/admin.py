@@ -49,7 +49,7 @@ class ThemeAdmin(VersionAdmin):
     )
     list_display_links = ("pk", "nom_court")
     list_filter = ("published",)
-    ordering = ("pk",)
+    ordering = ("nom_court",)
 
     def sujets_count(self, obj):
         return mark_safe(
@@ -70,10 +70,10 @@ class ThemeAdmin(VersionAdmin):
 
 @admin.register(Sujet)
 class SujetAdmin(VersionAdmin):
-    list_display = ("pk", "nom", "published", "aides_count")
+    list_display = ("pk", "nom_court", "nom", "published", "aides_count")
     list_display_links = ("pk", "nom")
     list_filter = ("published", "themes")
-    ordering = ("pk",)
+    ordering = ("nom_court",)
 
     def aides_count(self, obj):
         return mark_safe(
@@ -90,7 +90,7 @@ class SujetAdmin(VersionAdmin):
 class TypeAdmin(VersionAdmin):
     list_display = ("pk", "nom", "urgence", "aides_count")
     list_display_links = ("pk", "nom")
-    ordering = ("pk",)
+    ordering = ("nom",)
 
     def aides_count(self, obj):
         return mark_safe(
@@ -107,6 +107,7 @@ class TypeAdmin(VersionAdmin):
 class ProgrammeAdmin(VersionAdmin):
     list_display = ("pk", "nom", "aides_count")
     list_display_links = ("pk", "nom")
+    ordering = ("nom",)
 
     def aides_count(self, obj):
         return mark_safe(
@@ -152,7 +153,7 @@ class OrganismeAdmin(VersionAdmin):
     search_fields = ("nom", "acronyme")
     autocomplete_fields = ("zones_geographiques",)
     exclude = ("logo_filename",)
-    ordering = ("pk",)
+    ordering = ("nom",)
 
     form = OrganismeForm
 
@@ -190,7 +191,7 @@ class ZoneGeographiqueAdmin(ReadOnlyModelAdmin):
 @admin.register(GroupementProducteurs)
 class GroupementProducteursAdmin(VersionAdmin):
     list_display = ("nom", "libelle")
-    ordering = ("pk",)
+    ordering = ("nom",)
 
 
 @admin.register(Filiere)
@@ -198,7 +199,7 @@ class FiliereAdmin(VersionAdmin):
     list_display = ("pk", "nom", "published", "position", "aides_count")
     list_display_links = ("pk", "nom")
     list_filter = ("published",)
-    ordering = ("pk",)
+    ordering = ("nom",)
 
     def aides_count(self, obj):
         return mark_safe(
@@ -217,7 +218,7 @@ class SousFiliereAdmin(VersionAdmin):
     list_display_links = ("nom",)
     list_filter = ("filiere",)
     list_select_related = ("filiere",)
-    ordering = ("pk",)
+    ordering = ("nom",)
 
 
 @admin.register(Production)
@@ -226,7 +227,7 @@ class ProductionAdmin(VersionAdmin):
     list_display_links = ("nom",)
     list_filter = ("sous_filiere",)
     list_select_related = ("sous_filiere",)
-    ordering = ("pk",)
+    ordering = ("nom",)
 
 
 class EasyMDEWidget(forms.widgets.Textarea):
