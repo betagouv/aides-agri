@@ -3,7 +3,7 @@
 {% if write %}
   {% if write.user == request.user %}
     <li class="info">
-      Tu es désormais éditeur de cet objet ; les autres le savent et ne peuvent rien modifier.
+      Tu es désormais éditeur/éditrice de cet objet ; les autres le savent et ne peuvent rien modifier.
     </li>
   {% else %}
     <li class="warning" data-concurrency>
@@ -19,7 +19,7 @@
 
 {% if reads %}
 <li class="info">
-  D’autres utilisateurs sont également présents sur cette page :
+  D’autres sont également présents sur cette page :
   {% for read in reads %}{{ read.user.username }} ({{ read.last_seen|naturaltime }}){% endfor %}
 </li>
 {% endif %}

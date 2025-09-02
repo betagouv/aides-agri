@@ -92,27 +92,33 @@ class ConcurrentModelAdmin(admin.ModelAdmin):
 
     def get_urls(self):
         urls = super().get_urls()
+        info = self.opts.app_label, self.opts.model_name
         urls.extend(
             [
                 path(
                     "<path:object_id>/concurrency/list",
                     self.admin_site.admin_view(self.concurrency_list),
+                    name="%s_%s_concurrencylist" % info,
                 ),
                 path(
                     "<path:object_id>/concurrency/read",
                     self.admin_site.admin_view(self.concurrency_read),
+                    name="%s_%s_concurrencyread" % info,
                 ),
                 path(
                     "<path:object_id>/concurrency/write",
                     self.admin_site.admin_view(self.concurrency_write),
+                    name="%s_%s_concurrencywrite" % info,
                 ),
                 path(
                     "<path:object_id>/concurrency/release",
                     self.admin_site.admin_view(self.concurrency_release),
+                    name="%s_%s_concurrencyrelease" % info,
                 ),
                 path(
                     "<path:object_id>/concurrency/force",
                     self.admin_site.admin_view(self.concurrency_force),
+                    name="%s_%s_concurrencyforce" % info,
                 ),
             ]
         )
