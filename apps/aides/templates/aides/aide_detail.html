@@ -107,14 +107,6 @@ document.onreadystatechange = evt => {
             <h3 class="fr-text--bold fr-text--md">Dépenses éligibles :</h3>
             {{ object.type_depense|ui_markdown|safe }}
           {% endif %}
-          {% if object.eligibilite_etape_avancement_projet %}
-            <h3 class="fr-text--bold fr-text--md">Étapes de votre projet auxquelles cette aide intervient :</h3>
-            <ul>
-            {% for etape_projet in object.eligibilite_etape_avancement_projet %}
-              <li>{{ etape_projet }}</li>
-            {% endfor %}
-            </ul>
-          {% endif %}
           {% if object.eligibilite_cumulable %}
             <h3 class="fr-text--bold fr-text--md">Cette aide est-elle cumulable avec d’autres dispositifs ?</h3>
             {{ object.eligibilite_cumulable|ui_markdown|safe }}

@@ -360,7 +360,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                 "classes": ["collapse"],
                 "fields": [
                     ("eligibilite_effectif_min", "eligibilite_effectif_max"),
-                    ("eligibilite_etape_avancement_projet", "eligibilite_age"),
+                    "eligibilite_age",
                     "conditions",
                     "type_depense",
                     "eligibilite_cumulable",
