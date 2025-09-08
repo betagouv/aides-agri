@@ -348,14 +348,14 @@ wheels = [
 
 [[package]]
 name = "django-pgtrigger"
-version = "4.15.3"
+version = "4.15.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f8/7b/02669dcf6e49d2e6ffee87c7989b49c2a2d47fd4bbe1709c897e6281ee5b/django_pgtrigger-4.15.3.tar.gz", hash = "sha256:235e07487d7953e85d9a9ecd8079d04072650ccad119148da96267cb2be80e09", size = 33082, upload-time = "2025-06-12T12:29:31.96Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/65/e1/47af2eb011017edf107be1d09f204ad4568021b2549380646d8da23238f6/django_pgtrigger-4.15.4.tar.gz", hash = "sha256:3dfef7dd8faca0af3602818075f28da1d540193af63a77bb848f56f532a968e4", size = 32791, upload-time = "2025-08-17T02:30:40.038Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b9/08/4325f2b2a204f2503a31af201d780aa6f2b65c37238368a0112daa1e879c/django_pgtrigger-4.15.3-py3-none-any.whl", hash = "sha256:f710514e6eba28b5db4e5a27ed83abc18eae26cf9a82e0201b0c8d5d29b46c46", size = 36434, upload-time = "2025-06-12T12:29:30.596Z" },
+    { url = "https://files.pythonhosted.org/packages/dd/9c/deb7c7089ecef9912eff15a2cb1ac32a5ae695969473a84eee1f1fa7171d/django_pgtrigger-4.15.4-py3-none-any.whl", hash = "sha256:6e1732c85bccbf22b183ca13b410d6908f3eaaeaf6103a3c62c236b0ae6a9072", size = 36148, upload-time = "2025-08-17T02:30:38.847Z" },
 ]
 
 [[package]]
