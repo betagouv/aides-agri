@@ -647,15 +647,15 @@ wheels = [
 
 [[package]]
 name = "pygrister"
-version = "0.7.0"
+version = "0.8.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "requests" },
     { name = "typer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/2b/5f/b99618eff4ae44ccdf40f0d2d6a298dd6c80bed95f76c13907021f1b2295/pygrister-0.7.0.tar.gz", hash = "sha256:fac4b982857febb7ed995e72ba8cbf7aa3168e8847e443d3f85e7dff9247add4", size = 25584, upload-time = "2025-05-01T17:08:50.175Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6a/a2/804b3e63bce91fb0c7f093b6f3e522e476d9f3074cd3384d713f73fff78b/pygrister-0.8.0.tar.gz", hash = "sha256:4faaad23b27c9ae46dc7b321a0de376f3bfbdaa5faa7ffd769566105667cd478", size = 41472, upload-time = "2025-08-10T10:53:47.561Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6f/67/b20cbae81094e5f2553d2b1e2d93d644562b0010d999bf0408d47c8e42ee/pygrister-0.7.0-py3-none-any.whl", hash = "sha256:324bfb283a5103ea7a813465bf0f18636088cc3c2da2dc85534e6fe8ee0f5867", size = 18452, upload-time = "2025-05-01T17:08:48.244Z" },
+    { url = "https://files.pythonhosted.org/packages/f2/47/e43f2d8b88477a9b27b39d97e3c61534ae3cda4c99771f8b3c81d2469486/pygrister-0.8.0-py3-none-any.whl", hash = "sha256:b882a93db0aae642435d23f8e6f6a50f737befa35e3cce72f234bedd0ef4bee6", size = 31863, upload-time = "2025-08-10T10:53:46.345Z" },
 ]
 
 [[package]]
