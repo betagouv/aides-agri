@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "esbuild": "^0.25",
-    "cypress": "^14",
+    "cypress": "^15",
     "@lhci/cli": "^0.15",
     "@testing-library/cypress": "^10"
   }
