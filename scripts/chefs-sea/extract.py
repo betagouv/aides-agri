@@ -5,26 +5,28 @@ import csv
 #
 # Il nécessite d’avoir :
 # * Un export CSV Notion de la base de départements (https://www.notion.so/incubateur-masa/254de24614be80f8ab62fe3170a88437?v=254de24614be80399f2c000cfe092813).
-# * Rangé ce fichier dans ./data/chefs-sea/departements.csv
+# * Rangé ce fichier dans ./departements.csv
 # * Un export CSV Notion de la base des DDT (https://www.notion.so/incubateur-masa/18ade24614be815eb432fdd71dd5d16a?v=264de24614be80b8a829000cb640df3b).
-# * Rangé ce fichier dans ./data/chefs-sea/ddts.csv
+# * Rangé ce fichier dans ./ddts.csv
 # * Exporté le fichier XLSX fourni au format CSV
-# * Rangé ce fichier dans ./data/chefs-sea/YYYYMMDD-input.csv
+# * Rangé ce fichier dans ./YYYYMMDD-input.csv
 #
 # Il se lance de la manière suivante :
 # ```
-# cd scripts
-# uv run extract_chefs_sea.py {YYYYMMDD}
+# cd scripts/chefs-sea
+# uv run extract.py {YYYYMMDD}
 # ```
+#
+# Il génère le fichier `./YYYYMMDD-output.csv`.
 
 departements = dict()
-with open("data/chefs-sea/departements.csv") as f:
+with open("departements.csv") as f:
     reader = csv.reader(f)
     for row in reader:
         departements[row[0]] = (f"{row[0]} {row[1]}", row[2])
 
 ddts = dict()
-with open("data/chefs-sea/ddts.csv") as f:
+with open("ddts.csv") as f:
     reader = csv.reader(f)
     for row in reader:
         ddts[row[0]] = (row[1], row[2])
