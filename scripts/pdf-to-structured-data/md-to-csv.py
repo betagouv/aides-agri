@@ -5,7 +5,3 @@
 # Il nécessite d’avoir :
 # * Une traduction Markdown du gros PDF du PSN, avec les titres des dispositifs en titre de niveau 2 ;
 # * Une traduction CSV du tableau Excel de tous les dispositifs
-
-from mrkdwn_analysis import MarkdownAnalyzer
-
-# TO BE CONTINUED
