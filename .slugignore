@@ -1,0 +1,14 @@
+/scripts
+/apps/*/static
+/apps/*/tests
+/conf/settings/devel.py
+/conf/settings/testing.py
+/cypress*
+/docker-compose.yml
+/package*.json
+pyproject.toml
+uv.lock
+vendor.txt
+README.md
+LICENSE
+/static
