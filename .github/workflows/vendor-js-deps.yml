@@ -24,7 +24,10 @@ jobs:
           cache: npm
       - name: Install JS dependencies
         run: npm install
-      - name: Compile JS dependencies
+      - name: Vendor JS dependencies that distribute a bundle
+        run: |
+          while read jsfile; do cp "node_modules/$jsfile" "static/vendor/" && echo "Vendorized $jsfile"; done <vendor.txt
+      - name: Compile JS dependencies that don't
         run: |
           echo 'export * as Sentry from "@sentry/browser"' | ./node_modules/.bin/esbuild --bundle --minify --format=esm --outfile=static/vendor/sentry.js
       - uses: stefanzweifel/git-auto-commit-action@v6
