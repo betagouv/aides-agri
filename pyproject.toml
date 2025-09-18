@@ -41,6 +41,7 @@ dev = [
 extraction = [
   "docling>=2.52.0",
   "ipykernel>=6.30.1",
+  "langchain-ollama>=0.3.8",
   "python-dotenv>=1.1.1",
 ]
 
