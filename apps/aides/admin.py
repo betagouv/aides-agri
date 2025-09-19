@@ -379,7 +379,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                     ("source", "integration_method"),
                     ("priority", "date_target_publication"),
                     ("date_created", "date_modified", "last_published_at"),
-                    ("status", "assigned_to"),
+                    ("status", "assigned_to", "cc_to"),
                     "raison_desactivation",
                     "internal_comments",
                 ],

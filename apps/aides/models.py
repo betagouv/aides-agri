@@ -419,6 +419,9 @@ class Aide(models.Model):
         on_delete=models.SET_NULL,
         verbose_name="Assigné à",
     )
+    cc_to = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, blank=True, verbose_name="CC", related_name="aides_cc"
+    )
     priority = models.PositiveSmallIntegerField(default=1, verbose_name="Priorité")
     date_target_publication = models.DateField(
         null=True, blank=True, verbose_name="Date cible de publication"
