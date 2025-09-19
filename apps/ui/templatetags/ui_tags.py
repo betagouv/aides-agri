@@ -2,28 +2,56 @@ from django import template
 from dsfr.utils import parse_tag_args
 from markdown import markdown
 from markdown.extensions.attr_list import AttrListExtension
-from markdown.extensions.tables import TableExtension, TableProcessor
+from markdown.extensions.tables import TableProcessor, BlockProcessor
+from markdown.extensions import Extension
+from markdown_grid_tables import GridTableProcessor
 import xml.etree.ElementTree as etree
 
 
 register = template.Library()
 
 
-class DsfrTableProcessor(TableProcessor):
+class DsfrTableProcessorMixin(BlockProcessor):
+    dsfr_bordered = False
+
     def run(self, parent, *args):
         super().run(parent, *args)
+
+        # Build the DSFR-specific layers surrounding the <table>
+        # cf https://www.systeme-de-design.gouv.fr/version-courante/fr/composants/tableau
         div = etree.SubElement(parent, "div")
         div.attrib["class"] = "fr-table"
+        if self.dsfr_bordered:
+            div.attrib["class"] += " fr-table--bordered"
+        wrapper = etree.SubElement(div, "div")
+        wrapper.attrib["class"] = "fr-table__wrapper"
+        container = etree.SubElement(wrapper, "div")
+        container.attrib["class"] = "fr-table__container"
+        content = etree.SubElement(container, "div")
+        content.attrib["class"] = "fr-table__content"
+
+        # move the table from the parent to the lowest DSFR layer
         added_table = parent.find("table[last()]")
         parent.remove(added_table)
-        div.append(added_table)
+        content.append(added_table)
 
 
-class DsfrTableExtension(TableExtension):
+class DsfrTableProcessor(DsfrTableProcessorMixin, TableProcessor):
+    pass
+
+
+class DsfrGridTableProcessor(DsfrTableProcessorMixin, GridTableProcessor):
+    dsfr_bordered = True
+
+
+class DsfrTableExtension(Extension):
     def extendMarkdown(self, md):
-        super().extendMarkdown(md)
-        processor = DsfrTableProcessor(md.parser, self.getConfigs())
-        md.parser.blockprocessors.register(processor, "table", 100)
+        md.parser.blockprocessors.register(
+            DsfrTableProcessor(md.parser, self.getConfigs()), "table", 100
+        )
+        md.parser.blockprocessors.register(
+            DsfrGridTableProcessor(md.parser), "grid_table", 100
+        )
 
 
 @register.filter
