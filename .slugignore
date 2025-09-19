@@ -12,3 +12,4 @@ vendor.txt
 README.md
 LICENSE
 /static
+justfile
