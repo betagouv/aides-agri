@@ -11,6 +11,6 @@ class StructuredExtractor(ABC):
         self.instruction_prompt = INSTRUCTION_PROMPT
     
     @abstractmethod
-    def get_structured_output(self, instruction_prompt: str, user_message: str, pydantic_schema: BaseModel, **kwargs) -> str:
-        """Extract text from a file or URL, regardless of format."""
+    def get_structured_output(self, model_name: str, user_message: str, **kwargs):
+        """Return a StructuredOutput built from the user message following the schema."""
         pass
