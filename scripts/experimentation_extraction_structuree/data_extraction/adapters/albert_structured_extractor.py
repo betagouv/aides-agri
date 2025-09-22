@@ -1,5 +1,6 @@
 import requests
 import os
+import json
 
 from dotenv import load_dotenv
 from pydantic import BaseModel
@@ -16,8 +17,9 @@ class AlbertStructuredOutput(StructuredOutput):
   def __init__(self, raw_response) -> None:
      super().__init__(raw_response)
   
-  def get_json(self):
-     return self.raw_response["choices"][0]["message"]["content"]
+  def get_json(self) -> dict:
+    structured_output = self.raw_response["choices"][0]["message"]["content"]
+    return json.loads(structured_output)
 
 
 
