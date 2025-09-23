@@ -40,6 +40,12 @@ ALBERT_API_KEY=YOUR_API_KEY_HERE
 
 The Albert provider loads the key from the environment automatically. No UI input is required.
 
+If you don't have an API key, you can get one [here](https://albert.sites.beta.gouv.fr/) _(you must be a government employee)_ :
+
+1. Click on **"Try our API"**
+2. Fill out the form with your professional information.
+3. You’ll receive an email at the address you provided. Follow the instructions in the email to obtain your API key.
+
 ## Run the Streamlit app
 
 From root folder :
