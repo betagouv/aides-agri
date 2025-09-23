@@ -30,7 +30,7 @@ class DispositifAide(BaseModel):
     )
 
     eligibilite: List[str] = Field(
-        ...,
+        None,
         title="Critères d’éligibilité",
         description="Ensemble des critères à remplir pour qu’une personne physique ou morale soit considéré comme recevable dans le cadre du dispositif. Ces conditions peuvent concerner le porteur du projet, les caractéristiques techniques de l’équipement, les délais de réalisation, ou encore l’usage prévu des installations.",
         examples=[
@@ -55,7 +55,7 @@ class DispositifAide(BaseModel):
             "prêt"
         ]
     ] = Field(
-        ...,
+        None,
         description="""
         Types d'aides disponibles via le dispositif décrit. Chaque aide appartient à une des catégories suivantes :
           - assistance : services de remplacement, cellule d'écoute. 
@@ -72,7 +72,7 @@ class DispositifAide(BaseModel):
     )
 
     porteurs: List[Porteur] = Field(
-        ...,
+        None,
         title="Porteurs",
         description="Liste des acteurs impliqués dans la mise en œuvre du dispositif et leurs rôles.",
         examples=[
@@ -99,7 +99,7 @@ class DispositifAide(BaseModel):
     )
 
     cibles: List[str] = Field(
-        ...,
+        None,
         title="Bénéficiaires",
         description="Grandes catégories de bénéficiaires ciblés par le dispositif. Attention : La liste ne doit pas contenir 2 fois la même catégorie.",
         examples=[
@@ -109,7 +109,7 @@ class DispositifAide(BaseModel):
     )
 
     eligibilite_geographique: str = Field(
-        ...,
+        None,
         title="Couverture géographique de l’aide",
         description="Couverture géographique du dispositif.",
         examples=[
