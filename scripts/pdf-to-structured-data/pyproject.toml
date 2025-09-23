@@ -1,8 +1,9 @@
 [project]
 name = "pdf-to-structured-data"
+version = "0.0.1"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "docling ~=2.52",
-    "markdown-analysis<1",
+    "markdown-parser-py ~=1.0",
 ]
