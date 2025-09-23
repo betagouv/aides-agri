@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 from django.urls import reverse
 from django_tasks import task
 
-from .models import Aide, Organisme
+from .models import Aide, Organisme, Programme
 
 
 @task()
@@ -13,6 +13,10 @@ def enrich_aide(aide_pk: int, raw_data_mapping: dict[str, str]):
     for raw_data_key, field_name in raw_data_mapping.items():
         if field_name == "organisme":
             aide.organisme = Organisme.objects.get(
+                nom__iexact=aide.raw_data[raw_data_key]
+            )
+        if field_name == "programme":
+            aide.programme = Programme.objects.get(
                 nom__iexact=aide.raw_data[raw_data_key]
             )
     aide.save()

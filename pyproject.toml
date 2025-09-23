@@ -38,6 +38,10 @@ dev = [
   "pytest-factoryboy",
   "requests-mock",
 ]
+pdf_to_csv = [
+    "docling ~=2.52",
+    "markdown-parser-py ~=1.0.1",
+]
 
 [tool.coverage.run]
 omit = ["**/tests/*"]
