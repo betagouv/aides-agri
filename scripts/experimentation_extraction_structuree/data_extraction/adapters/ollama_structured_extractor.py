@@ -9,11 +9,13 @@ from data_extraction.core.structured_output import StructuredOutput
 
 class OllamaStructuredOutput(StructuredOutput):
 
-  def __init__(self, raw_response: BaseModel) -> BaseModel:
+  def __init__(self, raw_response: dict, pydantic_schema: BaseModel) -> None:
     super().__init__(raw_response)
-  
+    self.pydantic_schema = pydantic_schema
+    self.formatted_response = self.pydantic_schema.model_validate_json(self.raw_response.message.content)
+
   def get_json(self) -> dict:
-    return self.raw_response.model_dump()
+    return self.formatted_response.model_dump()
 
 
 
@@ -24,7 +26,7 @@ class OllamaStructuredExtractor(StructuredExtractor):
 
   
   def get_structured_output(self, model_name, user_message, **kwargs):
-    response = chat(
+    raw_response = chat(
       messages=[
         {
           'role': 'system',
@@ -35,9 +37,8 @@ class OllamaStructuredExtractor(StructuredExtractor):
           'content': user_message,
         }
       ],
-      model='gemma3:4b',
+      model=model_name,
       format=self.pydantic_schema.model_json_schema(),
     )
 
-    response = self.pydantic_schema.model_validate_json(response.message.content)
-    return OllamaStructuredOutput(response)
+    return OllamaStructuredOutput(raw_response, self.pydantic_schema)
