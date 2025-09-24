@@ -1,15 +1,15 @@
-from typing import List
-from datetime import date
 from pydantic import BaseModel, Field
 
-from data_extraction.schemas.v1.entities.eligibilite import Eligibilite
-from data_extraction.schemas.v1.entities.zone_geographique import EligibiliteGeographique
-from data_extraction.schemas.v1.entities.titre_description import PresentationAide
-from data_extraction.schemas.v1.entities.type_aide import TypeAide
-from data_extraction.schemas.v1.entities.porteurs import ListePorteurs
-from data_extraction.schemas.v1.entities.beneficiaires import Beneficiaire
-from data_extraction.schemas.v1.entities.informations_externes import InformationsExternes
-from data_extraction.schemas.v1.entities.dates import Dates
+from .entities import (
+    PresentationAide,
+    Eligibilite,
+    TypeAide,
+    ListePorteurs,
+    InformationsExternes,
+    Beneficiaire,
+    EligibiliteGeographique,
+    Dates,
+)
 
 class DispositifAide(BaseModel):
 
