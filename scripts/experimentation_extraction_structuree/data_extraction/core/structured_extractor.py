@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from pydantic import BaseModel
 
-from data_extraction.prompts.prompts import INSTRUCTION_PROMPT
+from data_extraction.prompts.instruction_prompts import INSTRUCTION_PROMPT
 
 class StructuredExtractor(ABC):
     """Port interface for extracting text from any document type."""
