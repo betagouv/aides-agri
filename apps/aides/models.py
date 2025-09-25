@@ -7,6 +7,7 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.timezone import now
+from tree_queries.query import TreeQuerySet
 
 
 class WithAidesCounterQuerySet(models.QuerySet):
@@ -305,7 +306,7 @@ class GroupementProducteurs(models.Model):
         return self.nom
 
 
-class AideQuerySet(models.QuerySet):
+class AideQuerySet(TreeQuerySet):
     def published(self):
         return self.filter(status=Aide.Status.PUBLISHED)
 
@@ -366,6 +367,7 @@ class Aide(models.Model):
         VALIDATED = "06. À publier", "06. À publier"
         PUBLISHED = "07. Publiée", "07. Publiée"
         NEEDS_UPDATE = "08. À mettre à jour", "08. À mettre à jour"
+        TO_BE_DERIVED = "10. À décliner", "10. À décliner"
         REJECTED = "98. Non retenue", "98. Non retenue"
         ARCHIVED = "99. Archivée", "99. Archivée"
 
@@ -411,6 +413,9 @@ class Aide(models.Model):
         REALISATION = "Mise en œuvre / Réalisation"
         USAGE = "Usage / Valorisation"
 
+    parent = models.ForeignKey(
+        "self", on_delete=models.CASCADE, null=True, verbose_name="Dérivée de"
+    )
     status = models.CharField(choices=Status, default=Status.TODO, verbose_name="État")
     assigned_to = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -551,11 +556,39 @@ class Aide(models.Model):
     )
 
     def __str__(self):
-        return self.nom
+        return (f"{self.parent} > " if self.parent else "") + self.nom
 
     @property
     def is_published(self):
         return self.status == Aide.Status.PUBLISHED
+
+    @property
+    def is_national(self):
+        return self.couverture_geographique == Aide.CouvertureGeographique.NATIONAL
+
+    @property
+    def is_metropole(self):
+        return self.couverture_geographique == Aide.CouvertureGeographique.METROPOLE
+
+    @property
+    def is_outre_mer(self):
+        return self.couverture_geographique == Aide.CouvertureGeographique.OUTRE_MER
+
+    @property
+    def is_regional(self):
+        return self.couverture_geographique == Aide.CouvertureGeographique.REGIONAL
+
+    @property
+    def is_departemental(self):
+        return self.couverture_geographique == Aide.CouvertureGeographique.DEPARTEMENTAL
+
+    @property
+    def is_local(self):
+        return self.couverture_geographique == Aide.CouvertureGeographique.LOCAL
+
+    @property
+    def is_to_be_derived(self):
+        return self.status == Aide.Status.TO_BE_DERIVED
 
     def save(self, *args, **kwargs):
         if not self.slug:
