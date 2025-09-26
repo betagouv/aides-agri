@@ -54,7 +54,7 @@
       >
         <option value="" disabled {% if not tranche_effectif_salarie %}selected{% endif %}>Sélectionner une option</option>
         {% for code, label in mapping_tranches_effectif.items %}
-        <option value="{% if code %}{{ code }}{% endif %}" {% if code == etablissement.tranche_effectif_salarie %}selected{% endif %}>{{ label }}</option>
+        <option value="{% if code %}{{ code }}{% endif %}" {% if code == code_effectif_salarie %}selected{% endif %}>{{ label }}</option>
         {% endfor %}
       </select>
       <span class="fr-error-text fr-hidden">Ce champ est requis pour passer à la suite</span>

@@ -243,13 +243,15 @@ class Step5View(AgriMixin, TemplateView):
             filiere = Filiere.objects.published().filter(code_naf=naf).first()
         else:
             filiere = None
+        code_effectif_salarie = siret.mapping_effectif_by_insee_codes.get(
+            self.etablissement.get("tranche_effectif_salarie", ""), None
+        )
         context_data.update(
             {
                 "mapping_tranches_effectif": siret.mapping_effectif,
+                "code_effectif_salarie": code_effectif_salarie,
                 "tranche_effectif_salarie": siret.mapping_effectif.get(
-                    siret.mapping_effectif_by_insee_codes.get(
-                        self.etablissement.get("tranche_effectif_salarie", ""), None
-                    )
+                    code_effectif_salarie, None
                 )
                 if self.etablissement
                 else None,
