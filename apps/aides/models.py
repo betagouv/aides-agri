@@ -306,6 +306,12 @@ class GroupementProducteurs(models.Model):
 
 
 class AideQuerySet(models.QuerySet):
+    def validated(self):
+        return self.filter(status=Aide.Status.VALIDATED)
+
+    def pending(self):
+        return self.validated().filter(date_target_publication=date.today())
+
     def published(self):
         return self.filter(status=Aide.Status.PUBLISHED)
 
