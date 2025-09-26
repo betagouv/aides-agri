@@ -1,8 +1,11 @@
 import logging
 
 import requests
-import sentry_sdk
+from django.conf import settings
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.management.base import BaseCommand
+from django.core.mail import send_mail
+from django.urls import reverse
 
 from ...models import Aide
 
@@ -35,6 +38,16 @@ class Command(BaseCommand):
                     reason = "était injoignable"
                 else:
                     reason = f"returnait une erreur {status_code}"
-                message = f"L’aide {aide.pk} a été dépubliée parce que son URL de descritif {reason}."
+                url = (
+                    "https://"
+                    + get_current_site(None).domain
+                    + reverse("admin:aides_aide_change", args=[aide.pk])
+                )
+                message = f"L’aide suivante a été dépubliée parce que son URL de descritif {reason} : {aide.nom} ({url})"
                 logger.warning(message)
-                sentry_sdk.capture_message(message)
+                send_mail(
+                    f"[Aides Agri {settings.ENVIRONMENT}] Une aide a été dépubliée",
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    settings.AIDES_MANAGERS,
+                )

@@ -306,6 +306,12 @@ class GroupementProducteurs(models.Model):
 
 
 class AideQuerySet(models.QuerySet):
+    def validated(self):
+        return self.filter(status=Aide.Status.VALIDATED)
+
+    def pending(self):
+        return self.validated().filter(date_target_publication=date.today())
+
     def published(self):
         return self.filter(status=Aide.Status.PUBLISHED)
 
@@ -358,16 +364,13 @@ class Aide(models.Model):
     objects = AideQuerySet.as_manager()
 
     class Status(models.TextChoices):
-        TODO = "01. À trier", "01. À trier"
-        CANDIDATE = "02. En analyse", "02. En analyse"
-        CHOSEN = "03. Retenue - à structurer", "03. Retenue - à structurer"
-        STRUCTURED = "04. À éditorialiser", "04. À éditorialiser"
-        REVIEW = "05. À valider", "05. À valider"
-        VALIDATED = "06. À publier", "06. À publier"
-        PUBLISHED = "07. Publiée", "07. Publiée"
-        NEEDS_UPDATE = "08. À mettre à jour", "08. À mettre à jour"
-        REJECTED = "98. Non retenue", "98. Non retenue"
-        ARCHIVED = "99. Archivée", "99. Archivée"
+        TODO = "00", "0. Backlog - À prioriser"
+        CANDIDATE = "10", "1. Priorisée - Scope à vérif"
+        CHOSEN = "20", "2. Ok scope - À éditer"
+        REVIEW = "30", "3. Ok édito - À valider"
+        VALIDATED = "40", "4. Publiée sous embargo"
+        PUBLISHED = "50", "5. Publiée"
+        ARCHIVED = "99", "6. Archivée"
 
     class RaisonDesactivation(models.TextChoices):
         OFF_TOPIC = "Hors-sujet", "Hors-sujet"
