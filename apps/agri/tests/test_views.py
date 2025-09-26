@@ -134,7 +134,7 @@ def test_results(
             "theme": sujet.themes.first().pk,
             "siret": fake_siret,
             "commune": zone_geographique_commune_75001.code,
-            "tranche_effectif_salarie": "01",
+            "tranche_effectif_salarie": "0109",
         }
     )
     querydict.setlist("sujets", [sujet.pk])

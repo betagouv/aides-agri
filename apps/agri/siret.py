@@ -10,6 +10,7 @@ mapping_naf_short = dict()
 mapping_naf_complete = dict()
 mapping_effectif = dict()
 mapping_effectif_complete = dict()
+mapping_effectif_by_insee_codes = dict()
 
 _here = os.path.dirname(__file__)
 
@@ -39,6 +40,8 @@ with open(
             "min": row[2],
             "max": row[3],
         }
+        for insee_code in row[4].split(","):
+            mapping_effectif_by_insee_codes[insee_code] = row[0]
 
 
 class SearchUnavailable(RuntimeError):

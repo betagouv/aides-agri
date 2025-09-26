@@ -247,7 +247,9 @@ class Step5View(AgriMixin, TemplateView):
             {
                 "mapping_tranches_effectif": siret.mapping_effectif,
                 "tranche_effectif_salarie": siret.mapping_effectif.get(
-                    self.etablissement.get("tranche_effectif_salarie", ""), None
+                    siret.mapping_effectif_by_insee_codes.get(
+                        self.etablissement.get("tranche_effectif_salarie", ""), None
+                    )
                 )
                 if self.etablissement
                 else None,
