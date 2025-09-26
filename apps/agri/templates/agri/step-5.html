@@ -41,7 +41,7 @@
       {% if tranche_effectif_salarie %}
         <button type="button"
                 class="fr-tag fr-tag--dismiss"
-                aria-label="Tranche d‘effectif salarié trouvée pour l’exploitation choisie : {{ etablissement.date_creation|date:"SHORT_DATE_FORMAT" }}. Cliquer ici pour en choisir une autre."
+                aria-label="Tranche d‘effectif salarié trouvée pour l’exploitation choisie : {{ tranche_effectif_salarie }}. Cliquer ici pour en choisir une autre."
                 data-action="click->steps#overrideEffectif"
         >
           {{ tranche_effectif_salarie }}
