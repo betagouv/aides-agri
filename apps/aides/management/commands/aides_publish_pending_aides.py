@@ -16,6 +16,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for aide in Aide.objects.pending():
             aide.status = Aide.Status.PUBLISHED
+            aide.save()
 
             url = (
                 "https://"

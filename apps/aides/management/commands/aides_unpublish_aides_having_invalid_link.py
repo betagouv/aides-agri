@@ -32,7 +32,7 @@ class Command(BaseCommand):
             status_code = self._do_request(aide.url_descriptif)
 
             if status_code != 200:
-                aide.published = False
+                aide.status = Aide.Status.ARCHIVED
                 aide.save()
                 if status_code == 0:
                     reason = "était injoignable"
