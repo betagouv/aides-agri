@@ -313,6 +313,20 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             },
         ),
         (
+            "Cycle de vie",
+            {
+                "classes": ["collapse"],
+                "fields": [
+                    ("source", "integration_method"),
+                    ("priority", "date_target_publication"),
+                    ("date_created", "date_modified", "last_published_at"),
+                    ("status", "assigned_to", "cc_to"),
+                    "raison_desactivation",
+                    "internal_comments",
+                ],
+            },
+        ),
+        (
             "Présentation",
             {
                 "classes": ["collapse"],
@@ -375,20 +389,6 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         (
             "Données brutes",
             {"classes": ["collapse"], "fields": ["raw_data"]},
-        ),
-        (
-            "Cycle de vie",
-            {
-                "classes": ["collapse"],
-                "fields": [
-                    ("source", "integration_method"),
-                    ("priority", "date_target_publication"),
-                    ("date_created", "date_modified", "last_published_at"),
-                    ("status", "assigned_to", "cc_to"),
-                    "raison_desactivation",
-                    "internal_comments",
-                ],
-            },
         ),
     ]
     formfield_overrides = {
