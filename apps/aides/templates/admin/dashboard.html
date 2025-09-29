@@ -27,6 +27,7 @@
       <a href="?mine=1">Seulement les miennes</a>
     {% endif %}
   </li>
+  <li><a class="addlink" href="{% url opts|admin_urlname:'add' %}">Ajouter aide</a></li>
 </ul>
 <div class="dashboard">
 {% for status, aides in aides_by_status.items %}
