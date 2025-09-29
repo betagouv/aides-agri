@@ -14,8 +14,9 @@
 {% endfor %}
 
 {% if error %}
-  <p id="select-rich-error-{{ self.name }}"
-     class="fr-error-text fr-px-2w"
+  <p id="select-rich-error-siret"
+     class="fr-error-text"
+     data-select-rich-target="error"
      hx-swap-oob="true"
   >{{ error }}</p>
 {% endif %}
