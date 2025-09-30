@@ -368,6 +368,7 @@ class Aide(models.Model):
         CANDIDATE = "10", "1. Priorisée - Scope à vérif"
         CHOSEN = "20", "2. Ok scope - À éditer"
         REVIEW = "30", "3. Ok édito - À valider"
+        REVIEW_EXPERT = "31", "3.1 En attente validation métier"
         VALIDATED = "40", "4. Publiée sous embargo"
         PUBLISHED = "50", "5. Publiée"
         ARCHIVED = "99", "6. Archivée"
