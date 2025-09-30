@@ -12,6 +12,7 @@ dependencies = [
   "django-pgtrigger ~=4.15",
   "django-reversion ~=6.0",
   "django-tasks ~=0.6",
+  "django-tree-queries ~=0.20",
   "django-htmx ~=1.23",
   "django-two-factor-auth[phonenumberslite] ~=1.17",
   "gunicorn ~=23.0",

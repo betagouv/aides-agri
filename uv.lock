@@ -17,6 +17,7 @@ dependencies = [
     { name = "django-pgtrigger" },
     { name = "django-reversion" },
     { name = "django-tasks" },
+    { name = "django-tree-queries" },
     { name = "django-two-factor-auth", extra = ["phonenumberslite"] },
     { name = "gunicorn" },
     { name = "markdown" },
@@ -55,6 +56,7 @@ requires-dist = [
     { name = "django-pgtrigger", specifier = "~=4.15" },
     { name = "django-reversion", specifier = "~=6.0" },
     { name = "django-tasks", specifier = "~=0.6" },
+    { name = "django-tree-queries", specifier = "~=0.20" },
     { name = "django-two-factor-auth", extras = ["phonenumberslite"], specifier = "~=1.17" },
     { name = "gunicorn", specifier = "~=23.0" },
     { name = "markdown", specifier = "~=3.8" },
@@ -442,6 +444,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ce/d9/3670506bf2a5173310ec221cc7d24585e0d91627d86c1f0a6fbe243fbb4a/django_tasks-0.8.1.tar.gz", hash = "sha256:32673a9f56108ac1ea4664dc62580e5fc3536dd40858b38fd3b6a099913244b7", size = 31407, upload-time = "2025-07-04T15:51:59.68Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c2/56/da9b5df9bad6322d8a2cf38a60ecaa834fc5a9ee995a9647d2e87708ca73/django_tasks-0.8.1-py3-none-any.whl", hash = "sha256:5323f3858f7ea99d899a772b832098d8d694444b291c24f1e0ed5446272b880b", size = 43085, upload-time = "2025-07-04T15:51:58.087Z" },
+]
+
+[[package]]
+name = "django-tree-queries"
+version = "0.20.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/80/3d/86e979dc25c15bf0b7187c5c063bf2ef1296cca9515b7542379b9d11f8bb/django_tree_queries-0.20.0.tar.gz", hash = "sha256:5439d8bf9f4eafab66175d23ddd4e0a639b1be47cfc357561ff740ef7b6f4df3", size = 18083, upload-time = "2025-06-11T06:51:23.59Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a4/7f/cbc208164239904b4a00065eec327d02071ef6c950c8f2d2288150b5ab33/django_tree_queries-0.20.0-py3-none-any.whl", hash = "sha256:56e14105a894b801e41da82ef9e82151d06b1f481cfe39f792c08b6c87c49fce", size = 21146, upload-time = "2025-06-11T06:51:25.432Z" },
 ]
 
 [[package]]

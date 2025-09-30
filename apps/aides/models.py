@@ -7,6 +7,7 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.timezone import now
+from tree_queries.query import TreeQuerySet
 
 
 class WithAidesCounterQuerySet(models.QuerySet):
@@ -305,7 +306,7 @@ class GroupementProducteurs(models.Model):
         return self.nom
 
 
-class AideQuerySet(models.QuerySet):
+class AideQuerySet(TreeQuerySet):
     def validated(self):
         return self.filter(status=Aide.Status.VALIDATED)
 
@@ -370,6 +371,7 @@ class Aide(models.Model):
         REVIEW = "30", "3. Ok édito - À valider"
         REVIEW_EXPERT = "31", "3.1 En attente validation métier"
         VALIDATED = "40", "4. Publiée sous embargo"
+        TO_BE_DERIVED = "41", "4.1 À décliner"
         PUBLISHED = "50", "5. Publiée"
         ARCHIVED = "99", "6. Archivée"
 
@@ -415,6 +417,14 @@ class Aide(models.Model):
         REALISATION = "Mise en œuvre / Réalisation"
         USAGE = "Usage / Valorisation"
 
+    is_derivable = models.BooleanField(default=False, verbose_name="Est déclinable")
+    parent = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        verbose_name="Déclinée depuis",
+        related_name="children",
+    )
     status = models.CharField(choices=Status, default=Status.TODO, verbose_name="État")
     assigned_to = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -458,6 +468,9 @@ class Aide(models.Model):
     nom = models.CharField(verbose_name="Nom")
     promesse = models.CharField(blank=True, verbose_name="Promesse")
     description = models.TextField(blank=True, verbose_name="Description")
+    description_de_base = models.TextField(
+        blank=True, verbose_name="Description de l’aide de base"
+    )
     exemple_projet = models.TextField(
         blank=True, verbose_name="Exemple de projet ou d’application"
     )
@@ -555,11 +568,39 @@ class Aide(models.Model):
     )
 
     def __str__(self):
-        return self.nom
+        return (f"{self.parent} > " if self.parent else "") + self.nom
 
     @property
     def is_published(self):
         return self.status == Aide.Status.PUBLISHED
+
+    @property
+    def is_national(self):
+        return self.couverture_geographique == Aide.CouvertureGeographique.NATIONAL
+
+    @property
+    def is_metropole(self):
+        return self.couverture_geographique == Aide.CouvertureGeographique.METROPOLE
+
+    @property
+    def is_outre_mer(self):
+        return self.couverture_geographique == Aide.CouvertureGeographique.OUTRE_MER
+
+    @property
+    def is_regional(self):
+        return self.couverture_geographique == Aide.CouvertureGeographique.REGIONAL
+
+    @property
+    def is_departemental(self):
+        return self.couverture_geographique == Aide.CouvertureGeographique.DEPARTEMENTAL
+
+    @property
+    def is_local(self):
+        return self.couverture_geographique == Aide.CouvertureGeographique.LOCAL
+
+    @property
+    def is_to_be_derived(self):
+        return self.status == Aide.Status.TO_BE_DERIVED
 
     def save(self, *args, **kwargs):
         if not self.slug:
