@@ -555,9 +555,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                 }
             )
             return TemplateResponse(
-                request,
-                "admin/create_variants_for_departements.html",
-                context,
+                request, "admin/derive_for_departements.html", context
             )
 
     @button(label="Vue Kanban")
