@@ -59,3 +59,11 @@
 .badge.overdue {
   background-color: var(--delete-button-bg);
 }
+
+.badge.parent {
+  background-color: var(--secondary);
+}
+
+.badge.parent.-root {
+  background-color: #5D4190;
+}

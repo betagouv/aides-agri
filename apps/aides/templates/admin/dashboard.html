@@ -53,12 +53,27 @@
           {% if aide.assigned_to %}
           <span class="badge">{{ aide.assigned_to.first_name }}</span>
           {% endif %}
+          {% if aide.parent %}
+          <span class="badge parent {% if not aide.parent_id %}-root{% endif %}">
+            {# TODO remplacer l'ID par le code quand il sera implémenté #}
+            Parent : {{ aide.parent_id }}
+          </span>
+            {% if aide.parent.parent %}
+            <span class="badge parent {% if not aide.parent.parent.parent_id %}-root{% endif %}">
+              {# TODO remplacer l'ID par le code quand il sera implémenté #}
+              Grand-parent : {{ aide.parent.parent_id }}
+            </span>
+            {% endif %}
+          {% endif %}
         </span>
         <dialog id="dialog-{{ aide.id }}">
-          <h2>{{ aide.nom }}</h2>
-          <h3>{{ aide.organisme.nom_court }}</h3>
-          <p>{{ aide.internal_comments }}</p>
-          <a href="{% url 'admin:aides_aide_change' aide.pk %}?from_dashboard=1">Travailler sur cette aide</a>
+          <h2><strong>Nom</strong> : {{ aide.nom }}</h2>
+          <h3><strong>Organisme</strong> : {{ aide.organisme.nom_court }}</h3>
+          <p><strong>Commentaires internes</strong> : {{ aide.internal_comments|default:"aucun" }}</p>
+          <p><a href="{% url 'admin:aides_aide_change' aide.pk %}?from_dashboard=1">Travailler sur cette aide</a></p>
+          {% if aide.children.exists %}
+            <p><a href="?parent={{ aide.pk }}">Où en sont les déclinaisons ?</a></p>
+          {% endif %}
         </dialog>
       </li>
     {% endfor %}

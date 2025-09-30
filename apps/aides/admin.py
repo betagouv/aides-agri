@@ -1,9 +1,10 @@
+import copy
 import csv
 import json
-from copy import copy
 
 from admin_extra_buttons.api import ExtraButtonsMixin, button
 from django.contrib import admin
+from django.contrib.admin.views.main import ChangeList
 from django.contrib import messages
 from django import forms
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
@@ -281,10 +282,21 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         css = {"screen": ["admin/aides/aide/form.css"]}
         js = ["admin/aides/aide/init_easymde.js"]
 
-    list_display = ("pk", "nom", "organisme", "is_published", "priority")
-    list_display_links = ("nom",)
+    list_display = (
+        "id",
+        "nom",
+        "organisme",
+        "is_published",
+        "priority",
+        "ancestors",
+        "derivatives",
+    )
+    list_display_links = (
+        "id",
+        "nom",
+    )
     list_select_related = ("organisme",)
-    ordering = ("priority", "pk")
+    ordering = ("priority", "nom", "pk")
     list_filter = (
         "status",
         "sujets",
@@ -295,21 +307,24 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         ("filieres", admin.RelatedOnlyFieldListFilter),
         ("zones_geographiques", admin.RelatedOnlyFieldListFilter),
         ("assigned_to", admin.RelatedOnlyFieldListFilter),
+        ("parent", admin.RelatedOnlyFieldListFilter),
     )
     autocomplete_fields = ("zones_geographiques", "organisme", "organismes_secondaires")
-    readonly_fields = (
+    readonly_fields = [
+        "parent",
+        "is_derivable",
         "slug",
         "raw_data",
         "date_created",
         "date_modified",
         "last_published_at",
-    )
+    ]
     search_fields = ("nom", "promesse")
     fieldsets = [
         (
             "Infos de base",
             {
-                "fields": ["nom", "organisme", "slug"],
+                "fields": ["nom", "organisme", "slug", "is_derivable"],
             },
         ),
         (
@@ -395,8 +410,40 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         TextField: {"widget": EasyMDEWidget},
     }
 
-    def get_form(self, *args, **kwargs):
-        form = super().get_form(*args, **kwargs)
+    class AideChangeList(ChangeList):
+        def get_queryset(self, request, **kwargs):
+            qs = super().get_queryset(request, **kwargs)
+            if "parent__id__exact" not in request.GET:
+                qs = qs.filter(parent_id=None)
+            return qs
+
+    def get_changelist(self, request, **kwargs):
+        return AideAdmin.AideChangeList
+
+    @admin.display(description="Ancêtres")
+    def ancestors(self, obj):
+        # TODO remplacer l'ID par le code quand il existera
+        if obj.parent:
+            grandparent = self.ancestors(obj.parent)
+            grandparent = grandparent + " &gt; " if grandparent else ""
+            return mark_safe(
+                f'{grandparent}<a href="{obj.parent_id}">{obj.parent_id}</a>'
+            )
+        else:
+            return ""
+
+    @admin.display(description="Déclinaisons")
+    def derivatives(self, obj):
+        variants_count = Aide.objects.filter(parent_id=obj.pk).count()
+        if variants_count:
+            return mark_safe(
+                f'<a href="?parent__id__exact={obj.pk}">Voir les {variants_count}</a>'
+            )
+        else:
+            return ""
+
+    def get_form(self, request, obj=None, change=False, **kwargs):
+        form = super().get_form(request, obj=obj, change=change, **kwargs)
         if "beneficiaires" in form.base_fields:
             form.base_fields["beneficiaires"].widget = ArrayFieldCheckboxSelectMultiple(
                 choices=Aide.Beneficiaire.choices
@@ -407,12 +454,34 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             ].widget = ArrayFieldCheckboxSelectMultiple(
                 choices=Aide.EtatAvancementProjet.choices
             )
+        if obj:
+            if obj.is_derivable:
+                statuses_to_remove = (Aide.Status.PUBLISHED, Aide.Status.VALIDATED)
+            else:
+                statuses_to_remove = (Aide.Status.TO_BE_DERIVED,)
+            form.base_fields["status"].choices = [
+                c
+                for c in form.base_fields["status"].choices
+                if c[0] not in statuses_to_remove
+            ]
         return form
 
     def get_fieldsets(self, request, obj=None):
-        if not obj:
+        if obj:
+            fieldsets = copy.deepcopy(self.fieldsets)
+            if obj.parent:
+                fieldsets[0][1]["fields"].insert(0, ("parent",))
+            if obj.is_derivable or obj.parent:
+                fieldsets[2][1]["fields"].insert(1, ("description_de_base",))
+            return fieldsets
+        elif "parent" in request.GET:
+            return [("Infos de base", {"fields": ["parent", "nom", "is_derivable"]})]
+        else:
             return [
-                ("Infos de base", {"fields": ("nom", "organisme", "url_descriptif")}),
+                (
+                    "Infos de base",
+                    {"fields": ["nom", "organisme", "url_descriptif", "is_derivable"]},
+                ),
                 (
                     "Cycle de vie",
                     {
@@ -426,7 +495,47 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                     },
                 ),
             ]
-        return super().get_fieldsets(request, obj=obj)
+
+    def get_changeform_initial_data(self, request):
+        initial = super().get_changeform_initial_data(request)
+        if "parent" in request.GET:
+            parent = Aide.objects.get(pk=initial["parent"])
+            initial["nom"] = parent.nom
+        return initial
+
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = copy.deepcopy(self.readonly_fields)
+        if obj:
+            if obj.parent:
+                readonly_fields.extend(
+                    [
+                        field
+                        for field in self.get_fields(request)
+                        if field
+                        not in (
+                            "is_derivable",
+                            "nom",
+                            "status",
+                            "priority",
+                            "couverture_geographique",
+                        )
+                        and (
+                            (
+                                not hasattr(getattr(obj.parent, field), "exists")
+                                and getattr(obj.parent, field)
+                            )
+                            or (
+                                hasattr(getattr(obj.parent, field), "exists")
+                                and getattr(obj.parent, field).exists()
+                            )
+                        )
+                    ]
+                )
+        else:
+            readonly_fields.remove("is_derivable")
+            if "parent" in request.GET:
+                readonly_fields.remove("parent")
+        return readonly_fields
 
     @admin.display(boolean=True, description="Publiée")
     def is_published(self, obj):
@@ -506,45 +615,64 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                 context,
             )
 
+    @staticmethod
+    def _derive_aide(aide_id: int, nom: str, is_derivable: bool) -> Aide:
+        aide = Aide.objects.get(pk=aide_id)
+        parent_pk = aide.pk
+        sujets = aide.sujets.all()
+        organismes_secondaires = aide.organismes_secondaires.all()
+        programmes = aide.programmes.all()
+        filieres = aide.filieres.all()
+        types = aide.types.all()
+        zones_geographiques = aide.zones_geographiques.all()
+        aide.pk = None
+        aide._state.adding = True
+        aide.status = Aide.Status.TODO
+        aide.parent_id = parent_pk
+        aide.nom = nom
+        aide.slug = ""
+        aide.is_derivable = is_derivable
+        aide.save()
+        aide.sujets.set(sujets)
+        aide.organismes_secondaires.set(organismes_secondaires)
+        aide.programmes.set(programmes)
+        aide.filieres.set(filieres)
+        aide.types.set(types)
+        aide.zones_geographiques.set(zones_geographiques)
+        return aide
+
+    @button(
+        label="Décliner",
+        visible=lambda widget: widget.context["original"].is_to_be_derived,
+        html_attrs={"class": "addlink"},
+    )
+    def derive(self, request, object_id):
+        return redirect(f"../../add?parent={object_id}")
+
     @button(
         label="Décliner dans chaque département",
-        visible=lambda widget: widget.context["original"].couverture_geographique
-        == Aide.CouvertureGeographique.DEPARTEMENTAL
-        and not widget.context["original"].zones_geographiques.exists(),
+        visible=lambda widget: widget.context["original"].is_departemental
+        and not widget.context["original"].zones_geographiques.exists()
+        and widget.context["original"].is_to_be_derived,
+        html_attrs={"class": "addlink"},
     )
-    def create_variants_for_departements(self, request, object_id):
+    def derive_for_departements(self, request, object_id):
         aide = Aide.objects.get(pk=object_id)
         context = self.get_common_context(request)
         if request.method == "POST":
-            sujets = aide.sujets.all()
-            organismes_secondaires = aide.organismes_secondaires.all()
-            programmes = aide.programmes.all()
-            filieres = aide.filieres.all()
-            types = aide.types.all()
             departements = ZoneGeographique.objects.departements()
-            pks = []
             for departement in departements:
-                new_aide = copy(aide)
-                new_aide.pk = None
-                new_aide.slug = f"{aide.slug}-{departement.code}"
-                new_aide.save()
-                pks.append(new_aide.pk)
-                new_aide.zones_geographiques.add(departement)
-                new_aide.sujets.set(sujets)
-                new_aide.organismes_secondaires.set(organismes_secondaires)
-                new_aide.programmes.set(programmes)
-                new_aide.filieres.set(filieres)
-                new_aide.types.set(types)
+                self._derive_aide(object_id, f"{aide.nom} ({departement.nom})", False)
             self.message_user(
                 request,
                 mark_safe(
-                    f"L’aide <a href='../{aide.pk}/change'>{aide.nom} portée par {aide.organisme.nom}</a> a bien été déclinée pour {departements.count()} départements."
+                    f'L’aide <a href="{aide.pk}">{aide.nom} portée par {aide.organisme.nom}</a> a bien été déclinée pour {departements.count()} départements.'
                 ),
             )
             return redirect(
                 reverse(
                     admin_urlname(context["opts"], "changelist"),
-                    query={"id__exact": pks},
+                    query={"parent__id__exact": object_id},
                 )
             )
         else:
@@ -565,7 +693,9 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             {
                 "title": "Vue des aides en Kanban",
                 "aides_by_status": {
-                    status.label: Aide.objects.filter(status=status)
+                    status.label: Aide.objects.filter(
+                        status=status, parent_id=request.GET.get("parent", None)
+                    )
                     .select_related("organisme", "assigned_to")
                     .order_by("date_target_publication", "priority")
                     for status in Aide.Status
@@ -584,6 +714,16 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         else:
             return super().response_post_save_change(request, obj)
 
+    def save_form(self, request, form, change):
+        if not change and "parent" in form.cleaned_data:
+            return self._derive_aide(
+                form.cleaned_data["parent"].pk,
+                form.cleaned_data["nom"],
+                form.cleaned_data["is_derivable"],
+            )
+        else:
+            return super().save_form(request, form, change)
+
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
         base_url = f"{request.scheme}://{request.headers['host']}"
@@ -593,6 +733,8 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             admin_notify_cc.enqueue(obj.pk, base_url)
 
     def save_related(self, request, form, formsets, change):
+        if not change:
+            return
         obj = form.instance
         old_ccs = set(obj.cc_to.all())
         super().save_related(request, form, formsets, change)
