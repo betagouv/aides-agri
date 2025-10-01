@@ -1,3 +1,15 @@
 .vTextField {
   width: 100%;
 }
+
+#aide_form:has(.field-is_derivable img[alt="True"]):has(.field-parent) {
+  --header-bg: var(--secondary);
+}
+
+#aide_form:has(.field-is_derivable img[alt="True"]) {
+  --header-bg: #5D4190;
+}
+
+#aide_form {
+  --header-bg: #6C9041;
+}
