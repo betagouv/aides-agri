@@ -47,8 +47,7 @@ class Engine:
         self,
         schema: Type[BaseModel],
         parser: str | None = None,
-        model_name: str | None = None,
-        **provider_kwargs,
+        model_name: str | None = None
     ) -> None:
         self.schema = schema
 
@@ -73,21 +72,20 @@ class Engine:
             if self.provider_name == "albert" and "albert" not in self.model_name.lower():
                 self.model_name = DEFAULT_ALBERT_MODEL
 
-        self.provider_kwargs = provider_kwargs
-
     def parse(self, file_path: str) -> str:
         return self.parser_impl.extract(file_path)
 
-    def generate(self, prompt: str):
+    def generate(self, prompt: str, temperature: float = 0.2, **provider_kwargs):
         return self.extractor_impl.get_structured_output(
             model_name=self.model_name,
             user_message=prompt,
-            **self.provider_kwargs,
+            temperature=temperature,
+            **provider_kwargs
         )
 
-    def run(self, file_path: str, instruction_prefix: str | None = None):
+    def run(self, file_path: str, instruction_prefix: str | None = None, temperature: float = 0.2, **provider_kwargs):
         content = self.parse(file_path)
         prompt = f"{instruction_prefix}\n\n{content}" if instruction_prefix else content
-        return self.generate(prompt)
+        return self.generate(prompt, temperature=temperature, **provider_kwargs)
 
 
