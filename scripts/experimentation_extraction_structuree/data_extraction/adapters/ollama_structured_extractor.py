@@ -25,7 +25,19 @@ class OllamaStructuredExtractor(StructuredExtractor):
     super().__init__(pydantic_schema)
 
   
-  def get_structured_output(self, model_name, user_message, **kwargs):
+  def get_structured_output(self, model_name, user_message, temperature: float, **kwargs):
+
+    # Parse, validate and harmonize kwargs
+    
+    # Merge with default options
+    default_options = {
+      "num_ctx": 100000,
+      "num_predict": 10000,
+      "temperature": temperature
+    }
+    
+    merged_options = {**default_options, **kwargs}
+    
     raw_response = chat(
       messages=[
         {
@@ -39,6 +51,7 @@ class OllamaStructuredExtractor(StructuredExtractor):
       ],
       model=model_name,
       format=self.pydantic_schema.model_json_schema(),
+      options=merged_options
     )
 
     return OllamaStructuredOutput(raw_response, self.pydantic_schema)

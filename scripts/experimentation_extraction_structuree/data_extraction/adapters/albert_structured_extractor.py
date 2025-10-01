@@ -40,7 +40,7 @@ class AlbertStructuredExtractor(StructuredExtractor):
       }
       return headers
 
-  def get_body(self, model_name, user_message, **kwargs):
+  def get_body(self, model_name, user_message, temperature: float, **kwargs):
       payload = {
           "model": model_name,
           "messages": [
@@ -57,14 +57,18 @@ class AlbertStructuredExtractor(StructuredExtractor):
               "type": "json_schema",
               "json_schema": self.json_schema
           },
+          "temperature": temperature,
           **kwargs
       }
 
       return payload
   
-  def get_structured_output(self, model_name, user_message, **kwargs):
+  def get_structured_output(self, model_name, user_message, temperature: float, **kwargs):
+
+    # Parse and harmonize most useful kwargs
+    
     headers = self.get_header()
-    body = self.get_body(model_name, user_message, **kwargs)
+    body = self.get_body(model_name, user_message, temperature=temperature, **kwargs)
 
     response = requests.post(self.endpoint, headers=headers, json=body)
 
