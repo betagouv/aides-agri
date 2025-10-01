@@ -24,5 +24,5 @@ class InformationsExternes(BaseModel):
       title="URL Source",
       description="Lien permettant d'obtenir plus d'informations sur le dispositif.",
       examples=["https://agirpourlatransition.ademe.fr/entreprises/aides-financieres/2023/audit-energetique-industrie"],
-      pattern=r"^https?://[^\s]+$"
+      #pattern=r"^https?://[^\s]+$"
   )
