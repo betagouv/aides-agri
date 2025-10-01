@@ -20,220 +20,15 @@ from django.utils.safestring import mark_safe
 from reversion.admin import VersionAdmin
 
 from admin_concurrency.admin import ConcurrentModelAdmin
-from product.admin import ReadOnlyModelAdmin
 
-from .models import (
-    Theme,
-    Sujet,
-    Type,
-    Programme,
-    Organisme,
-    ZoneGeographique,
-    Filiere,
-    SousFiliere,
-    Production,
-    GroupementProducteurs,
-    Aide,
-)
-from .tasks import (
+from ..models import ZoneGeographique, Aide
+from ..tasks import (
     enrich_aide,
     admin_notify_assignee,
     admin_notify_cc,
     admin_notify_new_cc,
 )
-
-
-@admin.register(Theme)
-class ThemeAdmin(VersionAdmin):
-    list_display = (
-        "pk",
-        "nom_court",
-        "published",
-        "urgence",
-        "sujets_count",
-        "aides_count",
-    )
-    list_display_links = ("pk", "nom_court")
-    list_filter = ("published",)
-    ordering = ("nom_court",)
-
-    def sujets_count(self, obj):
-        return mark_safe(
-            f'<a href="{reverse("admin:aides_sujet_changelist")}?themes__id__exact={obj.pk}">{obj.sujets_count}</a>'
-        )
-
-    def aides_count(self, obj):
-        return mark_safe(
-            f'<a href="{reverse("admin:aides_aide_changelist")}?sujets__themes__id__exact={obj.pk}">{obj.aides_count}</a>'
-        )
-
-    sujets_count.short_description = "Nombre de sujets"
-    aides_count.short_description = "Nombre d’aides"
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).with_sujets_count().with_aides_count()
-
-
-@admin.register(Sujet)
-class SujetAdmin(VersionAdmin):
-    list_display = ("pk", "nom_court", "nom", "published", "aides_count")
-    list_display_links = ("pk", "nom")
-    list_filter = ("published", "themes")
-    ordering = ("nom_court",)
-
-    def aides_count(self, obj):
-        return mark_safe(
-            f'<a href="{reverse("admin:aides_aide_changelist")}?sujets__id__exact={obj.pk}">{obj.aides_count}</a>'
-        )
-
-    aides_count.short_description = "Nombre d’aides"
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).with_aides_count()
-
-
-@admin.register(Type)
-class TypeAdmin(VersionAdmin):
-    list_display = ("pk", "nom", "urgence", "aides_count")
-    list_display_links = ("pk", "nom")
-    ordering = ("nom",)
-
-    def aides_count(self, obj):
-        return mark_safe(
-            f'<a href="{reverse("admin:aides_aide_changelist")}?types__id__exact={obj.pk}">{obj.aides_count}</a>'
-        )
-
-    aides_count.short_description = "Nombre d’aides"
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).with_aides_count()
-
-
-@admin.register(Programme)
-class ProgrammeAdmin(VersionAdmin):
-    list_display = ("pk", "nom", "aides_count")
-    list_display_links = ("pk", "nom")
-    ordering = ("nom",)
-
-    def aides_count(self, obj):
-        return mark_safe(
-            f'<a href="{reverse("admin:aides_aide_changelist")}?programmes__id__exact={obj.pk}">{obj.aides_count}</a>'
-        )
-
-    aides_count.short_description = "Nombre d’aides"
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).with_aides_count()
-
-
-class ArrayFieldCheckboxSelectMultiple(forms.SelectMultiple):
-    def format_value(self, value):
-        """Return selected values as a list."""
-        if value is None and self.allow_multiple_selected:
-            return []
-        elif self.allow_multiple_selected:
-            value = [v for v in value.split(",")]
-
-        if not isinstance(value, (tuple, list)):
-            value = [value]
-
-        results = [str(v) if v is not None else "" for v in value]
-        return results
-
-
-class OrganismeForm(forms.ModelForm):
-    model = Organisme
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["secteurs"].widget = ArrayFieldCheckboxSelectMultiple(
-            choices=Organisme.Secteur.choices
-        )
-
-
-@admin.register(Organisme)
-class OrganismeAdmin(VersionAdmin):
-    list_display = ("pk", "nom", "acronyme", "famille", "secteurs", "aides_count")
-    list_display_links = ("pk", "nom")
-    list_filter = ("famille",)
-    search_fields = ("nom", "acronyme")
-    autocomplete_fields = ("zones_geographiques",)
-    exclude = ("logo_filename",)
-    ordering = ("nom",)
-
-    form = OrganismeForm
-
-    def aides_count(self, obj):
-        return mark_safe(
-            f'<a href="{reverse("admin:aides_aide_changelist")}?organisme__id__exact={obj.pk}">{obj.aides_count}</a>'
-        )
-
-    aides_count.short_description = "Nombre d’aides"
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).defer("logo").with_aides_count()
-
-
-@admin.register(ZoneGeographique)
-class ZoneGeographiqueAdmin(ReadOnlyModelAdmin):
-    list_display = ("type", "code", "nom", "aides_count")
-    list_display_links = ("code", "nom")
-    list_filter = ("type",)
-    search_fields = ("nom", "code_postal")
-
-    def aides_count(self, obj):
-        if obj.aides_count == 0:
-            return ""
-        return mark_safe(
-            f'<a href="{reverse("admin:aides_aide_changelist")}?zones_geographiques__id__exact={obj.pk}">{obj.aides_count}</a>'
-        )
-
-    aides_count.short_description = "Nombre d’aides"
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).with_aides_count()
-
-
-@admin.register(GroupementProducteurs)
-class GroupementProducteursAdmin(VersionAdmin):
-    list_display = ("nom", "libelle")
-    ordering = ("nom",)
-
-
-@admin.register(Filiere)
-class FiliereAdmin(VersionAdmin):
-    list_display = ("pk", "nom", "published", "position", "aides_count")
-    list_display_links = ("pk", "nom")
-    list_filter = ("published",)
-    ordering = ("nom",)
-
-    def aides_count(self, obj):
-        return mark_safe(
-            f'<a href="{reverse("admin:aides_aide_changelist")}?filieres__id__exact={obj.pk}">{obj.aides_count}</a>'
-        )
-
-    aides_count.short_description = "Nombre d’aides"
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).with_aides_count()
-
-
-@admin.register(SousFiliere)
-class SousFiliereAdmin(VersionAdmin):
-    list_display = ("nom", "filiere")
-    list_display_links = ("nom",)
-    list_filter = ("filiere",)
-    list_select_related = ("filiere",)
-    ordering = ("nom",)
-
-
-@admin.register(Production)
-class ProductionAdmin(VersionAdmin):
-    list_display = ("nom", "sous_filiere")
-    list_display_links = ("nom",)
-    list_filter = ("sous_filiere",)
-    list_select_related = ("sous_filiere",)
-    ordering = ("nom",)
+from ._common import ArrayFieldCheckboxSelectMultiple
 
 
 class EasyMDEWidget(forms.widgets.Textarea):
@@ -291,12 +86,9 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         "ancestors",
         "derivatives",
     )
-    list_display_links = (
-        "id",
-        "nom",
-    )
+    list_display_links = ("id", "nom")
     list_select_related = ("organisme",)
-    ordering = ("priority", "nom", "pk")
+    ordering = ("priority", "nom", "id")
     list_filter = (
         "status",
         "sujets",
