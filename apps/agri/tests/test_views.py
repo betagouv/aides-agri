@@ -112,6 +112,20 @@ def test_step_5(requests_mock, client, sujet, zone_geographique_commune_75001):
 
 
 @pytest.mark.django_db
+def test_step_5_with_no_etablissement(client, sujet):
+    # GIVEN no etablissement
+    # WHEN requesting step 5
+    querydict = QueryDict(mutable=True)
+    querydict.update({"theme": sujet.themes.first().pk})
+    querydict.setlist("sujets", [sujet.pk])
+    url = reverse("agri:step-5") + "?" + querydict.urlencode()
+    response = client.get(url)
+
+    # THEN it's a 200
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
 def test_results(
     requests_mock,
     client,
