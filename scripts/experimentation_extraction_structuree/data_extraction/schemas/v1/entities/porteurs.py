@@ -1,16 +1,9 @@
 from typing import List, Literal
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 from data_extraction.schemas.v1.enums.porteurs_enum import PORTEURS_ENUM
 
 class Porteur(BaseModel):
-  """
-  Un porteur est un acteur institutionnel ou opérationnel impliqué dans la mise en œuvre d’un dispositif d’aide, dont le rôle peut varier selon sa fonction dans le cycle de vie du dispositif. Les porteurs peuvent être classés selon leur contribution spécifique :
-    - Le diffuseur assure la communication et la promotion du dispositif auprès des publics cibles.
-    - Le financeur mobilise les ressources financières nécessaires et peut suivre leur utilisation.
-    - L’instructeur est chargé de l’analyse des demandes, de l’évaluation de l’éligibilité et du suivi administratif des dossiers.
-  Ces rôles peuvent être tenus par des entités publiques, parapubliques ou privées, et sont essentiels pour garantir l’accessibilité, la viabilité financière et la bonne gestion du dispositif.
-  """
 
   nom: Literal[PORTEURS_ENUM] = Field(..., description="Nom de l'acteur impliqué.")
   roles: List[Literal["diffuseur", "financeur", "instructeur"]] = Field(
@@ -42,6 +35,21 @@ class Porteur(BaseModel):
           • Suivi de l’exécution budgétaire et des engagements.
       """
   )
+
+  model_config = ConfigDict(
+    title="Porteur",
+    json_schema_extra={
+        "description": (
+              """
+              Un porteur est un acteur institutionnel ou opérationnel impliqué dans la mise en œuvre d’un dispositif d’aide, dont le rôle peut varier selon sa fonction dans le cycle de vie du dispositif. Les porteurs peuvent être classés selon leur contribution spécifique :
+                - Le diffuseur assure la communication et la promotion du dispositif auprès des publics cibles.
+                - Le financeur mobilise les ressources financières nécessaires et peut suivre leur utilisation.
+                - L’instructeur est chargé de l’analyse des demandes, de l’évaluation de l’éligibilité et du suivi administratif des dossiers.
+              Ces rôles peuvent être tenus par des entités publiques, parapubliques ou privées, et sont essentiels pour garantir l’accessibilité, la viabilité financière et la bonne gestion du dispositif.
+              """
+        )
+    }
+)
 
 class ListePorteurs(BaseModel):
 
