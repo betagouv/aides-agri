@@ -55,6 +55,8 @@ class AideFactory(factory.django.DjangoModelFactory):
         model = models.Aide
 
     nom = factory.Sequence(lambda n: f"Aide {n}")
+    organisme = None
     status = models.Aide.Status.TODO
     date_target_publication = None
     url_descriptif = ""
+    is_derivable = False
