@@ -1,6 +1,8 @@
+from typing import Type
 from pydantic import BaseModel
 
-from ollama import chat
+from ollama import chat, ChatResponse
+from codecarbon import EmissionsTracker
 
 from data_extraction.core.structured_extractor import StructuredExtractor
 from data_extraction.core.structured_output import StructuredOutput
@@ -9,8 +11,8 @@ from data_extraction.core.structured_output import StructuredOutput
 
 class OllamaStructuredOutput(StructuredOutput):
 
-  def __init__(self, raw_response: dict, pydantic_schema: BaseModel) -> None:
-    super().__init__(raw_response)
+  def __init__(self, raw_response: ChatResponse, carbon: float | None, pydantic_schema: Type[BaseModel]) -> None:
+    super().__init__(raw_response, carbon)
     self.pydantic_schema = pydantic_schema
     self.formatted_response = self.pydantic_schema.model_validate_json(self.raw_response.message.content)
 
@@ -21,23 +23,15 @@ class OllamaStructuredOutput(StructuredOutput):
 
 class OllamaStructuredExtractor(StructuredExtractor):
 
-  def __init__(self, pydantic_schema: BaseModel):
+  def __init__(self, pydantic_schema: Type[BaseModel]):
     super().__init__(pydantic_schema)
+    self.tracker = EmissionsTracker(
+        measure_power_secs=1,  # How often to sample power (seconds)
+        save_to_file=False,      # Don't create CSV file
+        save_to_api=False,       # Don't save to CodeCarbon API
+    )
 
-  
-  def get_structured_output(self, model_name, user_message, temperature: float, **kwargs):
-
-    # Parse, validate and harmonize kwargs
-    
-    # Merge with default options
-    default_options = {
-      "num_ctx": 100000,
-      "num_predict": 10000,
-      "temperature": temperature
-    }
-    
-    merged_options = {**default_options, **kwargs}
-    
+  def generate(self, model_name, user_message, temperature: float, **kwargs) -> ChatResponse:
     raw_response = chat(
       messages=[
         {
@@ -51,7 +45,26 @@ class OllamaStructuredExtractor(StructuredExtractor):
       ],
       model=model_name,
       format=self.pydantic_schema.model_json_schema(),
-      options=merged_options
+      options=kwargs
     )
+    return raw_response
+  
+  def get_structured_output(self, model_name, user_message, temperature: float, **kwargs) -> OllamaStructuredOutput:
 
-    return OllamaStructuredOutput(raw_response, self.pydantic_schema)
+    # Parse, validate and harmonize kwargs
+    
+    # Merge with default options
+    default_options = {
+      "num_ctx": 100000,
+      "num_predict": 10000,
+      "temperature": temperature
+    }
+    
+    merged_options = {**default_options, **kwargs}
+
+    self.tracker.start()
+    raw_response = self.generate(model_name, user_message, temperature, **merged_options)
+
+    carbon: float | None = self.tracker.stop()
+
+    return OllamaStructuredOutput(raw_response, carbon, self.pydantic_schema)

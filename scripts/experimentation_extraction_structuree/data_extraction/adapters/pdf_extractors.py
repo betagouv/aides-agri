@@ -42,6 +42,6 @@ class DoclingExtractor(DocumentParser):
 class LangChainExtractor(DocumentParser):
     def extract(self, file_path: str) -> str:
         loader_cls = OnlinePDFLoader if is_url(file_path) else UnstructuredPDFLoader
-        loader = loader_cls(file_path) if is_url(file_path) else loader_cls(file_path, language="fra", strategy="fast")
+        loader = loader_cls(file_path) if is_url(file_path) else loader_cls(file_path)
         data = loader.load()
         return data[0].page_content if data else ""

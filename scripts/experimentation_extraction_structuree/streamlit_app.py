@@ -1,8 +1,12 @@
 import os
 import streamlit as st
 
-from data_extraction.schemas.pydantic_schema import DispositifAide
+import pandas as pd
+import json
+
+from data_extraction.schemas.v1.schema_dispositif_aide import DispositifAide
 from data_extraction.core.engine import Engine
+from typing import Any
 
 # Configuration de la page
 st.set_page_config(
@@ -59,7 +63,7 @@ if model_choice == "API Albert":
     st.sidebar.subheader("Configuration API Albert")
     model_name = st.sidebar.selectbox(
         "Modèle Albert:",
-        ["albert-small", "albert-medium", "albert-large"],
+        ["albert-small", "albert-large"],
         help="Choisissez le modèle Albert à utiliser"
     )
 
@@ -68,7 +72,7 @@ if model_choice == "Modèle Local (Ollama)":
     st.sidebar.subheader("Configuration Modèle Local")
     local_model = st.sidebar.selectbox(
         "Modèle Ollama:",
-        ["gemma3:4b", "llama3.1:8b", "mistral:7b"],
+        ["gemma3:1b", "gemma3:4b", "llama3.1:8b", "mistral:7b"],
         help="Choisissez le modèle Ollama à utiliser"
     )
 
@@ -134,18 +138,21 @@ def extract_structured():
         engine = Engine(
             schema=DispositifAide,
             parser=parser_key,
-            model_name=selected_model,
-            temperature=0.1,
-            max_completion_tokens=2000,
+            model_name=selected_model
         )
         if not pdf_path:
             st.error("Aucun PDF sélectionné")
             return
         if st.session_state.extracted_text:
-            result = engine.generate(st.session_state.extracted_text[:50000])
+            result = engine.generate(st.session_state.extracted_text)
         else:
             result = engine.run(pdf_path)
+        if result is None or not hasattr(result, "get_json"):
+            st.error("❌ Erreur: le résultat de l'extraction structurée est invalide ou ne possède pas la méthode 'get_json'.")
+            return
         content_json = result.get_json()
+        carbon = getattr(result, "carbon", None)
+        st.session_state.carbon = carbon
         if isinstance(content_json, str):
             structured_data = DispositifAide.model_validate_json(content_json)
         else:
@@ -173,6 +180,8 @@ if st.session_state.structured_output is not None:
         json_data = st.session_state.structured_output.model_dump()
         st.json(json_data)
     
+    st.markdown("---")
+    st.markdown(f"**Émissions de CO2 estimées:** {st.session_state.carbon} kgCO2eq")
     # Affichage formaté
     st.markdown("### 📝 Informations extraites")
     
@@ -181,40 +190,142 @@ if st.session_state.structured_output is not None:
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown(f"**Titre:** {data.titre}")
-        st.markdown(f"**Description:** {data.description}")
+        st.markdown(f"**Titre:** {data.presentation_aide.titre}")
+        st.markdown(f"**Description:** {data.presentation_aide.description}")
         
         if data.eligibilite:
             st.markdown("**Critères d'éligibilité:**")
-            for critere in data.eligibilite:
+            for critere in data.eligibilite.criteres_eligibilite:
                 st.markdown(f"- {critere}")
+            st.markdown("**Opérations éligibles:**")
+            for critere in data.eligibilite.operation_eligible:
+                st.markdown(f"- {critere}")
+            st.markdown("**Opérations non éligibles:**")
+            for critere in data.eligibilite.operation_non_eligible:
+                st.markdown(f"- {critere}")
+                
     
     with col2:
         if data.types_aides:
             st.markdown("**Types d'aides:**")
+
+            # Format enum members or strings into a human-friendly, de-duplicated list
+            def _format_type_item(item):
+                # If it's an enum-like object with a .value attribute, prefer that
+                try:
+                    if hasattr(item, "value"):
+                        val = item.value
+                    else:
+                        val = item
+                except Exception:
+                    val = item
+
+                # Convert to str and normalize spacing
+                s = str(val).strip()
+                # Capitalize only the first letter to keep multi-word labels natural
+                if s:
+                    s = s[0].upper() + s[1:]
+                return s
+
+            formatted = []
+            seen = set()
             for aide in data.types_aides:
-                st.markdown(f"- {aide}")
+                label = _format_type_item(aide)
+                if label and label not in seen:
+                    seen.add(label)
+                    formatted.append(label)
+
+            if formatted:
+                # Show as a comma-separated human readable string
+                st.markdown(f"{', '.join(formatted)}")
         
         if data.porteurs:
             st.markdown("**Porteurs:**")
-            for porteur in data.porteurs:
+            for porteur in data.porteurs.liste_porteurs:
                 roles_str = ", ".join(porteur.roles)
                 st.markdown(f"- {porteur.nom} ({roles_str})")
     
-    # Informations supplémentaires
-    if data.cibles:
-        st.markdown("**Bénéficiaires ciblés:**")
-        for cible in data.cibles:
-            st.markdown(f"- {cible}")
-    
-    if data.eligibilite_geographique:
-        st.markdown(f"**Couverture géographique:** {data.eligibilite_geographique}")
-    
-    if data.date_ouverture:
-        st.markdown(f"**Date d'ouverture:** {data.date_ouverture.strftime('%d/%m/%Y')}")
-    
-    if data.date_cloture:
-        st.markdown(f"**Date de clôture:** {data.date_cloture.strftime('%d/%m/%Y')}")
+        # Informations supplémentaires
+        if data.cibles:
+            st.markdown("**Bénéficiaires ciblés:**")
+            for cible in data.cibles.beneficiaire:
+                st.markdown(f"- {cible}")
+        
+        if data.eligibilite_geographique:
+            if data.eligibilite_geographique.zones_eligibles:
+                st.markdown("**Zones éligibles:**")
+                for zone_eligible in data.eligibilite_geographique.zones_eligibles:
+                    st.markdown(f"- {zone_eligible}")
+            st.markdown("**Zones exclues:**")
+            if data.eligibilite_geographique.zones_exclues:
+                for zone_exclue in data.eligibilite_geographique.zones_exclues:
+                    st.markdown(f"- {zone_exclue}")
+            else:
+                st.markdown("- Aucune")
+        
+        if data.dates:
+            st.markdown(f"**Date d'ouverture:** {data.dates.date_ouverture}")
+            st.markdown(f"**Date de clôture:** {data.dates.date_cloture}")
+
+
+    data_dict = data.model_dump()
+    df = pd.DataFrame([data_dict])
+
+    # Export buttons
+    st.title("Export DispositifAide")
+
+    # JSON export using Pydantic's model_dump_json for better fidelity
+    try:
+        json_payload = data.model_dump_json(indent=2, ensure_ascii=False)
+    except Exception:
+        json_payload = json.dumps(data_dict, indent=2, ensure_ascii=False)
+
+    st.download_button("Export as JSON", json_payload, file_name="dispositif.json", mime="application/json")
+
+    # Helper to convert pydantic model to Markdown
+    def model_to_markdown(obj: Any, level: int = 2) -> str:
+        """Recursively convert a pydantic BaseModel (or dict/list/primitive) to a markdown string.
+
+        - dict/BaseModel: each key becomes a heading at current level, values are recursed with level+1
+        - list/tuple: enumerated items are recursed; simple lists are shown as bullet lists
+        - primitives: returned as string
+        """
+        md_lines = []
+
+        # handle pydantic BaseModel-like objects by converting to dict
+        try:
+            # avoid importing pydantic directly to keep optional deps minimal
+            if hasattr(obj, "model_dump"):
+                obj = obj.model_dump()
+        except Exception:
+            pass
+
+        if isinstance(obj, dict):
+            for key, val in obj.items():
+                heading = f"{'#' * level} {key}"
+                md_lines.append(heading)
+                md_lines.append("")
+                md_lines.append(model_to_markdown(val, min(level + 1, 6)))
+                md_lines.append("")
+        elif isinstance(obj, (list, tuple)):
+            # if list of primitives, render bullets
+            if all(not isinstance(i, (dict, list, tuple)) for i in obj):
+                for item in obj:
+                    md_lines.append(f"- {item}")
+            else:
+                for idx, item in enumerate(obj, start=1):
+                    md_lines.append(f"{'#' * level} Item {idx}")
+                    md_lines.append("")
+                    md_lines.append(model_to_markdown(item, min(level + 1, 6)))
+                    md_lines.append("")
+        else:
+            # primitive
+            md_lines.append(str(obj) if obj is not None else "")
+
+        return "\n".join([line for line in md_lines if line is not None])
+
+    md_content = model_to_markdown(data)
+    st.download_button("Export as Markdown", md_content, file_name="dispositif.md", mime="text/markdown")
 
 # Footer
 st.markdown("---")

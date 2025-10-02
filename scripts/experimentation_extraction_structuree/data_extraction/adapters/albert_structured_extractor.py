@@ -1,6 +1,7 @@
 import requests
 import os
 import json
+from typing import Type
 
 from dotenv import load_dotenv
 from pydantic import BaseModel
@@ -14,9 +15,9 @@ from data_extraction.core.structured_output import StructuredOutput
 
 class AlbertStructuredOutput(StructuredOutput):
 
-  def __init__(self, raw_response) -> None:
-     super().__init__(raw_response)
-  
+  def __init__(self, raw_response, carbon) -> None:
+     super().__init__(raw_response, carbon)
+
   def get_json(self) -> dict:
     structured_output = self.raw_response["choices"][0]["message"]["content"]
     return json.loads(structured_output)
@@ -25,7 +26,7 @@ class AlbertStructuredOutput(StructuredOutput):
 
 class AlbertStructuredExtractor(StructuredExtractor):
 
-  def __init__(self, pydantic_schema: BaseModel):
+  def __init__(self, pydantic_schema: Type[BaseModel]) -> None:
     super().__init__(pydantic_schema)
     load_dotenv()
     self.api_key = os.getenv("ALBERT_API_KEY")
@@ -40,7 +41,7 @@ class AlbertStructuredExtractor(StructuredExtractor):
       }
       return headers
 
-  def get_body(self, model_name, user_message, temperature: float, **kwargs):
+  def get_body(self, model_name, user_message, temperature: float, **kwargs) -> dict:
       payload = {
           "model": model_name,
           "messages": [
@@ -62,8 +63,8 @@ class AlbertStructuredExtractor(StructuredExtractor):
       }
 
       return payload
-  
-  def get_structured_output(self, model_name, user_message, temperature: float, **kwargs):
+
+  def get_structured_output(self, model_name, user_message, temperature: float, **kwargs) -> AlbertStructuredOutput:
 
     # Parse and harmonize most useful kwargs
     
@@ -71,9 +72,11 @@ class AlbertStructuredExtractor(StructuredExtractor):
     body = self.get_body(model_name, user_message, temperature=temperature, **kwargs)
 
     response = requests.post(self.endpoint, headers=headers, json=body)
+    json_response = response.json()
 
     # Vérification du statut et affichage
     if response.status_code == 200:
-        return AlbertStructuredOutput(response.json())
+        carbon = (json_response["usage"]["carbon"]["kgCO2eq"]["min"] + json_response["usage"]["carbon"]["kgCO2eq"]["max"]) / 2
+        return AlbertStructuredOutput(json_response, carbon)
     else:
-        print(f"Erreur {response.status_code}: {response.text}")
+        return AlbertStructuredOutput(f"Erreur {response.status_code}: {response.text}", 0)
