@@ -57,5 +57,5 @@ class DispositifAide(BaseModel):
     dates: Dates | None = Field(
         ...,
         title="Dates relatives au dispositif.",
-        description="Date d'ouverture et de clotûre du dispositif d'aides."
+        description="Date d'ouverture et de clotûre du dispositif d'aides, au format YYYY-MM-DD."
     )

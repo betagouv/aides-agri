@@ -1,11 +1,11 @@
-from typing import List, Literal
+from typing import List
 from pydantic import BaseModel, Field
 
-from data_extraction.schemas.v1.enums.type_aide_enum import TYPE_AIDE_ENUM
+from data_extraction.schemas.v1.enums.type_aide_enum import TypeAideEnum
 
 class TypeAide(BaseModel):
 
-  types_aides: List[Literal[*TYPE_AIDE_ENUM] | None] = Field(
+  types_aides: List[TypeAideEnum] | None = Field(
       ...,
       description="""
       Types d'aides disponibles via le dispositif décrit. Chaque aide appartient à une des catégories suivantes :
@@ -18,6 +18,7 @@ class TypeAide(BaseModel):
         - information : légales, administratives
         - prêt : prêt, garantie par un acteur public
         Attention : La liste ne doit pas contenir 2 fois la même catégorie.
-      """,
-      examples=[["financement", "formation"]]
+        Exemple d'une réponse attendue : ["assistance", "avantage fiscal", "financement"]
+        Exemple à ne pas suivre : ["assistance", "assistance", "financement"]
+      """
   )

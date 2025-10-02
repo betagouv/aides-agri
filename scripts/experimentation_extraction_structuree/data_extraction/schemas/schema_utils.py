@@ -1,16 +1,16 @@
+from typing import Type
 from pydantic import BaseModel
 
-def pydantic_to_json_schema(model: BaseModel, schema_name: str = "schema", strict: bool = True) -> dict:
+def pydantic_to_json_schema(model: Type[BaseModel], schema_name: str = "schema", strict: bool = True) -> dict:
   json_schema = model.model_json_schema()
   no_ref_json_schema = resolve_refs(json_schema)
-
   formatted_json_schema = {
     "name": schema_name, 
     "strict": strict, 
     "schema": {
       "type": "object", 
       "properties": no_ref_json_schema['properties'],
-      "required": no_ref_json_schema['required']
+      "required": no_ref_json_schema.get("required", [])
     }
   }
   
@@ -26,7 +26,7 @@ def resolve_refs(schema: dict) -> dict:
   This function replaces the $ref by the schema defined by $def outside the main schema.
   """
   defs = schema.pop("$defs", {})
-  def resolve(obj):
+  def resolve(obj: dict) -> dict:
       if isinstance(obj, dict):
           if "$ref" in obj:
               ref = obj["$ref"].split("/")[-1]

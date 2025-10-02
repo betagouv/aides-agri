@@ -6,7 +6,7 @@ class Eligibilite(BaseModel):
         ...,
         title="Critères d'éligibilité",
         description="""
-                Ensemble des critères à remplir pour qu’une personne physique ou morale soit considéré comme recevable dans le cadre du dispositif. 
+                Ensemble des critères à remplir pour qu’un bénéficiaire soit considéré comme recevable dans le cadre du dispositif. 
                 Ces conditions peuvent concerner : 
                     - La taille du cheptel : c'est-à-dire le nombre d'animaux d'élevage qui font partie d'une exploitation agricole
                     - La taille des parcelles (en nombre d’hectares), c'est-à-dire la surface de terre dédiée à l'agriculture (culture ou élevage). Elle peut être indiquée sous le libellé “Surface agricole engagée”

@@ -5,7 +5,7 @@ from data_extraction.prompts.geography_prompts import PROMPT_CARTOGRAPHIE_FRANCE
 
 class EligibiliteGeographique(BaseModel):
     
-    zones_eligibles: List[str] | str | None = Field(
+    zones_eligibles: List[str] | None = Field(
         None,
         title="Zones géographiques éligibles",
         description="Les zones géographiques éligibles à l'aide.",
@@ -15,7 +15,7 @@ class EligibiliteGeographique(BaseModel):
             "ville de Caen",
         ]
     )
-    zones_exclues: List[str] | str | None = Field(
+    zones_exclues: List[str] | None = Field(
         None,
         title="Zones géographiques exclues",
         description="Les zones géographiques éligibles à l'aide.",

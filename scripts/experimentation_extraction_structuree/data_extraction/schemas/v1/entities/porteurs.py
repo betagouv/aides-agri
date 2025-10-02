@@ -5,7 +5,7 @@ from data_extraction.schemas.v1.enums.porteurs_enum import PORTEURS_ENUM
 
 class Porteur(BaseModel):
 
-  nom: Literal[PORTEURS_ENUM] = Field(..., description="Nom de l'acteur impliqué.")
+  nom: Literal[*PORTEURS_ENUM] = Field(..., description="Nom de l'acteur impliqué.")
   roles: List[Literal["diffuseur", "financeur", "instructeur"]] = Field(
       ...,
       description="""
@@ -45,7 +45,7 @@ class Porteur(BaseModel):
                 - Le diffuseur assure la communication et la promotion du dispositif auprès des publics cibles.
                 - Le financeur mobilise les ressources financières nécessaires et peut suivre leur utilisation.
                 - L’instructeur est chargé de l’analyse des demandes, de l’évaluation de l’éligibilité et du suivi administratif des dossiers.
-              Ces rôles peuvent être tenus par des entités publiques, parapubliques ou privées, et sont essentiels pour garantir l’accessibilité, la viabilité financière et la bonne gestion du dispositif.
+              Cette information est rarement spécifiée dans les documents, ne remplissez ce champ que si vous êtes certain de la réponse.
               """
         )
     }
