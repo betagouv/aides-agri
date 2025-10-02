@@ -61,6 +61,7 @@ document.onreadystatechange = evt => {
         </p>
         <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-arrow-right-down-circle-fill fr-btn--icon-left fr-mb-2w">Description</h2>
         <p>
+          {{ object.description_de_base|ui_markdown|safe }}
           {{ object.description|ui_markdown|safe }}
           {% if object.url_descriptif and object.url_descriptif != object.url_demarche %}
             <a class="fr-btn fr-btn--primary fr-mb-1w"

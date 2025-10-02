@@ -1,0 +1,8 @@
+{% extends "admin/change_form_object_tools.html" %}
+
+{% block object-tools-items %}
+  {{ block.super }}
+  {% if original.children.exists %}
+  <li><a href="../../?parent__id__exact={{ original.pk }}">Voir les aides déclinées</a></li>
+  {% endif %}
+{% endblock %}
