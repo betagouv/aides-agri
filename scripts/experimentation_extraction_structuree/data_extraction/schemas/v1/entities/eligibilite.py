@@ -23,11 +23,6 @@ class Eligibilite(BaseModel):
             "Réalisation d’une étude préalable et installations conformes à la réglementation.",
             "Construction d’installations nouvelles.",
             "Depuis 2021 : installations accompagnées par des entreprises certifiées par le label Qualimétha (certification obtenue) ou justifiant de conditions équivalentes.",
-            "Réduction des émissions de gaz à effet de serre de l’installation.",
-            "Depuis 2024, l’approvisionnement ne doit pas comporter de cultures principales (taux = 0%).",
-            "Maîtrise a minima de 60% du potentiel énergétique du gisement global d’intrants.",
-            "Efficacité énergétique minimale de 50 % en cogénération.",
-            "Le contrat d’achat biométhane devra avoir été signé et justifié à l’ADEME avant la notification du contrat d’aide ADEME."
         ]
 
     )
@@ -45,11 +40,6 @@ class Eligibilite(BaseModel):
             """Pour les unités de méthanisation avec cogénération (< 500 kWe), opération d’injection de biométhane (< 25 GWh/an) ou chaudière biogaz (<8GWh) :                        
                 - Équipements de production de biogaz,                        
                 - Équipements de valorisation énergétique du biogaz : production de chaleur seule, cogénération d’électricité et de chaleur, épuration du biogaz en biométhane, injection dans le réseau public ou utilisation en carburant bioGNV.
-            """,
-
-            """
-            Pour les stations d’épuration urbaines (STEU) :                        
-                - Seuls les équipements de valorisation énergétique du biogaz comprenant l’épuration en biométhane et l’injection dans le réseau public.
             """
         ]
 
@@ -72,9 +62,6 @@ class Eligibilite(BaseModel):
         examples = [
             "Stations d’épuration urbaines (STEU) : les équipements de production de biogaz.",
             "Production et valorisation de biogaz sur une installation de stockage de déchets non dangereux (ISDND).",
-            "Projets de méthanisation industrielle en chaudière > 8GWh (AAP BCIAT).",
-            "Production et valorisation de biogaz consécutive à un traitement mécano-biologique des ordures ménagères ne faisant pas l’objet d’une collecte séparée.",
-            "Les projets éligibles à un complément de rémunération dans le cadre des appels d’offres de la Commission de Régulation de l’Énergie (CRE) ne sont pas éligibles aux aides de l’ADEME (cogénération > 500 kWe et injection > 25GWh)."
         ]
 
 

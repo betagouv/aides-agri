@@ -31,7 +31,7 @@ class OllamaStructuredExtractor(StructuredExtractor):
         save_to_api=False,       # Don't save to CodeCarbon API
     )
 
-  def generate(self, model_name, user_message, temperature: float, **kwargs) -> ChatResponse:
+  def generate(self, model_name, user_message, **kwargs) -> ChatResponse:
     raw_response = chat(
       messages=[
         {
@@ -63,7 +63,7 @@ class OllamaStructuredExtractor(StructuredExtractor):
     merged_options = {**default_options, **kwargs}
 
     self.tracker.start()
-    raw_response = self.generate(model_name, user_message, temperature, **merged_options)
+    raw_response = self.generate(model_name, user_message, **merged_options)
 
     carbon: float | None = self.tracker.stop()
 

@@ -2,7 +2,7 @@ from typing import Any, Dict
 from tqdm import tqdm
 
 from settings import DOC_PATH, models
-from data_extraction.core.engine import Engine
+from scripts.experimentation_extraction_structuree.data_extraction.services.engine import Engine
 from data_extraction.schemas.v1.schema_dispositif_aide import DispositifAide
 
 from data_extraction.schemas.v1.entities import (

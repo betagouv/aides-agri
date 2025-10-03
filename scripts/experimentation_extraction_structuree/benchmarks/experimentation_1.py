@@ -2,7 +2,7 @@ import json
 from tqdm.notebook import tqdm
 
 from settings import DOC_PATH, models
-from data_extraction.core.engine import Engine
+from scripts.experimentation_extraction_structuree.data_extraction.services.engine import Engine
 from data_extraction.schemas.v1.schema_dispositif_aide import DispositifAide
 
 def benchmark_v0(output_folder: str = "expe_1", temperature: float = 0.2):

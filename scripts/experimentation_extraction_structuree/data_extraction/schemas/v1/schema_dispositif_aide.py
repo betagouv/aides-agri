@@ -10,6 +10,7 @@ from .entities import (
     EligibiliteGeographique,
     Dates,
 )
+from ...prompts.geography_prompts import PROMPT_CARTOGRAPHIE_FRANCE
 
 class DispositifAide(BaseModel):
 
@@ -51,7 +52,15 @@ class DispositifAide(BaseModel):
     eligibilite_geographique: EligibiliteGeographique | None = Field(
         ...,
         title="Couverture géographique de l’aide",
-        description="Les zones géographiques éligibles ou non à l'aide",
+        description=f"""
+            Les zones géographiques éligibles ou non à l'aide. Une zone géographique peut être :
+                - Le pays entier (France)
+                - Une région
+                - Un département
+                - Un EPCI
+                - Une commune
+            Voici une liste des régions et des départements français pour t'aider : {PROMPT_CARTOGRAPHIE_FRANCE}
+            """
     )
 
     dates: Dates | None = Field(

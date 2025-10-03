@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 
 class PresentationAide(BaseModel):
 
-    titre: str = Field(
+    titre_aide: str = Field(
         ...,
         title="Titre",
         description="Titre court, nom commercial ou officiel du dispositif. Il s’agit du nom par lequel on se réfère à cette aide d’un point de vue administratif. Si un agriculteur souhaitait en savoir plus sur cette aide, il taperait ce nom sur Google, ou demanderait plus d’information à une administration en utilisant ce nom.",
@@ -10,7 +10,7 @@ class PresentationAide(BaseModel):
         examples=["Accélérateur décarbonation", "TPE gagnantes sur tous les coûts", "Agri’écoute"]
     )
 
-    description: str = Field(
+    description_aide: str = Field(
         ...,
         title="Description",
         description="Description juridique et exacte du dispositif mis en place.",
@@ -28,13 +28,6 @@ class PresentationAide(BaseModel):
                 • stations d’épuration urbaines (STEU) :
                     1. valorisation énergétique du biogaz comprenant l’épuration en biométhane et l’injection dans le réseau public.
             Pour en savoir plus sur les opérations éligibles dans chaque territoire, vous pouvez consulter les dispositifs régionaux de soutien à la méthanisation (PDF - 869 ko).
-            """,
-
-            """
-                Votre CCI vous propose une prestation  d’accompagnement sur mesure pour :                
-                    • Répondre aux obligations légales,                
-                    • Réaliser votre plan de mobilité : diagnostic, enquête, plan d’actions,                
-                    • Mettre en place des actions : ateliers thématiques, planning de déploiement des actions, sélection des prestataires et leur suivi,...            Vous pouvez réaliser votre Plan de mobilité dans sa totalité avec nous ou chaque étape individuellement. Le contenu de l’accompagnement peut être adapté à chaque situation.
             """
         ]
     )

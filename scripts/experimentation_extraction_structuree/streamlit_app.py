@@ -190,9 +190,9 @@ if st.session_state.structured_output is not None:
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown(f"**Titre:** {data.presentation_aide.titre}")
-        st.markdown(f"**Description:** {data.presentation_aide.description}")
-        
+        st.markdown(f"**Titre:** {data.presentation_aide.titre_aide}")
+        st.markdown(f"**Description:** {data.presentation_aide.description_aide}")
+
         if data.eligibilite:
             st.markdown("**Critères d'éligibilité:**")
             for critere in data.eligibilite.criteres_eligibilite:
