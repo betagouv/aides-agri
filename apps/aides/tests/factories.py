@@ -8,6 +8,7 @@ class OrganismeFactory(factory.django.DjangoModelFactory):
         model = models.Organisme
 
     nom = factory.Sequence(lambda n: f"Organisme {n}")
+    is_masa = False
 
 
 class ThemeFactory(factory.django.DjangoModelFactory):
@@ -38,6 +39,7 @@ class TypeFactory(factory.django.DjangoModelFactory):
 
     nom = factory.Sequence(lambda n: f"Type d'aide {n}")
     description = factory.Faker("sentence")
+    score_priorite_aides = None
 
 
 class ZoneGeographiqueFactory(factory.django.DjangoModelFactory):
@@ -55,6 +57,21 @@ class AideFactory(factory.django.DjangoModelFactory):
         model = models.Aide
 
     nom = factory.Sequence(lambda n: f"Aide {n}")
+    organisme = None
     status = models.Aide.Status.TODO
     date_target_publication = None
     url_descriptif = ""
+    importance = models.Aide.Importance.BASE
+    urgence = models.Aide.Urgence.MEDIUM
+    enveloppe_globale = 0
+    demande_du_pourvoyeur = False
+    taille_cible_potentielle = 0
+    is_meconnue = False
+
+    @factory.post_generation
+    def with_types(obj, create, value, **kwargs):
+        if not value:
+            return
+        if not create:
+            return
+        obj.types.set([value])

@@ -303,6 +303,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         "date_created",
         "date_modified",
         "last_published_at",
+        "priority",
     )
     search_fields = ("nom", "promesse")
     fieldsets = [
