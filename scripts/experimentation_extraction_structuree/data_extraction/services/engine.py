@@ -1,4 +1,4 @@
-from typing import Type, Dict
+from typing import Type, Dict, List
 
 from pydantic import BaseModel
 
@@ -10,21 +10,13 @@ from data_extraction.adapters.pdf_extractors import (
 )
 from data_extraction.adapters.ollama_structured_extractor import OllamaStructuredExtractor
 from data_extraction.adapters.albert_structured_extractor import AlbertStructuredExtractor
-from data_extraction.core.document_parser import DocumentParser
+from data_extraction.adapters.pdf_extractors import PDFExtractor 
 from data_extraction.core.structured_extractor import StructuredExtractor
 
 
 DEFAULT_PARSER = "pdfminer"
 DEFAULT_OLLAMA_MODEL = "gemma3:4b"
 DEFAULT_ALBERT_MODEL = "albert-small"
-
-
-PARSER_REGISTRY: Dict[str, Type[DocumentParser]] = {
-    "pdfminer": PDFMinerExtractor,
-    "pypdf": PyPDFExtractor,
-    "docling": DoclingExtractor,
-    "langchain": LangChainExtractor,
-}
 
 
 EXTRACTOR_REGISTRY: Dict[str, Type[StructuredExtractor]] = {
@@ -46,15 +38,11 @@ class Engine:
     def __init__(
         self,
         schema: Type[BaseModel],
-        parser: str | None = None,
+        parser_name: str | None = None,
         model_name: str | None = None
     ) -> None:
         self.schema = schema
-
-        self.parser_name = (parser or DEFAULT_PARSER).lower()
-        if self.parser_name not in PARSER_REGISTRY:
-            raise ValueError(f"Unknown parser '{self.parser_name}'. Valid: {list(PARSER_REGISTRY)}")
-        self.parser_impl = PARSER_REGISTRY[self.parser_name]()
+        self.parser_impl = PDFExtractor(parser_name)
 
         # Determine model name default first
         self.model_name = model_name or DEFAULT_ALBERT_MODEL
@@ -88,4 +76,5 @@ class Engine:
         prompt = f"{instruction_prefix}\n\n{content}" if instruction_prefix else content
         return self.generate(prompt, temperature=temperature, **provider_kwargs)
 
-
+# TODO : concatenate ressource pool
+# TODO : automatically detect the right parser for each ressource
