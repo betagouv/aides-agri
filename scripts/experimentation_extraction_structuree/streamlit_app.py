@@ -5,7 +5,7 @@ import pandas as pd
 import json
 
 from data_extraction.schemas.v1.schema_dispositif_aide import DispositifAide
-from data_extraction.core.engine import Engine
+from data_extraction.services.engine import Engine
 from typing import Any
 
 # Configuration de la page
@@ -120,7 +120,7 @@ def extract_text_from_pdf():
         if not pdf_path:
             st.error("Aucun PDF sélectionné")
             return
-        engine = Engine(schema=DispositifAide, parser=parser_key)
+        engine = Engine(schema=DispositifAide, parser_name=parser_key)
         text = engine.parse(pdf_path)
         st.session_state.extracted_text = text
         st.session_state.last_extraction_method = extraction_method
@@ -137,7 +137,7 @@ def extract_structured():
         st.info("🤖 Extraction structurée en cours...")
         engine = Engine(
             schema=DispositifAide,
-            parser=parser_key,
+            parser_name=parser_key,
             model_name=selected_model
         )
         if not pdf_path:
