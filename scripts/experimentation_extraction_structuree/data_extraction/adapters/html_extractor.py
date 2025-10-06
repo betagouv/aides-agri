@@ -11,7 +11,7 @@ from data_extraction.core.document_parser import DocumentParser
 
 class TrafilaturaExtractor(DocumentParser):
     def extract(self, file_path: str) -> str:
-        downloaded = fetch_url("https://bofip.impots.gouv.fr/bofip/1585-PGP.html/identifiant%3DBOI-BA-RICI-20-40-20240410")
+        downloaded = fetch_url(file_path)
         result = extract(downloaded, output_format="markdown") or ""
         return result
 

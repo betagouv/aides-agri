@@ -2,6 +2,7 @@ from typing import Dict, Any, List, Optional, Union
 from pydantic import BaseModel
 from pydantic.fields import FieldInfo
 import types
+import json
 
 def generate_llm_schema(model_class: type[BaseModel]) -> Dict[str, Any]:
     """
@@ -202,3 +203,15 @@ def format_schema_for_prompt(model_class: type[BaseModel]) -> str:
     import json
     schema_dict = generate_instruction_schema_dict(model_class)
     return json.dumps(schema_dict, indent=2, ensure_ascii=False)
+
+def fields_to_json(model_class):
+    result = {}
+    for name, field in model_class.model_fields.items():  # Pydantic v2
+        field_type = field.annotation
+        # Check if field_type is a Pydantic model
+        if hasattr(field_type, "model_fields"):
+            result[name] = fields_to_json(field_type)
+        else:
+            result[name] = None  # placeholder
+    json_output = json.dumps(result, indent=2)
+    return json_output

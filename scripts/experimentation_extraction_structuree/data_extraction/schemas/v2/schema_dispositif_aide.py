@@ -20,50 +20,41 @@ class DispositifAide(BaseModel):
         description="Titre et description du dispositif d'aide"
     )
 
-    eligibilite: Eligibilite = Field(
+    eligibilite: Eligibilite | None = Field(
         ...,
         title="Eligibilité de l'aide",
         description="Qui peut accéder au dispositif d'aide ? Quel projets sont ou ne sont pas éligibles ?",
     )
 
-    types_aides: TypeAide = Field(
+    types_aides: TypeAide | None = Field(
         ...,
         title="Type d'aide",
         description="Types d'aides disponibles via le dispositif décrit."
     )
 
-    porteurs: ListePorteurs = Field(
+    porteurs: ListePorteurs | str |None = Field(
         ...,
         title="Porteurs",
         description="Liste des acteurs impliqués dans la mise en œuvre du dispositif et leurs rôles."
     )
 
-    informations_externes : InformationsExternes = Field(
+    informations_externes : InformationsExternes | None = Field(
         ...,
         title="Informations externes",
         description="Informations sur les programmes parents, ainsi que sur les liens pointants vers des ressources externes."
     )
 
-    cibles: Beneficiaire = Field(
+    cibles: Beneficiaire | None = Field(
         ...,
         title="Bénéficiaires"
     )
 
-    eligibilite_geographique: EligibiliteGeographique = Field(
+    eligibilite_geographique: EligibiliteGeographique | None = Field(
         ...,
-        title="Couverture géographique de l’aide",
-        description=f"""
-            Les zones géographiques éligibles ou non à l'aide. Une zone géographique peut être :
-                - Le pays entier (France)
-                - Une région
-                - Un département
-                - Un EPCI
-                - Une commune
-            Voici une liste des régions et des départements français pour t'aider : {PROMPT_CARTOGRAPHIE_FRANCE}
-            """
+        title="Couverture géographique de l’aide"
     )
 
-    dates: Dates = Field(
+    dates: Dates | None = Field(
         ...,
         title="Dates relatives au dispositif.",
         description="Date d'ouverture et de clotûre du dispositif d'aides, au format YYYY-MM-DD."
