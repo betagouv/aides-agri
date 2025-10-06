@@ -23,13 +23,13 @@ def send_results_by_mail(
     base_url: str,
     theme_id: int,
     sujets_ids: list[int],
-    etablissement: dict[str, str],
     commune_id: int,
     date_installation: str,
     effectif: tuple[str, str],
     filieres_ids: list[int],
     groupements_ids: list[int],
     aides_ids: list[int],
+    etablissement: dict[str, str] = None,
 ):
     theme = Theme.objects.get(pk=theme_id)
     sujets = Sujet.objects.filter(pk__in=sujets_ids)
@@ -42,12 +42,13 @@ def send_results_by_mail(
     querystring_dict.update(
         {
             "theme": theme.pk,
-            "siret": etablissement["siret"],
             "commune": commune.code,
             "date_installation": date_installation,
             "tranche_effectif_salarie": effectif[0],
         }
     )
+    if etablissement:
+        querystring_dict.update({"siret": etablissement["siret"]})
     querystring_dict.setlist("sujets", [s.pk for s in sujets])
     querystring_dict.setlist("filieres", [f.pk for f in filieres])
     querystring_dict.setlist("regroupements", [g.pk for g in groupements])

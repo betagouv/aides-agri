@@ -41,9 +41,11 @@
                 {{ sujet.nom_court }}{% if not forloop.last %},{% endif %}
               {% endfor %}
             </li>
+            {% if etablissement %}
             <li>
               <strong>Exploitation</strong> : {{ etablissement.nom }} (SIRET {{ etablissement.siret }})
             </li>
+            {% endif %}
             <li>
               <strong>Commune</strong> : {{ commune.nom }} ({{ commune.code_postal }})
             </li>

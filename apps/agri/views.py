@@ -416,7 +416,9 @@ class SendResultsByMailView(ResultsMixin, View):
             sujets_ids=[s.pk for s in self.sujets],
             etablissement={
                 k: v for k, v in self.etablissement.items() if k in ("siret", "nom")
-            },
+            }
+            if self.etablissement
+            else None,
             commune_id=self.commune.pk,
             date_installation=self.date_installation.isoformat(),
             effectif=(self.code_effectif, siret.mapping_effectif[self.code_effectif]),
