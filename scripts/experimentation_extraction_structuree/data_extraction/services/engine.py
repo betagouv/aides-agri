@@ -1,17 +1,13 @@
-from typing import Type, Dict, List
+from typing import Type, Dict, List, Optional, Literal
 
 from pydantic import BaseModel
 
-from data_extraction.adapters.pdf_extractors import (
-    PDFMinerExtractor,
-    PyPDFExtractor,
-    DoclingExtractor,
-    LangChainExtractor,
-)
 from data_extraction.adapters.ollama_structured_extractor import OllamaStructuredExtractor
 from data_extraction.adapters.albert_structured_extractor import AlbertStructuredExtractor
-from data_extraction.adapters.pdf_extractors import PDFExtractor 
+from data_extraction.prompts.instruction_prompts import build_instruction_prompt
 from data_extraction.core.structured_extractor import StructuredExtractor
+from data_extraction.core.structured_output import StructuredOutput
+from .parser_engine import ParserEngine
 
 
 DEFAULT_PARSER = "pdfminer"
@@ -38,11 +34,10 @@ class Engine:
     def __init__(
         self,
         schema: Type[BaseModel],
-        parser_name: str | None = None,
         model_name: str | None = None
     ) -> None:
         self.schema = schema
-        self.parser_impl = PDFExtractor(parser_name)
+        self.parser_engine = ParserEngine()
 
         # Determine model name default first
         self.model_name = model_name or DEFAULT_ALBERT_MODEL
@@ -60,21 +55,16 @@ class Engine:
             if self.provider_name == "albert" and "albert" not in self.model_name.lower():
                 self.model_name = DEFAULT_ALBERT_MODEL
 
-    def parse(self, file_path: str) -> str:
-        return self.parser_impl.extract(file_path)
-
-    def generate(self, prompt: str, temperature: float = 0.2, **provider_kwargs):
+    def generate(self, system_prompt: str, user_prompt: str, temperature: float = 0.2, **provider_kwargs) -> StructuredOutput:
         return self.extractor_impl.get_structured_output(
             model_name=self.model_name,
-            user_message=prompt,
+            system_prompt=system_prompt,
+            user_message=user_prompt,
             temperature=temperature,
             **provider_kwargs
         )
 
-    def run(self, file_path: str, instruction_prefix: str | None = None, temperature: float = 0.2, **provider_kwargs):
-        content = self.parse(file_path)
-        prompt = f"{instruction_prefix}\n\n{content}" if instruction_prefix else content
-        return self.generate(prompt, temperature=temperature, **provider_kwargs)
-
-# TODO : concatenate ressource pool
-# TODO : automatically detect the right parser for each ressource
+    def run(self, resource_pool: List[str], temperature: float = 0.2, **provider_kwargs) -> StructuredOutput:
+        content = self.parser_engine.parse_resource_pool(resource_pool)
+        system_prompt = build_instruction_prompt(self.schema)
+        return self.generate(system_prompt=system_prompt, user_prompt=content, temperature=temperature, **provider_kwargs)

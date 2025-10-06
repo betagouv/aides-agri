@@ -31,12 +31,12 @@ class OllamaStructuredExtractor(StructuredExtractor):
         save_to_api=False,       # Don't save to CodeCarbon API
     )
 
-  def generate(self, model_name, user_message, **kwargs) -> ChatResponse:
+  def generate(self, model_name, system_prompt, user_message, **kwargs) -> ChatResponse:
     raw_response = chat(
       messages=[
         {
           'role': 'system',
-          'content': self.instruction_prompt,
+          'content': system_prompt,
         },
         {
           'role': 'user',
@@ -48,8 +48,8 @@ class OllamaStructuredExtractor(StructuredExtractor):
       options=kwargs
     )
     return raw_response
-  
-  def get_structured_output(self, model_name, user_message, temperature: float, **kwargs) -> OllamaStructuredOutput:
+
+  def get_structured_output(self, model_name, system_prompt, user_message, temperature: float, **kwargs) -> OllamaStructuredOutput:
 
     # Parse, validate and harmonize kwargs
     
@@ -63,7 +63,7 @@ class OllamaStructuredExtractor(StructuredExtractor):
     merged_options = {**default_options, **kwargs}
 
     self.tracker.start()
-    raw_response = self.generate(model_name, user_message, **merged_options)
+    raw_response = self.generate(model_name, system_prompt, user_message, **merged_options)
 
     carbon: float | None = self.tracker.stop()
 

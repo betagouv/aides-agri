@@ -15,10 +15,13 @@ from data_extraction.core.structured_output import StructuredOutput
 
 class AlbertStructuredOutput(StructuredOutput):
 
-  def __init__(self, raw_response, carbon) -> None:
+  def __init__(self, raw_response, carbon, request_status) -> None:
      super().__init__(raw_response, carbon)
+     self.request_status = request_status
 
   def get_json(self) -> dict:
+    if self.request_status != 200:
+        raise ValueError(f"Cannot get JSON from response with status {self.request_status}: {self.raw_response}")
     structured_output = self.raw_response["choices"][0]["message"]["content"]
     return json.loads(structured_output)
 
@@ -41,13 +44,13 @@ class AlbertStructuredExtractor(StructuredExtractor):
       }
       return headers
 
-  def get_body(self, model_name, user_message, temperature: float, **kwargs) -> dict:
+  def get_body(self, model_name, system_prompt, user_message, temperature: float, **kwargs) -> dict:
       payload = {
           "model": model_name,
           "messages": [
               {
                   "role": "system",
-                  "content": self.instruction_prompt
+                  "content": system_prompt
               },
               {
                   "role": "user",
@@ -64,19 +67,19 @@ class AlbertStructuredExtractor(StructuredExtractor):
 
       return payload
 
-  def get_structured_output(self, model_name, user_message, temperature: float, **kwargs) -> AlbertStructuredOutput:
+  def get_structured_output(self, model_name, system_prompt, user_message, temperature: float, **kwargs) -> AlbertStructuredOutput:
 
     # Parse and harmonize most useful kwargs
     
     headers = self.get_header()
-    body = self.get_body(model_name, user_message, temperature=temperature, **kwargs)
+    body = self.get_body(model_name, system_prompt, user_message, temperature=temperature, **kwargs)
 
     response = requests.post(self.endpoint, headers=headers, json=body)
-    json_response = response.json()
 
     # Vérification du statut et affichage
     if response.status_code == 200:
+        json_response = response.json()
         carbon = (json_response["usage"]["carbon"]["kgCO2eq"]["min"] + json_response["usage"]["carbon"]["kgCO2eq"]["max"]) / 2
-        return AlbertStructuredOutput(json_response, carbon)
+        return AlbertStructuredOutput(json_response, carbon, response.status_code)
     else:
-        return AlbertStructuredOutput(f"Erreur {response.status_code}: {response.text}", 0)
+        return AlbertStructuredOutput(f"Erreur {response.status_code}: {response.text}", 0, response.status_code)
