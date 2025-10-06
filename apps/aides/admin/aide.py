@@ -134,6 +134,17 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             },
         ),
         (
+            "Priorisation",
+            {
+                "classes": ["collapse"],
+                "fields": [
+                    ("importance", "demande_du_pourvoyeur"),
+                    ("urgence", "enveloppe_globale", "taille_cible_potentielle"),
+                    "is_meconnue",
+                ],
+            },
+        ),
+        (
             "Présentation",
             {
                 "classes": ["collapse"],
