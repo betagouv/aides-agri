@@ -88,7 +88,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     )
     list_display_links = ("id", "nom")
     list_select_related = ("organisme",)
-    ordering = ("priority", "nom", "id")
+    ordering = ("-priority", "nom", "id")
     list_filter = (
         "status",
         "sujets",
@@ -110,6 +110,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         "date_created",
         "date_modified",
         "last_published_at",
+        "priority",
     ]
     search_fields = ("nom", "promesse")
     fieldsets = [
@@ -500,7 +501,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                         status=status, parent_id=request.GET.get("parent", None)
                     )
                     .select_related("organisme", "assigned_to")
-                    .order_by("date_target_publication", "priority")
+                    .order_by("date_target_publication", "-priority")
                     for status in Aide.Status
                     if status not in (Aide.Status.ARCHIVED,)
                 },

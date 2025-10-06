@@ -644,11 +644,40 @@ class Aide(models.Model):
     def is_to_be_derived(self):
         return self.status == Aide.Status.TO_BE_DERIVED
 
+    def compute_priority(self):
+        priority = 0
+        priority += self.importance * 20
+        priority += self.urgence * 3
+        if self.enveloppe_globale:
+            priority += self.enveloppe_globale / 1_000_000 * 8
+        if self.organisme and self.organisme.is_masa:
+            priority += 10 * 6
+        if self.demande_du_pourvoyeur:
+            priority += 10 * 5
+        if self.taille_cible_potentielle:
+            priority += (self.taille_cible_potentielle * 0.0005 + 10) * 3
+        if self.pk:  # required for M2M relationships
+            if self.types.exists():
+                priority += (
+                    max(self.types.values_list("score_priorite_aides", flat=True)) * 4
+                )
+            for sujet in self.sujets.all():
+                for theme in sujet.themes.all():
+                    if theme.is_prioritaire:
+                        priority += 10 * 4
+        if self.is_meconnue:
+            priority += 10
+        if self.is_filiere_sous_representee:
+            priority += 10
+
+        self.priority = priority
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = f"{slugify(self.organisme.nom) if self.organisme_id else 'organisme-inconnu'}-{slugify(self.nom)}"
         if self.is_published:
             self.last_published_at = now()
+        self.compute_priority()
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
