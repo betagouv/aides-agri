@@ -3,10 +3,10 @@ import streamlit as st
 
 import pandas as pd
 import json
+import base64
 
-from data_extraction.schemas.v1.schema_dispositif_aide import DispositifAide
+from data_extraction.schemas.v2.schema_dispositif_aide import DispositifAide
 from data_extraction.services.engine import Engine
-from typing import Any
 
 # Configuration de la page
 st.set_page_config(
@@ -14,6 +14,75 @@ st.set_page_config(
     page_icon="🌾",
     layout="wide"
 )
+
+
+def structured_to_markdown(structured) -> str:
+    """Convert a structured Python object into a human-readable Markdown string.
+
+    - Dicts: each top-level key becomes a bolded label followed by a readable value.
+    - Lists: rendered as bullet lists with nested formatting.
+    - Scalars: rendered inline.
+
+    This produces Markdown intended for human reading rather than raw JSON code blocks.
+    """
+    if structured is None:
+        return ""
+
+    md_lines = ["# Extraction — Résumé\n"]
+
+    def emit_scalar(val):
+        if val is None:
+            return "(aucune valeur)"
+        if isinstance(val, bool):
+            return "Oui" if val else "Non"
+        if isinstance(val, (int, float)):
+            return str(val)
+        # For long strings, keep them as-is but strip
+        return str(val).strip()
+
+    def render(obj, depth=0, is_top_level=False):
+        indent = "  " * depth
+        if isinstance(obj, dict):
+            # If this is the top-level dict, render each key as a subsection title
+            for idx, (k, v) in enumerate(obj.items()):
+                if depth == 0:
+                    # top-level: render as heading and separate fields
+                    md_lines.append(f"### {k}\n")
+                    if isinstance(v, (dict, list)):
+                        render(v, depth + 1)
+                    else:
+                        md_lines.append(f"{emit_scalar(v)}\n")
+                    # visual separator between main fields
+                    md_lines.append("---\n")
+                else:
+                    # nested dict: use bullets
+                    md_lines.append(f"{indent}- **{k}**: {''}")
+                    if isinstance(v, (dict, list)):
+                        md_lines.append("")
+                        render(v, depth + 1)
+                    else:
+                        md_lines[-1] = md_lines[-1] + emit_scalar(v)
+        elif isinstance(obj, list):
+            for i, item in enumerate(obj, start=1):
+                if isinstance(item, (dict, list)):
+                    md_lines.append(f"{indent}- Item {i}:")
+                    render(item, depth + 1)
+                else:
+                    md_lines.append(f"{indent}- {emit_scalar(item)}")
+        else:
+            # scalar at top-level or nested
+            md_lines.append(f"{indent}- {emit_scalar(obj)}")
+
+    try:
+        render(structured)
+    except Exception:
+        # fallback to JSON block if anything unexpected happens
+        try:
+            return "# Extraction — Résumé\n\n```json\n" + json.dumps(structured, ensure_ascii=False, indent=2) + "\n```\n"
+        except Exception:
+            return "# Extraction — Résumé\n\n" + str(structured)
+
+    return "\n".join(md_lines) + "\n"
 
 st.title("🌾 Extraction d'Aides Agricoles")
 st.markdown("---")
@@ -27,305 +96,291 @@ if os.path.isdir(SAMPLE_DIR):
         if fname.lower().endswith(".pdf"):
             PDF_FILES[fname] = os.path.join(SAMPLE_DIR, fname)
 
-# Sidebar pour la configuration
-st.sidebar.header("Configuration")
+# ------------------------------------------------------------------
+# Resource pool UI (first part of the page)
+# The user can add resources by: drag & drop upload, selecting sample PDFs,
+# or pasting a resource URL. The rest of the page is hidden until the
+# user validates the resource pool.
+# ------------------------------------------------------------------
 
-# Sélection du PDF
-if PDF_FILES:
-    selected_pdf = st.sidebar.selectbox(
-        "Choisir un PDF:",
-        list(PDF_FILES.keys())
-    )
-    pdf_path = PDF_FILES[selected_pdf]
+# Initialize session state for resource pool
+if 'resource_pool' not in st.session_state:
+    st.session_state.resource_pool = []
+if 'resource_pool_validated' not in st.session_state:
+    st.session_state.resource_pool_validated = False
+# Widget key counters to force remount/clear after adds
+if 'uploader_key_idx' not in st.session_state:
+    st.session_state.uploader_key_idx = 0
+if 'sample_select_key_idx' not in st.session_state:
+    st.session_state.sample_select_key_idx = 0
+if 'url_input_key_idx' not in st.session_state:
+    st.session_state.url_input_key_idx = 0
+
+st.header("Créer un pool de ressources")
+st.markdown("Ajoutez des PDF via glisser-déposer, sélectionnez des exemples, ou collez une URL. Validez pour continuer.")
+
+col_a, col_b, col_c = st.columns(3)
+
+with col_a:
+    uploader_key = f"uploader_{st.session_state.uploader_key_idx}"
+    uploaded = st.file_uploader("Glisser-déposer des PDF", type=['pdf'], accept_multiple_files=True, key=uploader_key)
+    if uploaded:
+        # Ensure sample dir exists and save uploaded files there so they become selectable
+        os.makedirs(SAMPLE_DIR, exist_ok=True)
+        added = []
+        for up in uploaded:
+            target = os.path.join(SAMPLE_DIR, up.name)
+            base, ext = os.path.splitext(up.name)
+            i = 1
+            # Avoid overwriting existing files
+            while os.path.exists(target):
+                target = os.path.join(SAMPLE_DIR, f"{base}_{i}{ext}")
+                i += 1
+            with open(target, "wb") as f:
+                f.write(up.getbuffer())
+            PDF_FILES[os.path.basename(target)] = target
+            # Only add if not already present
+            existing_paths = {it.get("path") for it in st.session_state.resource_pool if it.get("type") == "local"}
+            if target not in existing_paths:
+                st.session_state.resource_pool.append({"type": "local", "name": os.path.basename(target), "path": target})
+                added.append(os.path.basename(target))
+            else:
+                st.warning(f"Ignoré (doublon): {os.path.basename(target)}")
+        if added:
+            st.success(f"Ajouté: {', '.join(added)}")
+            # increment uploader key index to remount uploader (clears selection)
+            st.session_state.uploader_key_idx += 1
+            st.rerun()
+
+with col_b:
+    st.write("Sélection depuis sample_pdf")
+    if PDF_FILES:
+        sample_key = f"sample_select_{st.session_state.sample_select_key_idx}"
+        sel = st.multiselect("Choisir des exemples", list(PDF_FILES.keys()), key=sample_key)
+        if st.button("Ajouter les sélectionnés", key="add_samples"):
+            added_sel = []
+            skipped_sel = []
+            existing_paths = {it.get("path") for it in st.session_state.resource_pool if it.get("type") == "local"}
+            for name in sel:
+                path = PDF_FILES.get(name)
+                if path:
+                    if path in existing_paths:
+                        skipped_sel.append(name)
+                    else:
+                        st.session_state.resource_pool.append({"type": "local", "name": name, "path": path})
+                        added_sel.append(name)
+            if added_sel:
+                st.success(f"{len(added_sel)} ajouté(s) au pool: {', '.join(added_sel)}")
+            if skipped_sel:
+                st.warning(f"Ignoré(s) déjà présent(s): {', '.join(skipped_sel)}")
+            # increment multiselect key index to remount it (clears selection)
+            st.session_state.sample_select_key_idx += 1
+            st.rerun()
+    else:
+        st.write("Aucun exemple disponible.")
+
+with col_c:
+    url_key = f"url_input_{st.session_state.url_input_key_idx}"
+    url = st.text_input("Coller une URL de ressource (page HTML ou PDF)", key=url_key)
+    if st.button("Ajouter l'URL", key="add_url"):
+        if url:
+            # normalize URL simple form
+            norm_url = url.strip()
+            existing_urls = {it.get("url") for it in st.session_state.resource_pool if it.get("type") == "url"}
+            if norm_url in existing_urls:
+                st.warning("Ignoré: cette URL est déjà dans le pool")
+            else:
+                st.session_state.resource_pool.append({"type": "url", "url": norm_url})
+                st.success("URL ajoutée au pool")
+            # increment url input key index to remount it (clears value)
+            st.session_state.url_input_key_idx += 1
+            st.rerun()
+
+st.markdown("### Pool courant")
+if st.session_state.resource_pool:
+    for idx, item in enumerate(st.session_state.resource_pool):
+        if item.get("type") == "local":
+            st.write(f"{idx+1}. 📄 {item['name']} (local)")
+        else:
+            st.write(f"{idx+1}. 🔗 {item['url']}")
+    if st.button("Vider le pool", key="clear_pool"):
+        st.session_state.resource_pool = []
+        st.rerun()
 else:
-    st.sidebar.warning("Aucun fichier PDF trouvé dans sample_pdf/")
-    selected_pdf = None
-    pdf_path = None
+    st.info("Le pool est vide. Ajoutez au moins une ressource.")
 
-# Sélection de la méthode d'extraction de texte
-st.sidebar.subheader("Méthode d'extraction de texte")
-extraction_method = st.sidebar.selectbox(
-    "Choisir la méthode d'extraction:",
-    ["docling", "pdf_miner", "langchain", "pypdf"],
-    help="Choisissez la méthode pour extraire le texte du PDF"
-)
+# Validation (reveals the rest of the page)
+if st.button("Valider le pool de ressources", key="validate_pool"):
+    if not st.session_state.resource_pool:
+        st.error("Ajoutez au moins une ressource avant de valider.")
+    else:
+        st.session_state.resource_pool_validated = True
+        st.success("Pool validé — vous pouvez maintenant accéder aux outils d'extraction.")
+        st.rerun()
 
-# Sélection du modèle pour l'extraction structurée
-st.sidebar.subheader("Modèle d'extraction structurée")
-model_choice = st.sidebar.radio(
-    "Choisir le modèle:",
-    ["API Albert", "Modèle Local (Ollama)"],
-    help="Choisissez entre l'API Albert ou un modèle local via Ollama"
-)
+# If not validated yet, stop the script here so the rest of the UI is hidden
+if not st.session_state.resource_pool_validated:
+    st.stop()
 
-# Configuration API Albert
-if model_choice == "API Albert":
-    st.sidebar.subheader("Configuration API Albert")
-    model_name = st.sidebar.selectbox(
-        "Modèle Albert:",
-        ["albert-small", "albert-large"],
-        help="Choisissez le modèle Albert à utiliser"
-    )
+# ------------------------------------------------------------------
+# Extraction and display (rest of the page)
+# ------------------------------------------------------------------
 
-# Configuration modèle local
-if model_choice == "Modèle Local (Ollama)":
-    st.sidebar.subheader("Configuration Modèle Local")
-    local_model = st.sidebar.selectbox(
-        "Modèle Ollama:",
-        ["gemma3:1b", "gemma3:4b", "llama3.1:8b", "mistral:7b"],
-        help="Choisissez le modèle Ollama à utiliser"
-    )
 
-# Boutons d'action
-col1, col2 = st.columns(2)
+# ------------------------------------------------------------------
+# Extraction UI and execution
+# - Let the user choose a provider (ollama / albert)
+# - Let the user pick a model for the provider
+# - Provide temperature and optional instruction prefix
+# - Build Engine with the chosen model and run extraction on demand
+# ------------------------------------------------------------------
+
+print(f"Resource pool: {st.session_state.resource_pool}")
+st.header("Configuration du modèle et extraction")
+
+col1, col2, col3 = st.columns([2, 2, 3])
 
 with col1:
-    extract_text_btn = st.button("📄 Extraire le texte du PDF", type="primary")
+    provider = st.selectbox("Provider", ["ollama", "albert"], index=0)
 
 with col2:
-    extract_structured_btn = st.button("🤖 Extraction structurée", type="secondary")
+    # Default model lists
+    ollama_default = "gemma3:4b"
+    albert_options = ["albert-small", "albert-large"]
 
-# Zone d'affichage des résultats
-st.markdown("---")
-st.subheader("Résultats")
-
-# Initialisation des variables de session
-if 'extracted_text' not in st.session_state:
-    st.session_state.extracted_text = None
-if 'structured_output' not in st.session_state:
-    st.session_state.structured_output = None
-if 'last_extraction_method' not in st.session_state:
-    st.session_state.last_extraction_method = None
-if 'last_pdf_selected' not in st.session_state:
-    st.session_state.last_pdf_selected = None
-
-# Affichage persistant du texte extrait
-if st.session_state.extracted_text is not None:
-    st.markdown("### 📄 Texte extrait")
-    st.info(f"✅ Texte extrait depuis **{st.session_state.last_pdf_selected}** avec la méthode **{st.session_state.last_extraction_method}** ({len(st.session_state.extracted_text)} caractères)")
-    
-    with st.expander("📝 Texte extrait (premiers 1000 caractères)", expanded=False):
-        st.text(st.session_state.extracted_text[:1000] + "..." if len(st.session_state.extracted_text) > 1000 else st.session_state.extracted_text)
-    
-    # Bouton pour réextraire si nécessaire
-    if st.button("🔄 Réextraire le texte"):
-        st.session_state.extracted_text = None
-        st.rerun()
-
-# Fonction pour extraire le texte
-def extract_text_from_pdf():
-    try:
-        st.info(f"Extraction du texte avec {extraction_method}...")
-        parser_key = "pdfminer" if extraction_method == "pdf_miner" else extraction_method
-        if not pdf_path:
-            st.error("Aucun PDF sélectionné")
-            return
-        engine = Engine(schema=DispositifAide, parser_name=parser_key)
-        text = engine.parse(pdf_path)
-        st.session_state.extracted_text = text
-        st.session_state.last_extraction_method = extraction_method
-        st.session_state.last_pdf_selected = selected_pdf
-        st.success(f"✅ Texte extrait avec succès! ({len(text)} caractères)")
-        st.rerun()
-    except Exception as e:
-        st.error(f"❌ Erreur lors de l'extraction: {str(e)}")
-
-def extract_structured():
-    try:
-        parser_key = "pdfminer" if extraction_method == "pdf_miner" else extraction_method
-        selected_model = model_name if model_choice == "API Albert" else local_model
-        st.info("🤖 Extraction structurée en cours...")
-        engine = Engine(
-            schema=DispositifAide,
-            parser_name=parser_key,
-            model_name=selected_model
-        )
-        if not pdf_path:
-            st.error("Aucun PDF sélectionné")
-            return
-        if st.session_state.extracted_text:
-            result = engine.generate(st.session_state.extracted_text)
-        else:
-            result = engine.run(pdf_path)
-        if result is None or not hasattr(result, "get_json"):
-            st.error("❌ Erreur: le résultat de l'extraction structurée est invalide ou ne possède pas la méthode 'get_json'.")
-            return
-        content_json = result.get_json()
-        carbon = getattr(result, "carbon", None)
-        st.session_state.carbon = carbon
-        if isinstance(content_json, str):
-            structured_data = DispositifAide.model_validate_json(content_json)
-        else:
-            structured_data = DispositifAide.model_validate(content_json)
-        st.session_state.structured_output = structured_data
-        st.success("✅ Extraction structurée réussie!")
-        st.rerun()
-    except Exception as e:
-        st.error(f"❌ Erreur lors de l'extraction structurée: {str(e)}")
-
-# Gestion des clics sur les boutons
-if extract_text_btn:
-    extract_text_from_pdf()
-
-if extract_structured_btn:
-    extract_structured()
-
-# Affichage des résultats structurés
-if st.session_state.structured_output is not None:
-    st.markdown("---")
-    st.subheader("📊 Résultat de l'extraction structurée")
-    
-    # Affichage en format JSON
-    with st.expander("📋 Données structurées (JSON)"):
-        json_data = st.session_state.structured_output.model_dump()
-        st.json(json_data)
-    
-    st.markdown("---")
-    st.markdown(f"**Émissions de CO2 estimées:** {st.session_state.carbon} kgCO2eq")
-    # Affichage formaté
-    st.markdown("### 📝 Informations extraites")
-    
-    data = st.session_state.structured_output
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown(f"**Titre:** {data.presentation_aide.titre_aide}")
-        st.markdown(f"**Description:** {data.presentation_aide.description_aide}")
-
-        if data.eligibilite:
-            st.markdown("**Critères d'éligibilité:**")
-            for critere in data.eligibilite.criteres_eligibilite:
-                st.markdown(f"- {critere}")
-            st.markdown("**Opérations éligibles:**")
-            for critere in data.eligibilite.operation_eligible:
-                st.markdown(f"- {critere}")
-            st.markdown("**Opérations non éligibles:**")
-            for critere in data.eligibilite.operation_non_eligible:
-                st.markdown(f"- {critere}")
-                
-    
-    with col2:
-        if data.types_aides:
-            st.markdown("**Types d'aides:**")
-
-            # Format enum members or strings into a human-friendly, de-duplicated list
-            def _format_type_item(item):
-                # If it's an enum-like object with a .value attribute, prefer that
-                try:
-                    if hasattr(item, "value"):
-                        val = item.value
-                    else:
-                        val = item
-                except Exception:
-                    val = item
-
-                # Convert to str and normalize spacing
-                s = str(val).strip()
-                # Capitalize only the first letter to keep multi-word labels natural
-                if s:
-                    s = s[0].upper() + s[1:]
-                return s
-
-            formatted = []
-            seen = set()
-            for aide in data.types_aides:
-                label = _format_type_item(aide)
-                if label and label not in seen:
-                    seen.add(label)
-                    formatted.append(label)
-
-            if formatted:
-                # Show as a comma-separated human readable string
-                st.markdown(f"{', '.join(formatted)}")
-        
-        if data.porteurs:
-            st.markdown("**Porteurs:**")
-            for porteur in data.porteurs.liste_porteurs:
-                roles_str = ", ".join(porteur.roles)
-                st.markdown(f"- {porteur.nom} ({roles_str})")
-    
-        # Informations supplémentaires
-        if data.cibles:
-            st.markdown("**Bénéficiaires ciblés:**")
-            for cible in data.cibles.beneficiaire:
-                st.markdown(f"- {cible}")
-        
-        if data.eligibilite_geographique:
-            if data.eligibilite_geographique.zones_eligibles:
-                st.markdown("**Zones éligibles:**")
-                for zone_eligible in data.eligibilite_geographique.zones_eligibles:
-                    st.markdown(f"- {zone_eligible}")
-            st.markdown("**Zones exclues:**")
-            if data.eligibilite_geographique.zones_exclues:
-                for zone_exclue in data.eligibilite_geographique.zones_exclues:
-                    st.markdown(f"- {zone_exclue}")
-            else:
-                st.markdown("- Aucune")
-        
-        if data.dates:
-            st.markdown(f"**Date d'ouverture:** {data.dates.date_ouverture}")
-            st.markdown(f"**Date de clôture:** {data.dates.date_cloture}")
-
-
-    data_dict = data.model_dump()
-    df = pd.DataFrame([data_dict])
-
-    # Export buttons
-    st.title("Export DispositifAide")
-
-    # JSON export using Pydantic's model_dump_json for better fidelity
-    try:
-        json_payload = data.model_dump_json(indent=2, ensure_ascii=False)
-    except Exception:
-        json_payload = json.dumps(data_dict, indent=2, ensure_ascii=False)
-
-    st.download_button("Export as JSON", json_payload, file_name="dispositif.json", mime="application/json")
-
-    # Helper to convert pydantic model to Markdown
-    def model_to_markdown(obj: Any, level: int = 2) -> str:
-        """Recursively convert a pydantic BaseModel (or dict/list/primitive) to a markdown string.
-
-        - dict/BaseModel: each key becomes a heading at current level, values are recursed with level+1
-        - list/tuple: enumerated items are recursed; simple lists are shown as bullet lists
-        - primitives: returned as string
-        """
-        md_lines = []
-
-        # handle pydantic BaseModel-like objects by converting to dict
+    model_choice = None
+    if provider == "ollama":
+        # Try to list available ollama models if the package is present
         try:
-            # avoid importing pydantic directly to keep optional deps minimal
-            if hasattr(obj, "model_dump"):
-                obj = obj.model_dump()
+            import ollama
+
+            try:
+                list_models_fn = getattr(ollama, "list_models", None)
+                raw_models = list_models_fn() if callable(list_models_fn) else []
+                # normalize to an iterable
+                if isinstance(raw_models, (list, tuple, set)):
+                    raw_iter = raw_models
+                else:
+                    raw_iter = [raw_models]
+
+                models = []
+                for m in raw_iter:
+                    if isinstance(m, dict) and "id" in m:
+                        models.append(m["id"])
+                    else:
+                        models.append(str(m))
+                # keep only small-ish models when possible (best-effort filter)
+                if models:
+                    model_choice = st.selectbox("Modèle ollama", models, index=0)
+                else:
+                    model_choice = st.text_input("Modèle ollama (aucun modèle listé)", value=ollama_default)
+            except Exception:
+                # Fall back to a text input if listing fails
+                model_choice = st.text_input("Modèle ollama", value=ollama_default)
         except Exception:
-            pass
+            # ollama not installed or not reachable: fallback to default name input
+            model_choice = st.text_input("Modèle ollama (client non disponible)", value=ollama_default)
+    else:
+        model_choice = st.selectbox("Modèle albert", albert_options, index=0)
 
-        if isinstance(obj, dict):
-            for key, val in obj.items():
-                heading = f"{'#' * level} {key}"
-                md_lines.append(heading)
-                md_lines.append("")
-                md_lines.append(model_to_markdown(val, min(level + 1, 6)))
-                md_lines.append("")
-        elif isinstance(obj, (list, tuple)):
-            # if list of primitives, render bullets
-            if all(not isinstance(i, (dict, list, tuple)) for i in obj):
-                for item in obj:
-                    md_lines.append(f"- {item}")
-            else:
-                for idx, item in enumerate(obj, start=1):
-                    md_lines.append(f"{'#' * level} Item {idx}")
-                    md_lines.append("")
-                    md_lines.append(model_to_markdown(item, min(level + 1, 6)))
-                    md_lines.append("")
+run_col1, run_col2 = st.columns([1, 4])
+with run_col1:
+    run_btn = st.button("Lancer l'extraction", key="run_extraction")
+with run_col2:
+    st.markdown("\n")
+
+if run_btn:
+    # basic validation
+    if not st.session_state.resource_pool:
+        st.error("Le pool de ressources est vide — ajoutez des PDF ou des URL avant d'extraire.")
+    else:
+        # Build Engine with selected model passed to its constructor so self.model_name is set
+        try:
+            engine = Engine(schema=DispositifAide, model_name=model_choice)
+        except Exception as e:
+            st.error(f"Erreur lors de la création de l'engine: {e}")
+            st.stop()
+
+        with st.spinner("Extraction en cours — ceci peut prendre quelques instants..."):
+            try:
+                pool_paths = [resource["path"] for resource in st.session_state.resource_pool if "path" in resource]
+                response = engine.run(
+                    resource_pool=pool_paths
+                )
+            except Exception as e:
+                st.error(f"Erreur durant l'extraction: {e}")
+                response = None
+
+        structured = None
+        if response is None:
+            st.error("Aucune réponse retournée.")
         else:
-            # primitive
-            md_lines.append(str(obj) if obj is not None else "")
+            st.success("Extraction terminée")
+            # Display metadata if available
+            try:
+                carbon = getattr(response, "carbon", None)
+                if carbon is not None:
+                    st.metric(label="Émissions estimées (kgCO2eq)", value=f"{carbon:.6f}")
+            except Exception:
+                pass
 
-        return "\n".join([line for line in md_lines if line is not None])
+            # Structured JSON result
+            try:
+                structured = response.get_json()
+                st.subheader("Résultat structuré (JSON)")
+                # Show JSON inside a closed expander by default
+                with st.expander("Afficher le JSON structuré", expanded=False):
+                    st.json(structured)
+            except Exception as e:
+                st.warning(f"Impossible d'obtenir le JSON structuré: {e}")
 
-    md_content = model_to_markdown(data)
-    st.download_button("Export as Markdown", md_content, file_name="dispositif.md", mime="text/markdown")
+            # Raw response for debugging
+            st.subheader("Réponse brute (debug)")
+            try:
+                raw = getattr(response, "raw_response", None)
+                if raw is None:
+                    # For AlbertStructuredOutput the raw response may be stored differently
+                    raw = getattr(response, "raw", None)
+                with st.expander("Afficher la réponse brute (debug)", expanded=False):
+                    st.code(json.dumps(raw if raw is not None else str(response), default=str, indent=2))
+            except Exception as e:
+                with st.expander("Afficher la réponse brute (debug)", expanded=False):
+                    st.write(repr(response))
+
+            # Offer download of structured JSON and Markdown
+            try:
+                if structured is not None:
+                    json_bytes = json.dumps(structured, ensure_ascii=False, indent=2).encode("utf-8")
+                    md_text = structured_to_markdown(structured)
+                    md_bytes = md_text.encode("utf-8")
+
+                    # Use data URI HTML links for download to avoid causing a Streamlit rerun
+                    json_b64 = base64.b64encode(json_bytes).decode("ascii")
+                    md_b64 = base64.b64encode(md_bytes).decode("ascii")
+
+                    html = f"""
+<div style='display:flex; gap:6px; align-items:center'>
+  <a download='extraction.json' href='data:application/json;base64,{json_b64}' style='text-decoration:none'>
+    <div style='background-color:#0e76a8;color:#fff;padding:6px 10px;border-radius:6px;font-weight:600;'>Télécharger JSON</div>
+  </a>
+  <a download='extraction.md' href='data:text/markdown;base64,{md_b64}' style='text-decoration:none'>
+    <div style='background-color:#137f5b;color:#fff;padding:6px 10px;border-radius:6px;font-weight:600;'>Télécharger Markdown</div>
+  </a>
+</div>
+"""
+                    st.markdown(html, unsafe_allow_html=True)
+
+                    # Render a prettier Markdown view below the JSON
+                    try:
+                        st.markdown("---")
+                        st.subheader("Résultat (Markdown)")
+                        st.markdown(md_text)
+                    except Exception:
+                        # Fallback: show raw markdown as code if rendering fails
+                        st.code(md_text)
+            except Exception:
+                pass
+
 
 # Footer
 st.markdown("---")
