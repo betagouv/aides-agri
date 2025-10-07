@@ -23,9 +23,7 @@ def data_migration(apps, *args):
             prev_nom = aide.nom
             prev_organisme_id = aide.organisme_id
     for parent_id, children in derived.items():
-        Aide.objects.filter(pk=parent_id).update(
-            status=Aide.Status.TO_BE_DERIVED, is_derivable=True
-        )
+        Aide.objects.filter(pk=parent_id).update(status="41", is_derivable=True)
         Aide.objects.filter(pk__in=children).update(parent_id=parent_id)
 
 
