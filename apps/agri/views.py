@@ -334,6 +334,7 @@ class ResultsView(ResultsMixin, ListView):
                             else static("agri/images/placeholder.1x1.svg"),
                             "image_alt": aide.organisme.nom,
                             "ratio_class": "fr-ratio-1x1",
+                            "parent": aide.parent,
                         }
                         for aide in aides
                     ]
