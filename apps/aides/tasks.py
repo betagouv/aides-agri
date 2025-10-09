@@ -24,7 +24,7 @@ def admin_notify_assignee(aide_pk: int, base_url: str):
     url = base_url + reverse("admin:aides_aide_change", args=[aide_pk])
     send_mail(
         "[Aides Agri] Une aide t’a été assignée",
-        f"L’aide suivante vient de t’être assignée : {aide.nom} ( {url} )",
+        f"L’aide suivante vient de t’être assignée : {aide.nom} ( {url} )\n\nCommentaire interne : {aide.internal_comments}",
         settings.DEFAULT_FROM_EMAIL,
         [aide.assigned_to.email],
     )
@@ -36,7 +36,7 @@ def admin_notify_new_cc(aide_pk: int, base_url: str, recipients_pks: list[int]):
     url = base_url + reverse("admin:aides_aide_change", args=[aide_pk])
     send_mail(
         "[Aides Agri] Tu es désormais en CC d’une aide",
-        f"Tu recevras désormais des notifs aux changements d’état de l’aide suivante : {aide.nom} ( {url} )",
+        f"Tu recevras désormais des notifs aux changements d’état de l’aide suivante : {aide.nom} ( {url} )\n\nCommentaire interne : {aide.internal_comments}",
         settings.DEFAULT_FROM_EMAIL,
         [user.email for user in get_user_model().objects.filter(pk__in=recipients_pks)],
     )
@@ -48,7 +48,7 @@ def admin_notify_cc(aide_pk: int, base_url: str):
     url = base_url + reverse("admin:aides_aide_change", args=[aide_pk])
     send_mail(
         "[Aides Agri] Une aide vient de changer d’état",
-        f"L’aide suivante, dont tu es en CC, vient de passer à l’état {aide.status} : {aide.nom} ( {url} )",
+        f"L’aide suivante, dont tu es en CC, vient de passer à l’état {aide.status} : {aide.nom} ( {url} )\n\nCommentaire interne : {aide.internal_comments}",
         settings.DEFAULT_FROM_EMAIL,
         [cc.email for cc in aide.cc_to.all()],
     )
