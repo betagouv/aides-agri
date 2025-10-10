@@ -43,6 +43,9 @@ document.onreadystatechange = evt => {
         <button type="button"
                 class="fr-btn fr-icon--md fr-btn--sm fr-btn--tertiary fr-icon-file-pdf-line"
                 id="button-print"
+                data-action="click->matomo#trackEvent"
+                data-event-page="Aide"
+                data-event-name="Impression"
         >
           Télécharger cette fiche
         </button>
@@ -67,6 +70,9 @@ document.onreadystatechange = evt => {
             <a class="fr-btn fr-btn--primary fr-mb-1w"
                target="_blank"
                href="{{ object.url_descriptif }}"
+               data-action="click->matomo#trackEvent"
+               data-event-page="Aide"
+               data-event-name="Lien descriptif"
             >
               Voir le détail
             </a>
@@ -124,6 +130,9 @@ document.onreadystatechange = evt => {
             <a class="fr-btn fr-btn--primary fr-mb-1w"
                target="_blank"
                href="{{ object.url_demarche }}"
+               data-action="click->matomo#trackEvent"
+               data-event-page="Aide"
+               data-event-name="Lien démarche"
             >
               Déposer mon dossier
             </a>

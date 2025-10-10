@@ -137,6 +137,9 @@ document.onreadystatechange = evt => {
       <button type="button"
               class="fr-btn fr-btn--icon-left fr-btn--sm fr-pl-4v fr-btn--secondary fr-icon-file-pdf-line"
               id="button-print"
+              data-action="click->matomo#trackEvent"
+              data-event-page="Recommandation"
+              data-event-name="Impression"
       >
         Enregistrer en PDF
       </button>
