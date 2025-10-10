@@ -13,6 +13,7 @@
       "sentry": "{% static 'vendor/sentry.js' %}",
       "stimulus": "{% static 'vendor/stimulus.js' %}",
       "alert": "{% static 'ui/controllers/alert.js' %}",
+      "matomo": "{% static 'ui/controllers/matomo.js' %}",
       "dsfr-form": "{% static 'ui/controllers/dsfr_form.js' %}",
       "checkbox-group-field": "{% static 'ui/components/checkbox-group-field.js' %}",
       "select-rich": "{% static 'ui/components/select-rich.js' %}",
@@ -33,7 +34,7 @@
   import { SummaryMobile } from "summary-mobile"
   import { Steps } from "steps"
 
-  window.Stimulus = Application.start()
+  window.Stimulus ??= Application.start()
 
   Stimulus.register("alert", Alert)
   Stimulus.register("dsfr-form", DsfrForm)
