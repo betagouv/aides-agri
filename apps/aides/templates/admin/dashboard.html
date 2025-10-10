@@ -41,7 +41,7 @@
           <span class="badge">{{ aide.organisme.nom_court }}</span>
         </span>
         <span class="aide__badges">
-          <span class="badge priority-{{ aide.priority }}">P{{ aide.priority }}</span>
+          <span class="badge priority-{{ aide.priority }}">Score prio : {{ aide.priority }}</span>
           {% if aide.date_target_publication %}
             {% now "c" as today %}
             <time datetime="{{ aide.date_target_publication|date:"c" }}"
