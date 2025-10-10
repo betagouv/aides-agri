@@ -1,11 +1,8 @@
 {% load i18n static dsfr_tags %}<!DOCTYPE html>
-<html lang="fr"
-      data-fr-scheme="light"
-      {% if SITE_CONFIG.mourning %}data-fr-mourning{% endif %}>
+<html lang="fr" data-fr-scheme="light" {% if SITE_CONFIG.mourning %}data-fr-mourning{% endif %}>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     {% dsfr_favicon %}
 
     {% dsfr_css %}
@@ -14,8 +11,7 @@
 
     <title>{% block pagetitle %}{% block title %}{% endblock title %} — {{ SITE_CONFIG.site_title }}{% endblock pagetitle %}</title>
 
-    <meta name="format-detection"
-          content="telephone=no,date=no,address=no,email=no,url=no">
+    <meta name="format-detection" content="telephone=no,date=no,address=no,email=no,url=no">
 
     {% block opengraph %}{% endblock opengraph %}
 
@@ -25,6 +21,7 @@
       "imports": {
           "sentry": "{% static 'vendor/sentry.js' %}",
           "stimulus": "{% static 'vendor/stimulus.js' %}",
+          "matomo": "{% static 'ui/controllers/matomo.js' %}",
           "dsfr-form": "{% static 'ui/controllers/dsfr_form.js' %}",
           "checkbox-group-field": "{% static 'ui/components/checkbox-group-field.js' %}",
           "select-rich": "{% static 'ui/components/select-rich.js' %}"
@@ -38,9 +35,19 @@
 
     {% if UI_SENTRY_PUBLIC_KEY %}{% include "ui/blocks/sentry.html" %}{% endif %}
     {% if UI_MATOMO_SITE_ID %}{% include "ui/blocks/matomo.html" %}{% endif %}
+
+    <script type="module" nonce="{{ request.csp_nonce }}">
+    import { Application } from "stimulus"
+    import { Matomo } from "matomo"
+
+    window.Stimulus = Application.start()
+
+    Stimulus.register("matomo", Matomo)
+    </script>
+
     {% block extra_head_js %}{% endblock extra_head_js %}
   </head>
-  <body hx-headers='{"x-csrftoken": "{{ csrf_token }}"}'>
+  <body hx-headers='{"x-csrftoken": "{{ csrf_token }}"}' data-controller="matomo">
   {% block body %}
     {% block skiplinks %}
       {% dsfr_skiplinks skiplinks %}
