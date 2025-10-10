@@ -41,7 +41,7 @@ document.onreadystatechange = evt => {
           {% endfor %}
         </div>
         <button type="button"
-                class="fr-btn fr-btn--icon-left fr-btn--sm fr-btn--tertiary fr-icon-file-pdf-line"
+                class="fr-btn fr-icon--md fr-btn--sm fr-btn--tertiary fr-icon-file-pdf-line"
                 id="button-print"
         >
           Télécharger cette fiche
@@ -59,7 +59,7 @@ document.onreadystatechange = evt => {
             <time datetime="{{ aide.date_fin|date:"c" }}">{{ aide.date_fin|date:"SHORT_DATE_FORMAT" }}</time>
           {% endif %}
         </p>
-        <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-arrow-right-down-circle-fill fr-btn--icon-left fr-mb-2w">Description</h2>
+        <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-arrow-right-circle-fill fr-icon--md fr-mb-2w">Description</h2>
         <p>
           {{ object.description_de_base|ui_markdown|safe }}
           {{ object.description|ui_markdown|safe }}
@@ -73,24 +73,24 @@ document.onreadystatechange = evt => {
           {% endif %}
         </p>
         {% if object.montant %}
-          <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-btn--icon-left fr-mb-2w">Montant ou taux de l’aide</h2>
+          <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-icon--md fr-mb-2w">Montant ou taux de l’aide</h2>
           <p>{{ object.montant|ui_markdown|safe }}</p>
         {% endif %}
         {% if object.participation_agriculteur %}
-          <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-btn--icon-left fr-mb-2w">Participation ou coût pour les bénéficiaires</h2>
+          <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-icon--md fr-mb-2w">Participation ou coût pour les bénéficiaires</h2>
           <p>{{ object.participation_agriculteur|ui_markdown|safe }}</p>
         {% endif %}
         {% if object.exemple_projet %}
-          <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-btn--icon-left fr-mb-2w">Exemple de projet ou d’application</h2>
+          <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-icon--md fr-mb-2w">Exemple de projet ou d’application</h2>
           <p>{{ object.exemple_projet|ui_markdown|safe }}</p>
         {% endif %}
         {% if object.etapes %}
-          <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-btn--icon-left fr-mb-2w">Étapes</h2>
+          <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-icon--md fr-mb-2w">Étapes</h2>
           <p>{{ object.etapes|ui_markdown|safe }}</p>
         {% endif %}
       </div>
       <div class="fr-col fr-col-12 fr-col-md-4 fr-py-3w fr-px-4w fr-background-alt--blue-ecume">
-        <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-btn--icon-left fr-mb-2w">Critères d'éligibilité</h2>
+        <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-icon--md fr-mb-2w">Critères d'éligibilité</h2>
         <div class="fr-text--sm" id="conditions">
           {{ object.conditions|ui_markdown|safe }}
           {% if object.eligibilite_effectif_min or object.eligibilite_effectif_max %}
@@ -117,7 +117,7 @@ document.onreadystatechange = evt => {
     </div>
     <div class="fr-grid-row fr-grid-row--gutters fr-mt-4w">
       <div class="fr-col fr-col-12 fr-py-3w fr-px-4w fr-background-alt--blue-ecume">
-        <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-btn--icon-left fr-mb-2w">Contacts</h2>
+        <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-icon--md fr-mb-2w">Contacts</h2>
         <p class="fr-text--sm">
           {{ object.contact|ui_markdown|safe }}
           {% if object.url_demarche %}

@@ -10,8 +10,8 @@
   font-size: 14px;
 }
 
-.fr-icon-arrow-right-down-circle-fill:before {
-  rotate: -45deg;
+.fr-h6.fr-icon--md::before {
+  margin-right: 12px;
 }
 
 .fr-col.fr-m-auto {
