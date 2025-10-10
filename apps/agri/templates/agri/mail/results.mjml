@@ -27,7 +27,7 @@
           Voici les aides que nous avions sélectionnées pour vous :
           <ul>
             {% for aide in aides %}
-              <li><a href="{{ base_url }}{{ aide.get_absolute_url }}">{{ aide.nom }}</a></li>
+              <li><a href="{{ base_url }}{{ aide.get_absolute_url }}?utm_source=mail">{{ aide.nom }}</a></li>
             {% endfor %}
           </ul>
         </mj-text>
