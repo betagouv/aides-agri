@@ -5,6 +5,9 @@
     },
     {
       "command": "0 3 * * * python manage.py aides_publish_pending_aides"
+    },
+    {
+      "command": "0 6 * * * python manage.py aides_feedback_reporting"
     }
   ]
 }
