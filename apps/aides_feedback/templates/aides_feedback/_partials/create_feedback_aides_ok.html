@@ -1,7 +1,7 @@
 <div class="fr-col fr-col-12 fr-col-md-6 fr-col-offset-md-3">
   <p class="fr-message--valid">Merci !</p>
 
-  <a href="{% url 'product:user-feedback' %}"
+  <a href="{% url 'aides_feedback:update-feedback-aides' pk=object.pk %}"
      hx-boost="true"
      hx-target="this"
      hx-swap="outerHTML show:none"

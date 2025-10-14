@@ -5,7 +5,7 @@
 {% block extra_css %}
   {{ block.super }}
   <link rel="stylesheet" href="{% static 'agri/results.css' %}">
-  <link rel="stylesheet" href="{% static 'product/base.css' %}">
+  <link rel="stylesheet" href="{% static 'aides_feedback/base.css' %}">
 {% endblock extra_css %}
 
 {% block extra_js %}
@@ -188,5 +188,5 @@ document.onreadystatechange = evt => {
 {% endblock main_col %}
 
 {% block aftercontent %}
-  {% include "product/blocks/user_note.html" %}
+  {% include "aides_feedback/blocks/create_feedback_on_aides.html" with form=create_feedback_on_aides_form %}
 {% endblock aftercontent %}

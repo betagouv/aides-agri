@@ -8,7 +8,7 @@
 {% endblock extra_css %}
 
 {% block modals %}
-  {% include 'agri/blocks/modal_feedback_themes_sujets.html' %}
+  {% include 'agri/blocks/modal_feedback_themes_sujets.html' with form=feedback_themes_sujets_form %}
 {% endblock modals %}
 
 {% block title %}Votre projet{% endblock title %}

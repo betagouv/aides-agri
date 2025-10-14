@@ -17,11 +17,14 @@ from aides.models import (
     Filiere,
     Type,
 )
-from product.forms import UserNoteForm
+
+from aides_feedback.forms import (
+    FeedbackOnThemesAndSujetsForm,
+    CreateFeedbackOnAidesForm,
+)
 
 from . import siret
 from . import tasks
-from .forms import FeedbackForm
 
 
 class HomeView(TemplateView):
@@ -54,7 +57,7 @@ class HomeView(TemplateView):
                     },
                 ],
                 "themes": themes_and_urls,
-                "feedback_themes_sujets_form": FeedbackForm,
+                "feedback_themes_sujets_form": FeedbackOnThemesAndSujetsForm,
             }
         )
         return context_data
@@ -196,7 +199,7 @@ class Step2View(AgriMixin, TemplateView):
                     .filter(themes=self.theme)
                     .order_by("-aides_count")
                 },
-                "feedback_themes_sujets_form": FeedbackForm,
+                "feedback_themes_sujets_form": FeedbackOnThemesAndSujetsForm,
             }
         )
         return extra_context
@@ -338,7 +341,7 @@ class ResultsView(ResultsMixin, ListView):
                     ]
                     for type_aide, aides in aides_by_type.items()
                 },
-                "user_note_form": UserNoteForm(),
+                "create_feedback_on_aides_form": CreateFeedbackOnAidesForm(),
             }
         )
 

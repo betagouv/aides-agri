@@ -1,5 +1,5 @@
 <form method="post"
-      action="{% url 'product:user-feedback' %}"
+      action="{% url 'aides_feedback:update-feedback-aides' pk=object.pk %}"
       hx-boost="true"
       hx-target="this"
       hx-swap="beforeend show:none"

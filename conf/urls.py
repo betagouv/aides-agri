@@ -31,6 +31,7 @@ urlpatterns = [
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="django-sitemap"),
     path("", include("agri.urls")),
     path("", include("aides.urls")),
+    path("", include("aides_feedback.urls")),
     path("", include("product.urls")),
     path("", include(two_factors_urls)),
     path("ui/", include("ui.urls")),

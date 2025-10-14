@@ -4,7 +4,7 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'aides/aide_detail.css' %}">
-<link rel="stylesheet" href="{% static 'product/base.css' %}">
+<link rel="stylesheet" href="{% static 'aides_feedback/base.css' %}">
 {% endblock extra_css %}
 
 {% block extra_head_js %}
@@ -143,6 +143,6 @@ document.onreadystatechange = evt => {
   </div>
 
   <div class="fr-container fr-mt-4w">
-    {% include "product/blocks/user_note.html" %}
+    {% include "aides_feedback/blocks/create_feedback_on_aides.html" with form=create_feedback_on_aides_form %}
   </div>
 {% endblock content %}

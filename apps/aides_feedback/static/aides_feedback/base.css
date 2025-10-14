@@ -1,12 +1,12 @@
-#product-space {
+#aides-feedback {
   text-align: center;
 }
 
-#product-space .fr-fieldset {
+#aides-feedback .fr-fieldset {
   justify-content: center;
 }
 
-#product-space .fr-radio-group .fr-label {
+#aides-feedback .fr-radio-group .fr-label {
   padding-left: 0;
   padding-top: 2rem;
   background-position-x: center;

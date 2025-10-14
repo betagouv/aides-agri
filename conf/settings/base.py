@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "product",
     "agri",
     "aides",
+    "aides_feedback",
     "pac",
     "conf.apps.AidesAgriAdminConfig",
 ]

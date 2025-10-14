@@ -1,7 +1,7 @@
 from django.http.response import HttpResponsePermanentRedirect
 from django.views.generic import DetailView
 
-from product.forms import UserNoteForm
+from aides_feedback.forms import CreateFeedbackOnAidesForm
 
 from .models import Aide
 
@@ -39,7 +39,7 @@ class AideDetailView(DetailView):
                         "label": "Descriptif de l'aide",
                     },
                 ],
-                "user_note_form": UserNoteForm(),
+                "create_feedback_on_aides_form": CreateFeedbackOnAidesForm(),
                 "breadcrumb_data": {
                     "links": breadcrumb_links,
                     "current": self.object.nom,
