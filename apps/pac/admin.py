@@ -1,7 +1,5 @@
 from django.contrib import admin
 
-from product.admin import ReadOnlyModelAdmin
-
 from .models import (
     ActeurGeographique,
     IndicateurContexte,
@@ -16,6 +14,17 @@ from .models import (
     Secteur,
     Besoin,
 )
+
+
+class ReadOnlyModelAdmin(admin.ModelAdmin):
+    def has_add_permission(self, *args):
+        return False
+
+    def has_change_permission(self, *args):
+        return False
+
+    def has_delete_permission(self, *args):
+        return False
 
 
 @admin.register(ActeurGeographique)
