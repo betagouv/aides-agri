@@ -4,8 +4,6 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 from reversion.admin import VersionAdmin
 
-from product.admin import ReadOnlyModelAdmin
-
 from ..models import (
     Theme,
     Sujet,
@@ -138,11 +136,20 @@ class OrganismeAdmin(VersionAdmin):
 
 
 @admin.register(ZoneGeographique)
-class ZoneGeographiqueAdmin(ReadOnlyModelAdmin):
+class ZoneGeographiqueAdmin(admin.ModelAdmin):
     list_display = ("type", "code", "nom", "aides_count")
     list_display_links = ("code", "nom")
     list_filter = ("type",)
     search_fields = ("nom", "code_postal")
+
+    def has_add_permission(self, *args):
+        return False
+
+    def has_change_permission(self, *args):
+        return False
+
+    def has_delete_permission(self, *args):
+        return False
 
     def aides_count(self, obj):
         if obj.aides_count == 0:
