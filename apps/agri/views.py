@@ -7,7 +7,6 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.views.generic import TemplateView, ListView, View
 from django.views.generic.base import ContextMixin
-from django.views.generic.edit import CreateView
 
 from aides.models import (
     Theme,
@@ -427,12 +426,3 @@ class SendResultsByMailView(ResultsMixin, View):
             aides_ids=[a.pk for a in self.get_results()],
         )
         return render(request, "agri/_partials/send-results-by-mail-ok.html")
-
-
-class CreateFeedbackView(CreateView):
-    form_class = FeedbackForm
-
-    def form_valid(self, form: FeedbackForm):
-        form.instance.sent_from_url = self.request.htmx.current_url
-        self.object = form.save()
-        return render(self.request, "agri/_partials/feedback_themes_sujets_ok.html")

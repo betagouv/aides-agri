@@ -10,7 +10,6 @@ from .views import (
     SearchEtablissementView,
     SearchCommuneView,
     SendResultsByMailView,
-    CreateFeedbackView,
 )
 
 
@@ -33,9 +32,4 @@ urlpatterns = [
         name="send-results-by-mail",
     ),
     path("trouver-ma-commune", SearchCommuneView.as_view(), name="search-commune"),
-    path(
-        "feedback-themes-sujets",
-        CreateFeedbackView.as_view(),
-        name="feedback-themes-sujets",
-    ),
 ]
