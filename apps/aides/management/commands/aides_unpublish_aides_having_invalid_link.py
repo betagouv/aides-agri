@@ -39,7 +39,7 @@ class Command(BaseCommand):
                 else:
                     reason = f"returnait une erreur {status_code}"
                 url = (
-                    "https://"
+                    settings.HTTP_SCHEME
                     + get_current_site(None).domain
                     + reverse("admin:aides_aide_change", args=[aide.pk])
                 )
