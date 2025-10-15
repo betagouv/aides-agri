@@ -97,6 +97,28 @@ graph TD;
     product-->ui;
 ```
 
+## 💅 L’architecture de l’interface web publique (le "front-end")
+
+### CSS
+
+- L’application contient très peu de CSS, l’essentiel du style étant assuré par le DSFR
+- Les quelques fichiers CSS spécifiques sont rangés dans le répertoire `static/` de l’app Django concernée
+- Aucun mécanisme de pre-processing ou post-processing n’est appliqué
+
+### Javascript
+
+- Quand il y a besoin d’interactivité dans le navigateur, un contrôleur Stimulus est créé dans le répertoire `static/` de l’app Django concernée
+- Les contrôleurs Stimulus étant des modules ESM, ils sont importés dans les pages directement en utilisant un [importmap](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap) présent dans le template de base, qui contient donc tous les modules réutilisables, et qui peut être surchargé page par page (chaque page ayant alors la responsabilité de réécrire un importmap contenant tous les modules réutilisables en plus de ses modules spécifiques)
+
+### Des composants web
+
+Parfois le besoin se fait ressentir d’un composant web (HTML/CSS/JS fonctionnant ensemble et utilisable à plusieurs endroits de l’application). Dans ce cas, les éléments sont rangés de la manière suivante :
+
+- Les templates dans `app_django/templates/app_django/components`
+- Les CSS et JS dans `app_django/static/app_django/components`
+
+L’app Django `ui` contient une page de présentation des composants web réutilisables, qu’il est conseillé d’utiliser pour présenter le composant dans ses différentes variantes et ainsi le documenter.
+
 ## 🏗️ L’infrastructure
 
 ### Éléments d’infrastructure
