@@ -1,0 +1,46 @@
+[{
+    "url": "https://www.franceagrimer.fr/rechercher-une-aide",
+    "target": [
+        {
+            "titre": "CASDAR - Appel à projet Co-Innovations 2026",
+            "description": "Appel à projet pour soutenir des actions ambitieuses en matière d’accompagnement, de transfert et de conseil dans le secteur agricole.",
+            "date_publication": "04/09/2025",
+            "url_specifique": "https://www.franceagrimer.fr/aides/casdar-appel-projet-co-innovations-2026"
+        },
+        {
+            "titre": "CASDAR - Appel à projet Connaissances 2026",
+            "description": "Appel à projet pour soutenir des actions visant à améliorer les connaissances dans le secteur agricole.",
+            "date_publication": "02/09/2025",
+            "url_specifique": "https://www.franceagrimer.fr/aides/casdar-appel-projet-connaissances-2026"
+        },
+        {
+            "titre": "CASDAR - Appel à projet Démultiplication 2026",
+            "description": "Appel à projet de développement agricole pour soutenir des actions ambitieuses en matière d’accompagnement, de transfert et de conseil.",
+            "date_publication": "02/09/2025",
+            "url_specifique": "https://www.franceagrimer.fr/aides/casdar-appel-projet-demultiplication-2026"
+        }
+    ]
+},
+{
+    "url": "https://www.franceagrimer.fr/rechercher-une-aide",
+    "target": [
+        {
+            "titre": "Régimes d’aides d’État : régimes en vigueur et projets de notification ou d'information à la Commission européenne",
+            "description": "Description des régimes d’aides proposés à la Commission européenne sous forme de notification ou d’exemption.",
+            "date_publication": "30 septembre 2025",
+            "url_specifique": "https://agriculture.gouv.fr/regimes-daides-detat-regimes-en-vigueur-et-projets-de-notification-ou-dinformation-la-commission"
+        }
+    ]
+},
+{
+    "url": "https://www.franceagrimer.fr/rechercher-une-aide",
+    "target": [
+        {
+            "titre": "Service de remplacement",
+            "description": "Structures locales employant des agents pour remplacer les exploitants agricoles en cas de besoin.",
+            "date_publication": "16 mai 2024",
+            "url_specifique": "https://ain-rhone.msa.fr/lfp/web/msa-ain-rhone/exploitant/service-de-remplacement"
+        }
+    ]
+}
+]
