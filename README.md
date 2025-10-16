@@ -79,7 +79,9 @@ Liste que je vais tenter de garder à jour :
 #### Les apps métier
 
 - `aides` : implémente les entités et les logiques métier liées aux dispositifs d’aide publics à l’agriculture
+  - [Documentation spécifique](apps/aides/README.md)
 - `agri` : implémente le parcours utilisateur destiné aux exploitantes et exploitants agricoles afin de les aiguiller vers les aides pertinentes pour leur situation et leur besoin
+  - [Documentation spécifique](apps/agri/README.md)
 - `aides_feedback` : implémente de quoi permettre à nos utilisatrices et utilisateurs de donner leur avis sur le parcours qui leur est proposé ainsi que sur les contenus qui leur sont présentés
 - `pac` : implémente une représentation en base de données relationnelle du Plan Stratégique National de la PAC 2023-2027 ; c’est un outil à usage interne technique uniquement
 - `product` : implémente les aspects périphériques du site web, comme les pages légales ; cette app Django pourrait être amenée à être extraite de cette base de code pour la rendre réutilisable au sein d’un modèle de base de code Django pour beta.gouv.fr
