@@ -22,12 +22,7 @@ from reversion.admin import VersionAdmin
 from admin_concurrency.admin import ConcurrentModelAdmin
 
 from ..models import ZoneGeographique, Aide
-from ..tasks import (
-    enrich_aide,
-    admin_notify_assignee,
-    admin_notify_cc,
-    admin_notify_new_cc,
-)
+from ..tasks import enrich_aide
 from ._common import ArrayFieldCheckboxSelectMultiple
 
 
@@ -543,28 +538,9 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         else:
             return super().save_form(request, form, change)
 
-    def save_model(self, request, obj, form, change):
-        super().save_model(request, obj, form, change)
-        base_url = f"{request.scheme}://{request.headers['host']}"
-        if obj.assigned_to and (not change or "assigned_to" in form.changed_data):
-            admin_notify_assignee.enqueue(obj.pk, base_url)
-        if obj.cc_to.exists() and (not change or "status" in form.changed_data):
-            admin_notify_cc.enqueue(obj.pk, base_url)
-
     def save_related(self, request, form, formsets, change):
         if not change:
             return
-        obj = form.instance
-        old_ccs = set(obj.cc_to.all())
-        super().save_related(request, form, formsets, change)
-        if obj.cc_to.exists() and (not change or "cc_to" in form.changed_data):
-            base_url = f"{request.scheme}://{request.headers['host']}"
-            ccs = set(obj.cc_to.all())
-            to_notify = ccs.difference(old_ccs)
-            if to_notify:
-                admin_notify_new_cc.enqueue(
-                    obj.pk, base_url, [user.pk for user in to_notify]
-                )
 
 
 def validate_content_type_csv(value: UploadedFile):
