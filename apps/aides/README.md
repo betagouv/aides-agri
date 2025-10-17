@@ -47,3 +47,26 @@ Notes :
 * `4.1 À décliner` : le dispositif est complètement enrichi et validé, mais n’a pas vocation à être publié : c’est un dispositif-chapeau qui a vocation à être décliné ;
 * `5. Publiée` : l’aide est visible sur le site, elle peut apparaître dans les recommandations faites aux utilisatrices et utilisateurs, et est référencée par les moteurs de recherche ;
 * `6. Archivée` : le dispositif est exclu, soit temporairement soit définitivement ; la raison doit en être documentée dans un champ de commentaire interne.
+
+## Priorisation automatique des aides
+
+L’étape la plus coûteuse du cycle de vie des aides est l’édition : il y a un gros travail de lecture et compréhension profonde du dispositif, puis de répartition des informations entre les différents champs et surtout de reformulation en français simplifié, compréhensible des usagères et usagers, sans jargon administratif, tout en conservant la précision des informations.
+
+Il est donc important que les dispositifs soient bien triés de façon à ce que ceux que l’on souhaite voir arriver sur le site au plus vite soient identifiables facilement. Pour cela, le système calcule un score de priorité pour chacun des dispositifs d’aide, selon un certain nombre de critères pondérés. La formule est visible dans la méthode `Aide.compute_priority()`.
+
+Au 17/10/2025, les critères et leurs pondérations sont les suivants :
+
+
+| Critère | Champ | Type | Transformation | Coefficient | Pondération |
+| ------- | ----- | ---- | -------------- | ----------- | ----------- |
+| Répond à une actualité brûlante ? | `Aide.importance` | Nombre (de 0 à 10, définis dans `Aide.Importance`) | Aucune | 10 | 20 |
+| Enveloppe globale allouée | `Aide.enveloppe_globale` | Montant eu euros | `* 0.000001` | 10 | 8 |
+| Made in MASA ? | `Aide.organisme.is_masa` | Booléen | n/a | 10 | 6 |
+| Demande de publication émanant du pourvoyeur de l’aide | `Aide.demande_du_pourvoyeur` | Booléen | n/a | 10 | 5 |
+| Thématique prioritaire | `Aide.sujets.themes.is_prioritaire` | Booléen | n/a | 10 | 4 |
+| Priorité du type d’aide | `Aide.types.score_priorite_aides` | Nombre | n/a | 10 | 4 |
+| Nombre d’exploitations agricoles potentiellement touchées | `Aide.taille_cible_potentielle` | Nombre | `* 0.0005` | 12.5 | 3 |
+| Degré d’urgence et durée du dispositif | `Aide.urgence` | Nombre (de 2 à 10, définis dans `Aide.Urgence`) | Aucune | 10 | 30 |
+| Bonus filière sous-représentée sur Aides Agri | `Aide.filiere_sous_representee` | Booléen | n/a | 10 | 1 |
+| Bonus aide méconnue | `Aide.is_meconnue` | Booléen | n/a | 10 | 1 |
+
