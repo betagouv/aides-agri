@@ -71,6 +71,12 @@ veille = [
   "langsmith>=0.4.34",
   "openai>=1.109.1",
   "selenium>=4.37.0",
+  "ocrmac>=1.0.0",
+  "tesserocr>=2.9.1",
+  "rapidocr>=3.4.2",
+  "onnxruntime>=1.22.1",
+  "docling-hierarchical-pdf>=0.1.1",
+  "openai>=2.5.0",
 ]
 
 [tool.coverage.run]

@@ -1,5 +1,6 @@
 # Files (pdf, parser outputs)
 sample_pdf/*
+datasets/*
 outputs
 *.pdf
 *.json
