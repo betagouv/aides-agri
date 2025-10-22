@@ -1,6 +1,9 @@
 # Files (pdf, parser outputs)
 sample_pdf/*
+<<<<<<< HEAD
 datasets/*
+=======
+>>>>>>> b491e2c (Refactor!: Replace langsmith by langfuse)
 outputs
 *.pdf
 *.json
