@@ -22,8 +22,14 @@
     ]
 },
 {
-    "url": "https://www.franceagrimer.fr/rechercher-une-aide",
+    "url": "https://agriculture.gouv.fr/mots-cles/aides",
     "target": [
+        {
+            "titre": "Versement des avances sur les aides PAC 2025 dès le 16 octobre, premier jour autorisé par l'Union européenne",
+            "description": "Dans un contexte de crise agricole et de difficultés de trésorerie dans de nombreux secteurs, Annie Genevard, ministre de l’Agriculture, de l’Agro-alimentaire et de la Souveraineté alimentaire, continue de tenir ses promesses. La ministre s’était engagée à ce que les avances sur les aides de la campagne 2025 de la PAC arrivent sur les comptes des agriculteurs au taux maximum et à compter du jeudi 16 octobre, soit dès le premier jour permis par la réglementation européenne. C’est chose faite !",
+            "date_publication": "16 octobre 2025",
+            "url_specifique": "https://agriculture.gouv.fr/versement-des-avances-sur-les-aides-pac-2025-des-le-16-octobre-premier-jour-autorise-par-lunion"
+        },
         {
             "titre": "Régimes d’aides d’État : régimes en vigueur et projets de notification ou d'information à la Commission européenne",
             "description": "Description des régimes d’aides proposés à la Commission européenne sous forme de notification ou d’exemption.",
@@ -33,13 +39,69 @@
     ]
 },
 {
-    "url": "https://www.franceagrimer.fr/rechercher-une-aide",
+    "url": "https://ain-rhone.msa.fr/lfp/soutien-exploitant",
     "target": [
         {
             "titre": "Service de remplacement",
             "description": "Structures locales employant des agents pour remplacer les exploitants agricoles en cas de besoin.",
             "date_publication": "16 mai 2024",
             "url_specifique": "https://ain-rhone.msa.fr/lfp/web/msa-ain-rhone/exploitant/service-de-remplacement"
+        }
+    ]
+},
+{
+    "url": "https://agence.eau-loire-bretagne.fr/home/bassin-loire-bretagne/nos-dossiers-enjeux-et-actions/nos-aides--accelerer-les-projets-cles.html",
+    "target": [
+                {
+            "titre_aide": "Agir pour la protection des captages",
+            "description": "Sur le bassin Loire Bretagne, un nombre croissant de territoires font face à des tensions de production et de distribution d’eau potable. Dans un contexte de dérèglement climatique entrainant une augmentation des besoins et diminution de la ressource disponible...",
+            "date": "12/03/2025",
+            "source_url": "https://agence.eau-loire-bretagne.fr/home/bassin-loire-bretagne/nos-dossiers-enjeux-et-actions/nos-aides--accelerer-les-projets-cles.html?dossierCurrentElement86744a70-1d06-483d-855b-b8e0c8b85acb=eef0448e-6ecd-4bf6-ac60-942047bc52a0"
+        }
+    ]
+},
+{
+    "url": "https://www.auvergnerhonealpes.fr/aides?f%5B0%5D=profil%3A3",
+    "target": [
+        {
+            "titre_aide": "Aide \"Recruter autrement\"",
+            "description": "Non spécifiée",
+            "date": "Non spécifiée",
+            "source_url": "https://www.auvergnerhonealpes.fr/aides/recruter-autrement-un-accompagnement-sur-mesure-pour-votre-entreprise"
+        }
+    ]
+},
+{
+    "url": "https://www.morbihan.fr/aides-et-services/rechercher-une-aide",
+    "target": [
+            {
+      "titre_aide": "Actions à caractère sanitaire et social - fonctionnement (Associations de solidarité)",
+      "description": "Aide pour le fonctionnement des associations de solidarité",
+      "date": "non disponible",
+      "source_url": "https://www.morbihan.fr/aides-et-services/actions-a-caractere-sanitaire-et-social-fonctionnement-associations-de-solidarite"
+    },
+    {
+      "titre_aide": "Actions favorisant la parentalité",
+      "description": "Aide pour les actions favorisant la parentalité",
+      "date": "non disponible",
+      "source_url": "https://www.morbihan.fr/aides-et-services/enfance-et-famille/actions-favorisant-la-parentalite"
+    }
+    ]
+},
+{
+    "url": "https://www.bretagne.bzh/aides/?mot-clef=&profil=entreprises-et-professionnels&cloture=0&showall=0",
+    "target": [
+        {
+            "titre_aide": "Langue bretonne – Stlenn –Traduction de ressources numériques",
+            "description": "Cette aide vise à soutenir les personnes morales et physiques qui ont un projet de traduction des sites, applications, logiciels, systèmes d’exploitation, interfaces embarquées les plus employés, pour inclure les brittophones dans l'économie numérique et renforcer la visibilité de la langue.",
+            "date": "Non disponible",
+            "source_url": "https://www.bretagne.bzh/aides/fiches/langue-bretonne-stlenn-traduction-de-ressources-numeriques/"
+        },
+        {
+            "titre_aide": "Expérimentations de désamiantage de toitures en cas de solarisation – PNR",
+            "description": "Cette aide vise à accompagner les propriétaires de bâtiments situés dans un Parc naturel régional pour leur permettre de réaliser les travaux de désamiantage des toitures en vue de la mise en place d'une installation solaire.",
+            "date": "Non disponible",
+            "source_url": "https://www.bretagne.bzh/aides/fiches/soutien-aux-experimentations-de-desamiantage-de-toitures-en-cas-de-solarisation-pnr/"
         }
     ]
 }

@@ -10,9 +10,11 @@ ALBERT_API_KEY = os.getenv("ALBERT_API_KEY")
 ALBERT_BASE_URL = "https://albert.api.etalab.gouv.fr/v1"
 ALBERT_MODEL = "albert-large"
 
-# LangSmith Configuration
-LANGSMITH_API_KEY = os.getenv("LANGSMITH_API_KEY", "")
-LANGSMITH_PROJECT = "agricultural-aid-monitoring"
+# Langfuse Configuration (replaces LangSmith)
+LANGFUSE_PUBLIC_KEY = os.getenv("LANGFUSE_PUBLIC_KEY", "")
+LANGFUSE_SECRET_KEY = os.getenv("LANGFUSE_SECRET_KEY", "")
+LANGFUSE_HOST = os.getenv("LANGFUSE_HOST", "https://cloud.langfuse.com")
+LANGFUSE_PROJECT = "veille-aides"
 
 # Target URLs for monitoring
 TARGET_URLS = [
@@ -38,12 +40,12 @@ MEMORY_FILE = "memory.json"
 WORKFLOW_MAX_RETRIES = 2
 WORKFLOW_RETRY_DELAY = 3
 
-def setup_langsmith():
-    """Setup LangSmith environment variables for tracing."""
-    if LANGSMITH_API_KEY:
-        os.environ["LANGCHAIN_TRACING_V2"] = "true"
-        os.environ["LANGCHAIN_ENDPOINT"] = "https://api.smith.langchain.com"
-        os.environ["LANGCHAIN_API_KEY"] = LANGSMITH_API_KEY
-        os.environ["LANGCHAIN_PROJECT"] = LANGSMITH_PROJECT
+def setup_langfuse():
+    """Setup Langfuse environment variables (used if implicit LangChain integration is desired)."""
+    if LANGFUSE_PUBLIC_KEY and LANGFUSE_SECRET_KEY:
+        # These ENV vars are only needed if using LangChain's built-in Langfuse callback handlers.
+        os.environ["LANGFUSE_PUBLIC_KEY"] = LANGFUSE_PUBLIC_KEY
+        os.environ["LANGFUSE_SECRET_KEY"] = LANGFUSE_SECRET_KEY
+        os.environ["LANGFUSE_HOST"] = LANGFUSE_HOST
         return True
     return False

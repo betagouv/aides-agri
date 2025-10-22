@@ -2,7 +2,7 @@
 
 from typing import Dict, Any, List
 from datetime import datetime
-from langchain.output_parsers import PydanticOutputParser
+from langchain_core.output_parsers import PydanticOutputParser
 
 from ..models.data_models import AideAgricole, AidesAgricolesResponse
 from ..monitoring.tracing import trace_step
@@ -45,7 +45,7 @@ class DataNormalizer:
                     
                     # Only include aids with sufficient information
                     if aide.titre_aide and aide.description:
-                        normalized_aides.append(aide.dict())
+                        normalized_aides.append(aide.model_dump())
                         
                 except Exception as e:
                     print(f"⚠️  Error normalizing aide: {e}")

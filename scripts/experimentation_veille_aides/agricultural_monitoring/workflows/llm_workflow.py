@@ -3,7 +3,7 @@
 from typing import Dict, Any, List
 from datetime import datetime
 
-from ..extractors.raw_web_extractor import RawWebContentExtractor
+from ..extractors.enhanced_extractor import EnhancedWebContentExtractor
 from ..processors.llm_processor import LLMProcessor
 from ..processors.normalizer import DataNormalizer
 from ..processors.memory_filter import MemoryBasedFilter
@@ -11,11 +11,11 @@ from ..models.data_models import AidesAgricolesResponse
 from ..monitoring.tracing import trace_step
 
 
-class AgriculturalMonitoringWorkflow:
+class LLMWorkflow:
     """Complete workflow for monitoring agricultural aids"""
     
     def __init__(self):
-        self.web_extractor = RawWebContentExtractor()
+        self.web_extractor = EnhancedWebContentExtractor()
         self.llm_processor = LLMProcessor()
         self.normalizer = DataNormalizer()
         self.memory_filter = MemoryBasedFilter(llm=self.llm_processor.llm)
@@ -33,7 +33,7 @@ class AgriculturalMonitoringWorkflow:
                 return self._create_error_result(url, "Web extraction failed", web_content.get("error", "Unknown error"))
             
             # Step 2: LLM processing
-            llm_result = self.llm_processor.process_content(web_content)
+            llm_result = self.llm_processor.process_content(web_content, article_list="")
             
             if llm_result["status"] != "success":
                 return self._create_error_result(url, "LLM processing failed", llm_result.get("error", "Unknown error"))

@@ -1,6 +1,6 @@
 """Prompt templates for the agricultural monitoring workflow."""
 
-from langchain.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 
 # Content extraction prompt for LLM processing
 CONTENT_EXTRACTION_PROMPT = ChatPromptTemplate.from_template("""
@@ -12,15 +12,15 @@ CONTENU WEB À ANALYSER:
 URL: {url}
 Titre de la page: {title}
 Contenu: {content}
+Liste non exhaustive d'articles présents dans la page : {article_list}
 
 INSTRUCTIONS:
-1. Analysez le contenu pour identifier tous les éléments qui pourraient être des aides agricoles
+1. Analysez le contenu pour identifier tous les éléments qui pourraient être des aides ou des articles.
 2. Pour chaque aide identifiée, extrayez les informations suivantes si disponibles:
    - Titre/nom de l'aide
    - Description ou résumé de l'aide
    - Date de publication ou de mise à jour
    - URL spécifique à cette aide (si différente de l'URL source)
-    - Un score de pertinence de 1 à 10 indiquant à quel point cette aide semble pertinente vis à vis des aides agricoles. Une "aide agricole" désigne toute forme de soutien financier, matériel, fiscal ou réglementaire accordée à des acteurs du secteur agricole (exploitants, coopératives, filières agroalimentaires, etc.).
 
 3. Ignorez:
    - Les éléments de navigation
@@ -37,7 +37,6 @@ Retournez un JSON avec la structure suivante:
       "description": "description courte",
       "date_publication": "date si disponible",
       "url_specifique": "URL qui pointe vers l'article. La valeur ne doit pas être identique à l'URL source.",
-      "pertinence": "score de 1-10 indiquant la pertinence comme aide agricole"
     }}
   ],
   "resume": "Résumé général du contenu analysé"

@@ -2,7 +2,7 @@
 
 import json
 import re
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 from langchain_openai import ChatOpenAI
 
 from ..utils.prompts import CONTENT_EXTRACTION_PROMPT
@@ -28,7 +28,7 @@ class LLMProcessor:
         )
     
     @trace_step("llm_content_processing")
-    def process_content(self, web_content: Dict[str, Any]) -> Dict[str, Any]:
+    def process_content(self, web_content: Dict[str, Any], article_list: List[dict]) -> Dict[str, Any]:
         """Process web content with LLM to extract agricultural aids"""
         if web_content.get("status") != "success":
             return {
@@ -48,7 +48,8 @@ class LLMProcessor:
             response = chain.invoke({
                 "url": web_content.get("url", ""),
                 "title": web_content.get("title", ""),
-                "content": content
+                "content": content,
+                "article_list": article_list
             })
             
             # Parse JSON response

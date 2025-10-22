@@ -1,3 +1,5 @@
 # Files (pdf, parser outputs)
 sample_pdf/*
 outputs
+*.pdf
+*.json

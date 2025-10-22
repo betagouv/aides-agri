@@ -21,6 +21,16 @@ class AideAgricole(BaseModel):
             }
         }
 
+class AideAgricoleLeger(BaseModel):
+    """Model for agricultural aid information"""
+    titre_aide: str = Field(..., description="Le titre de l'aide agricole.")
+    description: str = Field(..., description="Une description courte de l'aide agricole.")
+
+class AideAgricoleLegerResponse(BaseModel):
+    """Response model containing list of agricultural aids"""
+    aides: List[AideAgricoleLeger] = Field(..., description="La liste des aides trouvées.")
+    metadata: Dict[str, Any] = Field(default_factory=dict, description="Métadonnées sur l'extraction")
+
 
 class AidesAgricolesResponse(BaseModel):
     """Response model containing list of agricultural aids"""
