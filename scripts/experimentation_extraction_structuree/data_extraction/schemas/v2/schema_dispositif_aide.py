@@ -10,7 +10,6 @@ from .entities import (
     EligibiliteGeographique,
     Dates,
 )
-from ...prompts.geography_prompts import PROMPT_CARTOGRAPHIE_FRANCE
 
 class DispositifAide(BaseModel):
 

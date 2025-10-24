@@ -1,7 +1,6 @@
 from typing import List, Literal
 from pydantic import BaseModel, Field, ConfigDict
 
-from data_extraction.schemas.v1.enums.porteurs_enum import PORTEURS_ENUM
 
 class Porteur(BaseModel):
 

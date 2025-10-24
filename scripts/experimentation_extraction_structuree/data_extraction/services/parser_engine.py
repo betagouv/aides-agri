@@ -7,10 +7,10 @@ class ParserEngine():
     
     def choose_parser_for_resource(self, resource_path: str):
         if resource_path.endswith(".pdf"):
-            from data_extraction.adapters.pdf_extractors import PDFExtractor
+            from data_extraction.adapters.parsers.pdf_extractors import PDFExtractor
             return PDFExtractor()
         else:
-            from data_extraction.adapters.html_extractor import HTMLExtractor
+            from data_extraction.adapters.parsers.html_extractor import HTMLExtractor
             return HTMLExtractor()
     
     def parse_unique_resource(self, resource_path: str) -> str:

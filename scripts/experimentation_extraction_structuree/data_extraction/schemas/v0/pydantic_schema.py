@@ -1,5 +1,4 @@
-from typing import List, Literal, Set
-from datetime import datetime
+from typing import List, Literal
 from pydantic import BaseModel, Field
 
 class Porteur(BaseModel):

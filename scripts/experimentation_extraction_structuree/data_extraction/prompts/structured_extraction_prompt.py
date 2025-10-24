@@ -1,10 +1,10 @@
 from pydantic import BaseModel
 
-from ..prompts.schema_generator import (
+from .schema_generator import (
     fields_to_json
 )
 
-def build_instruction_prompt(schema: type[BaseModel] | None) -> str:
+def build_structured_extraction_prompt(schema: type[BaseModel] | None) -> str:
 
     structure = "- Utiliser les champs suivants pour structure votre réponse au format JSON. Remplacer les valeurs null par votre contenu !" + fields_to_json(schema) if schema else ""
     

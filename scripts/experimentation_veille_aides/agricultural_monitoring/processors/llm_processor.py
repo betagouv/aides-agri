@@ -9,7 +9,6 @@ from ..utils.prompts import CONTENT_EXTRACTION_PROMPT
 from ..config.settings import ALBERT_API_KEY, ALBERT_BASE_URL, ALBERT_MODEL, LLM_TEMPERATURE, LLM_MAX_TOKENS, LLM_REQUEST_TIMEOUT
 from ..monitoring.tracing import trace_step
 
-
 class LLMProcessor:
     """Processes web content using LLM to extract agricultural aid information"""
     
@@ -39,7 +38,7 @@ class LLMProcessor:
         
         try:
             # Truncate content if too long (keep first 8000 characters)
-            content = web_content.get("content", "")[:8000]
+            content = web_content.get("content", "")
             
             # Create the chain
             chain = CONTENT_EXTRACTION_PROMPT | self.llm

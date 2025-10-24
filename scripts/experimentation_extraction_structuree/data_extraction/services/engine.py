@@ -1,10 +1,10 @@
-from typing import Type, Dict, List, Optional, Literal
+from typing import Type, Dict, List
 
 from pydantic import BaseModel
 
-from data_extraction.adapters.ollama_structured_extractor import OllamaStructuredExtractor
-from data_extraction.adapters.albert_structured_extractor import AlbertStructuredExtractor
-from data_extraction.prompts.instruction_prompts import build_instruction_prompt
+from data_extraction.adapters.structured_extractors.ollama_structured_extractor import OllamaStructuredExtractor
+from data_extraction.adapters.structured_extractors.albert_structured_extractor import AlbertStructuredExtractor
+from data_extraction.prompts.structured_extraction_prompt import build_structured_extraction_prompt
 from data_extraction.core.structured_extractor import StructuredExtractor
 from data_extraction.core.structured_output import StructuredOutput
 from .parser_engine import ParserEngine
@@ -66,5 +66,5 @@ class Engine:
 
     def run(self, resource_pool: List[str], temperature: float = 0.2, **provider_kwargs) -> StructuredOutput:
         content = self.parser_engine.parse_resource_pool(resource_pool)
-        system_prompt = build_instruction_prompt(self.schema)
+        system_prompt = build_structured_extraction_prompt(self.schema)
         return self.generate(system_prompt=system_prompt, user_prompt=content, temperature=temperature, **provider_kwargs)

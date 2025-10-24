@@ -5,10 +5,12 @@ This module provides functionality to classify PDF chunks into predefined catego
 using Albert LLM with structured output.
 """
 
-from typing import List, Dict, Optional, Any
+from typing import List, Dict
 from pydantic import BaseModel, Field
-from langfuse import get_client
-from data_extraction.adapters.albert_structured_extractor import AlbertStructuredExtractor
+
+from data_extraction.adapters.structured_extractors.albert_structured_extractor import AlbertStructuredExtractor
+from data_extraction.core.chunk_classifier import ChunkClassifier
+from data_extraction.prompts.classification_prompts import CLASSIFICATION_SYSTEM_PROMPT, build_chunk_classification_user_prompt
 
 
 class Categorie(BaseModel):
@@ -16,7 +18,7 @@ class Categorie(BaseModel):
     categorie: str = Field(title="Catégorie de classification")
 
 
-class ChunkClassifier:
+class AlbertChunkClassifier(ChunkClassifier):
     """
     Classifies text chunks using Albert LLM with Langfuse prompts.
     """
@@ -42,12 +44,7 @@ class ChunkClassifier:
         self.model_name = model_name
         self.temperature = temperature
         
-        # Initialize Langfuse client and LLM
-        self.langfuse = get_client()
         self.llm = AlbertStructuredExtractor(Categorie)
-        
-        # Load prompt
-        self.prompt = self.langfuse.get_prompt(prompt_name, label=prompt_label)
     
     def classify_chunk(
         self,
@@ -69,18 +66,19 @@ class ChunkClassifier:
             Dictionary with 'categorie' key containing the classification
         """
         # Compile prompt with context
-        full_prompt = self.prompt.compile(
-            title=title,
-            previous_chunks=previous_chunks,
-            chunk=chunk,
+        system_prompt = CLASSIFICATION_SYSTEM_PROMPT
+        user_prompt = build_chunk_classification_user_prompt(
+            title=title, 
+            previous_chunks=previous_chunks, 
+            chunk=chunk, 
             next_chunks=next_chunks
         )
         
         # Get structured output from LLM
         answer = self.llm.get_structured_output(
             self.model_name,
-            system_prompt=full_prompt[0]["content"],
-            user_message=full_prompt[1]["content"],
+            system_prompt=system_prompt,
+            user_message=user_prompt,
             temperature=self.temperature
         )
         
@@ -90,7 +88,7 @@ class ChunkClassifier:
         self,
         chunks: List[Dict[str, str]],
         window_size: int = 2
-    ) -> List[Dict[str, any]]:
+    ) -> List[Dict[str, str]]:
         """
         Classify multiple chunks with context windows.
         
@@ -140,7 +138,7 @@ class ChunkClassifier:
     
     def group_by_category(
         self,
-        classified_chunks: List[Dict[str, any]]
+        classified_chunks: List[Dict[str, str]]
     ) -> Dict[str, List[Dict[str, str]]]:
         """
         Group classified chunks by their category.

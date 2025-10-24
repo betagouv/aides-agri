@@ -69,24 +69,14 @@ class WebAgentProcessor:
 
             # Run the agent
             history = await self.agent.run(max_steps=5)
-            result = history.final_result()
+            result = history.structured_output.model_dump()
 
-            # Parse JSON response
-            try:
-                result = json.loads(str(result))
-            except json.JSONDecodeError:
-                # Fallback: try to extract JSON from response
-                json_match = re.search(r'\{.*\}', str(result), re.DOTALL)
-                if json_match:
-                    result = json.loads(json_match.group())
-                else:
-                    result = {"aides_identifiees": [], "resume": "Erreur de parsing JSON"}
-            
             return {
                 "status": "success",
-                **result
+                "aides_identifiees": result["aides"],
+                "resume": ""
             }
-                
+
         except Exception as e:
             print(f"❌ Error in web agent extraction: {e}")
             return {
@@ -162,19 +152,14 @@ class WebAgentStandaloneProcessor:
             result = history.final_result()
 
                         # Parse JSON response
-            try:
-                result = json.loads(str(result))
-            except json.JSONDecodeError:
-                # Fallback: try to extract JSON from response
-                json_match = re.search(r'\{.*\}', str(result), re.DOTALL)
-                if json_match:
-                    result = json.loads(json_match.group())
-                else:
-                    result = {"aides_identifiees": [], "resume": "Erreur de parsing JSON"}
-            
+            # Run the agent
+            history = await self.agent.run(max_steps=5)
+            result = history.structured_output.model_dump()
+
             return {
                 "status": "success",
-                **result
+                "aides_identifiees": result["aides"],
+                "resume": ""
             }
                 
         except Exception as e:

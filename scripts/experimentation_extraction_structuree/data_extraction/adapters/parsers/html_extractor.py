@@ -1,7 +1,3 @@
-import io
-import re
-import requests
-from abc import abstractmethod
 from typing import Optional, Dict, Type
 
 from trafilatura import fetch_url, extract

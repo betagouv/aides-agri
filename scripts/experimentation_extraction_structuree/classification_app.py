@@ -8,8 +8,10 @@ hierarchical structure, and classifies each chunk into predefined categories.
 import os
 import streamlit as st
 from dotenv import load_dotenv
-from pdf_chunker import HierarchicalPDFChunker
-from chunk_classifier import ChunkClassifier
+
+# Unified pipeline imports
+from data_extraction.adapters.chunk_classifier import AlbertChunkClassifier
+from data_extraction.services.parser_aide import ParserAide
 
 # Load environment variables
 load_dotenv()
@@ -64,8 +66,13 @@ if 'chunks' not in st.session_state:
     st.session_state.chunks = None
 if 'classified_chunks' not in st.session_state:
     st.session_state.classified_chunks = None
+if 'grouped_chunks' not in st.session_state:
+    st.session_state.grouped_chunks = None
 if 'processing' not in st.session_state:
     st.session_state.processing = False
+# Legacy placeholder removed: full_markdown not required with ParserAide pipeline
+if 'extracted_data' not in st.session_state:
+    st.session_state.extracted_data = None
 
 # Sidebar configuration
 with st.sidebar:
@@ -74,25 +81,16 @@ with st.sidebar:
     st.subheader("Modèle Albert")
     model_name = st.selectbox(
         "Modèle",
-        ["albert-small", "albert-large"],
+        ["albert-small", "albert-large", "albert-code"],
         help="Choisissez le modèle Albert à utiliser pour la classification"
-    )
-    
-    temperature = st.slider(
-        "Température",
-        min_value=0.0,
-        max_value=1.0,
-        value=0.2,
-        step=0.1,
-        help="Température pour la génération (0 = déterministe, 1 = créatif)"
     )
     
     window_size = st.slider(
         "Taille de la fenêtre contextuelle",
-        min_value=1,
+        min_value=0,
         max_value=5,
         value=2,
-        help="Nombre de chunks avant/après à utiliser comme contexte"
+        help="Nombre de chunks autour utilisés comme contexte pour la classification"
     )
     
     st.markdown("---")
@@ -105,7 +103,7 @@ with st.sidebar:
     """)
 
 # Main content area
-tab1, tab2, tab3 = st.tabs(["📤 Upload & Traitement", "🔍 Résultats Détaillés", "📊 Vue par Catégorie"])
+tab1, tab2, tab3, tab4 = st.tabs(["📤 Upload & Traitement", "🔍 Résultats Détaillés", "📊 Vue par Catégorie", "📋 Extraction Structurée"])
 
 with tab1:
     st.header("Upload de PDF")
@@ -135,81 +133,56 @@ with tab1:
                 st.session_state.processing = True
                 
                 try:
-                    with st.spinner("📖 Parsing du PDF et découpage en chunks..."):
-                        # Initialize chunker
-                        chunker = HierarchicalPDFChunker()
-                        
-                        # Chunk the PDF
-                        chunks = chunker.chunk_file(temp_path)
-                        st.session_state.chunks = chunks
-                        
-                        st.info(f"✂️ {len(chunks)} chunks extraits du document")
-                    
-                    with st.spinner("🤖 Classification des chunks avec Albert LLM..."):
-                        # Initialize classifier
-                        classifier = ChunkClassifier(
-                            model_name=model_name,
-                            temperature=temperature
+                    # Initialisation pipeline
+                    classifier = AlbertChunkClassifier(model_name=model_name, temperature=0)
+                    parser = ParserAide(chunk_classifier=classifier, model_name=model_name)
+
+                    # Chunking first (to know total upfront)
+                    with st.spinner("📖 Découpage du PDF en chunks..."):
+                        raw_chunks = parser.chunker.chunk_file(temp_path)
+                        st.session_state.chunks = raw_chunks
+                        st.info(f"✂️ {len(raw_chunks)} chunks extraits du document")
+
+                    # Progress classification
+                    progress_bar = st.progress(0)
+                    status_text = st.empty()
+
+                    def update_progress(done: int, total: int):
+                        status_text.text(f"Classification du chunk {done}/{total}...")
+                        progress_bar.progress(done / total if total else 0)
+
+                    with st.spinner("🤖 Classification des chunks..."):
+                        grouped_chunks, classified_chunks = parser.classify_chunks_with_progress(
+                            temp_path,
+                            window_size=window_size,
+                            progress_callback=update_progress
                         )
-                        
-                        # Classify chunks with progress bar
-                        progress_bar = st.progress(0)
-                        status_text = st.empty()
-                        
-                        classified_chunks = []
-                        for i, chunk_obj in enumerate(chunks):
-                            # Get context
-                            if i == 0:
-                                prev_chunks = "No chunk is available."
-                            else:
-                                start_idx = max(0, i - window_size)
-                                prev = chunks[start_idx:i]
-                                prev_chunks = "\n\n".join([c['content'] for c in prev])
-                            
-                            if i >= len(chunks) - 1:
-                                next_chunks = "No chunk is available."
-                            else:
-                                end_idx = min(len(chunks), i + 1 + window_size)
-                                next = chunks[i + 1:end_idx]
-                                next_chunks = "\n\n".join([c['content'] for c in next])
-                            
-                            # Classify
-                            status_text.text(f"Classification du chunk {i+1}/{len(chunks)}...")
-                            classification = classifier.classify_chunk(
-                                chunk=chunk_obj['content'],
-                                title=chunk_obj['title'],
-                                previous_chunks=prev_chunks,
-                                next_chunks=next_chunks
-                            )
-                            
-                            classified_chunks.append({
-                                'title': chunk_obj['title'],
-                                'content': chunk_obj['content'],
-                                'categorie': classification['categorie']
-                            })
-                            
-                            # Update progress
-                            progress_bar.progress((i + 1) / len(chunks))
-                        
-                        st.session_state.classified_chunks = classified_chunks
-                        status_text.empty()
-                        progress_bar.empty()
-                        
-                        st.success(f"✅ Classification terminée ! {len(classified_chunks)} chunks classifiés")
-                    
+                    status_text.empty()
+                    progress_bar.empty()
+                    st.success(f"✅ Classification terminée : {len(classified_chunks)} chunks classifiés")
+
+                    # Structured extraction
+                    with st.spinner("🔍 Extraction structurée..."):
+                        extracted_json = parser.extract_structured(temp_path)
+                    st.success("✅ Extraction structurée terminée")
+
+                    # Persist state
+                    st.session_state.classified_chunks = classified_chunks
+                    st.session_state.extracted_data = extracted_json
+                    st.session_state.grouped_chunks = grouped_chunks
+                    st.session_state.chunks = [
+                        {k: v for k, v in c.items() if k in ("title", "content", "categorie")}
+                        for c in classified_chunks
+                    ]
+
                     st.session_state.processing = False
-                    
-                    # Show summary
+
+                    # Résumé par catégorie
                     st.markdown("### 📊 Résumé")
-                    grouped = classifier.group_by_category(classified_chunks)
-                    
-                    cols = st.columns(min(len(grouped), 4))
-                    for idx, (category, chunks_in_cat) in enumerate(grouped.items()):
+                    cols = st.columns(min(len(grouped_chunks), 4))
+                    for idx, (category, chunks_in_cat) in enumerate(grouped_chunks.items()):
                         with cols[idx % 4]:
-                            st.metric(
-                                label=category,
-                                value=len(chunks_in_cat)
-                            )
+                            st.metric(label=category, value=len(chunks_in_cat))
                     
                 except Exception as e:
                     st.error(f"❌ Erreur lors du traitement : {str(e)}")
@@ -246,13 +219,10 @@ with tab2:
 with tab3:
     st.header("Vue par Catégorie")
     
-    if st.session_state.classified_chunks is None:
+    if st.session_state.grouped_chunks is None:
         st.info("👆 Uploadez et analysez un PDF dans l'onglet 'Upload & Traitement' pour voir les résultats")
     else:
-        # Group by category
-        classifier_temp = ChunkClassifier()
-        grouped = classifier_temp.group_by_category(st.session_state.classified_chunks)
-        
+        grouped = st.session_state.grouped_chunks or {}
         # Display chunks grouped by category
         for category, chunks_in_cat in sorted(grouped.items()):
             st.markdown(f"### 📁 {category.upper()} ({len(chunks_in_cat)} chunks)")
@@ -262,6 +232,62 @@ with tab3:
                     st.markdown(chunk['content'])
             
             st.markdown("---")
+
+with tab4:
+    st.header("Extraction Structurée")
+    
+    if st.session_state.extracted_data is None:
+        st.info("👆 Uploadez et analysez un PDF dans l'onglet 'Upload & Traitement' pour voir les données extraites")
+    else:
+        st.markdown("### 📋 Informations extraites du document")
+        
+        # Display extracted data
+        extracted_data = st.session_state.extracted_data
+        
+        # Dates section
+        st.markdown("#### 📅 Dates")
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("**Date d'ouverture**")
+            date_ouverture = extracted_data.get('dates', {}).get('date_ouverture', 'Non renseignée')
+            st.info(date_ouverture if date_ouverture else 'Non renseignée')
+        
+        with col2:
+            st.markdown("**Date de clôture**")
+            date_cloture = extracted_data.get('dates', {}).get('date_cloture', 'Non renseignée')
+            st.info(date_cloture if date_cloture else 'Non renseignée')
+        
+        st.markdown("---")
+        
+        # Geography section
+        st.markdown("#### 🗺️ Zones géographiques")
+        
+        # Eligible zones
+        st.markdown("**Zones éligibles**")
+        zones_eligibles = extracted_data.get('eligibilite_geographique', {}).get('zones_eligibles', [])
+        if zones_eligibles:
+            for zone in zones_eligibles:
+                st.success(f"✓ {zone}")
+        else:
+            st.info("Aucune zone éligible spécifiée")
+        
+        st.markdown("")
+        
+        # Excluded zones
+        st.markdown("**Zones exclues**")
+        zones_exclues = extracted_data.get('eligibilite_geographique', {}).get('zones_exclues', [])
+        if zones_exclues:
+            for zone in zones_exclues:
+                st.error(f"✗ {zone}")
+        else:
+            st.info("Aucune zone exclue spécifiée")
+        
+        st.markdown("---")
+        
+        # JSON view
+        with st.expander("🔍 Voir les données brutes (JSON)"):
+            st.json(extracted_data)
 
 # Footer
 st.markdown("---")

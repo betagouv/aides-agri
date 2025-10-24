@@ -1,7 +1,6 @@
 import io
 import re
 import requests
-from abc import abstractmethod
 from typing import Optional, Dict, Type
 
 from pypdf import PdfReader

@@ -39,8 +39,12 @@ class AgentWorkflow:
             if llm_result["status"] != "success":
                 return self._create_error_result(url, "LLM processing failed", llm_result.get("error", "Unknown error"))
             
+            # Step 3: Data normalization
+            normalized_result = self.normalizer.normalize_data(llm_result, url)
+            if normalized_result["metadata"]["status"] != "success":
+                return self._create_error_result(url, "Normalization failed", normalized_result["metadata"].get("error", "Unknown error"))
             # Step 4: Memory filtering
-            memory_result = self.memory_filter.filter_with_llm_memory(llm_result["aides"], url)
+            memory_result = self.memory_filter.filter_with_llm_memory(normalized_result["aides"], url)
             
             return {
                 "llm_extraction": llm_result,

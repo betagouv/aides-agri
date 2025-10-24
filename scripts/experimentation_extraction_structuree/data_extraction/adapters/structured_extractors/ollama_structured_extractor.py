@@ -2,7 +2,6 @@ from typing import Type
 from pydantic import BaseModel
 
 from ollama import chat, ChatResponse
-from codecarbon import EmissionsTracker
 
 from data_extraction.core.structured_extractor import StructuredExtractor
 from data_extraction.core.structured_output import StructuredOutput
@@ -25,11 +24,6 @@ class OllamaStructuredExtractor(StructuredExtractor):
 
   def __init__(self, pydantic_schema: Type[BaseModel]):
     super().__init__(pydantic_schema)
-    self.tracker = EmissionsTracker(
-        measure_power_secs=1,  # How often to sample power (seconds)
-        save_to_file=False,      # Don't create CSV file
-        save_to_api=False,       # Don't save to CodeCarbon API
-    )
 
   def generate(self, model_name, system_prompt, user_message, **kwargs) -> ChatResponse:
     raw_response = chat(
@@ -62,9 +56,6 @@ class OllamaStructuredExtractor(StructuredExtractor):
     
     merged_options = {**default_options, **kwargs}
 
-    self.tracker.start()
     raw_response = self.generate(model_name, system_prompt, user_message, **merged_options)
 
-    carbon: float | None = self.tracker.stop()
-
-    return OllamaStructuredOutput(raw_response, carbon, self.pydantic_schema)
+    return OllamaStructuredOutput(raw_response, 0, self.pydantic_schema)
