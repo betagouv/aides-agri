@@ -591,16 +591,16 @@ wheels = [
 
 [[package]]
 name = "mjml-python"
-version = "1.3.6"
+version = "1.3.7"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/dc/9d/2da7771b0e5f45d9bbeb554562859d3dcd042a100f3ad8d245d48a1ed8e5/mjml_python-1.3.6-cp37-abi3-macosx_10_12_x86_64.whl", hash = "sha256:adf7e6e081fc3c243ea02b24c9b92f4410f698240091225a0aad60e9fd826e47", size = 556709, upload-time = "2025-09-16T11:17:35.28Z" },
-    { url = "https://files.pythonhosted.org/packages/df/e5/d6f085c1410173ec26b921985054bb3b8bf7275bea9b74904de1c19a47ff/mjml_python-1.3.6-cp37-abi3-macosx_11_0_arm64.whl", hash = "sha256:b5a9cf4ef39018f0b417a0976fa1ac306ff08eff6c0d98e989eda25aca3b94b2", size = 531907, upload-time = "2025-09-16T11:17:36.854Z" },
-    { url = "https://files.pythonhosted.org/packages/b4/fa/4589093eadf54f3417c35af14ec14d8c262730e13e3b070a4e32fae28808/mjml_python-1.3.6-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:31dfa2cba779bef42dc4ea42c41a63ad8e30ae4fbb9949f3ea91b89a99a86f49", size = 585078, upload-time = "2025-09-16T11:17:38.266Z" },
-    { url = "https://files.pythonhosted.org/packages/d9/18/e9bce030b54482f4284d9cf1e23df412d2b01d10f44f06e3770128ce2eec/mjml_python-1.3.6-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:36bf8fcee7354bf227a8a81ba90c795fc3631ee10f7c546022475b365fcfe646", size = 601640, upload-time = "2025-09-16T11:17:39.687Z" },
-    { url = "https://files.pythonhosted.org/packages/94/3b/9792631d4b73e5459fa7f0f14ab837396504a87ffcd064f52030f57b09b4/mjml_python-1.3.6-cp37-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:a0111425459d2495af3a2d178d4532043a488477423c1f90e2b71158f7d7857c", size = 762659, upload-time = "2025-09-16T11:17:40.865Z" },
-    { url = "https://files.pythonhosted.org/packages/4f/92/0e1c1e1fc250e6c1023899b503264be62ec7cd876a931cd0c89ebe563b33/mjml_python-1.3.6-cp37-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:e9ea68a44741f04038dd1fe7d28b78afe8147b0ead07f19ac7b6cc631e6fa1b9", size = 679982, upload-time = "2025-09-16T11:17:42.28Z" },
-    { url = "https://files.pythonhosted.org/packages/b7/2b/a98d1258fa411c46e54b77b40a4da89b066f95bc7696a547da7e4d4e7f1e/mjml_python-1.3.6-cp37-abi3-win_amd64.whl", hash = "sha256:8c964224df9b71a5e42009a8a44d1082bcbf0d5ef89a62e78ff3e43c9834afc4", size = 422358, upload-time = "2025-09-16T11:17:44.298Z" },
+    { url = "https://files.pythonhosted.org/packages/b9/94/78e36181eab438754a86a84140325c13916e32195fcf9292f8a921d34547/mjml_python-1.3.7-cp37-abi3-macosx_10_12_x86_64.whl", hash = "sha256:3438176332bf18a3869dadba2dd2c5864a9f6c35ce37f91d514fb6b90b5bf078", size = 559558, upload-time = "2025-11-01T00:03:40.121Z" },
+    { url = "https://files.pythonhosted.org/packages/d9/ce/5651d7e491645c7c9ceb116ec9d6a4cb2f58430cb9bc2047095aaa3cbf1e/mjml_python-1.3.7-cp37-abi3-macosx_11_0_arm64.whl", hash = "sha256:4b14863717463d4525e4ada60b9903ce8407e9406735ce6c1de0cb1295f91b2a", size = 534316, upload-time = "2025-11-01T00:03:41.684Z" },
+    { url = "https://files.pythonhosted.org/packages/87/47/e4a157b144431a4c21b4e74051b60aa04ab4ea68f0c8880178d5efe8044b/mjml_python-1.3.7-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f3aaa5703bf446336e1335c3c10b949c38e8b42fa801adb552c09ca922885e9e", size = 585588, upload-time = "2025-11-01T00:03:42.957Z" },
+    { url = "https://files.pythonhosted.org/packages/4b/c3/13ef13298fb00b722ba462ed06423399de43e2771fd2e34c30dfa4424706/mjml_python-1.3.7-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3e60789e2e428181c403145ee7d245b7fdd27b03217a71185dcd85701d5ff559", size = 602967, upload-time = "2025-11-01T00:03:44.122Z" },
+    { url = "https://files.pythonhosted.org/packages/13/99/0fb42d473d264dab23d74af74ff3d783c0ffe1da0c307097926d83b1b89c/mjml_python-1.3.7-cp37-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:bbdf9b12d486bee1a4f723cd38acf2cd5113a1170322ede0fdaa59575f5ab69b", size = 765458, upload-time = "2025-11-01T00:03:45.461Z" },
+    { url = "https://files.pythonhosted.org/packages/22/9d/0a579cd5d79eee11b6df6daf90bc013cdc25d6cd41b675efafb67ea9c7c3/mjml_python-1.3.7-cp37-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:ce2511cd93b61f82c2f005b49045517e2d989064a30dc93f3b973ab04b7e7c3c", size = 682776, upload-time = "2025-11-01T00:03:46.756Z" },
+    { url = "https://files.pythonhosted.org/packages/aa/a9/d461e5be6e31bc71b1d3f2b0dbcc16d81a02ccabab6cf77ba83d60824439/mjml_python-1.3.7-cp37-abi3-win_amd64.whl", hash = "sha256:c7308410451f86d535069e29a3179fd7f8daf19d663b565ffa4560e9f2081d93", size = 425312, upload-time = "2025-11-01T00:03:48.261Z" },
 ]
 
 [[package]]
