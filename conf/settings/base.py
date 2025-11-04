@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "django_tasks.backends.database",
     "pgtrigger",
     "reversion",
+    "importmap",
     "two_factor",
     "widget_tweaks",
     "dsfr",
