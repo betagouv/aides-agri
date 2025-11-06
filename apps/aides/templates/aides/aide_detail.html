@@ -103,10 +103,10 @@ document.onreadystatechange = evt => {
             <h3 class="fr-text--bold fr-text--md">Effectifs salariés :</h3>
             <ul>
             {% if object.eligibilite_effectif_min %}
-              <li>Au moins {{ object.eligibilite_effectif_min }}</li>
+              <li>Minimum {{ object.eligibilite_effectif_min }}</li>
             {% endif %}
             {% if object.eligibilite_effectif_max %}
-              <li>Au plus {{ object.eligibilite_effectif_max }}</li>
+              <li>Maximum {{ object.eligibilite_effectif_max }}</li>
             {% endif %}
             </ul>
           {% endif %}
