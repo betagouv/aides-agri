@@ -62,6 +62,7 @@ Liste que je vais tenter de garder à jour :
 - [django-dsfr](https://pypi.org/project/django-dsfr/) : intégration du DSFR avec Django
 - [django-anymail](https://pypi.org/project/django-anymail) : envoi de courriels via Brevo sans complexité
 - [django-csp](https://pypi.org/project/django-csp/) : sécurisation des ressources demandées par les pages web
+- [dj-importmap](https://pypi.org/project/dj-importmap) : automatisation de la construction de l’élément `<importmap>`
 - [django-two-factor-auth](https://pypi.org/project/django-two-factor-auth/) : second facteur d’authentification pour l’interface d’admin
 - [django-pgtrigger](https://pypi.org/project/django-pgtrigger/) : gestion d’un TTL sur des valeurs écrites dans PostgreSQL, pour un système de verrou
 - [django-reversion](https://pypi.org/project/django-reversion/) : historisation des modifications apportées aux aides via l’interface d’admin
