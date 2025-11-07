@@ -7,7 +7,7 @@ from aides.models import Aide
 @pytest.mark.django_db
 class TestAide:
     @pytest.mark.parametrize(
-        "organisme__is_masa,type_aide__score_priorite_aides,theme__is_prioritaire,sujet__with_given_theme,aide__organisme,aide__with_given_type,aide__with_given_sujet,aide__importance,aide__urgence,aide__enveloppe_globale,aide__demande_du_pourvoyeur,aide__taille_cible_potentielle,aide__is_meconnue,aide__is_filiere_sous_representee,expected",
+        "organisme__is_masa,type_aide__score_priorite_aides,theme__is_prioritaire,sujet__with_given_theme,aide__organisme,aide__with_given_type,aide__with_given_sujet,aide__importance,aide__urgence,aide__enveloppe_globale,aide__demande_du_pourvoyeur,aide__taille_cible_potentielle,aide__is_meconnue,aide__is_filiere_sous_representee,aide__is_territoire_en_deploiement,expected",
         [
             [
                 True,
@@ -24,7 +24,8 @@ class TestAide:
                 5000,
                 True,
                 True,
-                557.5,
+                True,
+                587.5,
             ],
         ],
     )

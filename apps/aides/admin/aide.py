@@ -109,6 +109,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         "raw_data",
         "date_created",
         "date_modified",
+        "first_published_at",
         "last_published_at",
         "priority",
     ]
@@ -127,8 +128,14 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                 "fields": [
                     ("source", "integration_method"),
                     ("priority", "date_target_publication"),
-                    ("date_created", "date_modified", "last_published_at"),
+                    (
+                        "date_created",
+                        "date_modified",
+                        "first_published_at",
+                        "last_published_at",
+                    ),
                     ("status", "assigned_to", "cc_to"),
+                    "bureau_valideur",
                     "raison_desactivation",
                     "internal_comments",
                 ],
@@ -139,7 +146,11 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             {
                 "classes": ["collapse"],
                 "fields": [
-                    ("importance", "demande_du_pourvoyeur"),
+                    (
+                        "importance",
+                        "demande_du_pourvoyeur",
+                        "is_territoire_en_deploiement",
+                    ),
                     ("urgence", "enveloppe_globale", "taille_cible_potentielle"),
                     "is_meconnue",
                 ],
@@ -165,6 +176,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                     "types",
                     "organismes_secondaires",
                     "programmes",
+                    "base_juridique",
                     "aap_ami",
                     ("beneficiaires", "filieres"),
                     ("montant", "participation_agriculteur"),
@@ -295,6 +307,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                             ("priority", "date_target_publication"),
                             ("status", "assigned_to"),
                             "internal_comments",
+                            "bureau_valideur",
                         ],
                     },
                 ),
@@ -303,7 +316,11 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                     {
                         "classes": ["collapse"],
                         "fields": [
-                            ("importance", "demande_du_pourvoyeur"),
+                            (
+                                "importance",
+                                "demande_du_pourvoyeur",
+                                "is_territoire_en_deploiement",
+                            ),
                             (
                                 "urgence",
                                 "enveloppe_globale",

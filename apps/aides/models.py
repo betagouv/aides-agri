@@ -453,6 +453,9 @@ class Aide(models.Model):
         settings.AUTH_USER_MODEL, blank=True, verbose_name="CC", related_name="aides_cc"
     )
     priority = models.PositiveSmallIntegerField(default=1, verbose_name="Priorité")
+    is_territoire_en_deploiement = models.BooleanField(
+        default=False, verbose_name="Territoire en déploiement"
+    )
     date_target_publication = models.DateField(
         null=True, blank=True, verbose_name="Date cible de publication"
     )
@@ -474,11 +477,17 @@ class Aide(models.Model):
         default="",
         verbose_name="Raison de la désactivation",
     )
+    bureau_valideur = models.CharField(
+        blank=True, default="", verbose_name="Bureau valideur"
+    )
     internal_comments = models.TextField(
         blank=True, default="", verbose_name="Commentaires internes"
     )
+    first_published_at = models.DateTimeField(
+        null=True, editable=False, verbose_name="Date de première publication"
+    )
     last_published_at = models.DateTimeField(
-        null=True, editable=False, verbose_name="Date de publication"
+        null=True, editable=False, verbose_name="Date de dernière mise à jour publiée"
     )
     slug = models.SlugField(max_length=2000, verbose_name="Slug")
     nom = models.CharField(verbose_name="Nom")
@@ -544,6 +553,9 @@ class Aide(models.Model):
     )
     programmes = models.ManyToManyField(
         Programme, related_name="aides", blank=True, verbose_name="Programmes"
+    )
+    base_juridique = models.CharField(
+        blank=True, default="", verbose_name="Base juridique"
     )
     aap_ami = models.BooleanField(
         default=False, verbose_name="Appel à projet ou manifestation d'intérêt"
@@ -665,6 +677,8 @@ class Aide(models.Model):
                 for theme in sujet.themes.all():
                     if theme.is_prioritaire:
                         priority += 10 * 4
+        if self.is_territoire_en_deploiement:
+            priority += 30
         if self.is_meconnue:
             priority += 10
         if self.is_filiere_sous_representee:
@@ -676,6 +690,10 @@ class Aide(models.Model):
         if not self.slug:
             self.slug = f"{slugify(self.organisme.nom) if self.organisme_id else 'organisme-inconnu'}-{slugify(self.nom)}"
         if self.is_published:
+            if not Aide.objects.filter(
+                pk=self.pk, status=Aide.Status.PUBLISHED
+            ).exists():
+                self.first_published_at = now()
             self.last_published_at = now()
         self.compute_priority()
         super().save(*args, **kwargs)
