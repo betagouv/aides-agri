@@ -176,6 +176,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                     "types",
                     "organismes_secondaires",
                     "programmes",
+                    "base_juridique",
                     "aap_ami",
                     ("beneficiaires", "filieres"),
                     ("montant", "participation_agriculteur"),

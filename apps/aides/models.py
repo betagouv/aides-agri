@@ -554,6 +554,9 @@ class Aide(models.Model):
     programmes = models.ManyToManyField(
         Programme, related_name="aides", blank=True, verbose_name="Programmes"
     )
+    base_juridique = models.CharField(
+        blank=True, default="", verbose_name="Base juridique"
+    )
     aap_ami = models.BooleanField(
         default=False, verbose_name="Appel à projet ou manifestation d'intérêt"
     )
