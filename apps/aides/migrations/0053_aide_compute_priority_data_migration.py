@@ -2,10 +2,9 @@
 
 from django.db import migrations
 
-from ..models import Aide
 
-
-def data_migration(*args):
+def data_migration(apps, schema_editor):
+    Aide = apps.get_model("aides", "Aide")
     for aide in Aide.objects.all():
         aide.compute_priority()
         aide.save()

@@ -76,6 +76,7 @@ class AideFactory(factory.django.DjangoModelFactory):
     taille_cible_potentielle = 0
     is_meconnue = False
     is_filiere_sous_representee = False
+    is_territoire_en_deploiement = False
 
     @factory.post_generation
     def with_given_type(obj, create, value, **kwargs):

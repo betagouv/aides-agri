@@ -453,6 +453,9 @@ class Aide(models.Model):
         settings.AUTH_USER_MODEL, blank=True, verbose_name="CC", related_name="aides_cc"
     )
     priority = models.PositiveSmallIntegerField(default=1, verbose_name="Priorité")
+    is_territoire_en_deploiement = models.BooleanField(
+        default=False, verbose_name="Territoire en déploiement"
+    )
     date_target_publication = models.DateField(
         null=True, blank=True, verbose_name="Date cible de publication"
     )
@@ -665,6 +668,8 @@ class Aide(models.Model):
                 for theme in sujet.themes.all():
                     if theme.is_prioritaire:
                         priority += 10 * 4
+        if self.is_territoire_en_deploiement:
+            priority += 30
         if self.is_meconnue:
             priority += 10
         if self.is_filiere_sous_representee:

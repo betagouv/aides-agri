@@ -139,7 +139,11 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             {
                 "classes": ["collapse"],
                 "fields": [
-                    ("importance", "demande_du_pourvoyeur"),
+                    (
+                        "importance",
+                        "demande_du_pourvoyeur",
+                        "is_territoire_en_deploiement",
+                    ),
                     ("urgence", "enveloppe_globale", "taille_cible_potentielle"),
                     "is_meconnue",
                 ],
@@ -303,7 +307,11 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                     {
                         "classes": ["collapse"],
                         "fields": [
-                            ("importance", "demande_du_pourvoyeur"),
+                            (
+                                "importance",
+                                "demande_du_pourvoyeur",
+                                "is_territoire_en_deploiement",
+                            ),
                             (
                                 "urgence",
                                 "enveloppe_globale",
