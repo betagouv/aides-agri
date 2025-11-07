@@ -109,6 +109,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         "raw_data",
         "date_created",
         "date_modified",
+        "first_published_at",
         "last_published_at",
         "priority",
     ]
@@ -127,7 +128,12 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                 "fields": [
                     ("source", "integration_method"),
                     ("priority", "date_target_publication"),
-                    ("date_created", "date_modified", "last_published_at"),
+                    (
+                        "date_created",
+                        "date_modified",
+                        "first_published_at",
+                        "last_published_at",
+                    ),
                     ("status", "assigned_to", "cc_to"),
                     "raison_desactivation",
                     "internal_comments",

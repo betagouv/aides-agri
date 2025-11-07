@@ -480,8 +480,11 @@ class Aide(models.Model):
     internal_comments = models.TextField(
         blank=True, default="", verbose_name="Commentaires internes"
     )
+    first_published_at = models.DateTimeField(
+        null=True, editable=False, verbose_name="Date de première publication"
+    )
     last_published_at = models.DateTimeField(
-        null=True, editable=False, verbose_name="Date de publication"
+        null=True, editable=False, verbose_name="Date de dernière mise à jour publiée"
     )
     slug = models.SlugField(max_length=2000, verbose_name="Slug")
     nom = models.CharField(verbose_name="Nom")
@@ -681,6 +684,10 @@ class Aide(models.Model):
         if not self.slug:
             self.slug = f"{slugify(self.organisme.nom) if self.organisme_id else 'organisme-inconnu'}-{slugify(self.nom)}"
         if self.is_published:
+            if not Aide.objects.filter(
+                pk=self.pk, status=Aide.Status.PUBLISHED
+            ).exists():
+                self.first_published_at = now()
             self.last_published_at = now()
         self.compute_priority()
         super().save(*args, **kwargs)
