@@ -477,6 +477,9 @@ class Aide(models.Model):
         default="",
         verbose_name="Raison de la désactivation",
     )
+    bureau_valideur = models.CharField(
+        blank=True, default="", verbose_name="Bureau valideur"
+    )
     internal_comments = models.TextField(
         blank=True, default="", verbose_name="Commentaires internes"
     )
