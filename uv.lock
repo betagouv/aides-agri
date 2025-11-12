@@ -272,14 +272,14 @@ wheels = [
 
 [[package]]
 name = "django-admin-extra-buttons"
-version = "2.1.1"
+version = "2.1.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django-stubs" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/26/5f/ed95a22ea69fdb661896f42bc2d3343685e5126c8206464004c674d5ac3f/django_admin_extra_buttons-2.1.1.tar.gz", hash = "sha256:3c9e5cdcf05c7c8003748c07960a56bb77c46a85a9bef2714777a715397f3288", size = 12903, upload-time = "2025-05-20T11:43:51.339Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ad/dd/81a2f884728b83679f014d09b0b82a445aaed200ca5530d4e7bc06c4fdac/django_admin_extra_buttons-2.1.2.tar.gz", hash = "sha256:52e77691165019542d7cabc7bf7c26bdc957401c372ef80d3d2cd97c4221cf2f", size = 13351, upload-time = "2025-11-10T19:53:05.522Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/18/8f/db79e3fc78e5ac4972d760d43fedf99ad4bf7ed410031c6de0c72b237c41/django_admin_extra_buttons-2.1.1-py3-none-any.whl", hash = "sha256:4ebd96d67c1992d8d81ed6816545a9035007e00dec64b58bbd73f3ac3999e7e6", size = 21748, upload-time = "2025-05-20T11:43:48.745Z" },
+    { url = "https://files.pythonhosted.org/packages/47/d9/01a949c7a6e41a0bc08dc3017a9ef86942fa86fee7590eb94d2b247a0338/django_admin_extra_buttons-2.1.2-py3-none-any.whl", hash = "sha256:4975ba0b8d52427ea1e0b760f426cee8521ec14c300e1f8394023e727056750b", size = 22205, upload-time = "2025-11-10T19:53:04.385Z" },
 ]
 
 [[package]]
