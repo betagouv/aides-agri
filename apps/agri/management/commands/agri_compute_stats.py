@@ -14,9 +14,13 @@ from ...siret import mapping_effectif
 
 
 class Command(BaseCommand):
-    def handle(self, *args, **options):
-        for_date = date.today()
+    def _get_matomo_api_url(self, method: str):
+        return f"https://stats.beta.gouv.fr/index.php?module=API&method={method}&idSite={settings.MATOMO_SITE_ID}&period=week&date=last1&format=JSON&force_api_session=1"
 
+    def _get_last_week_interval(self) -> str:
+        return f"{self.last_monday.strftime('%Y-%m-%d')},{self.next_sunday.strftime('%Y-%m-%d')}"
+
+    def compute_page_views_stats(self):
         to_create = []
 
         chosen_themes = defaultdict(int)
@@ -35,16 +39,12 @@ class Command(BaseCommand):
         groupements_by_id = GroupementProducteurs.objects.in_bulk()
 
         r = requests.post(
-            f"https://stats.beta.gouv.fr/index.php?module=API&method=Actions.getPageUrls&idSite={settings.MATOMO_SITE_ID}&period=week&date=last1&format=JSON&force_api_session=1",
+            self._get_matomo_api_url("Actions.getPageUrls"),
             data={"token_auth": settings.AGRI_MATOMO_API_KEY},
             timeout=60,
         )
         r.raise_for_status()
-        last_monday = for_date - timedelta(days=for_date.weekday())
-        next_sunday = last_monday + timedelta(days=6)
-        for result in r.json()[
-            f"{last_monday.strftime('%Y-%m-%d')},{next_sunday.strftime('%Y-%m-%d')}"
-        ]:
+        for result in r.json()[self._get_last_week_interval()]:
             if "url" not in result:
                 continue
             parsed_url = urlparse(result["url"])
@@ -80,7 +80,7 @@ class Command(BaseCommand):
                 to_create.append(
                     CounterEntry(
                         name="Parcours : thème sélectionné",
-                        date=next_sunday,
+                        date=self.next_sunday,
                         key=themes_by_id[int(theme)].nom_court,
                         count=count,
                     )
@@ -93,7 +93,7 @@ class Command(BaseCommand):
                 to_create.append(
                     CounterEntry(
                         name="Parcours : sujets sélectionnés",
-                        date=next_sunday,
+                        date=self.next_sunday,
                         key=sujets_by_id[int(sujet)].nom_court,
                         count=count,
                     )
@@ -106,7 +106,7 @@ class Command(BaseCommand):
                 to_create.append(
                     CounterEntry(
                         name="Parcours : départements des exploitations agricoles",
-                        date=next_sunday,
+                        date=self.next_sunday,
                         key=departements_by_code[departement].nom,
                         count=count,
                     )
@@ -119,7 +119,7 @@ class Command(BaseCommand):
                 to_create.append(
                     CounterEntry(
                         name="Parcours : filières des exploitations agricoles",
-                        date=next_sunday,
+                        date=self.next_sunday,
                         key=filieres_by_id[int(filiere)].nom,
                         count=count,
                     )
@@ -132,7 +132,7 @@ class Command(BaseCommand):
                 to_create.append(
                     CounterEntry(
                         name="Parcours : effectifs des exploitations agricoles",
-                        date=next_sunday,
+                        date=self.next_sunday,
                         key=mapping_effectif[code_effectif],
                         count=count,
                     )
@@ -145,7 +145,7 @@ class Command(BaseCommand):
                 to_create.append(
                     CounterEntry(
                         name="Parcours : groupements de producteurs des exploitations agricoles",
-                        date=next_sunday,
+                        date=self.next_sunday,
                         key=groupements_by_id[int(groupement)].nom,
                         count=count,
                     )
@@ -154,3 +154,32 @@ class Command(BaseCommand):
                 print(f"Groupement not found: {groupement}")
 
         CounterEntry.objects.bulk_create(to_create)
+
+    def compute_events_stats(self):
+        r = requests.post(
+            self._get_matomo_api_url("Events.getAction"),
+            data={"token_auth": settings.AGRI_MATOMO_API_KEY},
+            timeout=60,
+        )
+        r.raise_for_status()
+        to_create = []
+        for result in r.json()[self._get_last_week_interval()]:
+            to_create.append(
+                CounterEntry(
+                    name="Parcours : clics",
+                    date=self.next_sunday,
+                    key=result["label"],
+                    count=result["nb_events"],
+                )
+            )
+        CounterEntry.objects.bulk_create(to_create)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.for_date = date.today()
+        self.last_monday = self.for_date - timedelta(days=self.for_date.weekday())
+        self.next_sunday = self.last_monday + timedelta(days=6)
+
+    def handle(self, *args, **options):
+        self.compute_page_views_stats()
+        self.compute_events_stats()

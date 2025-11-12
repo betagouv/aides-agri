@@ -20,7 +20,7 @@ class Command(BaseCommand):
             .annotate(
                 aides_count=Count(
                     "aides",
-                    filter=Q(aides__last_published_at__lte=for_date),
+                    filter=Q(aides__first_published_at__lte=for_date),
                 )
             )
             .values_list(key_field.name, "aides_count")
@@ -47,7 +47,7 @@ class Command(BaseCommand):
             self._build_counter_entries(
                 "Nombre d’aides par département",
                 ZoneGeographique.objects.departements(),
-                ZoneGeographique.nom.field,
+                ZoneGeographique.code.field,
             )
         )
 

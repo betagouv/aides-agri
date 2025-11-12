@@ -1,0 +1,23 @@
+.fr-carousel {
+  overflow-x: hidden;
+}
+
+.fr-carousel__items {
+  display: flex;
+  scroll-behavior: smooth;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+}
+
+.fr-carousel__item {
+  width: 100%;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  padding-bottom: 4em;
+}
+
+.fr-carousel__nav {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
