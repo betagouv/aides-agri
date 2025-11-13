@@ -3,10 +3,30 @@ document.onreadystatechange = evt => {
     return
   }
   document.querySelectorAll(".easymde-box").forEach(elem => {
-    const options = JSON.parse(elem.getAttribute("data-easymde-options"))
-    options["element"] = elem
     if (elem.EasyMDE === undefined) {
-      elem.EasyMDE = new EasyMDE(options)
+      elem.EasyMDE = new EasyMDE({
+        element: elem,
+        inputStyle: "contenteditable",
+        toolbar: [
+          "bold",
+          "italic",
+          "link",
+          "|",
+          "heading-3",
+          "unordered-list",
+          "ordered-list",
+          "|",
+          "table",
+          "|",
+          "undo",
+          "redo",
+          "|",
+          "guide"
+        ],
+        spellChecker: false,
+        nativeSpellCheck: true,
+        status: ["lines", "words", "cursor"]
+      })
     }
   })
 }
