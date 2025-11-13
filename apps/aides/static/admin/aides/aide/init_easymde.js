@@ -17,6 +17,15 @@ document.onreadystatechange = evt => {
           "ordered-list",
           "|",
           "table",
+          {
+            name: "highlight",
+            title: "Mise en exergue",
+            className: "fa fa-exclamation",
+            action: editor => {
+              const cm = editor.codemirror;
+              cm.replaceSelection("!!! Note\n    " + (cm.getSelection() || "Exemple de note"));
+            }
+          },
           "|",
           "undo",
           "redo",
