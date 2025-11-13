@@ -1,4 +1,5 @@
 from django import template
+from django.utils.safestring import mark_safe
 from dsfr.utils import parse_tag_args
 from markdown import markdown
 from markdown.extensions.admonition import AdmonitionProcessor
@@ -75,15 +76,17 @@ class DsfrAdmonitionExtension(Extension):
         )
 
 
-@register.filter
+@register.filter(is_safe=True)
 def ui_markdown(content: str) -> str:
-    return markdown(
-        content,
-        extensions=[
-            DsfrTableExtension(),
-            AttrListExtension(),
-            DsfrAdmonitionExtension(),
-        ],
+    return mark_safe(
+        markdown(
+            content,
+            extensions=[
+                DsfrTableExtension(),
+                AttrListExtension(),
+                DsfrAdmonitionExtension(),
+            ],
+        )
     )
 
 
