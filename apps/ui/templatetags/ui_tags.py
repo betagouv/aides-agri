@@ -4,6 +4,7 @@ from dsfr.utils import parse_tag_args
 from markdown import markdown
 from markdown.extensions.admonition import AdmonitionProcessor
 from markdown.extensions.attr_list import AttrListExtension
+from markdown.extensions.nl2br import Nl2BrExtension
 from markdown.extensions.tables import TableProcessor, BlockProcessor
 from markdown.extensions import Extension
 from markdown_grid_tables import GridTableProcessor
@@ -85,6 +86,7 @@ def ui_markdown(content: str) -> str:
                 DsfrTableExtension(),
                 AttrListExtension(),
                 DsfrAdmonitionExtension(),
+                Nl2BrExtension(),
             ],
         )
     )
