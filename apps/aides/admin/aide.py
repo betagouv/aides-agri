@@ -37,30 +37,6 @@ class EasyMDEWidget(forms.widgets.Textarea):
             attrs["class"] = ""
 
         attrs["class"] += " easymde-box"
-        attrs["data-easymde-options"] = json.dumps(
-            {
-                "inputStyle": "contenteditable",
-                "toolbar": [
-                    "bold",
-                    "italic",
-                    "link",
-                    "|",
-                    "heading-3",
-                    "unordered-list",
-                    "ordered-list",
-                    "|",
-                    "table",
-                    "|",
-                    "undo",
-                    "redo",
-                    "|",
-                    "guide",
-                ],
-                "spellChecker": False,
-                "nativeSpellCheck": True,
-                "status": ["lines", "words", "cursor"],
-            }
-        )
 
         html = super().render(name, value, attrs, renderer=renderer)
 
