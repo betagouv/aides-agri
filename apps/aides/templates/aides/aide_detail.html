@@ -18,30 +18,74 @@ document.onreadystatechange = evt => {
 {% block title %}{{ object.nom }}{% endblock title %}
 
 {% block other_notices %}
-  {% if not object.is_published %}
+  {% if not object.is_published and not object.children.exists %}
     {% dsfr_notice type="warning" description="Ceci est une prévisualisation de la fiche d’aide. Elle n’est pas publiée. Tu la vois parce que tu es connecté⋅e à l’outil d’édition des aides." %}
   {% endif %}
 {% endblock other_notices %}
 
-{% block content %}
-  <div class="fr-container--fluid" id="aide">
-    <div class="fr-grid-row fr-mb-3w">
-      <div class="fr-col fr-col-8">
-        <div>
-          <img src="{{ object.organisme.get_logo_url }}" alt="" class="fr-responsive-img">
-        </div>
-        {% for type_aide in object.types.all %}
-          {% dsfr_badge label=type_aide.nom extra_classes="fr-badge--icon-left fr-badge--sm  fr-icon-"|add:type_aide.icon_name|add:"-fill" %}
-        {% endfor %}
-        <h1 class="fr-h2 fr-mt-1w">{{ object.nom }}</h1>
-        <div class="fr-tags-group">
+{% block container %}
+<main id="content" role="main" aria-label="Contenu">
+  <div class="fr-background-alt--{% block content_header_bgcolor %}blue-france{% endblock %} fr-mt-n2w fr-py-2w">
+    <div class="fr-container">
+      {% block breadcrumb %}{% dsfr_breadcrumb %}{% endblock breadcrumb %}
+
+      <img src="{{ object.organisme.get_logo_url }}" alt="" class="organisme-logo">
+
+      <div class="fr-grid-row fr-my-2w">
+        <div class="fr-col fr-tags-group fr-tags-group--with-badges">
+          {% for type_aide in object.types.all %}
+            {% dsfr_badge label=type_aide.nom extra_classes="fr-badge--icon-left fr-badge--sm fr-icon-"|add:type_aide.icon_name|add:"-fill" %}
+          {% endfor %}
           {% dsfr_tag label=object.organisme.nom extra_classes="fr-tag--sm" %}
           {% for sujet in object.sujets.all %}
             {% dsfr_tag label=sujet.nom_court extra_classes="fr-tag--sm" %}
           {% endfor %}
         </div>
+      </div>
+
+      <div class="fr-grid-row fr-my-4w">
+        <div class="fr-col">
+          <h1 class="fr-h2 fr-m-0">{{ object.nom }}</h1>
+        </div>
+      </div>
+
+      <div class="fr-grid-row fr-my-4w">
+        <div class="fr-col">
+          {% block content_header_highlight %}
+            {% dsfr_highlight content=object.promesse %}
+          {% endblock content_header_highlight %}
+        </div>
+      </div>
+
+      {% if object.date_fin %}
+      <div class="fr-grid-row fr-my-4w fr-ml-md-3w">
+        {% block content_header_date_fin %}
+          {% if object.date_fin %}
+            <div class="fr-col fr-col-12">
+              <span class="fr-icon fr-icon-calendar-check-line fr-artwork-minor--blue-france" aria-hidden="true"></span>
+              <strong>Date d’échéance :</strong>
+              <time datetime="{{ object.date_fin|date:"c" }}">{{ object.date_fin|date:"SHORT_DATE_FORMAT" }}</time>
+            </div>
+          {% endif %}
+        {% endblock content_header_date_fin %}
+      </div>
+      {% endif %}
+
+      <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--right fr-my-1w">
+      {% block content_header_actions %}
+        {% if object.url_demarche %}
+          <a class="fr-btn fr-btn--sm fr-btn--primary fr-m-1w"
+             target="_blank"
+             href="{{ object.url_demarche }}"
+             data-action="click->matomo#trackEvent"
+             data-event-page="Aide"
+             data-event-name="Lien démarche"
+          >
+            Déposer mon dossier
+          </a>
+        {% endif %}
         <button type="button"
-                class="fr-btn fr-icon--md fr-btn--sm fr-btn--tertiary fr-icon-file-pdf-line"
+                class="fr-btn fr-btn--sm fr-btn--secondary fr-m-1w"
                 id="button-print"
                 data-action="click->matomo#trackEvent"
                 data-event-page="Aide"
@@ -49,56 +93,97 @@ document.onreadystatechange = evt => {
         >
           Télécharger cette fiche
         </button>
+      {% endblock content_header_actions %}
       </div>
-      <div class="fr-col fr-col-4"></div>
     </div>
+  </div>
+
+  {% block content_body %}
+  <div class="fr-container fr-py-4w">
     <div class="fr-grid-row fr-grid-row--gutters">
-      <div class="fr-col fr-col-12 fr-col-md-8 fr-pr-3w fr-py-0">
-        <p class="fr-background-default--grey fr-border-plain--blue-france fr-p-2w fr-text--bold">
-          {{ object.promesse }}
-        </p>
-        <p>
-          {% if aide.date_fin %}Date d’échéance :
-            <time datetime="{{ aide.date_fin|date:"c" }}">{{ aide.date_fin|date:"SHORT_DATE_FORMAT" }}</time>
-          {% endif %}
-        </p>
-        <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-arrow-right-circle-fill fr-icon--md fr-mb-2w">Description</h2>
-        <p>
-          {{ object.description_de_base|ui_markdown|safe }}
-          {{ object.description|ui_markdown|safe }}
-          {% if object.url_descriptif and object.url_descriptif != object.url_demarche %}
-            <a class="fr-btn fr-btn--primary fr-mb-1w"
-               target="_blank"
-               href="{{ object.url_descriptif }}"
-               data-action="click->matomo#trackEvent"
-               data-event-page="Aide"
-               data-event-name="Lien descriptif"
-            >
-              Voir le détail
-            </a>
-          {% endif %}
-        </p>
-        {% if object.montant %}
-          <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-icon--md fr-mb-2w">Montant ou taux de l’aide</h2>
-          <p>{{ object.montant|ui_markdown|safe }}</p>
-        {% endif %}
-        {% if object.participation_agriculteur %}
-          <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-icon--md fr-mb-2w">Participation ou coût pour les bénéficiaires</h2>
-          <p>{{ object.participation_agriculteur|ui_markdown|safe }}</p>
-        {% endif %}
-        {% if object.exemple_projet %}
-          <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-icon--md fr-mb-2w">Exemple de projet ou d’application</h2>
-          <p>{{ object.exemple_projet|ui_markdown|safe }}</p>
-        {% endif %}
-        {% if object.etapes %}
-          <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-icon--md fr-mb-2w">Étapes</h2>
-          <p>{{ object.etapes|ui_markdown|safe }}</p>
-        {% endif %}
+      <div class="fr-col fr-col-md-3" id="toc">
+        {% dsfr_sidemenu sidemenu_data %}
       </div>
-      <div class="fr-col fr-col-12 fr-col-md-4 fr-py-3w fr-px-4w fr-background-alt--blue-ecume">
-        <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-icon--md fr-mb-2w">Critères d'éligibilité</h2>
-        <div class="fr-text--sm" id="conditions">
-          {{ object.conditions|ui_markdown|safe }}
+      <div class="fr-col fr-col-md-9">
+        <a href="#toc" id="back-to-top"
+           class="fr-hidden-md fr-btn fr-btn--tertiary fr-btn--sm fr-icon-arrow-up-s-line fr-ml-n1w"
+        >Retour au sommaire</a>
+        <h2 id="presentation"
+            class="fr-h4 fr-text-action-high--blue-france fr-icon-flashlight-fill fr-icon--md fr-mb-2w"
+        >
+          {{ sections.presentation }}
+        </h2>
+        <div class="fr-pl-4w fr-mb-4w">
+          {{ object.description|urlize|ui_markdown }}
+
+          {% if object.exemple_projet %}
+            <div id="exemple_projet"
+                 class="fr-highlight fr-background-contrast--grey fr-px-3w fr-pt-2w fr-pb-1w fr-mb-2w"
+            >
+              <h3 class="fr-h6 fr-mb-1w">Exemple de projet</h3>
+              {{ object.exemple_projet|urlize|ui_markdown }}
+            </div>
+          {% endif %}
+
+          {% if object.url_descriptif and object.url_descriptif != object.url_demarche %}
+            <div class="fr-container">
+                <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--right">
+                    <div class="fr-col fr-col-8 fr-col-md-3">
+                      <a class="fr-btn fr-btn--secondary fr-btn--sm"
+                         target="_blank"
+                         href="{{ object.url_descriptif }}"
+                         data-action="click->matomo#trackEvent"
+                         data-event-page="Aide"
+                         data-event-name="Lien descriptif"
+                      >
+                        Voir plus de détail
+                      </a>
+                    </div>
+                </div>
+            </div>
+          {% endif %}
+        </div>
+
+        {% if object.montant %}
+        <h2 id="montant"
+            class="fr-h4 fr-text-action-high--blue-france fr-icon-money-euro-circle-fill fr-icon--md fr-mb-2w"
+        >
+          {{ sections.montant }}
+        </h2>
+        <div class="fr-pl-4w fr-mb-4w">
+          {{ object.montant|urlize|ui_markdown }}
+        </div>
+        {% endif %}
+
+        {% if object.participation_agriculteur %}
+        <h2 id="participation"
+            class="fr-h4 fr-text-action-high--blue-france fr-icon-bar-chart-fill fr-icon--md fr-mb-2w"
+        >
+          {{ sections.participation }}
+        </h2>
+        <div class="fr-pl-4w fr-mb-4w">
+          {{ object.participation_agriculteur|urlize|ui_markdown }}
+        </div>
+        {% endif %}
+
+        {% if object.etapes %}
+        <h2 id="etapes"
+            class="fr-h4 fr-text-action-high--blue-france fr-icon-etapes fr-icon--md fr-mb-2w"
+        >
+          {{ sections.etapes }}
+        </h2>
+        <div class="fr-pl-4w fr-mb-4w">
+          {{ object.etapes|urlize|ui_markdown }}
+        </div>
+        {% endif %}
+
+        <h2 id="eligibilite"
+            class="fr-h4 fr-text-action-high--blue-france fr-icon-list-unordered fr-icon--md fr-mb-2w"
+        >
+          {{ sections.eligibilite }}
+        </h2>
+        <div class="fr-pl-4w fr-mb-4w">
+          {{ object.conditions|urlize|ui_markdown }}
           {% if object.eligibilite_effectif_min or object.eligibilite_effectif_max %}
             <h3 class="fr-text--bold fr-text--md">Effectifs salariés :</h3>
             <ul>
@@ -112,37 +197,43 @@ document.onreadystatechange = evt => {
           {% endif %}
           {% if object.type_depense %}
             <h3 class="fr-text--bold fr-text--md">Dépenses éligibles :</h3>
-            {{ object.type_depense|ui_markdown|safe }}
+            {{ object.type_depense|urlize|ui_markdown }}
           {% endif %}
           {% if object.eligibilite_cumulable %}
             <h3 class="fr-text--bold fr-text--md">Cette aide est-elle cumulable avec d’autres dispositifs ?</h3>
-            {{ object.eligibilite_cumulable|ui_markdown|safe }}
+            {{ object.eligibilite_cumulable|urlize|ui_markdown }}
           {% endif %}
+        </div>
+
+        {% if object.url_demarche %}
+        <div class="fr-container--fluid fr-mb-4w" id="deposer">
+          <div class="fr-grid-row">
+              <a class="fr-btn fr-btn--sm fr-btn--primary fr-mx-auto"
+                 target="_blank"
+                 href="{{ object.url_demarche }}"
+                 data-action="click->matomo#trackEvent"
+                 data-event-page="Aide"
+                 data-event-name="Lien démarche"
+              >
+                Déposer mon dossier
+              </a>
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="fr-background-alt--blue-france fr-py-3w fr-px-5w" id="contact">
+          <h2 class="fr-h6 fr-icon-mail-fill fr-icon--md fr-mb-2w fr-text-default--grey">Contact</h2>
+          <p class="fr-text--sm">
+            {{ object.contact|urlize|ui_markdown }}
+          </p>
         </div>
       </div>
     </div>
-    <div class="fr-grid-row fr-grid-row--gutters fr-mt-4w">
-      <div class="fr-col fr-col-12 fr-py-3w fr-px-4w fr-background-alt--blue-ecume">
-        <h2 class="fr-h6 fr-text-action-high--blue-france fr-icon-checkbox-circle-fill fr-icon--md fr-mb-2w">Contacts</h2>
-        <p class="fr-text--sm">
-          {{ object.contact|ui_markdown|safe }}
-          {% if object.url_demarche %}
-            <a class="fr-btn fr-btn--primary fr-mb-1w"
-               target="_blank"
-               href="{{ object.url_demarche }}"
-               data-action="click->matomo#trackEvent"
-               data-event-page="Aide"
-               data-event-name="Lien démarche"
-            >
-              Déposer mon dossier
-            </a>
-          {% endif %}
-        </p>
-      </div>
-    </div>
   </div>
+  {% endblock content_body %}
 
-  <div class="fr-container fr-mt-4w">
+  <div class="fr-container fr-my-4w">
     {% include "aides_feedback/blocks/create_feedback_on_aides.html" with form=create_feedback_on_aides_form %}
   </div>
-{% endblock content %}
+</main>
+{% endblock container %}
