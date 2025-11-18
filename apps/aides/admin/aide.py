@@ -288,7 +288,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             if obj.parent:
                 fieldsets[0][1]["fields"].insert(0, ("parent",))
             if obj.is_derivable or obj.parent:
-                fieldsets[2][1]["fields"].insert(1, ("description_de_base",))
+                fieldsets[3][1]["fields"].insert(1, ("description_de_base",))
             return fieldsets
         elif "parent" in request.GET:
             return [("Infos de base", {"fields": ["parent", "nom", "is_derivable"]})]
