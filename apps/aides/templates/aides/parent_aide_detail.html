@@ -1,0 +1,41 @@
+{% extends "aides/aide_detail.html" %}
+
+{% load static dsfr_tags ui_tags %}
+
+{% block content_header_bgcolor %}pink-macaron{% endblock %}
+
+{% block content_header_highlight %}
+  {% dsfr_highlight content=object.description_de_base extra_classes="fr-highlight--pink-tuile" %}
+{% endblock content_header_highlight %}
+
+{% block content_header_date_fin %}{% endblock %}
+
+{% block content_header_actions %}
+  <button type="button"
+          class="fr-btn fr-btn--sm fr-btn--secondary fr-m-1w"
+          id="button-print"
+          data-action="click->matomo#trackEvent"
+          data-event-page="Aide"
+          data-event-name="Impression"
+  >
+    Enregistrer en PDF
+  </button>
+{% endblock content_header_actions %}
+
+{% block content_body %}
+  <div class="fr-container fr-py-4w">
+    {% for child in children %}
+      <div class="fr-px-2w fr-py-1w aide">
+        <div class="fr-mb-1w">
+          <a class="fr-link" href="{% url 'aides:aide' child.pk child.slug %}">{{ child.nom }}</a>
+        </div>
+        <div class="fr-text--sm fr-mb-1v">{{ child.promesse }}</div>
+        <div class="fr-tags-group">
+        {% for sujet in child.sujets.all %}
+          <div class="fr-tag fr-tag--sm">{{ sujet.nom_court }}</div>
+        {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock content_body %}

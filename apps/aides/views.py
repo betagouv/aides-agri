@@ -1,3 +1,4 @@
+from django.http import QueryDict
 from django.http.response import HttpResponsePermanentRedirect
 from django.views.generic import DetailView
 
@@ -23,10 +24,10 @@ class AideDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         breadcrumb_links = []
-        if "HTTP_REFERER" in self.request.META:
+        if "prev" in self.request.GET:
             breadcrumb_links.append(
                 {
-                    "url": self.request.META["HTTP_REFERER"],
+                    "url": self.request.GET["prev"],
                     "title": "Sélection personnalisée",
                 }
             )
@@ -76,4 +77,54 @@ class AideDetailView(DetailView):
             }
         )
 
+        return context_data
+
+
+class ParentAideDetailView(DetailView):
+    template_name = "aides/parent_aide_detail.html"
+
+    def get_queryset(self):
+        if self.request.user and self.request.user.has_perm("aides.view_aide"):
+            qs = Aide.objects.having_children()
+        else:
+            qs = Aide.objects.having_published_children()
+        return qs.prefetch_related("sujets", "children", "children__sujets")
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+
+        breadcrumb_links = []
+        try:
+            referring_aide = Aide.objects.get(
+                pk=self.request.GET.get("referring_aide", 0)
+            )
+            if "prev" in self.request.GET:
+                breadcrumb_links.append(
+                    {
+                        "url": self.request.GET.get("prev"),
+                        "title": "Sélection personnalisée",
+                    }
+                )
+            breadcrumb_links.append(
+                {
+                    "url": referring_aide.get_absolute_url()
+                    + "?"
+                    + QueryDict.fromkeys(
+                        ["prev"], value=self.request.GET.get("prev", "")
+                    ).urlencode(),
+                    "title": referring_aide.nom,
+                }
+            )
+        except Aide.DoesNotExist:
+            pass
+
+        context_data.update(
+            {
+                "breadcrumb_data": {
+                    "links": breadcrumb_links,
+                    "current": self.object.nom,
+                },
+                "children": self.object.children.all(),
+            }
+        )
         return context_data

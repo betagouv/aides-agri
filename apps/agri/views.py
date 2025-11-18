@@ -2,6 +2,7 @@ import datetime
 from copy import copy
 
 from django.db.models import Q
+from django.http import QueryDict
 from django.shortcuts import render
 from django.templatetags.static import static
 from django.urls import reverse
@@ -330,7 +331,12 @@ class ResultsView(ResultsMixin, ListView):
                             "extra_classes": "fr-card--horizontal fr-card--horizontal-fifth fr-card--no-icon",
                             "title": aide.nom,
                             "description": aide.promesse,
-                            "link": aide.get_absolute_url(),
+                            "link": aide.get_absolute_url()
+                            + "?"
+                            + QueryDict.fromkeys(
+                                ["prev"],
+                                value=f"{self.request.path}?{self.request.GET.urlencode()}",
+                            ).urlencode(),
                             "image_url": aide.organisme.get_logo_url()
                             if aide.organisme_id
                             else static("agri/images/placeholder.1x1.svg"),
