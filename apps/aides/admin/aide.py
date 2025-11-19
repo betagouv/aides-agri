@@ -4,6 +4,7 @@ import json
 
 from admin_extra_buttons.api import ExtraButtonsMixin, button
 from django.contrib import admin
+from django.contrib.admin.utils import flatten_fieldsets
 from django.contrib.admin.views.main import ChangeList
 from django.contrib import messages
 from django import forms
@@ -288,7 +289,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             if obj.parent:
                 fieldsets[0][1]["fields"].insert(0, ("parent",))
             if obj.is_derivable or obj.parent:
-                fieldsets[2][1]["fields"].insert(1, ("description_de_base",))
+                fieldsets[3][1]["fields"].insert(1, ("description_de_base",))
             return fieldsets
         elif "parent" in request.GET:
             return [("Infos de base", {"fields": ["parent", "nom", "is_derivable"]})]
@@ -346,7 +347,9 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                 readonly_fields.extend(
                     [
                         field
-                        for field in self.get_fields(request)
+                        for field in flatten_fieldsets(
+                            self.get_fieldsets(request, obj=obj)
+                        )
                         if field
                         not in (
                             "is_derivable",
