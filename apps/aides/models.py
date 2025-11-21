@@ -371,6 +371,7 @@ class Aide(models.Model):
     class Status(models.TextChoices):
         TODO = "00", "0. Backlog - À prioriser"
         CANDIDATE = "10", "1. Priorisée - Scope à vérif"
+        BLOCKED = "11", "1.1 Bloquée"
         CHOSEN = "20", "2. Ok scope - À éditer"
         REVIEW = "30", "3. Ok édito - À valider"
         REVIEW_EXPERT = "31", "3.1 En attente validation métier"
