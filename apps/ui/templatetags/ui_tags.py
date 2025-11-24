@@ -1,7 +1,10 @@
 from django import template
+from django.utils.safestring import mark_safe
 from dsfr.utils import parse_tag_args
 from markdown import markdown
+from markdown.extensions.admonition import AdmonitionProcessor
 from markdown.extensions.attr_list import AttrListExtension
+from markdown.extensions.nl2br import Nl2BrExtension
 from markdown.extensions.tables import TableProcessor, BlockProcessor
 from markdown.extensions import Extension
 from markdown_grid_tables import GridTableProcessor
@@ -54,9 +57,39 @@ class DsfrTableExtension(Extension):
         )
 
 
-@register.filter
+class DsfrAdmonitionProcessor(AdmonitionProcessor):
+    def run(self, parent: etree.Element, *args) -> None:
+        super().run(parent, *args)
+        div = parent.find("div")
+        div.attrib["class"] = (
+            "fr-highlight fr-background-contrast--grey fr-px-3w fr-pt-2w fr-pb-1w fr-mb-2w"
+        )
+        title_element = div.find("p")
+        title_element.tag = "strong"
+        body_element = div.find("p")
+        body_element.attrib["class"] = "fr-text--sm"
+
+
+class DsfrAdmonitionExtension(Extension):
+    def extendMarkdown(self, md):
+        md.parser.blockprocessors.register(
+            DsfrAdmonitionProcessor(md.parser), "admonition", 100
+        )
+
+
+@register.filter(is_safe=True)
 def ui_markdown(content: str) -> str:
-    return markdown(content, extensions=[DsfrTableExtension(), AttrListExtension()])
+    return mark_safe(
+        markdown(
+            content,
+            extensions=[
+                DsfrTableExtension(),
+                AttrListExtension(),
+                DsfrAdmonitionExtension(),
+                Nl2BrExtension(),
+            ],
+        )
+    )
 
 
 @register.inclusion_tag("ui/components/checkbox_group_field.html")

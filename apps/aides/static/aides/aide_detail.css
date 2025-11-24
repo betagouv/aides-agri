@@ -1,21 +1,35 @@
-#aide .fr-responsive-img {
-  width: 150px;
+.organisme-logo {
+  max-width: 16%;
+  max-height: 200px;
 }
 
-#metadata .fr-col {
-  border: 2px solid var(--grey-1000-50);
+.fr-icon.fr-artwork-minor--blue-france {
+  color: var(--artwork-minor-blue-france)!important;
 }
 
-#conditions p {
-  font-size: 14px;
+#content .fr-sidemenu {
+  position: sticky;
+  top: 0;
+  padding-right: 0;
 }
 
-.fr-h6.fr-icon--md::before {
-  margin-right: 12px;
+.fr-icon-etapes:after, .fr-icon-etapes:before {
+  -webkit-mask-image: url(icons/etapes.svg);
+  mask-image: url(icons/etapes.svg)
 }
 
-.fr-col.fr-m-auto {
-  text-align: center;
+.fr-tags-group--with-badges .fr-badge {
+  margin: 0 .25rem .5rem;
+}
+
+p + ul {
+  margin-top: -16px;
+  margin-bottom: 16px;
+}
+
+#back-to-top {
+  position: sticky;
+  top: 90%;
 }
 
 @media print {

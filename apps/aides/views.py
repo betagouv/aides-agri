@@ -31,12 +31,39 @@ class AideDetailView(DetailView):
                 }
             )
 
+        sections = {"presentation": "Présentation du dispositif"}
+
+        if self.object.montant:
+            sections["montant"] = "Montant ou taux de l’aide"
+        if self.object.participation_agriculteur:
+            sections["participation"] = "Participation ou coût pour les bénéficiaires"
+        if self.object.etapes:
+            sections["etapes"] = "Étapes du projet"
+        sections["eligibilite"] = "Critères d’éligibilité"
+
+        sidemenu_items = [
+            {"link": f"#{anchor}", "label": label} for anchor, label in sections.items()
+        ]
+        if self.object.url_demarche:
+            sidemenu_items.append({"link": "#deposer", "label": "Déposer mon dossier"})
+        sidemenu_items.append({"link": "#contact", "label": "Contact"})
+
+        if self.object.exemple_projet:
+            sidemenu_items[0].update(
+                {
+                    "items": [
+                        {"link": "#presentation", "label": "Présentation générale"},
+                        {"link": "#exemple_projet", "label": "Exemple de projet"},
+                    ]
+                }
+            )
+
         context_data.update(
             {
                 "skiplinks": [
                     {
-                        "link": "#aide",
-                        "label": "Descriptif de l'aide",
+                        "link": "#content",
+                        "label": "Fiche du dispositif",
                     },
                 ],
                 "create_feedback_on_aides_form": CreateFeedbackOnAidesForm(),
@@ -44,15 +71,9 @@ class AideDetailView(DetailView):
                     "links": breadcrumb_links,
                     "current": self.object.nom,
                 },
-                "badge_data": {
-                    "extra_classes": "fr-badge--green-emeraude",
-                    "label": "En cours",
-                }
-                if self.object.is_ongoing
-                else {
-                    "extra_classes": "fr-badge--pink-tuile",
-                    "label": "Clôturé",
-                },
+                "sections": sections,
+                "sidemenu_data": {"items": sidemenu_items},
             }
         )
+
         return context_data

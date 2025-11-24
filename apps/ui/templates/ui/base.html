@@ -51,6 +51,7 @@
 
     {% block other_notices %}{% endblock other_notices %}
 
+    {% block container %}
     <div class="fr-container fr-mt-4w fr-mb-6w">
       {% block breadcrumb %}
         {% dsfr_breadcrumb %}
@@ -62,6 +63,7 @@
       </main>
       {% endblock content_wrapper %}
     </div>
+    {% endblock container %}
 
     {% block footer %}
       {% include "ui/blocks/footer.html" %}
