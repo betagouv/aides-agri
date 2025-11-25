@@ -31,7 +31,7 @@ dependencies = [
 dev = [
   "djade",
   "django-browser-reload",
-  "django-debug-toolbar ~=5.2.0,<6",
+  "django-debug-toolbar~=6.1.0",
   "ruff",
   "pytest",
   "pytest-cov",
