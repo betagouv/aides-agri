@@ -242,7 +242,9 @@ class Step5View(AgriMixin, TemplateView):
             naf = self.etablissement.get("activite_principale", "")
             if naf[-1].isalpha():
                 naf = naf[:-1]
-            filiere = Filiere.objects.published().filter(code_naf=naf).first()
+            filiere = (
+                Filiere.objects.published().filter(codes_naf__contains=[naf]).first()
+            )
             code_effectif_salarie = siret.mapping_effectif_by_insee_codes.get(
                 self.etablissement.get("tranche_effectif_salarie", ""), None
             )
