@@ -536,6 +536,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     def save_related(self, request, form, formsets, change):
         if not change:
             return
+        super().save_related(request, form, formsets, change)
 
 
 def validate_content_type_csv(value: UploadedFile):
