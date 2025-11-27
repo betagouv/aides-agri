@@ -261,35 +261,12 @@ class Filiere(models.Model):
     nom = models.CharField(max_length=100, verbose_name="Nom")
     published = models.BooleanField(default=False, verbose_name="Publié")
     position = models.IntegerField(default=99, verbose_name="Position pour le tri")
-    code_naf = models.CharField(
-        max_length=10, blank=True, verbose_name="Code NAF associé"
+    codes_naf = postgres_fields.ArrayField(
+        models.CharField(max_length=10),
+        null=True,
+        blank=True,
+        verbose_name="Codes NAF associés",
     )
-
-    def __str__(self):
-        return self.nom
-
-
-class SousFiliere(models.Model):
-    class Meta:
-        verbose_name = "Sous-filière"
-        verbose_name_plural = "Filières > Sous-filières"
-
-    nom = models.CharField(max_length=100, verbose_name="Nom")
-    filiere = models.ForeignKey(
-        Filiere, on_delete=models.CASCADE, verbose_name="Filière"
-    )
-
-    def __str__(self):
-        return self.nom
-
-
-class Production(models.Model):
-    class Meta:
-        verbose_name = "Détail de production"
-        verbose_name_plural = "Filières > Sous-filières > Détails de production"
-
-    nom = models.CharField(max_length=100, verbose_name="Nom")
-    sous_filiere = models.ForeignKey(SousFiliere, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.nom

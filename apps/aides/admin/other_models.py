@@ -12,8 +12,6 @@ from ..models import (
     Organisme,
     ZoneGeographique,
     Filiere,
-    SousFiliere,
-    Production,
     GroupementProducteurs,
 )
 from ._common import ArrayFieldCheckboxSelectMultiple
@@ -186,27 +184,3 @@ class FiliereAdmin(VersionAdmin):
 
     def get_queryset(self, request):
         return super().get_queryset(request).with_aides_count()
-
-
-@admin.register(SousFiliere)
-class SousFiliereAdmin(VersionAdmin):
-    list_display = ("id", "nom", "filiere")
-    list_display_links = (
-        "id",
-        "nom",
-    )
-    list_filter = ("filiere",)
-    list_select_related = ("filiere",)
-    ordering = ("nom",)
-
-
-@admin.register(Production)
-class ProductionAdmin(VersionAdmin):
-    list_display = ("id", "nom", "sous_filiere")
-    list_display_links = (
-        "id",
-        "nom",
-    )
-    list_filter = ("sous_filiere",)
-    list_select_related = ("sous_filiere",)
-    ordering = ("nom",)
