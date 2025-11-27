@@ -272,32 +272,6 @@ class Filiere(models.Model):
         return self.nom
 
 
-class SousFiliere(models.Model):
-    class Meta:
-        verbose_name = "Sous-filière"
-        verbose_name_plural = "Filières > Sous-filières"
-
-    nom = models.CharField(max_length=100, verbose_name="Nom")
-    filiere = models.ForeignKey(
-        Filiere, on_delete=models.CASCADE, verbose_name="Filière"
-    )
-
-    def __str__(self):
-        return self.nom
-
-
-class Production(models.Model):
-    class Meta:
-        verbose_name = "Détail de production"
-        verbose_name_plural = "Filières > Sous-filières > Détails de production"
-
-    nom = models.CharField(max_length=100, verbose_name="Nom")
-    sous_filiere = models.ForeignKey(SousFiliere, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.nom
-
-
 class GroupementProducteurs(models.Model):
     class Meta:
         verbose_name = "Groupement de producteurs"
