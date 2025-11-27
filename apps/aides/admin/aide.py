@@ -21,7 +21,7 @@ from reversion.admin import VersionAdmin
 
 from admin_concurrency.admin import ConcurrentModelAdmin
 
-from ..models import ZoneGeographique, Aide
+from ..models import ZoneGeographique, Aide, Sujet
 from ..tasks import enrich_aide
 from ._common import ArrayFieldCheckboxSelectMultiple
 
@@ -40,6 +40,11 @@ class EasyMDEWidget(forms.widgets.Textarea):
     class Media:
         js = ("vendor/easymde.min.js",)
         css = {"all": ("vendor/easymde.min.css",)}
+
+
+class SujetsMultipleChoiceField(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, obj: Sujet):
+        return f"{obj.nom_court} ({', '.join([theme.nom_court for theme in obj.themes.all()])})"
 
 
 @admin.register(Aide)
@@ -228,6 +233,12 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             )
         else:
             return ""
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "sujets":
+            kwargs["form_class"] = SujetsMultipleChoiceField
+            kwargs["queryset"] = Sujet.objects.all().prefetch_related("themes")
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj=obj, change=change, **kwargs)
@@ -536,6 +547,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     def save_related(self, request, form, formsets, change):
         if not change:
             return
+        super().save_related(request, form, formsets, change)
 
 
 def validate_content_type_csv(value: UploadedFile):
