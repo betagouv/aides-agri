@@ -261,8 +261,11 @@ class Filiere(models.Model):
     nom = models.CharField(max_length=100, verbose_name="Nom")
     published = models.BooleanField(default=False, verbose_name="Publié")
     position = models.IntegerField(default=99, verbose_name="Position pour le tri")
-    code_naf = models.CharField(
-        max_length=10, blank=True, verbose_name="Code NAF associé"
+    codes_naf = postgres_fields.ArrayField(
+        models.CharField(max_length=10),
+        null=True,
+        blank=True,
+        verbose_name="Codes NAF associés",
     )
 
     def __str__(self):
