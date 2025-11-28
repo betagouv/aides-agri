@@ -6,6 +6,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.management.base import BaseCommand
 from django.core.mail import send_mail
 from django.urls import reverse
+from django.utils.timezone import localtime
 
 from ...models import Aide
 
@@ -31,23 +32,26 @@ class Command(BaseCommand):
         for aide in Aide.objects.published():
             status_code = self._do_request(aide.url_descriptif)
 
-            if status_code != 200:
+            if status_code == 200:
+                continue
+            elif status_code == 404:
                 aide.status = Aide.Status.ARCHIVED
+                aide.internal_comments += f"\n\n{localtime().strftime('%d/%M/%Y %Hh%i')} : dépublication pour cause d’erreur 404"
                 aide.save()
-                if status_code == 0:
-                    reason = "était injoignable"
-                else:
-                    reason = f"returnait une erreur {status_code}"
-                url = (
-                    settings.HTTP_SCHEME
-                    + get_current_site(None).domain
-                    + reverse("admin:aides_aide_change", args=[aide.pk])
-                )
-                message = f"L’aide suivante a été dépubliée parce que son URL de descritif {reason} : {aide.nom} ({url})"
-                logger.warning(message)
-                send_mail(
-                    f"[Aides Agri {settings.ENVIRONMENT}] Une aide a été dépubliée",
-                    message,
-                    settings.DEFAULT_FROM_EMAIL,
-                    settings.AIDES_MANAGERS,
-                )
+                subject = "Une aide a été dépubliée"
+                message = "L’aide suivante a été dépubliée parce que son URL de descritif répond une erreur 404 : "
+            else:
+                subject = "Une aide mérite une vérification de d’URL"
+                message = "L’aide suivante mérite une vérification de son URL de descriptif : "
+            url = (
+                settings.HTTP_SCHEME
+                + get_current_site(None).domain
+                + reverse("admin:aides_aide_change", args=[aide.pk])
+            )
+            message += f"{aide.nom} ({url})"
+            send_mail(
+                f"[Aides Agri {settings.ENVIRONMENT}] {subject}",
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                settings.AIDES_MANAGERS,
+            )
