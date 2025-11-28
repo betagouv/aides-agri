@@ -240,6 +240,10 @@ class ZoneGeographique(models.Model):
     def is_commune(self):
         return self.type == self.__class__.Type.COMMUNE
 
+    @property
+    def cog(self):
+        return f"{ZoneGeographique.Type(self.type).name[:3]}-{self.code}"
+
     def __str__(self):
         prefix = self.code_postal if self.is_commune else self.type
         return f"{prefix} {self.nom}"

@@ -1,5 +1,6 @@
 import copy
 import csv
+import datetime
 
 from admin_extra_buttons.api import ExtraButtonsMixin, button
 from django.contrib import admin
@@ -11,7 +12,7 @@ from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import UploadedFile
 from django.db.models import QuerySet, TextField
-from django.http.response import HttpResponseRedirect
+from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -23,6 +24,7 @@ from admin_concurrency.admin import ConcurrentModelAdmin
 
 from ..models import ZoneGeographique, Aide, Sujet
 from ..tasks import enrich_aide
+from ..interop import write_aides_as_csv
 from ._common import ArrayFieldCheckboxSelectMultiple
 
 
@@ -527,6 +529,16 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             for status, qs in context["aides_by_status"].items():
                 context["aides_by_status"][status] = qs.filter(assigned_to=request.user)
         return TemplateResponse(request, "admin/dashboard.html", context)
+
+    @button(label="Exporter toutes les aides en CSV")
+    def export_csv(self, request):
+        filename = f"{datetime.date.today().isoformat()}-aides-agri-toutes-les-aides"
+        response = HttpResponse(
+            content_type="text/csv",
+            headers={"Content-Disposition": f'attachment; filename="{filename}.csv"'},
+        )
+
+        return write_aides_as_csv(response, Aide.objects.values_list("pk", flat=True))
 
     def response_post_save_change(self, request, obj):
         if "_save_and_back_to_dashboard" in request.POST:
