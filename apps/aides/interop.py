@@ -14,10 +14,6 @@ class AideToSchema:
         * The ID is now our internal ID ; neither a UUID as specified in the schema, nor a predictable code as we would like it to be ;
         * Aides Agri doesn't support geographical exclusions for now ;
         * Aides Agri doesn't support proper `porteurs.roles` subfield for now ;
-        * This export adds some fields:
-            * `etat` that represents the internal status of the Aide object in Aides Agri workflow ;
-            * `filieres` that contains Agriculture-specific information ;
-            * `parent` that contains the ID of the parent Aide if there is one.
 
     Notes:
         * Some fields contain an aggregation of several of our Aide model fields.
@@ -25,7 +21,6 @@ class AideToSchema:
 
     fields = [
         "id",
-        "parent",
         "titre",
         "promesse",
         "description",
@@ -35,14 +30,17 @@ class AideToSchema:
         "programmes_parents",
         "url_source",
         "cibles",
-        "filieres",
         "eligibilite_geographique",
         "eligibilite_geographique_exclusions",
         "date_ouverture",
         "date_cloture",
         "date_mise_a_jour",
-        "etat",
     ]
+
+    def __init_subclass__(cls, added_fields: dict[int, str], **kwargs):
+        super().__init_subclass__(**kwargs)
+        for idx, field in added_fields.items():
+            cls.fields.insert(idx, field)
 
     def __init__(self, aide: Aide):
         self.aide = aide
@@ -53,9 +51,6 @@ class AideToSchema:
 
     def _prepare_id(self):
         return self.aide.pk
-
-    def _prepare_parent(self):
-        return self.aide.parent_id
 
     def _prepare_titre(self):
         return self.aide.nom
@@ -130,9 +125,6 @@ class AideToSchema:
     def _prepare_cibles(self):
         return "professionnels"
 
-    def _prepare_filieres(self):
-        return [filiere.nom for filiere in self.aide.filieres.all()]
-
     def _prepare_eligibilite_geographique(self):
         return (
             "PAYS-99100"
@@ -157,11 +149,24 @@ class AideToSchema:
     def _prepare_date_mise_a_jour(self):
         return self.aide.date_modified.strftime("%Y-%m-%d %H:%M:%S")
 
-    def _prepare_etat(self):
-        return self.aide.get_status_display()
-
     def build_row(self) -> list:
         return [getattr(self, f"_prepare_{field}")() for field in self.__class__.fields]
+
+
+class AideToInternalSchema(
+    AideToSchema, added_fields={1: "parent", 11: "filieres", 12: "sujets", 18: "etat"}
+):
+    def _prepare_parent(self):
+        return self.aide.parent_id
+
+    def _prepare_filieres(self):
+        return "|".join([filiere.nom for filiere in self.aide.filieres.all()])
+
+    def _prepare_sujets(self):
+        return "|".join([sujet.nom_court for sujet in self.aide.sujets.all()])
+
+    def _prepare_etat(self):
+        return self.aide.get_status_display()
 
 
 def write_aides_as_csv(f, aides_ids: list[int]):
@@ -175,8 +180,9 @@ def write_aides_as_csv(f, aides_ids: list[int]):
             "programmes",
             "zones_geographiques",
             "filieres",
+            "sujets",
         )
         .select_related("organisme")
     ):
-        writer.writerow(AideToSchema(aide).build_row())
+        writer.writerow(AideToInternalSchema(aide).build_row())
     return f
