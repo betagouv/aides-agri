@@ -44,19 +44,28 @@ class AideDetailView(DetailView):
         sidemenu_items = [
             {"link": f"#{anchor}", "label": label} for anchor, label in sections.items()
         ]
+
+        if self.object.exemple_projet:
+            subitems_presentation = {
+                "presentation": "Présentation générale",
+                "exemple_projet": "Exemple de projet",
+            }
+            sidemenu_items[0]["items"] = [
+                {"link": f"#{anchor}", "label": label}
+                for anchor, label in subitems_presentation.items()
+            ]
+        subitems_eligibilite = {}
+        if self.object.type_depense:
+            subitems_eligibilite["type_depense"] = "Dépenses éligibles"
+        if subitems_eligibilite:
+            sidemenu_items[-1]["items"] = [
+                {"link": f"#{anchor}", "label": label}
+                for anchor, label in subitems_eligibilite.items()
+            ]
+
         if self.object.url_demarche:
             sidemenu_items.append({"link": "#deposer", "label": "Déposer mon dossier"})
         sidemenu_items.append({"link": "#contact", "label": "Contact"})
-
-        if self.object.exemple_projet:
-            sidemenu_items[0].update(
-                {
-                    "items": [
-                        {"link": "#presentation", "label": "Présentation générale"},
-                        {"link": "#exemple_projet", "label": "Exemple de projet"},
-                    ]
-                }
-            )
 
         context_data.update(
             {

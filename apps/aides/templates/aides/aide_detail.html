@@ -185,7 +185,7 @@ document.onreadystatechange = evt => {
         <div class="fr-pl-4w fr-mb-4w">
           {{ object.conditions|urlize|ui_markdown }}
           {% if object.eligibilite_effectif_min or object.eligibilite_effectif_max %}
-            <h3 class="fr-text--bold fr-text--md">Effectifs salariés :</h3>
+            <h3 class="fr-h5" id="effectifs_salaries">Effectifs salariés</h3>
             <ul>
             {% if object.eligibilite_effectif_min %}
               <li>Minimum {{ object.eligibilite_effectif_min }}</li>
@@ -196,11 +196,11 @@ document.onreadystatechange = evt => {
             </ul>
           {% endif %}
           {% if object.type_depense %}
-            <h3 class="fr-text--bold fr-text--md">Dépenses éligibles :</h3>
+            <h3 class="fr-h5" id="type_depense">Dépenses éligibles</h3>
             {{ object.type_depense|urlize|ui_markdown }}
           {% endif %}
           {% if object.eligibilite_cumulable %}
-            <h3 class="fr-text--bold fr-text--md">Cette aide est-elle cumulable avec d’autres dispositifs ?</h3>
+            <h3 class="fr-h5" id="eligibilite_cumulable">Cette aide est-elle cumulable avec d’autres dispositifs ?</h3>
             {{ object.eligibilite_cumulable|urlize|ui_markdown }}
           {% endif %}
         </div>
