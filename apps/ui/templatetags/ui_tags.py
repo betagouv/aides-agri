@@ -66,8 +66,8 @@ class DsfrAdmonitionProcessor(AdmonitionProcessor):
         )
         title_element = div.find("p")
         title_element.tag = "strong"
-        body_element = div.find("p")
-        body_element.attrib["class"] = "fr-text--sm"
+        for child in div.findall("*"):
+            child.attrib["class"] = "fr-text--sm"
 
 
 class DsfrAdmonitionExtension(Extension):
