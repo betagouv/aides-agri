@@ -27,6 +27,10 @@ p + ul {
   margin-bottom: 16px;
 }
 
+p:has(> strong) + p {
+  margin-top: -16px;
+}
+
 #back-to-top {
   position: sticky;
   top: 90%;
