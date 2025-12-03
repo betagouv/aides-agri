@@ -1,0 +1,94 @@
+{% extends "aides/aide_detail.html" %}
+
+{% load static dsfr_tags ui_tags %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'ui/components/select-rich.css' %}">
+  <link rel="stylesheet" href="{% static 'aides/aide_detail.css' %}">
+  <link rel="stylesheet" href="{% static 'aides/parent_aide_detail.css' %}">
+{% endblock extra_css %}
+
+{% block extra_head_js %}
+<script type="module" nonce="{{ request.csp_nonce }}">
+  import { Application } from "stimulus"
+  import { SelectRich } from "select-rich"
+
+  window.Stimulus ??= Application.start()
+
+  Stimulus.register("select-rich", SelectRich)
+</script>
+{% endblock extra_head_js %}
+
+{% block content_header_bgcolor %}pink-macaron{% endblock %}
+
+{% block content_header_highlight %}
+  {% dsfr_highlight content=object.description_de_base extra_classes="fr-highlight--pink-tuile" %}
+{% endblock content_header_highlight %}
+
+{% block content_header_date_fin %}{% endblock %}
+
+{% block content_header_actions %}
+  <button type="button"
+          class="fr-btn fr-btn--sm fr-btn--secondary fr-m-1w"
+          id="button-print"
+          data-action="click->matomo#trackEvent"
+          data-event-page="Aide"
+          data-event-name="Impression"
+  >
+    Enregistrer en PDF
+  </button>
+{% endblock content_header_actions %}
+
+{% block content_body %}
+  <div class="fr-container fr-py-4w">
+    <form id="form-filters"
+          class="fr-grid-row fr-grid-row--gutters fr-mb-1w"
+          hx-trigger="change"
+          hx-get=""
+          hx-select="#content"
+          hx-target="#content"
+          hx-push-url="true"
+    >
+      {% if filter_departements|length > 1 %}
+        {% ui_select_rich_multi label="Filtrer par départements" name="filter_departements" options=filter_departements initials=filter_departements_initials %}
+      {% endif %}
+      {% if filter_types|length > 1 %}
+        {% ui_select_rich_multi label="Filtrer par types de dispositifs" name="filter_types" options=filter_types initials=filter_types_initials %}
+      {% endif %}
+    </form>
+
+    <div class="fr-grid-row fr-mb-5w">
+      <div class="fr-col">
+        <div class="fr-tags-group">
+          {% for filtered_type in filtered_types %}
+            <label for="select-rich-filter_types-option-{{ filtered_type.pk }}"
+                   class="fr-tag fr-tag--remove-filter"
+                   aria-label="Supprimer le filtre sur le type d’aides {{ filtered_type.nom }}"
+            >Type : {{ filtered_type.nom }}</label>
+          {% endfor %}
+          {% for filtered_departement in filtered_departements %}
+            <label for="select-rich-filter_departements-option-{{ filtered_departement.code }}"
+                   class="fr-tag fr-tag--remove-filter"
+                   aria-label="Supprimer le filtre sur le département {{ filtered_departement.code }}"
+            >Département : {{ filtered_departement.code }}</label>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="fr-grid-row fr-mb-5w">
+      <div class="fr-col">
+        {% include "aides/blocks/parent_aide_detail__children.html" with children=filtered_children %}
+      </div>
+    </div>
+
+    {% if other_children %}
+      <div class="fr-grid-row">
+        <div class="fr-col">
+          <h3>Ce programme contient également les dispositifs suivants</h3>
+          {% include "aides/blocks/parent_aide_detail__children.html" with children=other_children %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+{% endblock content_body %}

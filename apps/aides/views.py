@@ -1,9 +1,10 @@
+from django.db.models import Q
 from django.http.response import HttpResponsePermanentRedirect
 from django.views.generic import DetailView
 
 from aides_feedback.forms import CreateFeedbackOnAidesForm
 
-from .models import Aide
+from .models import Aide, ZoneGeographique, Type
 
 
 class AideDetailView(DetailView):
@@ -85,4 +86,69 @@ class AideDetailView(DetailView):
             }
         )
 
+        return context_data
+
+
+class ParentAideDetailView(DetailView):
+    template_name = "aides/parent_aide_detail.html"
+
+    def get_queryset(self):
+        if self.request.user and self.request.user.has_perm("aides.view_aide"):
+            qs = Aide.objects.having_children()
+        else:
+            qs = Aide.objects.having_published_children()
+        return qs.prefetch_related("sujets", "children")
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+
+        filtered_departements = ZoneGeographique.objects.departements().filter(
+            code__in=self.request.GET.getlist("filter_departements", [])
+        )
+        filtered_types = Type.objects.filter(
+            pk__in=self.request.GET.getlist("filter_types", [])
+        )
+
+        children = self.object.children.published().prefetch_related("sujets")
+        q_children = Q()
+        if filtered_departements:
+            q_children &= Q(zones_geographiques__in=filtered_departements)
+        if filtered_types:
+            q_children &= Q(types__in=filtered_types)
+
+        context_data.update(
+            {
+                "create_feedback_on_aides_form": CreateFeedbackOnAidesForm(),
+                "filtered_children": children.filter(q_children),
+                "other_children": children.exclude(q_children) if q_children else None,
+                "filter_departements": [
+                    (
+                        departement.code,
+                        f"{departement.code} {departement.nom}",
+                        departement.nom,
+                    )
+                    for departement in ZoneGeographique.objects.departements()
+                    .filter(aides__parent_id=self.object.pk)
+                    .distinct()
+                ],
+                "filter_departements_initials": [
+                    dept.code for dept in filtered_departements
+                ],
+                "filtered_departements": filtered_departements,
+                "filter_types": [
+                    (
+                        type_aides.pk,
+                        type_aides.nom,
+                        type_aides.nom,
+                    )
+                    for type_aides in Type.objects.filter(
+                        aides__parent_id=self.object.pk
+                    ).distinct()
+                ],
+                "filtered_types": filtered_types,
+                "filter_types_initials": [
+                    type_aides.pk for type_aides in filtered_types
+                ],
+            }
+        )
         return context_data
