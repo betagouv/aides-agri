@@ -1,0 +1,130 @@
+{% extends "aides/aide_detail.html" %}
+
+{% load static dsfr_tags ui_tags %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'ui/components/select-rich.css' %}">
+  <link rel="stylesheet" href="{% static 'aides/aide_detail.css' %}">
+  <link rel="stylesheet" href="{% static 'aides/parent_aide_detail.css' %}">
+{% endblock extra_css %}
+
+{% block extra_head_js %}
+  {{ block.super }}
+  <script type="module" nonce="{{ request.csp_nonce }}">
+    import { Application } from "stimulus"
+    import { SelectRich } from "select-rich"
+
+    window.Stimulus ??= Application.start()
+
+    Stimulus.register("select-rich", SelectRich)
+  </script>
+{% endblock extra_head_js %}
+
+{% block content_header_bgcolor %}pink-macaron{% endblock %}
+
+{% block content_header_highlight %}
+  {% dsfr_highlight content=object.description_de_base extra_classes="fr-highlight--pink-tuile" %}
+  <p class="fr-mb-1w">Ce programme se décline en {{ object.children.published.count }} dispositifs.</p>
+{% endblock content_header_highlight %}
+
+{% block content_header_date_fin %}{% endblock %}
+
+{% block content_header_actions %}
+  <button type="button"
+          class="fr-btn fr-btn--sm fr-btn--secondary fr-m-1w"
+          id="button-print"
+          data-action="click->matomo#trackEvent"
+          data-event-page="Programme"
+          data-event-name="Impression"
+  >
+    Enregistrer en PDF
+  </button>
+{% endblock content_header_actions %}
+
+{% block content_body %}
+  <div class="fr-container fr-py-4w">
+    <form id="form-filters"
+          class="fr-grid-row fr-grid-row--gutters fr-mb-1w"
+          hx-trigger="change"
+          hx-get="{% url 'aides:parent-aide' pk=object.pk slug=object.slug %}"
+          hx-include="this"
+          hx-select="#content"
+          hx-target="#content"
+          hx-swap="innerHTML"
+          hx-push-url="true"
+    >
+      {% if filter_departements and filter_departements|length > 1 %}
+        {% ui_select_rich_multi label="Filtrer par départements" name="filter_departements" button_text="Départements" keep_default_button_label=True options=filter_departements searchable=True initials=filter_departements_initials %}
+      {% endif %}
+      {% if filter_types and filter_types|length > 1 %}
+        {% ui_select_rich_multi label="Filtrer par types de dispositifs" name="filter_types" button_text="Types" keep_default_button_label=True options=filter_types initials=filter_types_initials %}
+      {% endif %}
+      {% if filter_beneficiaires and filter_beneficiaires|length > 1 %}
+        {% ui_select_rich_multi label="Filtrer par bénéficiaires" name="filter_beneficiaires" button_text="Bénéficiaires" keep_default_button_label=True options=filter_beneficiaires initials=filter_beneficiaires_initials %}
+      {% endif %}
+      {% if filter_filieres and filter_filieres|length > 1 %}
+        {% ui_select_rich_multi label="Filtrer par filières" name="filter_filieres" button_text="Filières" keep_default_button_label=True options=filter_filieres searchable=True initials=filter_filieres_initials %}
+      {% endif %}
+      {% if filter_sujets and filter_sujets|length > 1 %}
+        {% ui_select_rich_multi label="Filtrer par besoins" name="filter_sujets" button_text="Besoins" keep_default_button_label=True options=filter_sujets searchable=True initials=filter_sujets_initials %}
+      {% endif %}
+    </form>
+
+    <div class="fr-grid-row fr-mb-5w">
+      <div class="fr-col">
+        <div class="fr-tags-group">
+          {% for filtered_departement in filtered_departements %}
+            <label for="select-rich-filter_departements-option-{{ filtered_departement.code }}"
+                   class="fr-tag fr-tag--remove-filter"
+                   aria-label="Supprimer le filtre sur le département {{ filtered_departement.code }}"
+            >Département : {{ filtered_departement.code }}</label>
+          {% endfor %}
+          {% for filtered_type in filtered_types %}
+            <label for="select-rich-filter_types-option-{{ filtered_type.pk }}"
+                   class="fr-tag fr-tag--remove-filter"
+                   aria-label="Supprimer le filtre sur le type d’aides {{ filtered_type.nom }}"
+            >Type : {{ filtered_type.nom }}</label>
+          {% endfor %}
+          {% for filtered_beneficiaire in filtered_beneficiaires %}
+            <label for="select-rich-filter_beneficiaires-option-{{ filtered_beneficiaire }}"
+                   class="fr-tag fr-tag--remove-filter"
+                   aria-label="Supprimer le filtre sur le type de bénéficiaires {{ filtered_beneficiaire }}"
+            >Bénéficiaires : {{ filtered_beneficiaire }}</label>
+          {% endfor %}
+          {% for filtered_filiere in filtered_filieres %}
+            <label for="select-rich-filter_filieres-option-{{ filtered_filiere.pk }}"
+                   class="fr-tag fr-tag--remove-filter"
+                   aria-label="Supprimer le filtre sur la filière {{ filtered_filiere.nom }}"
+            >Filières : {{ filtered_filiere.nom }}</label>
+          {% endfor %}
+          {% for filtered_sujet in filtered_sujets %}
+            <label for="select-rich-filter_sujets-option-{{ filtered_sujet.pk }}"
+                   class="fr-tag fr-tag--remove-filter"
+                   aria-label="Supprimer le filtre sur le besoin {{ filtered_sujet.nom_court }}"
+            >Besoin : {{ filtered_sujet.nom_court }}</label>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="fr-grid-row fr-mb-4w">
+      {% with filtered_children.count as filtered_count %}
+      <div class="fr-col">
+          <h2 class="fr-h4">{{ filtered_count }} dispositif{{ filtered_count|pluralize }} correspond{{ filtered_count|pluralize:"ent" }} à votre recherche.</h2>
+        {% include "aides/blocks/parent_aide_detail__children.html" with children=filtered_children %}
+      </div>
+      {% endwith %}
+    </div>
+
+    {% if other_children %}
+      {% with other_children.count as other_count %}
+      <div class="fr-grid-row">
+        <div class="fr-col">
+          <h2 class="fr-h4">Ce programme contient également le{{ other_count|pluralize }} {{ other_children.count }} dispositif{{ other_count|pluralize }} suivant{{ other_count|pluralize }}</h2>
+          {% include "aides/blocks/parent_aide_detail__children.html" with children=other_children %}
+        </div>
+      </div>
+      {% endwith %}
+    {% endif %}
+  </div>
+{% endblock content_body %}

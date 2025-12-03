@@ -1,9 +1,10 @@
+from django.db.models import Q
 from django.http.response import HttpResponsePermanentRedirect
 from django.views.generic import DetailView
 
 from aides_feedback.forms import CreateFeedbackOnAidesForm
 
-from .models import Aide
+from .models import Aide, ZoneGeographique, Type, Filiere, Beneficiaires, Sujet
 
 
 class AideDetailView(DetailView):
@@ -85,4 +86,151 @@ class AideDetailView(DetailView):
             }
         )
 
+        return context_data
+
+
+class ParentAideDetailView(DetailView):
+    template_name = "aides/parent_aide_detail.html"
+
+    def get_queryset(self):
+        if self.request.user and self.request.user.has_perm("aides.view_aide"):
+            qs = Aide.objects.having_children()
+        else:
+            qs = Aide.objects.having_published_children()
+        return qs.prefetch_related(
+            "sujets", "children", "types", "eligibilite_beneficiaires"
+        )
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+
+        filtered_departements = ZoneGeographique.objects.departements().filter(
+            code__in=self.request.GET.getlist("filter_departements", [])
+        )
+
+        if not filtered_departements and "commune" in self.request.GET:
+            try:
+                filtered_departements = [
+                    ZoneGeographique.objects.communes()
+                    .get(code=self.request.GET["commune"])
+                    .parent
+                ]
+            except ZoneGeographique.DoesNotExist:
+                pass
+
+        filtered_types = Type.objects.filter(
+            pk__in=self.request.GET.getlist("filter_types", [])
+        )
+
+        filtered_filieres = Filiere.objects.filter(
+            pk__in=self.request.GET.getlist("filter_filieres", [])
+        )
+
+        filtered_beneficiaires = Beneficiaires.objects.filter(
+            pk__in=self.request.GET.getlist("filter_beneficiaires", [])
+        )
+
+        filtered_sujets = Sujet.objects.filter(
+            pk__in=self.request.GET.getlist("filter_sujets", [])
+        )
+
+        children = self.object.children.published().prefetch_related("sujets", "types")
+        q_children = Q()
+        if filtered_departements:
+            q_children &= Q(zones_geographiques__in=filtered_departements)
+        if filtered_types:
+            q_children &= Q(types__in=filtered_types)
+        if filtered_beneficiaires:
+            q_children &= Q(eligibilite_beneficiaires__in=filtered_beneficiaires)
+        if filtered_sujets:
+            q_children &= Q(sujets__in=filtered_sujets)
+
+        context_data.update(
+            {
+                "create_feedback_on_aides_form": CreateFeedbackOnAidesForm(),
+                "filtered_children": children.filter(q_children),
+                "other_children": children.exclude(q_children) if q_children else None,
+            }
+        )
+        if not self.object.zones_geographiques.exists():
+            context_data.update(
+                {
+                    "filter_departements": [
+                        (
+                            departement.code,
+                            f"{departement.code} {departement.nom}",
+                            departement.nom,
+                        )
+                        for departement in ZoneGeographique.objects.departements()
+                        .filter(aides__parent_id=self.object.pk)
+                        .distinct()
+                    ],
+                    "filter_departements_initials": [
+                        dept.code for dept in filtered_departements
+                    ],
+                    "filtered_departements": filtered_departements,
+                }
+            )
+        if not self.object.types.exists():
+            context_data.update(
+                {
+                    "filter_types": [
+                        (type_aides.pk, type_aides.nom, type_aides.nom)
+                        for type_aides in Type.objects.filter(
+                            aides__parent_id=self.object.pk
+                        ).distinct()
+                    ],
+                    "filtered_types": filtered_types,
+                    "filter_types_initials": [
+                        type_aides.pk for type_aides in filtered_types
+                    ],
+                }
+            )
+        if not self.object.filieres.exists():
+            context_data.update(
+                {
+                    "filter_filieres": [
+                        (filiere.pk, filiere.nom, filiere.nom)
+                        for filiere in Filiere.objects.filter(
+                            aides__parent_id=self.object.pk
+                        ).distinct()
+                    ],
+                    "filtered_filieres": filtered_filieres,
+                    "filter_filieres_initials": [
+                        filiere.pk for filiere in filtered_filieres
+                    ],
+                }
+            )
+        if not self.object.eligibilite_beneficiaires.exists():
+            context_data.update(
+                {
+                    "filter_beneficiaires": [
+                        (
+                            beneficiaires.pk,
+                            beneficiaires.nom,
+                            beneficiaires.nom,
+                        )
+                        for beneficiaires in Beneficiaires.objects.filter(
+                            aides__parent_id=self.object.pk
+                        ).distinct()
+                    ],
+                    "filtered_beneficiaires": filtered_beneficiaires,
+                    "filter_beneficiaires_initials": [
+                        beneficiaire.pk for beneficiaire in filtered_beneficiaires
+                    ],
+                }
+            )
+        if not self.object.sujets.exists():
+            context_data.update(
+                {
+                    "filter_sujets": [
+                        (sujets.pk, sujets.nom, sujets.nom)
+                        for sujets in Sujet.objects.filter(
+                            aides__parent_id=self.object.pk
+                        ).distinct()
+                    ],
+                    "filtered_sujets": filtered_sujets,
+                    "filter_sujets_initials": [sujet.pk for sujet in filtered_sujets],
+                }
+            )
         return context_data

@@ -1,0 +1,37 @@
+form {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+label.fr-tag.fr-tag--remove-filter {
+  cursor: pointer;
+  --idle:transparent;
+  --hover:var(--background-action-high-blue-france-hover);
+  --active:var(--background-action-high-blue-france-active);
+  background-color:var(--background-action-high-blue-france);
+  color:var(--text-inverted-blue-france)
+}
+
+label.fr-tag--remove-filter:after {
+  --icon-size:1rem;
+  background-color:currentColor;
+  content:"";
+  display:inline-block;
+  flex:0 0 auto;
+  height:var(--icon-size);
+  margin-left:.25rem;
+  margin-right:-.25rem;
+  -webkit-mask-image:url(/static/dsfr/dist/icons/system/close-line.svg);
+  mask-image:url(/static/dsfr/dist/icons/system/close-line.svg);
+  -webkit-mask-size:100% 100%;
+  mask-size:100% 100%;
+  vertical-align:calc((.75em - var(--icon-size))*.5);
+  width:var(--icon-size)
+}
+
+@media print {
+  #form-filters {
+    display: none;
+  }
+}
