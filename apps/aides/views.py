@@ -1,5 +1,8 @@
+from urllib.parse import urlparse
+
 from django.db.models import Q
 from django.http.response import HttpResponsePermanentRedirect
+from django.urls import resolve
 from django.views.generic import DetailView
 
 from aides_feedback.forms import CreateFeedbackOnAidesForm
@@ -23,14 +26,35 @@ class AideDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
+
         breadcrumb_links = []
-        if "HTTP_REFERER" in self.request.META:
+        if "breadcrumb_entry_point_url" in self.request.GET:
             breadcrumb_links.append(
                 {
-                    "url": self.request.META["HTTP_REFERER"],
-                    "title": "Sélection personnalisée",
+                    "url": self.request.GET["breadcrumb_entry_point_url"],
+                    "title": self.request.GET["breadcrumb_entry_point_title"],
                 }
             )
+
+        if "breadcrumb_first_aide_url" in self.request.GET:
+            breadcrumb_links.append(
+                {
+                    "url": self.request.GET["breadcrumb_first_aide_url"],
+                    "title": self.request.GET["breadcrumb_first_aide_title"],
+                }
+            )
+
+        if "HTTP_REFERER" in self.request.META:
+            referrer = urlparse(self.request.META["HTTP_REFERER"])
+            if match := resolve(referrer.path):
+                if match.view_name == "aides:parent-aide":
+                    referring_aide = Aide.objects.get(pk=match.kwargs.get("pk"))
+                    breadcrumb_links.append(
+                        {
+                            "title": referring_aide.nom,
+                            "url": f"{referrer.path}?{self.request.GET.urlencode()}",
+                        }
+                    )
 
         sections = {"presentation": "Présentation du dispositif"}
 
@@ -104,6 +128,40 @@ class ParentAideDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
+        breadcrumb_links = []
+        if (
+            "breadcrumb_entry_point_url" in self.request.GET
+            and "breadcrumb_entry_point_title" in self.request.GET
+        ):
+            breadcrumb_links.append(
+                {
+                    "url": self.request.GET["breadcrumb_entry_point_url"],
+                    "title": self.request.GET["breadcrumb_entry_point_title"],
+                }
+            )
+
+        links_querydict = self.request.GET.copy()
+        if (
+            "HTTP_REFERER" in self.request.META
+            and "breadcrumb_first_aide_url" not in self.request.GET
+        ):
+            referrer = urlparse(self.request.META["HTTP_REFERER"])
+            if match := resolve(referrer.path):
+                if match.view_name == "aides:aide":
+                    referring_aide = Aide.objects.get(pk=match.kwargs.get("pk"))
+                    links_querydict["breadcrumb_first_aide_title"] = referring_aide.nom
+                    links_querydict["breadcrumb_first_aide_url"] = (
+                        f"{referrer.path}?{self.request.GET.urlencode()}"
+                    )
+
+        if "breadcrumb_first_aide_url" in links_querydict:
+            breadcrumb_links.append(
+                {
+                    "title": links_querydict["breadcrumb_first_aide_title"],
+                    "url": links_querydict["breadcrumb_first_aide_url"],
+                }
+            )
+
         filtered_departements = ZoneGeographique.objects.departements().filter(
             code__in=self.request.GET.getlist("filter_departements", [])
         )
@@ -147,6 +205,11 @@ class ParentAideDetailView(DetailView):
 
         context_data.update(
             {
+                "breadcrumb_data": {
+                    "links": breadcrumb_links,
+                    "current": self.object.nom,
+                },
+                "links_querydict": links_querydict,
                 "create_feedback_on_aides_form": CreateFeedbackOnAidesForm(),
                 "filtered_children": children.filter(q_children),
                 "other_children": children.exclude(q_children) if q_children else None,

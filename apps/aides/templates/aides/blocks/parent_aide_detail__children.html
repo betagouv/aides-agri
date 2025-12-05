@@ -4,7 +4,7 @@
   <div class="fr-py-1w">
     <div class="fr-mb-1w">
       <span class="fr-icon-arrow-right-line fr-pr-1v" aria-hidden="true"></span>
-      <a class="fr-link" href="{% url 'aides:aide' child.pk child.slug %}">{{ child.nom }}</a>
+      <a class="fr-link" href="{% url 'aides:aide' child.pk child.slug %}{% querystring links_querydict %}">{{ child.nom }}</a>
     </div>
     <div class="fr-text--sm fr-mb-1v">{{ child.promesse }}</div>
     <div class="fr-tags-group fr-tags-group--with-badges">
