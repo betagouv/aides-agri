@@ -1,9 +1,13 @@
+from urllib.parse import urlparse
+
+from django.db.models import Q
 from django.http.response import HttpResponsePermanentRedirect
+from django.urls import resolve
 from django.views.generic import DetailView
 
 from aides_feedback.forms import CreateFeedbackOnAidesForm
 
-from .models import Aide
+from .models import Aide, ZoneGeographique, Type
 
 
 class AideDetailView(DetailView):
@@ -22,14 +26,35 @@ class AideDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
+
         breadcrumb_links = []
-        if "HTTP_REFERER" in self.request.META:
+        if "breadcrumb_entry_point_url" in self.request.GET:
             breadcrumb_links.append(
                 {
-                    "url": self.request.META["HTTP_REFERER"],
-                    "title": "Sélection personnalisée",
+                    "url": self.request.GET["breadcrumb_entry_point_url"],
+                    "title": self.request.GET["breadcrumb_entry_point_title"],
                 }
             )
+
+        if "breadcrumb_first_aide_url" in self.request.GET:
+            breadcrumb_links.append(
+                {
+                    "url": self.request.GET["breadcrumb_first_aide_url"],
+                    "title": self.request.GET["breadcrumb_first_aide_title"],
+                }
+            )
+
+        if "HTTP_REFERER" in self.request.META:
+            referrer = urlparse(self.request.META["HTTP_REFERER"])
+            if match := resolve(referrer.path):
+                if match.view_name == "aides:parent-aide":
+                    referring_aide = Aide.objects.get(pk=match.kwargs.get("pk"))
+                    breadcrumb_links.append(
+                        {
+                            "title": referring_aide.nom,
+                            "url": f"{referrer.path}?{self.request.GET.urlencode()}",
+                        }
+                    )
 
         sections = {"presentation": "Présentation du dispositif"}
 
@@ -85,4 +110,117 @@ class AideDetailView(DetailView):
             }
         )
 
+        return context_data
+
+
+class ParentAideDetailView(DetailView):
+    template_name = "aides/parent_aide_detail.html"
+
+    def get_queryset(self):
+        if self.request.user and self.request.user.has_perm("aides.view_aide"):
+            qs = Aide.objects.having_children()
+        else:
+            qs = Aide.objects.having_published_children()
+        return qs.prefetch_related("sujets", "children")
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+
+        breadcrumb_links = []
+        if (
+            "breadcrumb_entry_point_url" in self.request.GET
+            and "breadcrumb_entry_point_title" in self.request.GET
+        ):
+            breadcrumb_links.append(
+                {
+                    "url": self.request.GET["breadcrumb_entry_point_url"],
+                    "title": self.request.GET["breadcrumb_entry_point_title"],
+                }
+            )
+
+        links_querydict = self.request.GET.copy()
+        if (
+            "HTTP_REFERER" in self.request.META
+            and "breadcrumb_first_aide_url" not in self.request.GET
+        ):
+            referrer = urlparse(self.request.META["HTTP_REFERER"])
+            if match := resolve(referrer.path):
+                if match.view_name == "aides:aide":
+                    referring_aide = Aide.objects.get(pk=match.kwargs.get("pk"))
+                    links_querydict["breadcrumb_first_aide_title"] = referring_aide.nom
+                    links_querydict["breadcrumb_first_aide_url"] = (
+                        f"{referrer.path}?{self.request.GET.urlencode()}"
+                    )
+
+        if "breadcrumb_first_aide_url" in links_querydict:
+            breadcrumb_links.append(
+                {
+                    "title": links_querydict["breadcrumb_first_aide_title"],
+                    "url": links_querydict["breadcrumb_first_aide_url"],
+                }
+            )
+
+        filtered_departements = ZoneGeographique.objects.departements().filter(
+            code__in=self.request.GET.getlist("filter_departements", [])
+        )
+        if not filtered_departements and "commune" in self.request.GET:
+            try:
+                filtered_departements = [
+                    ZoneGeographique.objects.communes()
+                    .get(code=self.request.GET["commune"])
+                    .parent
+                ]
+            except ZoneGeographique.DoesNotExist:
+                pass
+        filtered_types = Type.objects.filter(
+            pk__in=self.request.GET.getlist("filter_types", [])
+        )
+
+        children = self.object.children.published().prefetch_related("sujets")
+        q_children = Q()
+        if filtered_departements:
+            q_children &= Q(zones_geographiques__in=filtered_departements)
+        if filtered_types:
+            q_children &= Q(types__in=filtered_types)
+
+        context_data.update(
+            {
+                "breadcrumb_data": {
+                    "links": breadcrumb_links,
+                    "current": self.object.nom,
+                },
+                "links_querydict": links_querydict,
+                "create_feedback_on_aides_form": CreateFeedbackOnAidesForm(),
+                "filtered_children": children.filter(q_children),
+                "other_children": children.exclude(q_children) if q_children else None,
+                "filter_departements": [
+                    (
+                        departement.code,
+                        f"{departement.code} {departement.nom}",
+                        departement.nom,
+                    )
+                    for departement in ZoneGeographique.objects.departements()
+                    .filter(aides__parent_id=self.object.pk)
+                    .distinct()
+                ],
+                "filter_departements_initials": [
+                    dept.code for dept in filtered_departements
+                ],
+                "filtered_departements": filtered_departements,
+                "filter_types": [
+                    (
+                        type_aides.pk,
+                        type_aides.nom,
+                        type_aides.nom,
+                    )
+                    for type_aides in Type.objects.filter(
+                        aides__parent_id=self.object.pk
+                    ).distinct()
+                ],
+                "filtered_types": filtered_types,
+                "filter_types_initials": [
+                    type_aides.pk for type_aides in filtered_types
+                ],
+            }
+        )
         return context_data
