@@ -73,7 +73,7 @@ document.onreadystatechange = evt => {
             <span class="fr-icon fr-icon-information-line fr-artwork-minor--blue-france" aria-hidden="true"></span>
             <strong>Ce dispositif fait partie du programme :</strong> {{ object.parent.nom }}.
             <a class="fr-link fr-ml-1w"
-               href="{% url 'aides:parent-aide' object.parent.pk object.parent.slug %}"
+               href="{% url 'aides:parent-aide' object.parent.pk object.parent.slug %}{% querystring %}"
             >Voir tous les dispositifs du programme</a>
           </div>
         {% endif %}
