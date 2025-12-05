@@ -164,6 +164,16 @@ class ParentAideDetailView(DetailView):
             code__in=self.request.GET.getlist("filter_departements", [])
         )
 
+        if not filtered_departements and "commune" in self.request.GET:
+            try:
+                filtered_departements = [
+                    ZoneGeographique.objects.communes()
+                    .get(code=self.request.GET["commune"])
+                    .parent
+                ]
+            except ZoneGeographique.DoesNotExist:
+                pass
+
         filtered_types = Type.objects.filter(
             pk__in=self.request.GET.getlist("filter_types", [])
         )
