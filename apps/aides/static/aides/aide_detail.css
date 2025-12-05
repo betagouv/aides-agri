@@ -36,6 +36,7 @@ p + ul {
   #footer,
   .fr-breadcrumb,
   .fr-btn,
+  #toc,
   #aides-feedback {
     display: none;
   }
