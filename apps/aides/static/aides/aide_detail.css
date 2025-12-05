@@ -1,6 +1,6 @@
 .organisme-logo {
   max-width: 16%;
-  max-height: 200px;
+  max-height: 120px;
 }
 
 .fr-icon.fr-artwork-minor--blue-france {
@@ -27,6 +27,10 @@ p + ul {
   margin-bottom: 16px;
 }
 
+p:has(> strong) + p {
+  margin-top: -16px;
+}
+
 #back-to-top {
   position: sticky;
   top: 90%;
@@ -36,6 +40,7 @@ p + ul {
   #footer,
   .fr-breadcrumb,
   .fr-btn,
+  #toc,
   #aides-feedback {
     display: none;
   }
