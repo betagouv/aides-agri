@@ -518,9 +518,9 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             {
                 "title": "Vue des aides en Kanban",
                 "aides_by_status": {
-                    .select_related("organisme", "assigned_to")
                     status.label: Aide.objects.filter(status=status)
                     .filter(q_filter)
+                    .select_related("organisme", "assigned_to", "parent")
                     .order_by("date_target_publication", "-priority")
                     for status in Aide.Status
                     if status not in (Aide.Status.ARCHIVED,)
