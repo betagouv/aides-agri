@@ -71,7 +71,7 @@
           <h3><strong>Organisme</strong> : {{ aide.organisme.nom_court }}</h3>
           <p><strong>Commentaires internes</strong> : {{ aide.internal_comments|default:"aucun" }}</p>
           <p><a href="{% url 'admin:aides_aide_change' aide.pk %}?from_dashboard=1">Travailler sur cette aide</a></p>
-          {% if aide.children.exists %}
+          {% if aide.is_derivable %}
             <p><a href="?parent={{ aide.pk }}">Où en sont les déclinaisons ?</a></p>
           {% endif %}
         </dialog>
