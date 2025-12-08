@@ -11,7 +11,7 @@ from django import forms
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import UploadedFile
-from django.db.models import QuerySet, TextField
+from django.db.models import QuerySet, TextField, Q
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -511,14 +511,16 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     @button(label="Vue Kanban")
     def dashboard(self, request):
         context = self.get_common_context(request)
+        q_filter = Q()
+        if parent_id := request.GET.get("parent", None):
+            q_filter = q_filter & Q(parent_id=parent_id)
         context.update(
             {
                 "title": "Vue des aides en Kanban",
                 "aides_by_status": {
-                    status.label: Aide.objects.filter(
-                        status=status, parent_id=request.GET.get("parent", None)
-                    )
                     .select_related("organisme", "assigned_to")
+                    status.label: Aide.objects.filter(status=status)
+                    .filter(q_filter)
                     .order_by("date_target_publication", "-priority")
                     for status in Aide.Status
                     if status not in (Aide.Status.ARCHIVED,)
