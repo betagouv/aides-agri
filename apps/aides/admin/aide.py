@@ -254,7 +254,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             ].widget = ArrayFieldCheckboxSelectMultiple(
                 choices=Aide.EtatAvancementProjet.choices
             )
-        if obj:
+        if obj and "status" in form.base_fields:
             if obj.is_derivable:
                 statuses_to_remove = (Aide.Status.PUBLISHED, Aide.Status.VALIDATED)
             else:
