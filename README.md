@@ -1,4 +1,4 @@
-# Aides Agri
+# Aides Agri [![Dependabot](https://github.com/betagouv/aides-agri/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/betagouv/aides-agri/actions/workflows/dependabot/dependabot-updates) [![CodeQL](https://github.com/betagouv/aides-agri/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/betagouv/aides-agri/actions/workflows/github-code-scanning/codeql) [![codecov](https://codecov.io/github/betagouv/aides-agri/graph/badge.svg?token=xjak0wulP0)](https://codecov.io/github/betagouv/aides-agri)
 
 Base de code du service public numérique [Aides Agri](https://beta.gouv.fr/startups/plateforme-agriculteurs.html).
 
