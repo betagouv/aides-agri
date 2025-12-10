@@ -88,7 +88,7 @@ class ConcurrentModelAdmin(admin.ModelAdmin):
         if request.method != "POST":
             return HttpResponseNotAllowed(["post"])
         Write.objects.filter(obj=self._get_object_identifier(object_id)).delete()
-        return HttpResponseRedirect("../change")
+        return HttpResponseRedirect("../change/")
 
     def get_urls(self):
         urls = super().get_urls()

@@ -1,5 +1,6 @@
 from django.contrib.admin import site
 from django.contrib.auth import get_user_model
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django_otp import middleware as django_otp_middleware
 
@@ -30,6 +31,7 @@ def test_concurrent_model_admin(
     urlread = reverse("admin:auth_user_concurrencyread", args=[admin_user.pk])
     urlwrite = reverse("admin:auth_user_concurrencywrite", args=[admin_user.pk])
     urlrelease = reverse("admin:auth_user_concurrencyrelease", args=[admin_user.pk])
+    urlforce = reverse("admin:auth_user_concurrencyforce", args=[admin_user.pk])
 
     # WHEN an admin goes on a change form
     res = admin_client.get(urlchange)
@@ -73,6 +75,23 @@ def test_concurrent_model_admin(
     assert res.status_code == 200
 
     # THEN the second admin is allowed to see the change form as editable
+    res = admin_client2.get(urlchange)
+    assert res.status_code == 200
+    assert res.context_data["has_change_permission"]
+
+    # WHEN the first admin registers as writer AGAIN
+    res = admin_client.post(urlwrite)
+
+    # THEN the second admin can see the same change page, but as not editable, AGAIN
+    res = admin_client2.get(urlchange)
+    assert res.status_code == 200
+    assert not res.context_data["has_change_permission"]
+
+    # WHEN the second admin forces the first admin out
+    res = admin_client2.post(urlforce)
+    # THEN they are redirected to the same change page, but editable
+    assert isinstance(res, HttpResponseRedirect)
+    assert res.status_code == 302
     res = admin_client2.get(urlchange)
     assert res.status_code == 200
     assert res.context_data["has_change_permission"]

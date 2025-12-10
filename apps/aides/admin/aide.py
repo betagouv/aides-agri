@@ -1,29 +1,23 @@
 import copy
-import csv
 import datetime
 
 from admin_extra_buttons.api import ExtraButtonsMixin, button
 from django.contrib import admin
 from django.contrib.admin.utils import flatten_fieldsets
 from django.contrib.admin.views.main import ChangeList
-from django.contrib import messages
 from django import forms
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
-from django.core.exceptions import ValidationError
-from django.core.files.uploadedfile import UploadedFile
-from django.db.models import QuerySet, TextField, Q
+from django.db.models import TextField, Q
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
-from django.utils.text import slugify
 from django.utils.safestring import mark_safe
 from reversion.admin import VersionAdmin
 
 from admin_concurrency.admin import ConcurrentModelAdmin
 
 from ..models import ZoneGeographique, Aide, Sujet
-from ..tasks import enrich_aide
 from ..interop import write_aides_as_csv
 from ._common import ArrayFieldCheckboxSelectMultiple
 
@@ -363,80 +357,6 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     def is_published(self, obj):
         return obj.is_published
 
-    actions = ["perform_auto_enrich"]
-
-    @button(label="Importer un fichier CSV d'aides", html_attrs={"class": "addlink"})
-    def upload(self, request):
-        context = self.get_common_context(request)
-        if request.method == "POST":
-            form = UploadForm(request.POST, request.FILES)
-            if form.is_valid():
-                csvreader = csv.DictReader(
-                    chunk.decode() for chunk in request.FILES["csvfile"]
-                )
-                to_create = []
-                for row in csvreader:
-                    to_create.append(
-                        Aide(
-                            nom=row["nom_aide"],
-                            slug=f"999-{slugify(row['nom_aide'])}",
-                            raw_data=row,
-                        )
-                    )
-                objs = Aide.objects.bulk_create(to_create)
-                return redirect(
-                    reverse(
-                        admin_urlname(context["opts"], "changelist"),
-                        query={"id__exact": [obj.pk for obj in objs]},
-                    )
-                )
-        else:
-            form = UploadForm()
-        context.update({"form": form, "title": "Importer un fichier CSV d'aides"})
-        return TemplateResponse(request, "admin/upload_aides_csv.html", context)
-
-    @admin.action(description="Mapper les champs bruts pour enrichissement automatique")
-    def perform_auto_enrich(self, request, queryset: QuerySet):
-        if "perform_auto_enrich" in request.POST:
-            mapping = {
-                key[4:]: value
-                for key, value in request.POST.items()
-                if key.startswith("map-")
-            }
-            for aide in queryset:
-                enrich_aide.enqueue(aide.pk, mapping)
-            self.message_user(
-                request,
-                "Enrichissement automatique lancé, sera prêt dans quelques secondes",
-            )
-            return None
-        else:
-            raw_data_keys = queryset.first().raw_data.keys()
-            for obj in queryset:
-                if not obj.raw_data or obj.raw_data.keys() != raw_data_keys:
-                    self.message_user(
-                        request,
-                        "Toutes les aides sélectionnées pour le mapping doivent provenir du même import.",
-                        messages.ERROR,
-                    )
-                    return None
-            context = self.get_common_context(request)
-            context.update(
-                {
-                    "title": "Sélectionner le champ à enrichir pour chaque champ brut de l'import",
-                    "raw_data_keys": raw_data_keys,
-                    "aide_fields": (Aide.organisme,),
-                    "select_across": request.POST["select_across"],
-                    "index": request.POST["index"],
-                    "pks": queryset.values_list("pk", flat=True),
-                }
-            )
-            return TemplateResponse(
-                request,
-                "admin/map_aide_raw_fields.html",
-                context,
-            )
-
     @staticmethod
     def _derive_aide(aide_id: int, nom: str, is_derivable: bool) -> Aide:
         aide = Aide.objects.get(pk=aide_id)
@@ -540,7 +460,8 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             headers={"Content-Disposition": f'attachment; filename="{filename}.csv"'},
         )
 
-        return write_aides_as_csv(response, Aide.objects.values_list("pk", flat=True))
+        write_aides_as_csv(response, Aide.objects.values_list("pk", flat=True))
+        return response
 
     def response_post_save_change(self, request, obj):
         if "_save_and_back_to_dashboard" in request.POST:
@@ -562,36 +483,3 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         if not change:
             return
         super().save_related(request, form, formsets, change)
-
-
-def validate_content_type_csv(value: UploadedFile):
-    if value.content_type != "text/csv":
-        raise ValidationError(
-            "Merci d'envoyer un fichier CSV valide", params={"value": value}
-        )
-
-
-def validate_first_row_header(value: UploadedFile):
-    try:
-        csvreader = csv.DictReader(chunk.decode() for chunk in value)
-        for row in csvreader:
-            if len(row.keys()) == 1:
-                raise ValidationError("Le délimiteur CSV doit être la virgule (,).")
-            if "nom_aide" not in row.keys():
-                raise ValidationError(
-                    "La première ligne du fichier doit être un entête avec au moins la colonne 'nom_aide'",
-                    params={"value": value},
-                )
-            return
-    except UnicodeDecodeError:
-        raise ValidationError(
-            "Merci d'envoyer un fichier CSV valide", params={"value": value}
-        )
-
-
-class UploadForm(forms.Form):
-    csvfile = forms.FileField(
-        label="Choisir un fichier CSV à envoyer",
-        help_text="Le délimiteur attendu est la virgule. La première ligne du fichier doit être une ligne d'entête indiquant les noms des colonnes ; l'une de ces colonnes doit être nommée 'nom_aide'",
-        validators=[validate_content_type_csv, validate_first_row_header],
-    )

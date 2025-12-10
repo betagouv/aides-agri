@@ -22,3 +22,7 @@ register(
     code="75001",
     parent=LazyFixture("zone_geographique_departement_75"),
 )
+
+register(factories.FiliereFactory)
+register(factories.GroupementProducteursFactory)
+register(factories.AideFactory)
