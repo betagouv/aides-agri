@@ -57,7 +57,11 @@ jobs:
           DJANGO_SETTINGS_MODULE: conf.settings.testing
           SECRET_KEY: notsecret
       - name: Run tests
-        run: uv run --no-sync pytest --cov
+        run: uv run --no-sync pytest --cov --cov-report=xml
         env:
           DJANGO_SETTINGS_MODULE: conf.settings.testing
           SECRET_KEY: notsecret
+      - name: Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
