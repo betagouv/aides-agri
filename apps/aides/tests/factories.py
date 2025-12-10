@@ -40,6 +40,21 @@ class SujetFactory(factory.django.DjangoModelFactory):
         obj.themes.set([value])
 
 
+class FiliereFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.Filiere
+
+    nom = factory.Sequence(lambda n: f"Filière {n}")
+
+
+class GroupementProducteursFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.GroupementProducteurs
+
+    nom = factory.Sequence(lambda n: f"Groupement {n}")
+    libelle = factory.Sequence(lambda n: f"Libellé Groupement {n}")
+
+
 class TypeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Type
