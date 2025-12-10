@@ -540,7 +540,8 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             headers={"Content-Disposition": f'attachment; filename="{filename}.csv"'},
         )
 
-        return write_aides_as_csv(response, Aide.objects.values_list("pk", flat=True))
+        write_aides_as_csv(response, Aide.objects.values_list("pk", flat=True))
+        return response
 
     def response_post_save_change(self, request, obj):
         if "_save_and_back_to_dashboard" in request.POST:
