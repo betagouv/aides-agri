@@ -1,6 +1,12 @@
 {% extends "dsfr/header.html" %}
 
-{% load i18n %}
+{% load i18n static %}
+
+{% block operator_logo %}
+  <div class="fr-header__operator">
+    <img class="fr-responsive-img" src="{% static 'ui/logos/aides-agri.svg' %}" alt="">
+  </div>
+{% endblock operator_logo %}
 
 {% block header_tools_links %}
   <div class="fr-print-only fr-text--xs">
