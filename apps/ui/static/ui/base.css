@@ -2,6 +2,10 @@ html {
   scroll-behavior: smooth;
 }
 
+.fr-header__operator > .fr-responsive-img {
+  max-width: 3.5rem;
+}
+
 body > .fr-notice.fr-notice--info {
 	--idle: transparent;
 	--hover: var(--background-contrast-green-emeraude-hover);
