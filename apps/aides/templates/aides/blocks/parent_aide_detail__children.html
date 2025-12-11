@@ -1,0 +1,15 @@
+{% load dsfr_tags %}
+
+{% for child in children %}
+  <div class="fr-py-1w">
+    <div class="fr-mb-1w">
+      <a class="fr-link" href="{% url 'aides:aide' child.pk child.slug %}{% querystring links_querydict %}">{{ child.nom }}</a>
+    </div>
+    <div class="fr-text--sm fr-mb-1v">{{ child.promesse }}</div>
+    <div class="fr-tags-group">
+      {% for sujet in child.sujets.all %}
+        <div class="fr-tag fr-tag--sm">{{ sujet.nom_court }}</div>
+      {% endfor %}
+    </div>
+  </div>
+{% endfor %}
