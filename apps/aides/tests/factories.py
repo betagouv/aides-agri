@@ -77,6 +77,7 @@ class ZoneGeographiqueFactory(factory.django.DjangoModelFactory):
 class AideFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Aide
+        skip_postgeneration_save = True
 
     nom = factory.Sequence(lambda n: f"Aide {n}")
     organisme = None

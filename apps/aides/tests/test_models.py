@@ -32,5 +32,6 @@ class TestAide:
     def test_compute_priority(self, organisme, type_aide, theme, sujet, aide, expected):
         # GIVEN an Aide with some characteristics
         # WHEN it's saved into DB
+        aide.save()
         # THEN its priority is computed and saved to the expected value
         assert aide.priority == expected
