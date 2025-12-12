@@ -1,4 +1,4 @@
-{% extends "agri/_base.html" %}
+{% extends "ui/base.html" %}
 
 {% load static i18n dsfr_tags %}
 
@@ -95,7 +95,7 @@ document.onreadystatechange = evt => {
 
 {% block title %}Votre sélection personnalisée.{% endblock title %}
 
-{% block main_col %}
+{% block content %}
 <div class="fr-col fr-col-12" id="alert-placeholder"></div>
 <main id="content" role="main" aria-label="Contenu" class="fr-col fr-col-12 fr-col-md-9">
   <h1 class="fr-h1">Votre sélection personnalisée.</h1>
@@ -185,7 +185,7 @@ document.onreadystatechange = evt => {
     </div>
   </div>
 </main>
-{% endblock main_col %}
+{% endblock content %}
 
 {% block aftercontent %}
   {% include "aides_feedback/blocks/create_feedback_on_aides.html" with form=create_feedback_on_aides_form %}

@@ -55,26 +55,18 @@
       <section class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-mt-12w">
         <div class="fr-col">
           <div id="themes" class="fr-background-default--grey fr-border-plain--grey fr-px-2w fr-px-md-12w fr-py-6w">
-            <h2 class="fr-h1 fr-mb-2w">Pour commencer, <br>sélectionnez votre besoin :</h2>
-            <p class="fr-text--sm fr-mb-1w">Étape 1 sur 4</p>
-            <div class="fr-container--fluid fr-mx-n3w fr-py-2w">
-              <div class="fr-grid-row fr-grid-row--gutters fr-p-3w">
-                {% for url, theme in themes %}
-                  <div class="fr-col-12 fr-col-sm-6 fr-py-1v">
-                    {% if theme.urgence %}
-                      {% dsfr_tile heading_tag="p" title=theme.nom description=theme.description url=url extra_classes="fr-tile--horizontal fr-p-4w fr-background-alt--blue-ecume fr-tile--shadow" %}
-                    {% else %}
-                      {% dsfr_tile heading_tag="p" title=theme.nom description=theme.description url=url extra_classes="fr-tile--horizontal fr-p-4w" %}
-                    {% endif %}
-                  </div>
-                {% endfor %}
-              </div>
-              <div class="fr-grid-row--gutters">
-                <div id="cta-feedback" class="fr-col fr-col-12 fr-col-md-6 fr-mx-auto">
-                  <h3 class="fr-h6 fr-mt-3w">Vous ne trouvez pas votre besoin ?</h3>
-                  <button type="button" class="fr-btn fr-btn--tertiary" data-fr-opened="false" aria-controls="fr-modal-feedback">
-                    Expliquez-nous.
-                  </button>
+            <h2 class="fr-mb-2w">Pour commencer, sélectionnez votre département :</h2>
+            {% dsfr_select label="Département" options=departements default=departements_default %}
+            <div class="shown-if-departement-selected">
+              <h2 class="fr-my-2w">Puis choisissez une manière de naviguer sur ce site :</h2>
+              <div class="fr-container">
+                <div class="fr-grid-row fr-grid-row--gutters">
+                  {% url "agri:results" as url_results %}
+                  {% url "agri:sujets" as url_sujets %}
+                  <div class="fr-col fr-col-md-6">{% dsfr_tile title="Montrez-moi tout ce que vous avez" url=url_results %}</div>
+                  <div class="fr-col fr-col-md-6">{% dsfr_tile title="Je rencontre une difficulté urgente impactant mon activité" url=url_sujets %}</div>
+                  <div class="fr-col fr-col-md-6">{% dsfr_tile title="Rechercher par mots-clés" url=url_results %}</div>
+                  <div class="fr-col fr-col-md-6">{% dsfr_tile title="Rechercher par besoin" url=url_sujets %}</div>
                 </div>
               </div>
             </div>

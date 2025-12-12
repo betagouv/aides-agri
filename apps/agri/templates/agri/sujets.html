@@ -1,0 +1,56 @@
+{% extends "ui/base.html" %}
+
+{% load static dsfr_tags %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'agri/sujets.css' %}">
+{% endblock extra_css %}
+
+{% block title %}Rechercher par besoin{% endblock %}
+
+{% block content %}
+  <div id="themes"
+       class="fr-grid-row fr-grid-row--gutters"
+       hx-boost="true"
+       hx-target="#sujets"
+       hx-select="#sujets"
+       hx-swap="outerHTML show:none"
+  >
+    {% for url, theme in themes %}
+      <div class="fr-col-12 fr-col-sm-6 fr-py-1v">
+        {% if theme.urgence %}
+          {% dsfr_tile heading_tag="p" title=theme.nom description=theme.description url=url extra_classes="fr-tile--horizontal fr-p-4w fr-background-alt--blue-ecume fr-tile--shadow" %}
+        {% else %}
+          {% dsfr_tile heading_tag="p" title=theme.nom description=theme.description url=url extra_classes="fr-tile--horizontal fr-p-4w" %}
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <div id="sujets">
+    {% if sujets %}
+      <form action="{% url 'agri:results' %}">
+        <fieldset class="fr-fieldset fr-grid-row fr-grid-row--gutters fr-mt-0 fr-mb-4w"
+             data-controller="checkbox-group-field"
+             data-checkbox-group-field-required-value="true"
+        >
+          <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="checkboxes-legend">
+              Sélectionnez une ou plusieurs options.
+          </legend>
+          {% for sujet in sujets %}
+          <div class="fr-col fr-col-12 sujet">
+            <div class="fr-checkbox-group">
+              <input id="sujet-{{ sujet.pk }}" type="checkbox" name="sujets" value="{{ sujet.pk }}" checked>
+              <label class="fr-label" for="sujet-{{ sujet.pk }}">{{ sujet.nom }}</label>
+            </div>
+          </div>
+          {% endfor %}
+          <div class="fr-error-text fr-icon-error-line fr-hidden" data-checkbox-group-field-target="error" role="alert">
+            Veuillez sélectionner au moins un sujet pour passer à la suite
+          </div>
+        </fieldset>
+        <button class="fr-btn" type="submit">Voir les dispositifs</button>
+      </form>
+    {% endif %}
+  </div>
+{% endblock content %}
