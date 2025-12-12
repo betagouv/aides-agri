@@ -195,3 +195,6 @@ LOGGING = {
 
 # Email
 DEFAULT_FROM_EMAIL = "aides-agri@beta.gouv.fr"
+
+# Forms
+FORMS_URLFIELD_ASSUME_HTTPS = True
