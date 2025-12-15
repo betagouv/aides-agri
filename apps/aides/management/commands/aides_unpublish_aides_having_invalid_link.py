@@ -25,11 +25,16 @@ class Command(BaseCommand):
         except requests.exceptions.SSLError as e:
             logger.warning(e)
             return cls._do_request(url, verify=False)
-        except requests.exceptions.ConnectionError:
+        except requests.exceptions.RequestException:
             return 0
 
     def handle(self, *args, **options):
+        no_url_descriptif = set()
+        unpublished = set()
+        to_be_verified = set()
         for aide in Aide.objects.published():
+            if not aide.url_descriptif:
+                no_url_descriptif.add(aide)
             status_code = self._do_request(aide.url_descriptif)
 
             if status_code == 200:
@@ -38,20 +43,40 @@ class Command(BaseCommand):
                 aide.status = Aide.Status.ARCHIVED
                 aide.internal_comments += f"\n\n{localtime().strftime('%d/%M/%Y %Hh%i')} : dépublication pour cause d’erreur 404"
                 aide.save()
-                subject = "Une aide a été dépubliée"
-                message = "L’aide suivante a été dépubliée parce que son URL de descritif répond une erreur 404 : "
+                unpublished.add(aide)
             else:
-                subject = "Une aide mérite une vérification de d’URL"
-                message = "L’aide suivante mérite une vérification de son URL de descriptif : "
-            url = (
-                settings.HTTP_SCHEME
-                + get_current_site(None).domain
-                + reverse("admin:aides_aide_change", args=[aide.pk])
+                to_be_verified.add((aide, status_code))
+
+        base_url = settings.HTTP_SCHEME + get_current_site(None).domain
+        messages = ""
+        if no_url_descriptif:
+            messages += "Les aides suivantes n’ont pas d’URL de descriptif :\n"
+            messages += "\n".join(
+                [
+                    f"- {base_url}{reverse('admin:aides_aide_change', args=[aide.pk])} : {aide.nom}"
+                    for aide in no_url_descriptif
+                ]
             )
-            message += f"{aide.nom} ({url})"
+        if unpublished:
+            messages += "\n\nLes aides suivantes ont été dépubliées car leurs URLs de descriptifs ont répondu des erreurs 404 :\n"
+            messages += "\n".join(
+                [
+                    f"- {base_url}{reverse('admin:aides_aide_change', args=[aide.pk])} : {aide.nom} ({aide.url_descriptif})"
+                    for aide in unpublished
+                ]
+            )
+        if to_be_verified:
+            messages += "\n\nLes aides suivantes ont besoin d’une vérification manuelles car leurs URLs de descriptifs ont répondu des erreurs autres que 404 :\n"
+            messages += "\n".join(
+                [
+                    f"- {base_url}{reverse('admin:aides_aide_change', args=[aide.pk])} : {aide.nom} ({aide.url_descriptif} ; code HTTP {status_code})"
+                    for aide, status_code in to_be_verified
+                ]
+            )
+        if messages:
             send_mail(
-                f"[Aides Agri {settings.ENVIRONMENT}] {subject}",
-                message,
+                "Du ménage dans les aides",
+                messages,
                 settings.DEFAULT_FROM_EMAIL,
                 settings.AIDES_MANAGERS,
             )
