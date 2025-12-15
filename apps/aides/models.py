@@ -342,7 +342,7 @@ class AideQuerySet(models.QuerySet):
     def by_filieres(self, filieres: list[Filiere]):
         return self.filter(models.Q(filieres=None) | models.Q(filieres__in=filieres))
 
-    def by_zone_geographique(self, commune: ZoneGeographique) -> models.QuerySet:
+    def by_commune(self, commune: ZoneGeographique) -> models.QuerySet:
         if not commune:
             return self
 
