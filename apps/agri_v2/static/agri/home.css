@@ -1,0 +1,50 @@
+#content {
+  background-image: url("images/home/background.webp");
+  background-repeat: no-repeat;
+  background-position-y: -200px;
+}
+
+#intro h1, #intro p {
+  color: #161616;
+}
+
+#proposition article {
+  border-radius: 8px;
+  text-align: left;
+  height: 100%;
+}
+
+#fr-icon-selection-fill:after, .fr-icon-selection-fill:before{
+  -webkit-mask-image:url("images/home/selection.svg");
+  mask-image:url("images/home/selection.svg")
+}
+
+#fr-icon-orientation-fill:after, .fr-icon-orientation-fill:before{
+  -webkit-mask-image:url("images/home/orientation.svg");
+  mask-image:url("images/home/orientation.svg")
+}
+
+#themes {
+  border-radius: 8px;
+}
+
+#themes .fr-tile--shadow {
+  filter: drop-shadow(var(--lifted-shadow));
+}
+
+#intro, #a-propos h2, #cta-feedback {
+  text-align: center;
+  text-wrap: balance;
+}
+
+@media (min-width:62em) {
+  #content {
+    background-position-y: -300px;
+  }
+}
+
+@media (min-width:1921px) {
+  #content {
+    background-size: cover;
+  }
+}

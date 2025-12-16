@@ -1,0 +1,21 @@
+#theme .fr-tile__title::before {
+  background: none;
+}
+
+.sujet {
+  border-bottom: 1px solid var(--border-contrast-grey);
+}
+
+.fr-checkbox-group input[type="checkbox"] + label.fr-label {
+  margin-left: 3rem;
+}
+
+.fr-checkbox-group input[type="checkbox"] + label.fr-label::before {
+  left: -3rem;
+}
+
+@media (min-width:62em) {
+  h2.fr-h6 {
+    text-wrap: nowrap;
+  }
+}

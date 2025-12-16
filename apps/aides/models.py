@@ -111,6 +111,18 @@ class SujetQuerySet(WithAidesCounterQuerySet):
     def published(self):
         return self.with_aides_count().filter(published=True, aides_count__gt=0)
 
+    def having_published_aides_in_departement_and_theme(
+        self, departement: "ZoneGeographique", theme: Theme
+    ):
+        return self.filter(
+            pk__in=set(
+                Aide.objects.published()
+                .by_departement(departement)
+                .by_theme(theme)
+                .values_list("sujets", flat=True)
+            )
+        )
+
 
 class Sujet(models.Model):
     class Meta:
@@ -301,6 +313,9 @@ class AideQuerySet(models.QuerySet):
     def published(self):
         return self.filter(status=Aide.Status.PUBLISHED)
 
+    def by_theme(self, theme: Theme) -> models.QuerySet:
+        return self.filter(sujets__themes=theme.pk)
+
     def by_sujets(self, sujets: list[Sujet]) -> models.QuerySet:
         return self.filter(sujets__in=sujets)
 
@@ -339,6 +354,12 @@ class AideQuerySet(models.QuerySet):
             |
             # Organisme : same commune
             models.Q(organisme__zones_geographiques=commune)
+        )
+
+    def by_departement(self, departement: ZoneGeographique):
+        return self.filter(
+            models.Q(couverture_geographique=Aide.CouvertureGeographique.NATIONAL)
+            | models.Q(zones_geographiques__in=[departement.pk, departement.parent_id])
         )
 
 

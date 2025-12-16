@@ -1,0 +1,20 @@
+.fr-radio-rich .fr-text--sm {
+  margin-bottom: 0;
+}
+
+#themes .fr-tile--horizontal .fr-tile__header {
+  margin: 0;
+}
+
+#themes .fr-tile--horizontal .fr-tile__img {
+  width: 0;
+  margin: 0;
+}
+
+#themes .fr-tile--horizontal .fr-tile__content {
+  padding-bottom: 0;
+}
+
+#themes .fr-tile--horizontal .fr-tile__link::after {
+  content: none;
+}

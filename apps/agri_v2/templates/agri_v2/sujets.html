@@ -1,0 +1,61 @@
+{% extends "ui/base.html" %}
+
+{% load static dsfr_tags %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'agri/sujets.css' %}">
+{% endblock extra_css %}
+
+{% block title %}Rechercher par besoin{% endblock %}
+
+{% block content %}
+  <form id="sujets-themes"
+        hx-get="{% url 'agri_v2:sujets' %}{% querystring %}"
+        hx-trigger="change"
+        hx-target="#sujets-sujets"
+        hx-select="#sujets-sujets"
+        hx-swap="outerHTML show:none"
+  >
+    {% dsfr_stepper current_step_id=2 total_steps=3 %}
+
+    {% for url, theme in themes %}
+      <div class="fr-radio-group fr-radio-rich fr-my-2w">
+        <input value="{{ theme.pk }}" type="radio" id="fr-radios-theme-{{ theme.pk }}" name="theme">
+        <label class="fr-label" for="fr-radios-theme-{{ theme.pk }}">
+          <strong>{{ theme.nom }}</strong>
+          <br>
+          <span class="fr-text--sm fr-text-mention--grey">{{ theme.description }}</span>
+        </label>
+      </div>
+    {% endfor %}
+  </form>
+
+  <div id="sujets-sujets" class="fr-my-4w">
+    {% if sujets %}
+      <form action="{% url 'agri_v2:results' %}">
+        <input type="hidden" name="departement" value="{{ departement }}">
+        <input type="hidden" name="theme" value="{{ theme_id }}">
+        <fieldset class="fr-fieldset fr-grid-row fr-grid-row--gutters fr-mt-0 fr-mb-4w"
+             data-controller="checkbox-group-field"
+             data-checkbox-group-field-required-value="true"
+        >
+          <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="checkboxes-legend">
+              Sélectionnez une ou plusieurs options.
+          </legend>
+          {% for sujet in sujets %}
+          <div class="fr-col fr-col-12 sujet">
+            <div class="fr-checkbox-group">
+              <input id="sujet-{{ sujet.pk }}" type="checkbox" name="sujets" value="{{ sujet.pk }}" checked>
+              <label class="fr-label" for="sujet-{{ sujet.pk }}">{{ sujet.nom }}</label>
+            </div>
+          </div>
+          {% endfor %}
+          <div class="fr-error-text fr-icon-error-line fr-hidden" data-checkbox-group-field-target="error" role="alert">
+            Veuillez sélectionner au moins un sujet pour passer à la suite
+          </div>
+        </fieldset>
+        <button class="fr-btn" type="submit">Voir les dispositifs</button>
+      </form>
+    {% endif %}
+  </div>
+{% endblock content %}

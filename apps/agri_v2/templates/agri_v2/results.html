@@ -1,0 +1,154 @@
+{% extends "ui/base.html" %}
+
+{% load static i18n dsfr_tags ui_tags %}
+
+{% block extra_css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'ui/components/select-rich.css' %}">
+  <link rel="stylesheet" href="{% static 'agri/results.css' %}">
+  <link rel="stylesheet" href="{% static 'aides_feedback/base.css' %}">
+{% endblock extra_css %}
+
+{% block extra_js %}
+<script nonce="{{ request.csp_nonce }}">
+document.onreadystatechange = evt => {
+  document.getElementById("button-print").onclick = () => window.print()
+}
+</script>
+{% endblock extra_js %}
+
+{% block modals %}
+{% if aides %}
+<dialog class="fr-modal"
+        id="modal-send-by-mail"
+        aria-labelledby="modal-send-by-mail-title"
+>
+  <div class="fr-container fr-container--fluid fr-container-md">
+    <div class="fr-grid-row fr-grid-row--center">
+      <div class="fr-col-12 fr-col-md-8 fr-col-lg-7">
+        <div class="fr-modal__body">
+          <form method="post"
+                action="{% url 'agri:send-results-by-mail' %}{% querystring %}"
+                hx-boost="true"
+                hx-target="#alert-placeholder"
+                hx-swap="innerHTML show:none"
+                hx-push-url="false"
+          >
+            {% csrf_token %}
+            <div class="fr-modal__header">
+              <button type="button" class="fr-btn--close fr-btn" aria-controls="modal-send-by-mail">Fermer</button>
+            </div>
+            <div class="fr-modal__content" id="modal-send-by-mail-content">
+              <h1 id="modal-send-by-mail-title" class="fr-modal__title">
+                <span class="fr-icon-arrow-right-line fr-icon--lg"></span>
+                S’envoyer les résultats de la recherche par e-mail.
+              </h1>
+              <p>Partagez-nous votre adresse e-mail pour recevoir vos résultats dans votre boite e-mail. Nous utiliserons votre adresse e-mail seulement à cet effet.</p>
+                <div class="fr-input-group">
+                  <label for="send-by-mail-field-email" class="fr-label">
+                    Adresse de courrier électronique
+                    <span class="fr-hint-text">Format attendu : nom@domaine.fr</span>
+                  </label>
+                  <input type="email"
+                         name="email"
+                         id="send-by-mail-field-email"
+                         class="fr-input"
+                         required
+                  >
+                </div>
+            </div>
+            <div class="fr-modal__footer" id="modal-send-results-by-mail-footer">
+              <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
+                <button type="submit"
+                        class="fr-btn fr-icon-checkbox-circle-line fr-btn--icon-left"
+                        aria-controls="modal-send-by-mail"
+                >
+                  Envoyer par e-mail
+                </button>
+                <button type="button"
+                        class="fr-btn fr-btn--secondary"
+                        aria-controls="modal-send-by-mail"
+                >
+                  Annuler
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+{% endif %}
+{% endblock modals %}
+
+{% block title %}Notre catalogue de dispositifs{% endblock title %}
+
+{% block content %}
+<div class="fr-col fr-col-12" id="alert-placeholder"></div>
+<main id="content" role="main" aria-label="Contenu" class="fr-col fr-col-12">
+  <h1 class="fr-h1">Notre catalogue de dispositifs</h1>
+
+  {% if aides %}
+  <div id="actions" class="fr-container--fluid fr-my-2w">
+      <button type="button"
+              class="fr-btn fr-btn--icon-left fr-btn--sm fr-pl-4v fr-btn--secondary fr-icon-mail-line"
+              aria-controls="modal-send-by-mail"
+              data-fr-opened="false"
+      >
+        Recevoir par e-mail
+      </button>
+      <button type="button"
+              class="fr-btn fr-btn--icon-left fr-btn--sm fr-pl-4v fr-btn--secondary fr-icon-file-pdf-line"
+              id="button-print"
+              data-action="click->matomo#trackEvent"
+              data-event-page="Recommandation"
+              data-event-name="Impression"
+      >
+        Enregistrer en PDF
+      </button>
+  </div>
+  {% endif %}
+
+  <div class="fr-container">
+    <div class="fr-grid-row fr-grid-row--gutters">
+      {% if filter_departements|length > 1 %}
+        <div class="fr-col fr-col-md-3">
+          {% ui_select_rich_multi label="Filtrer par départements" button_text="Départements" name="filter_departements" options=filter_departements initials=filter_departements_initials %}
+        </div>
+      {% endif %}
+      {% if filter_types|length > 1 %}
+        <div class="fr-col fr-col-md-3">
+          {% ui_select_rich_multi label="Filtrer par types de dispositifs" button_text="Types de dispositifs" name="filter_types" options=filter_types initials=filter_types_initials %}
+        </div>
+      {% endif %}
+      {% if filter_beneficiaires|length > 1 %}
+        <div class="fr-col fr-col-md-3">
+          {% ui_select_rich_multi label="Filtrer par bénéficiaires" button_text="Bénéficiares" name="filter_beneficiaires" options=filter_beneficiaires initials=filter_beneficiaires_initials %}
+        </div>
+      {% endif %}
+      {% if filter_filieres|length > 1 %}
+        <div class="fr-col fr-col-md-3">
+          {% ui_select_rich_multi label="Filtrer par filières" button_text="Filières" name="filter_filieres" options=filter_filieres initials=filter_filieres_initials %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="fr-container fr-p-0">
+    <div id="recommandation" class="fr-grid-row fr-grid-row--gutters fr-mb-5w">
+      {% for aide in aides %}
+        <div class="fr-col fr-col-12 fr-mb-1w">
+          {% dsfr_card aide %}
+        </div>
+      {% empty %}
+        Désolés, aucun dispositif ne correspond à votre recherche.
+      {% endfor %}
+    </div>
+  </div>
+</main>
+{% endblock content %}
+
+{% block aftercontent %}
+  {% include "aides_feedback/blocks/create_feedback_on_aides.html" with form=create_feedback_on_aides_form %}
+{% endblock aftercontent %}
