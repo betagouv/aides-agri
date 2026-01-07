@@ -133,6 +133,7 @@ def ui_select_rich_multi(*args, **kwargs) -> dict:
     allowed_keys = [
         "label",
         "name",
+        "button_text",
         "options",
         "initials",
         "helper",
