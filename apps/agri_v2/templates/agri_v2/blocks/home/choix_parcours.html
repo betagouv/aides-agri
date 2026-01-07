@@ -1,0 +1,34 @@
+{% load dsfr_tags %}
+
+{% if departement %}
+  <h2 class="fr-mt-3w fr-mb-2w fr-label">Quelle recherche souhaitez-vous effectuer ?</h2>
+  <div class="fr-container-fluid">
+    {% url "agri_v2:home" as url_home %}
+    {% querystring departement=departement theme=0 as qs_home %}
+    {% querystring departement=departement theme=theme_urgence_id as qs_home_theme_urgence %}
+    {% url "agri_v2:results" as url_results %}
+    {% querystring departement=None departements=departement as qs_results %}
+    <div class="fr-my-2w"
+         hx-boost="true"
+         hx-target="#recherche"
+         hx-swap="innerHTML show:none"
+         hx-push-url="false"
+    >
+      {% dsfr_tile extra_classes="fr-tile--horizontal fr-tile--sm fr-tile--no-icon fr-py-3v fr-background-alt--blue-ecume fr-tile--shadow" title="Je souhaite voir tous les dispositifs liés à une difficulté urgente impactant l’activité de mon exploitation." description="Visualisez tous les dispositifs qui pourraient vous aider à traverser une crise, un différend, une complexité administrative ou encore un problème de santé." url=url_home|add:qs_home_theme_urgence %}
+    </div>
+    <div class="fr-my-2w">
+      {% dsfr_tile extra_classes="fr-tile--horizontal fr-tile--sm fr-tile--no-icon fr-py-3v" title="Je souhaite réaliser une recherche de dispositifs par mots-clés." description="Réalisez une recherche précise en utilisant des mots-clés pertinents pour votre situation ou besoin (ex : remplacement tracteur)." url=url_results|add:qs_results %}
+    </div>
+    <div class="fr-my-2w"
+         hx-boost="true"
+         hx-target="#recherche"
+         hx-swap="innerHTML show:none"
+         hx-push-url="false"
+    >
+      {% dsfr_tile extra_classes="fr-tile--horizontal fr-tile--sm fr-tile--no-icon fr-py-3v" title="Je souhaite réaliser une recherche des dispositifs par besoins." description="Sélectionnez parmi une liste les besoins correspondant à votre situation (ex : Je souhaite développer ou optimiser mon/mes activités.)" url=url_home|add:qs_home %}
+    </div>
+    <div class="fr-my-2w">
+      {% dsfr_tile extra_classes="fr-tile--horizontal fr-tile--sm fr-tile--no-icon fr-py-3v" title="Je souhaite voir tous les dispositifs de la plateforme." description="Accédez à l’ensemble des dispositifs disponibles sur notre plateforme nationaux et locaux." url=url_results|add:qs_results %}
+    </div>
+  </div>
+{% endif %}

@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "ui",
     "product",
     "agri",
+    "agri_v2",
     "aides",
     "aides_feedback",
     "pac",
