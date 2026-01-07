@@ -133,6 +133,7 @@ def ui_select_rich_multi(*args, **kwargs) -> dict:
     allowed_keys = [
         "label",
         "name",
+        "button_text",
         "options",
         "initials",
         "helper",
@@ -149,7 +150,7 @@ def ui_select_rich_multi(*args, **kwargs) -> dict:
     tag_data = parse_tag_args(args, kwargs, allowed_keys)
     tag_data["multi"] = True
 
-    if tag_data["with_tags"]:
+    if "with_tags" in tag_data and "initials" in tag_data:
         tag_data["tags"] = [
             (option[0], option[2])
             for option in tag_data["options"]
