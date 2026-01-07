@@ -69,6 +69,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         ("programmes", admin.RelatedOnlyFieldListFilter),
         ("organisme", admin.RelatedOnlyFieldListFilter),
         ("filieres", admin.RelatedOnlyFieldListFilter),
+        ("eligibilite_beneficiaires", admin.RelatedOnlyFieldListFilter),
         ("zones_geographiques", admin.RelatedOnlyFieldListFilter),
         ("assigned_to", admin.RelatedOnlyFieldListFilter),
         ("parent", admin.RelatedOnlyFieldListFilter),
@@ -150,7 +151,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                     "programmes",
                     "base_juridique",
                     "aap_ami",
-                    ("beneficiaires", "filieres"),
+                    ("eligibilite_beneficiaires", "filieres"),
                     ("montant", "participation_agriculteur"),
                     "duree_accompagnement",
                     ("couverture_geographique", "zones_geographiques"),
@@ -240,10 +241,6 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj=obj, change=change, **kwargs)
-        if "beneficiaires" in form.base_fields:
-            form.base_fields["beneficiaires"].widget = ArrayFieldCheckboxSelectMultiple(
-                choices=Aide.Beneficiaire.choices
-            )
         if "eligibilite_etape_avancement_projet" in form.base_fields:
             form.base_fields[
                 "eligibilite_etape_avancement_projet"

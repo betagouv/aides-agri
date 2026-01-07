@@ -316,7 +316,15 @@ class AideQuerySet(models.QuerySet):
             )
         )
 
-    def by_filieres(self, filieres: Filiere):
+    def by_groupements_producteurs(
+        self, groupements_producteurs: list[GroupementProducteurs]
+    ):
+        return self.filter(
+            models.Q(eligibilite_beneficiaires=None)
+            | models.Q(eligibilite_beneficiaires__in=groupements_producteurs)
+        )
+
+    def by_filieres(self, filieres: list[Filiere]):
         return self.filter(models.Q(filieres=None) | models.Q(filieres__in=filieres))
 
     def by_zone_geographique(self, commune: ZoneGeographique) -> models.QuerySet:
@@ -383,14 +391,6 @@ class Aide(models.Model):
         OUTRE_MER = "Outre-mer", "Outre-mer"
         DEPARTEMENTAL = "Départemental", "Départemental"
         LOCAL = "Local", "Local"
-
-    class Beneficiaire(models.TextChoices):
-        AGRI = "Agriculteurs"
-        CUMA = "CUMA"
-        SICA = "SICA"
-        SCA = "SCA"
-        GIEE = "GIEE"
-        OP = "Organisations de producteurs"
 
     class Recurrence(models.TextChoices):
         PERMANENTE = "Permanente"
@@ -590,10 +590,10 @@ class Aide(models.Model):
         blank=True, verbose_name="Durée de l’accompagnement"
     )
     etapes = models.TextField(blank=True, verbose_name="Étapes")
-    beneficiaires = postgres_fields.ArrayField(
-        models.CharField(choices=Beneficiaire),
-        null=True,
+    eligibilite_beneficiaires = models.ManyToManyField(
+        GroupementProducteurs,
         blank=True,
+        related_name="aides",
         verbose_name="Bénéficiaires",
     )
     filieres = models.ManyToManyField(
