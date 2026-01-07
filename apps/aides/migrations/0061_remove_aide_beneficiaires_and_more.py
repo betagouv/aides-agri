@@ -7,6 +7,7 @@ def data_migration(apps, schema_editor):
     Aide = apps.get_model("aides", "Aide")
     GroupementProducteurs = apps.get_model("aides", "GroupementProducteurs")
     mapping = {
+        "ASA": "ASA",
         "CUMA": "CUMA",
         "GIEE": "GIEE",
         "Organisations de producteurs": "Organisation de producteurs (OP)",
