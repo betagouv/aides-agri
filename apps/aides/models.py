@@ -384,14 +384,6 @@ class Aide(models.Model):
         DEPARTEMENTAL = "Départemental", "Départemental"
         LOCAL = "Local", "Local"
 
-    class Beneficiaire(models.TextChoices):
-        AGRI = "Agriculteurs"
-        CUMA = "CUMA"
-        SICA = "SICA"
-        SCA = "SCA"
-        GIEE = "GIEE"
-        OP = "Organisations de producteurs"
-
     class Recurrence(models.TextChoices):
         PERMANENTE = "Permanente"
         PONCTUELLE = "Ponctuelle"
@@ -590,10 +582,10 @@ class Aide(models.Model):
         blank=True, verbose_name="Durée de l’accompagnement"
     )
     etapes = models.TextField(blank=True, verbose_name="Étapes")
-    beneficiaires = postgres_fields.ArrayField(
-        models.CharField(choices=Beneficiaire),
-        null=True,
+    eligibilite_beneficiaires = models.ManyToManyField(
+        GroupementProducteurs,
         blank=True,
+        related_name="aides",
         verbose_name="Bénéficiaires",
     )
     filieres = models.ManyToManyField(
