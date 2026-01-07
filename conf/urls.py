@@ -21,7 +21,7 @@ from django.contrib.sitemaps.views import sitemap
 from django.urls import path, include, re_path
 from two_factor.urls import urlpatterns as two_factors_urls
 
-from agri.sitemap import AgriSitemap
+from agri_v2.sitemap import AgriSitemap
 from aides.sitemap import AidesSitemap
 
 sitemaps = {"aides": AidesSitemap, "agri": AgriSitemap}
@@ -29,7 +29,8 @@ sitemaps = {"aides": AidesSitemap, "agri": AgriSitemap}
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="django-sitemap"),
-    path("", include("agri.urls")),
+    path("v1", include("agri.urls")),
+    path("", include("agri_v2.urls")),
     path("", include("aides.urls")),
     path("", include("aides_feedback.urls")),
     path("", include("product.urls")),
