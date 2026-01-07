@@ -8,7 +8,8 @@ export class SelectRich extends Controller {
   static values = {
     name: String,
     multi: Boolean,
-    required: Boolean
+    required: Boolean,
+    keepDefaultButtonLabel: Boolean
   }
   static targets = ["button", "entries", "search", "searchButton", "option", "helper", "error", "tags", "addButton"]
 
@@ -112,7 +113,7 @@ export class SelectRich extends Controller {
       return
     }
 
-    if (this.multiValue) {
+    if (this.multiValue && !this.keepDefaultButtonLabelValue) {
       const checkedInputs = this.entriesTarget.querySelectorAll("input[type=checkbox]:checked")
       if (checkedInputs.length) {
         if (checkedInputs.length === 1) {
