@@ -316,7 +316,15 @@ class AideQuerySet(models.QuerySet):
             )
         )
 
-    def by_filieres(self, filieres: Filiere):
+    def by_groupements_producteurs(
+        self, groupements_producteurs: list[GroupementProducteurs]
+    ):
+        return self.filter(
+            models.Q(eligibilite_beneficiaires=None)
+            | models.Q(eligibilite_beneficiaires__in=groupements_producteurs)
+        )
+
+    def by_filieres(self, filieres: list[Filiere]):
         return self.filter(models.Q(filieres=None) | models.Q(filieres__in=filieres))
 
     def by_zone_geographique(self, commune: ZoneGeographique) -> models.QuerySet:
