@@ -136,6 +136,13 @@ document.onreadystatechange = evt => {
         hx-target="#content"
         hx-swap="outerHTML"
   >
+    <div class="fr-search-bar fr-mb-2w" role="search">
+      <label class="fr-label" for="search-input">
+          Rechercher
+      </label>
+      <input class="fr-input" placeholder="Financement de matériel, assistance, etc." id="search-input" type="search" name="q" value="{{ request.GET.q }}">
+      <button title="Rechercher" type="button" class="fr-btn">Rechercher</button>
+    </div>
     <div class="fr-grid-row fr-grid-row--gutters">
       {% if filter_departements|length > 1 %}
         <div class="fr-col">

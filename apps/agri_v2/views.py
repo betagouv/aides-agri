@@ -1,3 +1,5 @@
+from django.contrib.postgres.search import SearchQuery, SearchRank
+from django.db.models import Prefetch
 from django.shortcuts import render
 from django.templatetags.static import static
 from django.views.generic import TemplateView, ListView, View
@@ -84,6 +86,7 @@ class HomeView(TemplateView):
 class ResultsMixin:
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
+        self.search = request.GET.get("q", None)
         departements_codes = request.GET.getlist("departements", [])
         self.departements = (
             ZoneGeographique.objects.departements().filter(code__in=departements_codes)
@@ -109,6 +112,16 @@ class ResultsMixin:
 
     def get_results(self):
         qs = Aide.objects.filter(parent_id=None).published()
+        if self.search:
+            qs = qs.annotate(
+                rank=SearchRank(
+                    "search_vector",
+                    SearchQuery(self.search, config="french_unaccent"),
+                )
+            ).filter(rank__gt=0)
+            order_by = "-rank"
+        else:
+            order_by = "-priority"
         if self.departements:
             qs = qs.by_departements(self.departements)
         if self.beneficiaires:
@@ -122,8 +135,15 @@ class ResultsMixin:
         return (
             qs.distinct()
             .select_related("organisme")
-            .prefetch_related("zones_geographiques", "types")
-            .order_by("-date_fin")
+            .prefetch_related(
+                "zones_geographiques",
+                "types",
+                "children",
+                Prefetch(
+                    "sujets", queryset=Sujet.objects.published().order_by("nom_court")
+                ),
+            )
+            .order_by(order_by, "-date_fin")
             .defer("organisme__logo")
         )
 
