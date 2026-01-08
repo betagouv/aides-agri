@@ -12,7 +12,7 @@ def test_send_results_by_mail(
     sujet,
     zone_geographique_commune_75001,
     filiere,
-    groupement_producteurs,
+    beneficiaire,
 ):
     # GIVEN an Aide
     assert aide
@@ -32,7 +32,7 @@ def test_send_results_by_mail(
         "2025-12-01",
         ("0", "10"),
         [filiere.pk],
-        [groupement_producteurs.pk],
+        [beneficiaire.pk],
         [aide.pk],
     )
 

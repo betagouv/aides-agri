@@ -24,5 +24,5 @@ register(
 )
 
 register(factories.FiliereFactory)
-register(factories.GroupementProducteursFactory)
+register(factories.BeneficiairesFactory, "beneficiaire")
 register(factories.AideFactory)
