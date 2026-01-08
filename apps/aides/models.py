@@ -276,15 +276,25 @@ class Filiere(models.Model):
         return self.nom
 
 
-class GroupementProducteurs(models.Model):
+class BeneficiairesQuerySet(models.QuerySet):
+    def groupements(self):
+        return self.filter(is_groupement=True)
+
+
+class Beneficiaires(models.Model):
     class Meta:
-        verbose_name = "Groupement de producteurs"
-        verbose_name_plural = "Groupement de producteurs"
+        verbose_name = "Type de bénéficiaires"
+        verbose_name_plural = "Types de bénéficiaires"
         ordering = ("nom",)
+
+    objects = BeneficiairesQuerySet.as_manager()
 
     nom = models.CharField(max_length=100, verbose_name="Nom court")
     libelle = models.CharField(
         max_length=200, blank=True, verbose_name="Nom complet ou explication"
+    )
+    is_groupement = models.BooleanField(
+        default=True, verbose_name="Est un groupement de producteurs"
     )
 
     def __str__(self):
@@ -316,12 +326,10 @@ class AideQuerySet(models.QuerySet):
             )
         )
 
-    def by_groupements_producteurs(
-        self, groupements_producteurs: list[GroupementProducteurs]
-    ):
+    def by_beneficiaires(self, beneficiaires: list[Beneficiaires]):
         return self.filter(
             models.Q(eligibilite_beneficiaires=None)
-            | models.Q(eligibilite_beneficiaires__in=groupements_producteurs)
+            | models.Q(eligibilite_beneficiaires__in=beneficiaires)
         )
 
     def by_filieres(self, filieres: list[Filiere]):
@@ -591,7 +599,7 @@ class Aide(models.Model):
     )
     etapes = models.TextField(blank=True, verbose_name="Étapes")
     eligibilite_beneficiaires = models.ManyToManyField(
-        GroupementProducteurs,
+        Beneficiaires,
         blank=True,
         related_name="aides",
         verbose_name="Bénéficiaires",
