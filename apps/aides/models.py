@@ -2,6 +2,8 @@ from datetime import date
 
 from django.conf import settings
 from django.contrib.postgres import fields as postgres_fields
+from django.contrib.postgres.indexes import GinIndex
+from django.contrib.postgres.search import SearchVector, SearchVectorField
 from django.db import models
 from django.templatetags.static import static
 from django.urls import reverse
@@ -401,8 +403,18 @@ class Aide(models.Model):
     class Meta:
         verbose_name = "Aide"
         verbose_name_plural = "Aides"
+        indexes = [GinIndex(fields=["search_vector"], name="aides_aide_full_text_gin")]
 
     objects = AideQuerySet.as_manager()
+    search_vector = models.GeneratedField(
+        expression=SearchVector("nom", weight="A", config="french_unaccent")
+        + SearchVector("promesse", weight="A", config="french_unaccent")
+        + SearchVector("description", weight="B", config="french_unaccent")
+        + SearchVector("type_depense", weight="D", config="french_unaccent")
+        + SearchVector("conditions", weight="D", config="french_unaccent"),
+        output_field=SearchVectorField(),
+        db_persist=True,
+    )
 
     class Status(models.TextChoices):
         TODO = "00", "0. Backlog - À prioriser"
