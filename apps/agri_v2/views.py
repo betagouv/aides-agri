@@ -1,3 +1,4 @@
+from django.contrib.postgres.search import SearchQuery
 from django.shortcuts import render
 from django.templatetags.static import static
 from django.views.generic import TemplateView, ListView, View
@@ -84,6 +85,7 @@ class HomeView(TemplateView):
 class ResultsMixin:
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
+        self.search = request.GET.get("q", None)
         departements_codes = request.GET.getlist("departements", [])
         self.departements = (
             ZoneGeographique.objects.departements().filter(code__in=departements_codes)
@@ -109,6 +111,10 @@ class ResultsMixin:
 
     def get_results(self):
         qs = Aide.objects.published()
+        if self.search:
+            qs = qs.filter(
+                search_vector=SearchQuery(self.search, config="french_unaccent")
+            )
         if self.departements:
             qs = qs.by_departements(self.departements)
         if self.beneficiaires:
