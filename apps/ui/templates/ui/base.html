@@ -18,7 +18,7 @@
     {% importmap nonce=request.csp_nonce %}
 
     <script type="module" src="{% static 'vendor/htmx.esm.js' %}"></script>
-    <meta name="htmx-config" content='{"allowEval":false, "includeIndicatorStyles":false}'>
+    <meta name="htmx-config" content='{"allowEval":false, "includeIndicatorStyles":false, "attributesToSettle":["class", "width", "height"]}'>
 
     {% if UI_SENTRY_PUBLIC_KEY %}{% include "ui/blocks/sentry.html" %}{% endif %}
     {% if UI_MATOMO_SITE_ID %}{% include "ui/blocks/matomo.html" %}{% endif %}
@@ -58,9 +58,11 @@
       {% endblock breadcrumb %}
 
       {% block content_wrapper %}
-      <main id="content" role="main" aria-label="Contenu">
-        {% block content %}{% endblock content %}
-      </main>
+        {% block beforecontent %}{% endblock %}
+        <main id="content" role="main" aria-label="Contenu">
+          {% block content %}{% endblock content %}
+        </main>
+        {% block aftercontent %}{% endblock %}
       {% endblock content_wrapper %}
     </div>
     {% endblock container %}
