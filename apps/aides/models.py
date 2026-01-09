@@ -329,6 +329,7 @@ class AideQuerySet(models.QuerySet):
     def by_beneficiaires(self, beneficiaires: list[Beneficiaires]):
         return self.filter(
             models.Q(eligibilite_beneficiaires=None)
+            | models.Q(eligibilite_beneficiaires__is_groupement=False)
             | models.Q(eligibilite_beneficiaires__in=beneficiaires)
         )
 
