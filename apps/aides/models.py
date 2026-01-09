@@ -649,6 +649,10 @@ class Aide(models.Model):
     def is_to_be_derived(self):
         return self.status == Aide.Status.TO_BE_DERIVED
 
+    @property
+    def is_complete(self):
+        return self.status in (Aide.Status.VALIDATED, Aide.Status.TO_BE_DERIVED)
+
     def compute_priority(self):
         priority = 0
         priority += self.importance * 20
