@@ -309,13 +309,13 @@ class AideQuerySet(models.QuerySet):
         return self.validated().filter(date_target_publication=date.today())
 
     def published(self):
-        return self.filter(status=Aide.Status.PUBLISHED)
+        return self.filter(is_published=True)
 
     def having_children(self):
         return self.exclude(children=None).distinct()
 
     def having_published_children(self):
-        return self.filter(children__status=Aide.Status.PUBLISHED).distinct()
+        return self.filter(children__is_published=True).distinct()
 
     def by_sujets(self, sujets: list[Sujet]) -> models.QuerySet:
         return self.filter(sujets__in=sujets)
@@ -379,10 +379,9 @@ class Aide(models.Model):
         CHOSEN = "20", "2. Ok scope - À éditer"
         REVIEW = "30", "3. Ok édito - À valider"
         REVIEW_EXPERT = "31", "3.1 En attente validation métier"
-        VALIDATED = "40", "4. Publiée sous embargo"
-        TO_BE_DERIVED = "41", "4.1 À décliner"
-        PUBLISHED = "50", "5. Publiée"
-        ARCHIVED = "99", "6. Archivée"
+        VALIDATED = "40", "4. Validée"
+        TO_BE_DERIVED = "41", "4.1 Validée puis à décliner"
+        ARCHIVED = "99", "99. Archivée"
 
     class RaisonDesactivation(models.TextChoices):
         OFF_TOPIC = "Hors-sujet", "Hors-sujet"
@@ -431,6 +430,7 @@ class Aide(models.Model):
         LOW = 2, "3. Pas urgent ou dure que quelques semaines"
 
     is_derivable = models.BooleanField(default=False, verbose_name="Est déclinable")
+    is_published = models.BooleanField(default=False, verbose_name="Publiée")
     parent = models.ForeignKey(
         "self",
         on_delete=models.CASCADE,
@@ -622,10 +622,6 @@ class Aide(models.Model):
         return (f"{self.parent} > " if self.parent else "") + self.nom
 
     @property
-    def is_published(self):
-        return self.status == Aide.Status.PUBLISHED
-
-    @property
     def is_national(self):
         return self.couverture_geographique == Aide.CouvertureGeographique.NATIONAL
 
@@ -683,13 +679,21 @@ class Aide(models.Model):
 
         self.priority = priority
 
+    def can_be_published(self):
+        return self.status not in (
+            Aide.Status.ARCHIVED,
+            Aide.Status.TODO,
+            Aide.Status.CANDIDATE,
+            Aide.Status.BLOCKED,
+        )
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = f"{slugify(self.organisme.nom) if self.organisme_id else 'organisme-inconnu'}-{slugify(self.nom)}"
         if self.is_published:
-            if not Aide.objects.filter(
-                pk=self.pk, status=Aide.Status.PUBLISHED
-            ).exists():
+            if not self.can_be_published():
+                raise ValueError("This Aide cannot be published")
+            if not Aide.objects.filter(pk=self.pk, is_published=True).exists():
                 self.first_published_at = now()
             self.last_published_at = now()
         self.compute_priority()

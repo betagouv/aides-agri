@@ -41,6 +41,7 @@ class Command(BaseCommand):
                 continue
             elif status_code == 404:
                 aide.status = Aide.Status.ARCHIVED
+                aide.is_published = False
                 aide.internal_comments += f"\n\n{localtime().strftime('%d/%M/%Y %Hh%i')} : dépublication pour cause d’erreur 404"
                 aide.save()
                 unpublished.add(aide)

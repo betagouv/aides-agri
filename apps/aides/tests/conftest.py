@@ -12,10 +12,16 @@ register(factories.SujetFactory, "sujet_2")
 register(factories.TypeFactory, "type_aide")
 register(factories.ZoneGeographiqueFactory)
 register(factories.AideFactory)
-register(factories.AideFactory, "aide_published", status=Aide.Status.PUBLISHED)
+register(
+    factories.AideFactory,
+    "aide_published",
+    status=Aide.Status.VALIDATED,
+    is_published=True,
+)
 register(
     factories.AideFactory,
     "aide_published_with_parent",
-    status=Aide.Status.PUBLISHED,
+    status=Aide.Status.VALIDATED,
+    is_published=True,
     with_parent=True,
 )
