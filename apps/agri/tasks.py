@@ -13,7 +13,7 @@ from aides.models import (
     ZoneGeographique,
     Aide,
     Filiere,
-    GroupementProducteurs,
+    Beneficiaires,
 )
 
 
@@ -35,7 +35,7 @@ def send_results_by_mail(
     sujets = Sujet.objects.filter(pk__in=sujets_ids)
     commune = ZoneGeographique.objects.get(pk=commune_id)
     filieres = Filiere.objects.filter(pk__in=filieres_ids)
-    groupements = GroupementProducteurs.objects.filter(pk__in=groupements_ids)
+    groupements = Beneficiaires.objects.groupements().filter(pk__in=groupements_ids)
     aides = Aide.objects.filter(pk__in=aides_ids)
 
     querystring_dict = QueryDict(mutable=True)

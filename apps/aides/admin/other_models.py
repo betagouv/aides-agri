@@ -12,7 +12,7 @@ from ..models import (
     Organisme,
     ZoneGeographique,
     Filiere,
-    GroupementProducteurs,
+    Beneficiaires,
 )
 from ._common import ArrayFieldCheckboxSelectMultiple
 
@@ -162,9 +162,9 @@ class ZoneGeographiqueAdmin(admin.ModelAdmin):
         return super().get_queryset(request).with_aides_count()
 
 
-@admin.register(GroupementProducteurs)
-class GroupementProducteursAdmin(VersionAdmin):
-    list_display = ("nom", "libelle")
+@admin.register(Beneficiaires)
+class BeneficiairesAdmin(VersionAdmin):
+    list_display = ("nom", "libelle", "is_groupement")
     ordering = ("nom",)
 
 

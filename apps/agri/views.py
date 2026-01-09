@@ -13,7 +13,7 @@ from aides.models import (
     Sujet,
     Aide,
     ZoneGeographique,
-    GroupementProducteurs,
+    Beneficiaires,
     Filiere,
     Type,
 )
@@ -103,9 +103,7 @@ class AgriMixin(ContextMixin):
             self.filieres = Filiere.objects.published().filter(pk__in=filieres_ids)
         groupements_ids = request.GET.getlist("regroupements", [])
         if groupements_ids:
-            self.groupements = GroupementProducteurs.objects.filter(
-                pk__in=groupements_ids
-            )
+            self.groupements = Beneficiaires.objects.filter(pk__in=groupements_ids)
 
     def _get_breadcrumb_data(self):
         querydict = copy(self.request.GET)
@@ -263,7 +261,7 @@ class Step5View(AgriMixin, TemplateView):
                 "etablissement": self.etablissement,
                 "groupements": [
                     (g.pk, g.nom, g.libelle)
-                    for g in GroupementProducteurs.objects.all()
+                    for g in Beneficiaires.objects.groupements()
                 ],
                 "filieres": [
                     (pk, nom, nom)
@@ -289,7 +287,7 @@ class ResultsMixin(AgriMixin):
                 siret.mapping_effectif_complete[self.code_effectif]["min"],
                 siret.mapping_effectif_complete[self.code_effectif]["max"],
             )
-            .by_groupements_producteurs(self.groupements)
+            .by_beneficiaires(self.groupements)
             .by_filieres(self.filieres)
             .select_related("organisme")
             .prefetch_related("zones_geographiques", "types")

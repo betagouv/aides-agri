@@ -47,12 +47,12 @@ class FiliereFactory(factory.django.DjangoModelFactory):
     nom = factory.Sequence(lambda n: f"Filière {n}")
 
 
-class GroupementProducteursFactory(factory.django.DjangoModelFactory):
+class BeneficiairesFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = models.GroupementProducteurs
+        model = models.Beneficiaires
 
-    nom = factory.Sequence(lambda n: f"Groupement {n}")
-    libelle = factory.Sequence(lambda n: f"Libellé Groupement {n}")
+    nom = factory.Sequence(lambda n: f"Bénéficiaires {n}")
+    libelle = factory.Sequence(lambda n: f"Libellé Bénéficiaires {n}")
 
 
 class TypeFactory(factory.django.DjangoModelFactory):
