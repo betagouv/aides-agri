@@ -312,6 +312,11 @@ class ResultsView(ResultsMixin, ListView):
         aides_by_type = {
             type_aide: aides for type_aide, aides in aides_by_type.items() if aides
         }
+        links_querydict = self.request.GET.copy()
+        links_querydict["breadcrumb_entry_point_title"] = "Sélection personnalisée"
+        links_querydict["breadcrumb_entry_point_url"] = (
+            f"{self.request.path}?{self.request.GET.urlencode()}"
+        )
         context_data.update(
             {
                 "skiplinks": [
@@ -331,7 +336,7 @@ class ResultsView(ResultsMixin, ListView):
                             "extra_classes": "fr-card--horizontal fr-card--horizontal-fifth fr-card--no-icon",
                             "title": aide.nom,
                             "description": aide.promesse,
-                            "link": aide.get_absolute_url(),
+                            "link": f"{aide.get_absolute_url()}?{links_querydict.urlencode()}",
                             "image_url": aide.organisme.get_logo_url()
                             if aide.organisme_id
                             else static("agri/images/placeholder.1x1.svg"),
