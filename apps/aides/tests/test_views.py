@@ -15,8 +15,8 @@ def test_aide_detail_not_published_logged_as_admin(admin_client, aide):
 
 
 @pytest.mark.django_db
-def test_aide_detail_published(client, aide):
-    aide.status = aide.Status.PUBLISHED
-    aide.save()
-    res = client.get(reverse("aides:aide", args=[aide.pk, aide.slug]))
+def test_aide_detail_published(client, aide_published):
+    res = client.get(
+        reverse("aides:aide", args=[aide_published.pk, aide_published.slug])
+    )
     assert res.status_code == 200

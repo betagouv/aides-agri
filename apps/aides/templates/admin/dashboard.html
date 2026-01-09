@@ -22,9 +22,16 @@
 <ul class="object-tools">
   <li>
     {% if request.GET.mine %}
-      <a href="?">Toutes</a>
+      <a href="{% querystring mine=None %}">Celles de tout le monde</a>
     {% else %}
-      <a href="?mine=1">Seulement les miennes</a>
+      <a href="{% querystring mine=1 %}">Seulement les miennes</a>
+    {% endif %}
+  </li>
+  <li>
+    {% if request.GET.unpublished %}
+      <a href="{% querystring unpublished=None %}">Afficher les publiées</a>
+    {% else %}
+      <a href="{% querystring unpublished=1 %}">Cacher les publiées</a>
     {% endif %}
   </li>
   <li><a class="addlink" href="{% url opts|admin_urlname:'add' %}">Ajouter aide</a></li>
@@ -50,20 +57,14 @@
               {{ aide.date_target_publication|date:"SHORT_DATE_FORMAT" }}
             </time>
           {% endif %}
-          {% if aide.assigned_to %}
-          <span class="badge">{{ aide.assigned_to.first_name }}</span>
+          {% if aide.is_published %}
+            <span class="badge published">Publiée</span>
           {% endif %}
-          {% if aide.parent %}
-          <span class="badge parent {% if not aide.parent_id %}-root{% endif %}">
-            {# TODO remplacer l'ID par le code quand il sera implémenté #}
-            Parent : {{ aide.parent_id }}
-          </span>
-            {% if aide.parent.parent %}
-            <span class="badge parent {% if not aide.parent.parent.parent_id %}-root{% endif %}">
-              {# TODO remplacer l'ID par le code quand il sera implémenté #}
-              Grand-parent : {{ aide.parent.parent_id }}
-            </span>
-            {% endif %}
+          {% if aide.assigned_to %}
+            <span class="badge">{{ aide.assigned_to.first_name }}</span>
+          {% endif %}
+          {% if aide.parent_id %}
+            <span class="badge parent {% if not aide.parent_id %}-root{% endif %}">Aide déclinée</span>
           {% endif %}
         </span>
         <dialog id="dialog-{{ aide.id }}">
@@ -71,6 +72,9 @@
           <h3><strong>Organisme</strong> : {{ aide.organisme.nom_court }}</h3>
           <p><strong>Commentaires internes</strong> : {{ aide.internal_comments|default:"aucun" }}</p>
           <p><a href="{% url 'admin:aides_aide_change' aide.pk %}?from_dashboard=1">Travailler sur cette aide</a></p>
+          {% if aide.parent_id %}
+            <p><a href="{% url 'admin:aides_aide_change' aide.parent_id %}?from_dashboard=1">Travailler sur l’aide parente</a></p>
+          {% endif %}
           {% if aide.is_derivable %}
             <p><a href="?parent={{ aide.pk }}">Où en sont les déclinaisons ?</a></p>
           {% endif %}
