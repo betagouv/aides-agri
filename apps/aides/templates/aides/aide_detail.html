@@ -71,10 +71,20 @@ document.onreadystatechange = evt => {
         {% if object.parent %}
           <div class="fr-col fr-col-12">
             <span class="fr-icon fr-icon-information-line fr-artwork-minor--blue-france" aria-hidden="true"></span>
-            <strong>Ce dispositif fait partie du programme :</strong> {{ object.parent.nom }}.
+            {% if object.parent.is_departemental and not object.parent.zones_geographiques.exists %}
+              <strong>Ce dispositif est national, mais géré par chaque département.</strong>
+            {% else %}
+              <strong>Ce dispositif fait partie du programme :</strong> {{ object.parent.nom }}.
+            {% endif %}
             <a class="fr-link fr-ml-1w"
                href="{% url 'aides:parent-aide' object.parent.pk object.parent.slug %}{% querystring %}"
-            >Voir tous les dispositifs du programme</a>
+            >
+              {% if object.parent.is_departemental and not object.parent.zones_geographiques.exists %}
+                Voir les détails pour tous les départements
+              {% else %}
+                Voir tous les dispositifs du programme
+              {% endif %}
+            </a>
           </div>
         {% endif %}
       </div>
@@ -83,7 +93,7 @@ document.onreadystatechange = evt => {
       <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--right fr-my-1w">
       {% block content_header_actions %}
         {% if object.url_demarche %}
-          <a class="fr-btn fr-btn--sm fr-btn--primary fr-m-1w"
+          <a class="fr-btn fr-btn--sm fr-btn--primary fr-mx-1w fr-my-2w"
              target="_blank"
              href="{{ object.url_demarche }}"
              data-action="click->matomo#trackEvent"
@@ -94,7 +104,7 @@ document.onreadystatechange = evt => {
           </a>
         {% endif %}
         <button type="button"
-                class="fr-btn fr-btn--sm fr-btn--secondary fr-m-1w"
+                class="fr-btn fr-btn--sm fr-btn--secondary fr-mx-1w fr-my-2w"
                 id="button-print"
                 data-action="click->matomo#trackEvent"
                 data-event-page="Aide"

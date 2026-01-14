@@ -24,7 +24,14 @@
 
 {% block content_header_highlight %}
   {% dsfr_highlight content=object.description_de_base extra_classes="fr-highlight--pink-tuile" %}
-  <p class="fr-mb-1w">Ce programme se décline en {{ object.children.published.count }} dispositifs.</p>
+  <p class="fr-mb-1w">
+  {% if object.is_departemental and not object.zones_geographiques.exists %}
+    Cette fiche regroupe l’ensemble des dispositifs déclinés au niveau départemental.
+    Chaque fiche ci-dessous correspond à un département, mais le dispositif reste le même.
+  {% else %}
+    Ce programme se décline en {{ object.children.published.count }} dispositifs.
+  {% endif %}
+  </p>
 {% endblock content_header_highlight %}
 
 {% block content_header_date_fin %}{% endblock %}
