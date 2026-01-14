@@ -16,9 +16,9 @@ La Plateforme ne s’adresse qu’aux exploitants agricoles et ne délivre que d
 
 « L’Utilisateur » est toute personne physique qui utilise la Plateforme.
 
-La « Plateforme » est le service numérique proposé par la Ruche numérique rattachée au Secrétariat Général du Ministère de l’Agriculture et la Souveraineté Alimentaire.
+La « Plateforme » est le service numérique proposé par la Ruche numérique rattachée au Secrétariat Général du Ministère de l’Agriculture, de l’Agro-alimentaire et la Souveraineté Alimentaire.
 
-« L’Éditeur » est la Ruche numérique rattachée au Secrétariat Général du Ministère de l’Agriculture et la Souveraineté Alimentaire qui met à la disposition du public la Plateforme. 
+« L’Éditeur » est la Ruche numérique rattachée au Secrétariat Général du Ministère de l’Agriculture, de l’Agro-alimentaire et la Souveraineté Alimentaire qui met à la disposition du public la Plateforme. 
 
 ## Article 4 - Fonctionnalités
 

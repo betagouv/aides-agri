@@ -4,13 +4,13 @@ Date de mise à jour : 03/06/2025
 
 ## Éditeur de la plateforme
 
-La plateforme « Aides Agri » est éditée par la Ruche numérique rattachée au Secrétariat Général du Ministère de l’Agriculture et de la Souveraineté Alimentaire, située :
+La plateforme « Aides Agri » est éditée par la Ruche numérique rattachée au Secrétariat Général du Ministère de l’Agriculture, de l’Agro-alimentaire et de la Souveraineté Alimentaire, située :
 78 rue de Varenne 75007 
 Paris – FRANCE
 
 ### Directrice de la publication
 
-La directrice de la publication est Madame Cécile BIGOT-DEKEYZER, secrétaire générale du Ministère de l’Agriculture et de la Souveraineté Alimentaire.
+La directrice de la publication est Madame Cécile BIGOT-DEKEYZER, secrétaire générale du Ministère de l’Agriculture, de l’Agro-alimentaire et de la Souveraineté Alimentaire.
 
 ## Hébergement de la plateforme
 

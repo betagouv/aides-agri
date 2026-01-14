@@ -4,9 +4,9 @@ Date de mise à jour : 03/06/2025
 
 ## I - Qui est responsable de traitement ?
 
-La plateforme « Aides Agri » est développée au sein de la Ruche numérique du Ministère de l’Agriculture et de la Souveraineté Alimentaire.
+La plateforme « Aides Agri » est développée au sein de la Ruche numérique du Ministère de l’Agriculture, de l’Agro-alimentaire et de la Souveraineté Alimentaire.
 
-Le responsable de traitement est le Secrétariat Général du Ministère de l’Agriculture et de la Souveraineté alimentaire représenté par sa secrétaire générale, Madame Cécile BIGOT-DEKEYZER.
+Le responsable de traitement est le Secrétariat Général du Ministère de l’Agriculture, de l’Agro-alimentaire et de la Souveraineté alimentaire représenté par sa secrétaire générale, Madame Cécile BIGOT-DEKEYZER.
 
 ## II - Pourquoi traitons-nous ces données ?
 
