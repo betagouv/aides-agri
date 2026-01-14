@@ -26,7 +26,9 @@ class SelectRichView(TemplateView):
                             (f"value{i}", f"Option {i}, libellé long", f"Option {i}")
                             for i in range(1, 10)
                         ],
-                        "initial": "value2",
+                        "initial": self.request.GET.get(
+                            "select_rich_single_search_internal", "value2"
+                        ),
                         "required": True,
                     },
                     {
@@ -45,7 +47,9 @@ class SelectRichView(TemplateView):
                             (f"value{i}", f"Option {i}, libellé long", f"Option {i}")
                             for i in range(1, 10)
                         ],
-                        "initials": ("value2", "value3"),
+                        "initials": self.request.GET.getlist(
+                            "select_rich_multi", ("value2", "value3")
+                        ),
                         "required": True,
                     },
                     {
@@ -56,7 +60,9 @@ class SelectRichView(TemplateView):
                             (f"value{i}", f"Option {i}, libellé long", f"Option {i}")
                             for i in range(1, 10)
                         ],
-                        "initials": ("value2", "value3"),
+                        "initials": self.request.GET.getlist(
+                            "select_rich_multi_search_internal", ("value2", "value3")
+                        ),
                         "required": True,
                     },
                     {
@@ -76,7 +82,9 @@ class SelectRichView(TemplateView):
                             (f"value{i}", f"Option {i}, libellé long", f"Option {i}")
                             for i in range(1, 10)
                         ],
-                        "initials": ("value2", "value3"),
+                        "initials": self.request.GET.getlist(
+                            "select_rich_multi_tags", ("value2", "value3")
+                        ),
                         "required": True,
                     },
                     {
@@ -87,7 +95,10 @@ class SelectRichView(TemplateView):
                             (f"value{i}", f"Option {i}, libellé long", f"Option {i}")
                             for i in range(1, 10)
                         ],
-                        "initials": ("value2", "value3"),
+                        "initials": self.request.GET.getlist(
+                            "select_rich_multi_search_internal_tags",
+                            ("value2", "value3"),
+                        ),
                         "required": True,
                         "with_tags": True,
                     },

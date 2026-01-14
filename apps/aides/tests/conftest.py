@@ -1,5 +1,6 @@
 from pytest_factoryboy import register
 
+from aides.models import Aide
 from aides.tests import factories  # noqa
 
 
@@ -11,3 +12,10 @@ register(factories.SujetFactory, "sujet_2")
 register(factories.TypeFactory, "type_aide")
 register(factories.ZoneGeographiqueFactory)
 register(factories.AideFactory)
+register(factories.AideFactory, "aide_published", status=Aide.Status.PUBLISHED)
+register(
+    factories.AideFactory,
+    "aide_published_with_parent",
+    status=Aide.Status.PUBLISHED,
+    with_parent=True,
+)

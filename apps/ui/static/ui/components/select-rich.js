@@ -8,7 +8,8 @@ export class SelectRich extends Controller {
   static values = {
     name: String,
     multi: Boolean,
-    required: Boolean
+    required: Boolean,
+    keepDefaultButtonLabel: Boolean
   }
   static targets = ["button", "entries", "search", "searchButton", "option", "helper", "error", "tags", "addButton"]
 
@@ -34,6 +35,7 @@ export class SelectRich extends Controller {
 
     // in case of internal search, prepare all options to be searched
     if (this.hasSearchTarget) {
+      this.searchTarget.addEventListener("change", evt  => {evt.stopPropagation()})
       this.optionTargets.forEach(option => {
         option.dataset.normalized = sanitizeForSearch(option.nextElementSibling.textContent)
       })
@@ -112,7 +114,7 @@ export class SelectRich extends Controller {
       return
     }
 
-    if (this.multiValue) {
+    if (this.multiValue && !this.keepDefaultButtonLabelValue) {
       const checkedInputs = this.entriesTarget.querySelectorAll("input[type=checkbox]:checked")
       if (checkedInputs.length) {
         if (checkedInputs.length === 1) {

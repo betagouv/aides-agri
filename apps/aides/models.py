@@ -311,6 +311,12 @@ class AideQuerySet(models.QuerySet):
     def published(self):
         return self.filter(status=Aide.Status.PUBLISHED)
 
+    def having_children(self):
+        return self.exclude(children=None).distinct()
+
+    def having_published_children(self):
+        return self.filter(children__status=Aide.Status.PUBLISHED).distinct()
+
     def by_sujets(self, sujets: list[Sujet]) -> models.QuerySet:
         return self.filter(sujets__in=sujets)
 
@@ -690,7 +696,12 @@ class Aide(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("aides:aide", kwargs={"pk": self.pk, "slug": self.slug})
+        if self.children.exists():
+            return reverse(
+                "aides:parent-aide", kwargs={"pk": self.pk, "slug": self.slug}
+            )
+        else:
+            return reverse("aides:aide", kwargs={"pk": self.pk, "slug": self.slug})
 
     @property
     def is_ongoing(self) -> bool:

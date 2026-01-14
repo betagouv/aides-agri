@@ -31,7 +31,7 @@ document.onreadystatechange = evt => {
 
       <img src="{{ object.organisme.get_logo_url }}" alt="" class="organisme-logo">
 
-      <div class="fr-grid-row fr-my-2w">
+      <div class="fr-grid-row fr-mt-2w">
         <div class="fr-col fr-tags-group fr-tags-group--with-badges">
           {% for type_aide in object.types.all %}
             {% dsfr_badge label=type_aide.nom extra_classes="fr-badge--icon-left fr-badge--sm fr-icon-"|add:type_aide.icon_name|add:"-fill" %}
@@ -43,13 +43,13 @@ document.onreadystatechange = evt => {
         </div>
       </div>
 
-      <div class="fr-grid-row fr-my-4w">
+      <div class="fr-grid-row fr-mt-4w">
         <div class="fr-col">
           <h1 class="fr-h2 fr-m-0">{{ object.nom }}</h1>
         </div>
       </div>
 
-      <div class="fr-grid-row fr-my-4w">
+      <div class="fr-grid-row fr-mt-4w fr-mb-2w">
         <div class="fr-col">
           {% block content_header_highlight %}
             {% dsfr_highlight content=object.promesse %}
@@ -57,8 +57,8 @@ document.onreadystatechange = evt => {
         </div>
       </div>
 
-      {% if object.date_fin %}
-      <div class="fr-grid-row fr-my-4w fr-ml-md-3w">
+      {% if object.date_fin or aide.parent %}
+      <div class="fr-grid-row fr-mt-4w fr-ml-md-3w">
         {% block content_header_date_fin %}
           {% if object.date_fin %}
             <div class="fr-col fr-col-12">
@@ -68,13 +68,32 @@ document.onreadystatechange = evt => {
             </div>
           {% endif %}
         {% endblock content_header_date_fin %}
+        {% if object.parent %}
+          <div class="fr-col fr-col-12">
+            <span class="fr-icon fr-icon-information-line fr-artwork-minor--blue-france" aria-hidden="true"></span>
+            {% if object.parent.is_departemental and not object.parent.zones_geographiques.exists %}
+              <strong>Ce dispositif est national, mais géré par chaque département.</strong>
+            {% else %}
+              <strong>Ce dispositif fait partie du programme :</strong> {{ object.parent.nom }}.
+            {% endif %}
+            <a class="fr-link fr-ml-1w"
+               href="{% url 'aides:parent-aide' object.parent.pk object.parent.slug %}{% querystring %}"
+            >
+              {% if object.parent.is_departemental and not object.parent.zones_geographiques.exists %}
+                Voir les détails pour tous les départements
+              {% else %}
+                Voir tous les dispositifs du programme
+              {% endif %}
+            </a>
+          </div>
+        {% endif %}
       </div>
       {% endif %}
 
       <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--right fr-my-1w">
       {% block content_header_actions %}
         {% if object.url_demarche %}
-          <a class="fr-btn fr-btn--sm fr-btn--primary fr-m-1w"
+          <a class="fr-btn fr-btn--sm fr-btn--primary fr-mx-1w fr-my-2w"
              target="_blank"
              href="{{ object.url_demarche }}"
              data-action="click->matomo#trackEvent"
@@ -85,7 +104,7 @@ document.onreadystatechange = evt => {
           </a>
         {% endif %}
         <button type="button"
-                class="fr-btn fr-btn--sm fr-btn--secondary fr-m-1w"
+                class="fr-btn fr-btn--sm fr-btn--secondary fr-mx-1w fr-my-2w"
                 id="button-print"
                 data-action="click->matomo#trackEvent"
                 data-event-page="Aide"

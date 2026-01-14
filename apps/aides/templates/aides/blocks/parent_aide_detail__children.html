@@ -1,0 +1,23 @@
+{% load dsfr_tags %}
+
+{% for child in children %}
+  <div class="fr-py-1w">
+    <div class="fr-mb-1w">
+      <span class="fr-icon-arrow-right-line fr-pr-1v" aria-hidden="true"></span>
+      <a class="fr-link" href="{% url 'aides:aide' child.pk child.slug %}{% querystring links_querydict %}">{{ child.nom }}</a>
+    </div>
+    <div class="fr-text--sm fr-mb-1v">{{ child.promesse }}</div>
+    <div class="fr-tags-group fr-tags-group--with-badges">
+      {% if not object.types.exists %}
+        {% for type_aide in child.types.all %}
+          {% dsfr_badge label=type_aide.nom extra_classes="fr-badge--icon-left fr-badge--sm fr-icon-"|add:type_aide.icon_name|add:"-fill" %}
+        {% endfor %}
+      {% endif %}
+      {% if not object.sujets.exists %}
+        {% for sujet in child.sujets.all %}
+          {% dsfr_tag label=sujet.nom_court extra_classes="fr-tag--sm" %}
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+{% endfor %}
