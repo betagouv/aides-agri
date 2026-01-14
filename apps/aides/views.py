@@ -1,6 +1,6 @@
 from urllib.parse import urlparse
 
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.http.response import HttpResponsePermanentRedirect
 from django.urls import resolve
 from django.views.generic import DetailView
@@ -221,11 +221,12 @@ class ParentAideDetailView(DetailView):
                     "filter_departements": [
                         (
                             departement.code,
-                            f"{departement.code} {departement.nom}",
+                            f"{departement.code} {departement.nom} ({departement.aides_count})",
                             departement.nom,
                         )
                         for departement in ZoneGeographique.objects.departements()
                         .filter(aides__parent_id=self.object.pk)
+                        .annotate(aides_count=Count("aides"))
                         .distinct()
                     ],
                     "filter_departements_initials": [
@@ -238,10 +239,16 @@ class ParentAideDetailView(DetailView):
             context_data.update(
                 {
                     "filter_types": [
-                        (type_aides.pk, type_aides.nom, type_aides.nom)
+                        (
+                            type_aides.pk,
+                            f"{type_aides.nom} ({type_aides.aides_count})",
+                            type_aides.nom,
+                        )
                         for type_aides in Type.objects.filter(
                             aides__parent_id=self.object.pk
-                        ).distinct()
+                        )
+                        .annotate(aides_count=Count("aides"))
+                        .distinct()
                     ],
                     "filtered_types": filtered_types,
                     "filter_types_initials": [
@@ -253,10 +260,16 @@ class ParentAideDetailView(DetailView):
             context_data.update(
                 {
                     "filter_filieres": [
-                        (filiere.pk, filiere.nom, filiere.nom)
+                        (
+                            filiere.pk,
+                            f"{filiere.nom} ({filiere.aides_count})",
+                            filiere.nom,
+                        )
                         for filiere in Filiere.objects.filter(
                             aides__parent_id=self.object.pk
-                        ).distinct()
+                        )
+                        .annotate(aides_count=Count("aides"))
+                        .distinct()
                     ],
                     "filtered_filieres": filtered_filieres,
                     "filter_filieres_initials": [
@@ -270,12 +283,14 @@ class ParentAideDetailView(DetailView):
                     "filter_beneficiaires": [
                         (
                             beneficiaires.pk,
-                            beneficiaires.nom,
+                            f"{beneficiaires.nom} ({beneficiaires.aides_count})",
                             beneficiaires.nom,
                         )
                         for beneficiaires in Beneficiaires.objects.filter(
                             aides__parent_id=self.object.pk
-                        ).distinct()
+                        )
+                        .annotate(aides_count=Count("aides"))
+                        .distinct()
                     ],
                     "filtered_beneficiaires": filtered_beneficiaires,
                     "filter_beneficiaires_initials": [
@@ -287,10 +302,12 @@ class ParentAideDetailView(DetailView):
             context_data.update(
                 {
                     "filter_sujets": [
-                        (sujets.pk, sujets.nom, sujets.nom)
-                        for sujets in Sujet.objects.filter(
+                        (sujet.pk, f"{sujet.nom} ({sujet.aides_count})", sujet.nom)
+                        for sujet in Sujet.objects.filter(
                             aides__parent_id=self.object.pk
-                        ).distinct()
+                        )
+                        .annotate(aides_count=Count("aides"))
+                        .distinct()
                     ],
                     "filtered_sujets": filtered_sujets,
                     "filter_sujets_initials": [sujet.pk for sujet in filtered_sujets],
