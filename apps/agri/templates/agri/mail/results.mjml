@@ -11,9 +11,7 @@
     <mj-section padding="5px 0">
       <mj-group>
         <mj-column width="50%">
-          <mj-image alt="Logo du Ministère de l’Agriculture et de la Souveraineté Alimentaire"
-                    width="300px"
-                    src="{{ base_url }}{% static 'ui/logos/mail/masa.png' %}" />
+          <mj-image width="300px" src="{{ base_url }}{% static 'ui/logos/mail/masa.png' %}" />
         </mj-column>
         <mj-column width="50%">
         </mj-column>
