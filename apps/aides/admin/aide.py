@@ -403,7 +403,10 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         if request.method == "POST":
             departements = ZoneGeographique.objects.departements()
             for departement in departements:
-                self._derive_aide(object_id, f"{aide.nom} ({departement.nom})", False)
+                new_aide = self._derive_aide(
+                    object_id, f"{aide.nom} ({departement.nom})", False
+                )
+                new_aide.zones_geographiques.add(departement)
             self.message_user(
                 request,
                 mark_safe(
