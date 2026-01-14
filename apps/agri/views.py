@@ -336,7 +336,10 @@ class ResultsView(ResultsMixin, ListView):
                             "extra_classes": "fr-card--horizontal fr-card--horizontal-fifth fr-card--no-icon",
                             "title": aide.nom,
                             "description": aide.promesse,
-                            "link": f"{aide.get_absolute_url()}?{links_querydict.urlencode()}",
+                            "link": f"{aide.get_absolute_url()}?{links_querydict.urlencode()}"
+                            if aide.is_complete
+                            else aide.url_descriptif,
+                            "new_tab": not aide.is_complete,
                             "image_url": aide.organisme.get_logo_url()
                             if aide.organisme_id
                             else static("agri/images/placeholder.1x1.svg"),
