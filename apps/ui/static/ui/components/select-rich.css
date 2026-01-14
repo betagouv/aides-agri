@@ -24,7 +24,8 @@
   pointer-events: all;
   transition: none;
   max-height: 30vh;
-  width: 100%;
+  min-width: max(100%, 25rem);
+  max-width: min(100%, 25rem);
   overflow: hidden auto;
   background-color: var(--background-default-grey);
   border: 1px solid var(--border-default-grey);

@@ -35,6 +35,7 @@ export class SelectRich extends Controller {
 
     // in case of internal search, prepare all options to be searched
     if (this.hasSearchTarget) {
+      this.searchTarget.addEventListener("change", evt  => {evt.stopPropagation()})
       this.optionTargets.forEach(option => {
         option.dataset.normalized = sanitizeForSearch(option.nextElementSibling.textContent)
       })
