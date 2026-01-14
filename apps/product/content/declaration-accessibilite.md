@@ -2,7 +2,7 @@
 
 Établie le 21 mai 2025.
 
-Ministère de l’Agriculture et de la Souveraineté Alimentaire s’engage à rendre son service accessible, conformément à l’article 47 de la loi n° 2005-102 du 11 février 2005.
+Ministère de l’Agriculture, de l’Agro-alimentaire et de la Souveraineté Alimentaire s’engage à rendre son service accessible, conformément à l’article 47 de la loi n° 2005-102 du 11 février 2005.
 
 Cette déclaration d’accessibilité s’applique à **Aides Agri** [https://aides-agri.beta.gouv.fr](https://aides-agri.beta.gouv.fr).
 
@@ -16,7 +16,7 @@ Cette déclaration d’accessibilité s’applique à **Aides Agri** [https://ai
 Si vous n’arrivez pas à accéder à un contenu ou à un service, vous pouvez contacter le responsable de Aides Agri pour être orienté vers une alternative accessible ou obtenir le contenu sous une autre forme.
 
 - E-mail : [aides-agri@beta.gouv.fr](mailto:aides-agri@beta.gouv.fr)
-- Adresse : Ministère de l’Agriculture et de la Souveraineté Alimentaire, 78 rue de Varenne, Paris
+- Adresse : Ministère de l’Agriculture, de l’Agro-alimentaire et de la Souveraineté Alimentaire, 78 rue de Varenne, Paris
 
 ## Voie de recours
 
