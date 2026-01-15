@@ -336,12 +336,38 @@ class ResultsView(ResultsMixin, ListView):
                             "extra_classes": "fr-card--horizontal fr-card--horizontal-fifth fr-card--no-icon",
                             "title": aide.nom,
                             "description": aide.promesse,
-                            "link": f"{aide.get_absolute_url()}?{links_querydict.urlencode()}",
+                            "new_tab": not aide.is_complete,
                             "image_url": aide.organisme.get_logo_url()
                             if aide.organisme_id
                             else static("agri/images/placeholder.1x1.svg"),
                             "image_alt": aide.organisme.nom,
                             "ratio_class": "fr-ratio-1x1",
+                            "call_to_action": {
+                                "links": [
+                                    {
+                                        "url": f"{aide.get_absolute_url()}?{links_querydict.urlencode()}",
+                                        "label": "Voir la fiche dispositif",
+                                        "extra_classes": "fr-icon-arrow-right-line fr-link--icon-right",
+                                    }
+                                    if aide.is_complete
+                                    else {
+                                        "url": aide.url_descriptif,
+                                        "label": "Voir le descriptif",
+                                        "extra_classes": "fr-icon-arrow-right-line fr-link--icon-right",
+                                        "is_external": True,
+                                    }
+                                    if aide.url_demarche
+                                    else {},
+                                    {
+                                        "url": aide.url_demarche,
+                                        "label": "Déposer son dossier",
+                                        "extra_classes": "fr-icon-arrow-right-line fr-link--icon-right",
+                                        "is_external": True,
+                                    }
+                                    if aide.url_demarche
+                                    else {},
+                                ]
+                            },
                         }
                         for aide in aides
                     ]

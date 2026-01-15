@@ -23,7 +23,19 @@ window.onafterprint = evt => {
   })
 }
 document.onreadystatechange = evt => {
+  // print page on custom button
   document.getElementById("button-print").onclick = () => window.print()
+
+  // catch external links to open a confirmation modal
+  document.querySelectorAll("a[href][target=_blank]").forEach(elt => {
+    elt.addEventListener("click", evt => {
+      evt.preventDefault()
+      const href = elt.getAttribute("href")
+      document.getElementById("modal-external-link-domain").textContent = href.split("/")[2]
+      document.getElementById("modal-external-link-href").setAttribute("href", href)
+      window.dsfr(document.getElementById("modal-external-link")).modal.disclose()
+    })
+  })
 }
 </script>
 {% endblock extra_js %}
@@ -33,6 +45,7 @@ document.onreadystatechange = evt => {
 <dialog class="fr-modal"
         id="modal-send-by-mail"
         aria-labelledby="modal-send-by-mail-title"
+        aria-modal="true"
 >
   <div class="fr-container fr-container--fluid fr-container-md">
     <div class="fr-grid-row fr-grid-row--center">
@@ -91,6 +104,50 @@ document.onreadystatechange = evt => {
   </div>
 </dialog>
 {% endif %}
+<dialog class="fr-modal"
+        id="modal-external-link"
+        aria-labelledby="modal-external-link-title"
+        aria-modal="true"
+>
+  <div class="fr-container fr-container--fluid fr-container-md">
+    <div class="fr-grid-row fr-grid-row--center">
+      <div class="fr-col-12 fr-col-md-8 fr-col-lg-7">
+        <div class="fr-modal__body">
+            <div class="fr-modal__header">
+              <button type="button" class="fr-btn--close fr-btn" aria-controls="modal-external-link">Fermer</button>
+            </div>
+            <div class="fr-modal__content" id="modal-external-link-content">
+              <h1 id="modal-external-link-title" class="fr-modal__title">
+                <span class="fr-icon-arrow-right-line fr-icon--lg"></span>
+                Ce lien vous envoie vers un site externe.
+              </h1>
+              <p>
+                Acceptez-vous la redirection vers <strong id="modal-external-link-domain"></strong> ?
+                Le lien s’ouvrira dans un nouvel onglet ou une nouvelle fenêtre.
+              </p>
+            </div>
+            <div class="fr-modal__footer" id="modal-external-link-footer">
+              <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
+                <a class="fr-btn"
+                   id="modal-external-link-href"
+                   target="_blank"
+                   aria-controls="modal-external-link"
+                >
+                  D’accord
+                </a>
+                <button type="button"
+                        class="fr-btn fr-btn--secondary"
+                        aria-controls="modal-external-link"
+                >
+                  Annuler
+                </button>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
 {% endblock modals %}
 
 {% block title %}Votre sélection personnalisée.{% endblock title %}

@@ -62,6 +62,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     list_select_related = ("organisme",)
     ordering = ("-priority", "nom", "id")
     list_filter = (
+        "is_published",
         "status",
         "sujets",
         "sujets__themes",
@@ -82,6 +83,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         "raw_data",
         "date_created",
         "date_modified",
+        "is_published",
         "first_published_at",
         "last_published_at",
         "priority",
@@ -101,6 +103,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                 "fields": [
                     ("source", "integration_method"),
                     ("priority", "date_target_publication"),
+                    ("is_published",),
                     (
                         "date_created",
                         "date_modified",
@@ -249,7 +252,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             )
         if obj and "status" in form.base_fields:
             if obj.is_derivable:
-                statuses_to_remove = (Aide.Status.PUBLISHED, Aide.Status.VALIDATED)
+                statuses_to_remove = (Aide.Status.VALIDATED,)
             else:
                 statuses_to_remove = (Aide.Status.TO_BE_DERIVED,)
             form.base_fields["status"].choices = [
@@ -319,6 +322,8 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     def get_readonly_fields(self, request, obj=None):
         readonly_fields = copy.deepcopy(self.readonly_fields)
         if obj:
+            if obj.can_be_published():
+                readonly_fields.remove("is_published")
             if obj.parent:
                 readonly_fields.extend(
                     [
@@ -331,6 +336,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                             "is_derivable",
                             "nom",
                             "status",
+                            "is_published",
                             "priority",
                             "couverture_geographique",
                         )
@@ -351,10 +357,6 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             if "parent" in request.GET:
                 readonly_fields.remove("parent")
         return readonly_fields
-
-    @admin.display(boolean=True, description="Publiée")
-    def is_published(self, obj):
-        return obj.is_published
 
     @staticmethod
     def _derive_aide(aide_id: int, nom: str, is_derivable: bool) -> Aide:
@@ -452,6 +454,9 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         if request.GET.get("mine", None):
             for status, qs in context["aides_by_status"].items():
                 context["aides_by_status"][status] = qs.filter(assigned_to=request.user)
+        if request.GET.get("unpublished", None):
+            for status, qs in context["aides_by_status"].items():
+                context["aides_by_status"][status] = qs.filter(is_published=False)
         return TemplateResponse(request, "admin/dashboard.html", context)
 
     @button(label="Exporter toutes les aides en CSV")

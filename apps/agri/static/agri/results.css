@@ -30,17 +30,25 @@
   margin-bottom: 0;
 }
 
-.fr-card__title {
-  font-size: .875rem;
-  line-height: 1.5rem;
-}
-
 .fr-card--horizontal-fifth .fr-card__img img {
   object-fit: contain;
 }
 
 .fr-card.fr-enlarge-button:not(.fr-card--no-icon) .fr-card__content, .fr-card.fr-enlarge-link:not(.fr-card--no-icon) .fr-card__content {
   padding-bottom: 2rem;
+}
+
+/* TODO remove when https://github.com/numerique-gouv/django-dsfr/pull/267 will be merged */
+.fr-links-group {
+	--ul-type: none;
+	--ol-type: none;
+	--ul-start: 0;
+	--ol-start: 0;
+	--xl-block: 0;
+	--li-bottom: 0;
+	--ol-content: none;
+	display: inline;
+	margin: 0 -.5rem;
 }
 
 @media print {

@@ -82,6 +82,7 @@ class AideFactory(factory.django.DjangoModelFactory):
     nom = factory.Sequence(lambda n: f"Aide {n}")
     organisme = None
     status = models.Aide.Status.TODO
+    is_published = False
     date_target_publication = None
     url_descriptif = ""
     is_derivable = False
@@ -111,6 +112,8 @@ class AideFactory(factory.django.DjangoModelFactory):
         if not value or not create:
             return
         obj.parent = AideFactory.create(
-            nom=f"Parent of {obj.nom}", status=models.Aide.Status.PUBLISHED
+            nom=f"Parent of {obj.nom}",
+            status=models.Aide.Status.VALIDATED,
+            is_published=True,
         )
         obj.save()

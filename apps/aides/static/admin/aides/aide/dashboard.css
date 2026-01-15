@@ -1,3 +1,13 @@
+html[data-theme="light"], :root {
+  --inverted-fg: #eee;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --inverted-fg: #111;
+  }
+}
+
 .dashboard {
   display: flex;
   gap: 24px;
@@ -44,24 +54,18 @@
   background-color: var(--selected-bg);
 }
 
-.badge.priority-1 {
-  background-color: var(--message-error-bg);
-}
-
-.badge.priority-2 {
-  background-color: var(--message-warning-bg);
-}
-
-.badge.priority-3 {
-  background-color: var(--message-success-bg);
-}
-
 .badge.overdue {
   background-color: var(--delete-button-bg);
+  color: var(--inverted-fg);
+}
+
+.badge.published {
+  background-color: var(--message-success-bg);
 }
 
 .badge.parent {
   background-color: var(--secondary);
+  color: var(--inverted-fg);
 }
 
 .badge.parent.-root {
