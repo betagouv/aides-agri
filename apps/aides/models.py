@@ -409,7 +409,9 @@ class Aide(models.Model):
     search_vector = models.GeneratedField(
         expression=SearchVector("nom", weight="A", config="french_unaccent")
         + SearchVector("promesse", weight="A", config="french_unaccent")
-        + SearchVector("description", weight="B", config="french_unaccent"),
+        + SearchVector("description", weight="B", config="french_unaccent")
+        + SearchVector("type_depense", weight="B", config="french_unaccent")
+        + SearchVector("conditions", weight="B", config="french_unaccent"),
         output_field=SearchVectorField(),
         db_persist=True,
     )
