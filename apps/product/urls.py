@@ -36,4 +36,12 @@ urlpatterns = [
         ),
         name="donnees-personnelles",
     ),
+    path(
+        "pages/urgence-dnc",
+        StaticPageView.as_view(
+            title="Urgence Dermatose Nodulaire Contagieuse (DNC)",
+            content_filename="urgence-dnc",
+        ),
+        name="urgence-dnc",
+    ),
 ]
