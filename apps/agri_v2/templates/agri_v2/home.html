@@ -53,7 +53,7 @@
       <section class="fr-mt-12w">
         <div id="recherche" class="fr-background-default--grey fr-border-plain--grey fr-px-2w fr-px-md-12w fr-py-6w">
           {% if themes %}
-            {% include "agri_v2/blocks/home/sujets.html" %}
+            {% include "agri_v2/blocks/home/themes.html" %}
           {% else %}
             <h2 class="fr-mb-2w">Pour commencer, dites-nous en plus :</h2>
             <form hx-trigger="change"
@@ -61,7 +61,7 @@
                   hx-target="#choix-parcours"
                   hx-push-url="true"
             >
-              {% dsfr_select id="departement" label="Département <span class='fr-hint-text'>Retrouvez votre département en tapant son numéro</<span>" options=departements default=departements_default selected=departement %}
+              {% dsfr_select id="departement" label="Quel est votre département ? <span class='fr-hint-text'>Retrouvez votre département en tapant son numéro</<span>" options=departements default=departements_default selected=departement %}
             </form>
             <div id="choix-parcours" aria-live="polite">
               {% include "agri_v2/blocks/home/choix_parcours.html" %}

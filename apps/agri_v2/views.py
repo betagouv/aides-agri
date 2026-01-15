@@ -1,7 +1,9 @@
 from django.contrib.postgres.search import SearchQuery, SearchRank
 from django.db.models import Prefetch
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.templatetags.static import static
+from django.urls import reverse
 from django.views.generic import TemplateView, ListView, View
 
 from aides.models import (
@@ -31,14 +33,12 @@ class HomeView(TemplateView):
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
         self.departement_code = request.GET.get("departement", None)
-        theme_id = request.GET.get("theme", None)
-        self.has_theme = theme_id is not None
-        self.theme_id = int(theme_id) if self.has_theme else None
+        self.choose_theme = request.GET.get("choisir_theme", False)
 
     def get_template_names(self):
         if self.request.htmx:
-            if self.has_theme:
-                template_name = "agri_v2/blocks/home/sujets.html"
+            if self.choose_theme:
+                template_name = "agri_v2/blocks/home/themes.html"
             else:
                 template_name = "agri_v2/blocks/home/choix_parcours.html"
             return [template_name]
@@ -50,26 +50,20 @@ class HomeView(TemplateView):
 
         context_data.update({"departement": self.departement_code})
 
-        if self.has_theme:
+        if self.choose_theme:
             context_data.update(
-                {"themes": Theme.objects.published().exclude(sujets__aides=None)}
+                {
+                    "themes": Theme.objects.published()
+                    .exclude(sujets__aides=None)
+                    .prefetch_related("sujets")
+                }
             )
-            if self.theme_id:
-                context_data.update(
-                    {
-                        "theme_id": self.theme_id,
-                        "sujets": Sujet.objects.published().having_published_aides_in_departement_and_theme(
-                            ZoneGeographique.objects.departements().get(
-                                code=self.departement_code
-                            ),
-                            Theme.objects.get(pk=self.theme_id),
-                        ),
-                    }
-                )
         else:
             context_data.update(
                 {
-                    "theme_urgence_id": Theme.objects.filter(urgence=True).first().pk,
+                    "sujets_urgence_ids": Sujet.objects.filter(
+                        themes__urgence=True
+                    ).values_list("pk", flat=True),
                     "departements_default": {
                         "text": "Sélectionnez un département",
                         "disabled": True,
@@ -151,6 +145,20 @@ class ResultsMixin:
 class ResultsView(ResultsMixin, ListView):
     template_name = "agri_v2/results.html"
     paginate_by = 50
+
+    def get(self, request, *args, **kwargs):
+        if theme_id := request.GET.get("theme", None):
+            return HttpResponseRedirect(
+                reverse(
+                    "agri_v2:results",
+                    query={
+                        "sujets": Sujet.objects.filter(themes=theme_id).values_list(
+                            "pk", flat=True
+                        ),
+                    },
+                )
+            )
+        return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
         return self.get_results()
