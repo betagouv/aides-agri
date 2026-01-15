@@ -32,8 +32,8 @@
   margin-block-start: 0;
 }
 
-.fr-select-rich .fr-collapse.fr-menu::before {
-  transition: none;
+.fr-select-rich .fr-collapse.fr-menu.fr-collapsing {
+  padding-top: 4px;
 }
 
 .fr-select-rich__item {
