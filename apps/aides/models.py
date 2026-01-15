@@ -292,6 +292,9 @@ class Filiere(models.Model):
 
 
 class BeneficiairesQuerySet(models.QuerySet):
+    def agris(self) -> "Beneficiaires":
+        return self.filter(is_groupement=False).first()
+
     def groupements(self):
         return self.filter(is_groupement=True)
 
@@ -335,6 +338,9 @@ class AideQuerySet(models.QuerySet):
     def by_theme(self, theme: Theme) -> models.QuerySet:
         return self.filter(sujets__themes=theme.pk)
 
+    def by_themes(self, themes: list[Theme]) -> models.QuerySet:
+        return self.filter(sujets__themes__in=themes)
+
     def by_sujets(self, sujets: list[Sujet]) -> models.QuerySet:
         return self.filter(sujets__in=sujets)
 
@@ -356,7 +362,6 @@ class AideQuerySet(models.QuerySet):
     def by_beneficiaires(self, beneficiaires: list[Beneficiaires]):
         return self.filter(
             models.Q(eligibilite_beneficiaires=None)
-            | models.Q(eligibilite_beneficiaires__is_groupement=False)
             | models.Q(eligibilite_beneficiaires__in=beneficiaires)
         )
 
@@ -398,6 +403,11 @@ class AideQuerySet(models.QuerySet):
                 zones_geographiques__in=[departement.pk, departement.parent_id]
             )
         return self.filter(q)
+
+    def only_open(self):
+        return self.filter(
+            models.Q(date_fin=None) | models.Q(date_fin__gte=date.today())
+        )
 
 
 class Aide(models.Model):
