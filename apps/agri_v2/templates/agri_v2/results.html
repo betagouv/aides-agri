@@ -146,17 +146,17 @@ document.onreadystatechange = evt => {
     <div class="fr-grid-row fr-grid-row--gutters">
       {% if filter_departements|length > 1 %}
         <div class="fr-col fr-col-md-4">
-          {% ui_select_rich_multi label="Département" helper="Le département de votre exploitation" name="departements" options=filter_departements initials=filter_departements_initials %}
+          {% ui_select_rich_multi label="Département" helper="Le département de votre exploitation" name="departements" searchable=True options=filter_departements initials=filter_departements_initials %}
         </div>
       {% endif %}
       {% if filter_filieres|length > 1 %}
         <div class="fr-col fr-col-md-4">
-          {% ui_select_rich_multi label="Filières" helper="Votre ou vos filières" name="filieres" options=filter_filieres initials=filter_filieres_initials %}
+          {% ui_select_rich_multi label="Filières" helper="Votre ou vos filières" name="filieres" searchable=True options=filter_filieres initials=filter_filieres_initials %}
         </div>
       {% endif %}
       {% if filter_sujets|length > 1 %}
         <div class="fr-col fr-col-md-4">
-          {% ui_select_rich_multi label="Thématiques" helper="Stratégie, diversification, droit du travail, etc." name="sujets" options=filter_sujets initials=filter_sujets_initials %}
+          {% ui_select_rich_multi label="Thématiques" helper="Stratégie, diversification, droit du travail, etc." name="sujets" searchable=True options=filter_sujets initials=filter_sujets_initials %}
         </div>
       {% endif %}
       {% if filter_types|length > 1 %}

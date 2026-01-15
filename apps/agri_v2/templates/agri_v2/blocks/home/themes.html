@@ -4,6 +4,7 @@
 {% dsfr_stepper current_step_id=2 total_steps=3 %}
 
 <form action="{% url 'agri_v2:results' %}">
+  <input type="hidden" name="departements" value="{{ departement }}">
   <fieldset class="fr-fieldset">
     <legend class="fr-fieldset__legend fr-fieldset__legend--regular">Sélectionnez une famille de besoins.</legend>
     {% for theme in themes %}
