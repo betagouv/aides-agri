@@ -1,13 +1,13 @@
 {% load dsfr_tags %}
 
 {% if departement %}
-  <h2 class="fr-mt-3w fr-mb-2w fr-label">Quelle recherche souhaitez-vous effectuer ?</h2>
+  <p class="fr-mt-3w fr-mb-2w fr-label">Quelle recherche souhaitez-vous effectuer ?</p>
   <div class="fr-container-fluid">
     {% url "agri_v2:home" as url_home %}
     {% querystring departement=departement choisir_theme=1 as qs_themes %}
     {% url "agri_v2:results" as url_results %}
-    {% querystring departement=None departements=departement as qs_results %}
-    {% querystring departement=None departements=departement sujets=sujets_urgence_ids as qs_results_urgence %}
+    {% querystring departement=None departements=departement beneficiaires=beneficiaires_agris.pk inclure_fermes="on" as qs_results %}
+    {% querystring departement=None departements=departement beneficiaires=beneficiaires_agris.pk inclure_fermes="on" themes=theme_urgence_id as qs_results_urgence %}
     <div class="fr-my-2w">
       {% dsfr_tile extra_classes="fr-tile--horizontal fr-tile--sm fr-tile--no-icon fr-py-3v fr-background-alt--blue-ecume fr-tile--shadow" title="Je souhaite voir tous les dispositifs liés à une difficulté urgente impactant l’activité de mon exploitation." description="Visualisez tous les dispositifs qui pourraient vous aider à traverser une crise, un différend, une complexité administrative ou encore un problème de santé." url=url_results|add:qs_results_urgence %}
     </div>
