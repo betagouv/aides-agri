@@ -38,8 +38,8 @@ label.fr-tag--remove-filter:after {
 
 @media (min-width: 62em) {
   .fr-card--horizontal-eighth .fr-card__header {
-    flex: 0 0 12.5%;
-    width: 12.5%;
+    flex: 0 0 18%;
+    width: 18%;
   }
 }
 

@@ -122,7 +122,7 @@ class ResultsMixin:
         return (
             qs.distinct()
             .select_related("organisme")
-            .prefetch_related("zones_geographiques", "types")
+            .prefetch_related("zones_geographiques", "types", "children")
             .order_by("-date_fin")
             .defer("organisme__logo")
         )
@@ -172,16 +172,22 @@ class ResultsView(ResultsMixin, ListView):
                         else static("agri/images/placeholder.1x1.svg"),
                         "image_alt": aide.organisme.nom,
                         "ratio_class": "fr-ratio-1x1",
+                        "media_badges": [
+                            {
+                                "extra_classes": "fr-badge--sm fr-badge--green-emeraude",
+                                "label": "En cours",
+                            }
+                            if aide.is_ongoing
+                            else {
+                                "extra_classes": "fr-badge--sm fr-badge--pink-tuile",
+                                "label": "Clôturé",
+                            }
+                        ],
                         "top_detail": {
                             "tags": [
                                 {
-                                    "extra_classes": "fr-tag--sm fr-background-alt--green-emeraude",
-                                    "label": "En cours",
-                                }
-                                if aide.is_ongoing
-                                else {
-                                    "extra_classes": "fr-tag--sm fr-background-alt--pink-tuile",
-                                    "label": "Clôturé",
+                                    "label": aide.couverture_geographique,
+                                    "extra_classes": "fr-tag--sm",
                                 }
                             ]
                             + [

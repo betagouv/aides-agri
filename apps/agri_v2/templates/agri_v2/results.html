@@ -101,7 +101,7 @@ document.onreadystatechange = evt => {
   <div id="alert-placeholder"></div>
 
   <div class="fr-grid-row fr-grid-row--gutters">
-    <h1 class="fr-h1 fr-col fr-col-12 fr-col-md-6">Votre recherche</h1>
+    <h1 class="fr-h1 fr-col fr-col-12 fr-col-md-6">Votre recherche de dispositifs</h1>
 
     {% if aides %}
     <div id="actions" class="fr-col fr-col-12 fr-col-md-6 fr-container--fluid fr-my-2w">
@@ -140,33 +140,33 @@ document.onreadystatechange = evt => {
       <label class="fr-label" for="search-input">
           Rechercher
       </label>
-      <input class="fr-input" placeholder="Financement de matériel, assistance, etc." id="search-input" type="search" name="q" value="{{ request.GET.q }}">
+      <input class="fr-input" placeholder="Recherche par mots-clés : remplacement batteuse, financement irrigation, etc." id="search-input" type="search" name="q" value="{{ request.GET.q }}">
       <button title="Rechercher" type="button" class="fr-btn">Rechercher</button>
     </div>
     <div class="fr-grid-row fr-grid-row--gutters">
       {% if filter_departements|length > 1 %}
-        <div class="fr-col">
-          {% ui_select_rich_multi label="Filtrer par départements" button_text="Départements" name="departements" options=filter_departements initials=filter_departements_initials keep_default_button_label=True %}
-        </div>
-      {% endif %}
-      {% if filter_types|length > 1 %}
-        <div class="fr-col">
-          {% ui_select_rich_multi label="Filtrer par types" button_text="Types" name="types" options=filter_types initials=filter_types_initials keep_default_button_label=True %}
-        </div>
-      {% endif %}
-      {% if filter_beneficiaires|length > 1 %}
-        <div class="fr-col">
-          {% ui_select_rich_multi label="Filtrer par bénéficiaires" button_text="Bénéficiaires" name="beneficiaires" options=filter_beneficiaires initials=filter_beneficiaires_initials keep_default_button_label=True %}
+        <div class="fr-col fr-col-md-4">
+          {% ui_select_rich_multi label="Département" helper="Le département de votre exploitation" name="departements" options=filter_departements initials=filter_departements_initials %}
         </div>
       {% endif %}
       {% if filter_filieres|length > 1 %}
-        <div class="fr-col">
-          {% ui_select_rich_multi label="Filtrer par filières" button_text="Filières" name="filieres" options=filter_filieres initials=filter_filieres_initials keep_default_button_label=True %}
+        <div class="fr-col fr-col-md-4">
+          {% ui_select_rich_multi label="Filières" helper="Votre ou vos filières" name="filieres" options=filter_filieres initials=filter_filieres_initials %}
         </div>
       {% endif %}
       {% if filter_sujets|length > 1 %}
-        <div class="fr-col">
-          {% ui_select_rich_multi label="Filtrer par sujets" button_text="Sujets" name="sujets" options=filter_sujets initials=filter_sujets_initials keep_default_button_label=True %}
+        <div class="fr-col fr-col-md-4">
+          {% ui_select_rich_multi label="Thématiques" helper="Stratégie, diversification, droit du travail, etc." name="sujets" options=filter_sujets initials=filter_sujets_initials %}
+        </div>
+      {% endif %}
+      {% if filter_types|length > 1 %}
+        <div class="fr-col fr-col-md-4">
+          {% ui_select_rich_multi label="Types de dispositif" helper="Investissement, conseil, assistance, etc." name="types" options=filter_types initials=filter_types_initials %}
+        </div>
+      {% endif %}
+      {% if filter_beneficiaires|length > 1 %}
+        <div class="fr-col fr-col-md-4">
+          {% ui_select_rich_multi label="Profils de bénéficiaires" helper="Agriculteurs, coopératives, etc." name="beneficiaires" options=filter_beneficiaires initials=filter_beneficiaires_initials %}
         </div>
       {% endif %}
     </div>
