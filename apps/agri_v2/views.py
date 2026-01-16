@@ -1,8 +1,6 @@
 from django.contrib.postgres.search import SearchQuery
-from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.templatetags.static import static
-from django.urls import reverse
 from django.views.generic import TemplateView, ListView, View
 
 from aides.models import (
@@ -60,9 +58,7 @@ class HomeView(TemplateView):
         else:
             context_data.update(
                 {
-                    "sujets_urgence_ids": Sujet.objects.filter(
-                        themes__urgence=True
-                    ).values_list("pk", flat=True),
+                    "theme_urgence_id": Theme.objects.filter(urgence=True).first().pk,
                     "departements_default": {
                         "text": "Sélectionnez un département",
                         "disabled": True,
@@ -100,8 +96,17 @@ class ResultsMixin:
             if filieres_ids
             else []
         )
+        self.themes_ids = request.GET.getlist("themes", None)
+        self.themes = (
+            Theme.objects.filter(pk__in=self.themes_ids) if self.themes_ids else []
+        )
         sujets_ids = request.GET.getlist("sujets", [])
-        self.sujets = Sujet.objects.filter(pk__in=sujets_ids) if sujets_ids else []
+        if sujets_ids:
+            self.sujets = Sujet.objects.filter(pk__in=sujets_ids)
+        elif self.themes:
+            self.sujets = Sujet.objects.filter(themes__in=self.themes)
+        else:
+            self.sujets = []
 
     def get_results(self):
         qs = Aide.objects.published()
@@ -132,25 +137,17 @@ class ResultsView(ResultsMixin, ListView):
     template_name = "agri_v2/results.html"
     paginate_by = 50
 
-    def get(self, request, *args, **kwargs):
-        if theme_id := request.GET.get("theme", None):
-            return HttpResponseRedirect(
-                reverse(
-                    "agri_v2:results",
-                    query={
-                        "sujets": Sujet.objects.filter(themes=theme_id).values_list(
-                            "pk", flat=True
-                        ),
-                    },
-                )
-            )
-        return super().get(request, *args, **kwargs)
-
     def get_queryset(self):
         return self.get_results()
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
+
+        if self.themes:
+            sujets_qs = Sujet.objects.filter(themes__in=self.themes)
+        else:
+            sujets_qs = Sujet.objects.all()
+        sujets_qs = sujets_qs.order_by("nom_court")
 
         context_data.update(
             {
@@ -166,7 +163,32 @@ class ResultsView(ResultsMixin, ListView):
                         "extra_classes": "fr-card--horizontal fr-card--horizontal-eighth fr-card--no-icon fr-mb-2w fr-pl-2w",
                         "title": aide.nom,
                         "description": aide.promesse,
-                        "link": aide.get_absolute_url(),
+                        "call_to_action": {
+                            "links": [
+                                {
+                                    "url": aide.get_absolute_url(),
+                                    "label": "Voir la fiche dispositif",
+                                    "extra_classes": "fr-icon-arrow-right-line fr-link--icon-right",
+                                }
+                                if aide.is_complete
+                                else {
+                                    "url": aide.url_descriptif,
+                                    "label": "Voir le descriptif",
+                                    "extra_classes": "fr-icon-arrow-right-line fr-link--icon-right",
+                                    "is_external": True,
+                                }
+                                if aide.url_demarche
+                                else {},
+                                {
+                                    "url": aide.url_demarche,
+                                    "label": "Déposer son dossier",
+                                    "extra_classes": "fr-icon-arrow-right-line fr-link--icon-right",
+                                    "is_external": True,
+                                }
+                                if aide.url_demarche
+                                else {},
+                            ]
+                        },
                         "image_url": aide.organisme.get_logo_url()
                         if aide.organisme_id
                         else static("agri/images/placeholder.1x1.svg"),
@@ -201,6 +223,18 @@ class ResultsView(ResultsMixin, ListView):
                     }
                     for aide in context_data["page_obj"]
                 ],
+                "themes": [
+                    {
+                        "label": theme.nom_court,
+                        "querydict_themes": list(
+                            set(self.themes_ids) - set([str(theme.pk)])
+                        )
+                        if str(theme.pk) in self.themes_ids
+                        else self.themes_ids + [theme.pk],
+                        "is_selected": str(theme.pk) in self.themes_ids,
+                    }
+                    for theme in Theme.objects.all().order_by("nom_court")
+                ],
                 "filter_departements": [
                     (
                         departement.code,
@@ -220,8 +254,7 @@ class ResultsView(ResultsMixin, ListView):
                 "filtered_types": self.types,
                 "filter_types_initials": [type_aides.pk for type_aides in self.types],
                 "filter_sujets": [
-                    (sujet.pk, sujet.nom_court, sujet.nom_court)
-                    for sujet in Sujet.objects.all()
+                    (sujet.pk, sujet.nom_court, sujet.nom_court) for sujet in sujets_qs
                 ],
                 "filtered_sujets": self.sujets,
                 "filter_sujets_initials": [sujet.pk for sujet in self.sujets],
@@ -233,7 +266,7 @@ class ResultsView(ResultsMixin, ListView):
                 "filter_filieres_initials": [filiere.pk for filiere in self.filieres],
                 "filter_beneficiaires": [
                     (groupement.pk, groupement.nom, groupement.nom)
-                    for groupement in Beneficiaires.objects.all()
+                    for groupement in Beneficiaires.objects.groupements()
                 ],
                 "filtered_beneficiaires": self.beneficiaires,
                 "filter_beneficiaires_initials": [

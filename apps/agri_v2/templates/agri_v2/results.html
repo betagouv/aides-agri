@@ -10,12 +10,13 @@
 {% endblock extra_css %}
 
 {% block extra_js %}
+  {% comment %}
 <script nonce="{{ request.csp_nonce }}">
 document.onreadystatechange = evt => {
   document.getElementById("button-print").onclick = () => window.print()
 }
 </script>
-
+{% endcomment %}
 <script type="module" nonce="{{ request.csp_nonce }}">
   import { Application } from "stimulus"
   import { Alert } from "alert"
@@ -100,32 +101,17 @@ document.onreadystatechange = evt => {
 {% block content %}
   <div id="alert-placeholder"></div>
 
-  <div class="fr-grid-row fr-grid-row--gutters">
-    <h1 class="fr-h1 fr-col fr-col-12 fr-col-md-6">Votre recherche de dispositifs</h1>
-
-    {% if aides %}
-    <div id="actions" class="fr-col fr-col-12 fr-col-md-6 fr-container--fluid fr-my-2w">
-      <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--reverse">
-        <button type="button"
-                class="fr-btn fr-btn--icon-left fr-btn--sm fr-pl-4v fr-btn--secondary fr-icon-mail-line"
-                aria-controls="modal-send-by-mail"
-                data-fr-opened="false"
-        >
-          Recevoir par e-mail
-        </button>
-        <button type="button"
-                class="fr-btn fr-btn--icon-left fr-btn--sm fr-pl-4v fr-btn--secondary fr-icon-file-pdf-line"
-                id="button-print"
-                data-action="click->matomo#trackEvent"
-                data-event-page="Recommandation"
-                data-event-name="Impression"
-        >
-          Enregistrer en PDF
-        </button>
-      </div>
-    </div>
+  <h1 class="fr-mb-1w">Votre recherche</h1>
+  <p class="fr-text--xl">
+    {% if paginator.count %}
+      {{ paginator.count }}
+      dispositif{{ paginator.count|pluralize }}
+      correspond{{ paginator.count|pluralize:"ent" }}
+    {% else %}
+      Aucun dispositif ne correspond
     {% endif %}
-  </div>
+    à votre recherche.
+  </p>
 
   <form id="filters"
         class="fr-container-fluid"
@@ -136,12 +122,10 @@ document.onreadystatechange = evt => {
         hx-target="#content"
         hx-swap="outerHTML"
   >
-    <div class="fr-search-bar fr-mb-2w" role="search">
-      <label class="fr-label" for="search-input">
-          Rechercher
-      </label>
-      <input class="fr-input" placeholder="Recherche par mots-clés : remplacement batteuse, financement irrigation, etc." id="search-input" type="search" name="q" value="{{ request.GET.q }}">
-      <button title="Rechercher" type="button" class="fr-btn">Rechercher</button>
+    <div class="fr-tags-group fr-mb-1w">
+      {% for theme_dict in themes %}
+        <a class="fr-tag" {% if theme_dict.is_selected %}aria-pressed="true"{% endif %} href="{% querystring themes=theme_dict.querydict_themes %}">{{ theme_dict.label }}</a>
+      {% endfor %}
     </div>
     <div class="fr-grid-row fr-grid-row--gutters">
       {% if filter_departements|length > 1 %}
@@ -166,7 +150,7 @@ document.onreadystatechange = evt => {
       {% endif %}
       {% if filter_beneficiaires|length > 1 %}
         <div class="fr-col fr-col-md-4">
-          {% ui_select_rich_multi label="Profils de bénéficiaires" helper="Agriculteurs, coopératives, etc." name="beneficiaires" options=filter_beneficiaires initials=filter_beneficiaires_initials %}
+          {% ui_select_rich_multi label="Groupements de producteurs" helper="Coopératives, OP, etc." name="beneficiaires" options=filter_beneficiaires initials=filter_beneficiaires_initials %}
         </div>
       {% endif %}
     </div>
@@ -203,18 +187,51 @@ document.onreadystatechange = evt => {
                    aria-label="Supprimer le filtre sur le sujet {{ filtered_sujet.nom_court }}"
             >Sujet : {{ filtered_sujet.nom_court }}</label>
           {% endfor %}
+          <a class="fr-btn fr-btn--secondary" href="{% url 'agri_v2:results' %}">Effacer tous les filtres</a>
         </div>
       </div>
+    </div>
+    <div class="fr-grid-row">
+      <div class="fr-col fr-col-md-8">
+        <div class="fr-search-bar fr-mb-2w" role="search">
+          <label class="fr-label" for="search-input">
+              Rechercher
+          </label>
+          <input class="fr-input" placeholder="Recherche par mots-clés : remplacement batteuse, financement irrigation, etc." id="search-input" type="search" name="q" value="{{ request.GET.q }}">
+          <button title="Rechercher" type="button" class="fr-btn">Rechercher</button>
+        </div>
+      </div>
+      {% if aides %}
+      <div id="actions" class="fr-col fr-col-md-4 fr-container--fluid">
+        <div class="fr-grid-row fr-grid-row--reverse">
+          <button type="button"
+                  class="fr-btn fr-btn--icon-left fr-pl-4v fr-btn--secondary fr-icon-mail-line"
+                  aria-controls="modal-send-by-mail"
+                  data-fr-opened="false"
+          >
+            Recevoir par mail
+          </button>
+          <button type="button"
+                  class="fr-btn fr-btn--icon-left fr-pl-4v fr-btn--secondary fr-icon-file-pdf-line"
+                  id="button-print"
+                  data-action="click->matomo#trackEvent"
+                  data-event-page="Recommandation"
+                  data-event-name="Impression"
+          >
+            Enregistrer en PDF
+          </button>
+        </div>
+      </div>
+      {% endif %}
     </div>
   </form>
 
   <div class="fr-container fr-p-0">
-    <p class="fr-mb-1w">{{ paginator.count }} dispositifs correspondent à votre recherche.</p>
     <div id="recommandation" class="fr-mb-5w">
       {% for aide in aides %}
         {% dsfr_card aide %}
       {% empty %}
-        Désolés, aucun dispositif ne correspond à votre recherche.
+        {% dsfr_notice title="Cette plateforme est en cours de construction : nous nous efforçons d’y rassembler un maximum de dispositifs, mais certains peuvent manquer." %}
       {% endfor %}
     </div>
     <div class="fr-grid-row fr-grid-row--center fr-my-2w">
