@@ -34,6 +34,7 @@ urlpatterns = [
     path("", include("aides_feedback.urls")),
     path("", include("product.urls")),
     path("", include(two_factors_urls)),
+    path("statistiques/", include("stats.urls")),
     path("ui/", include("ui.urls")),
 ]
 

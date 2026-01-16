@@ -1,0 +1,33 @@
+{% extends "ui/base.html" %}
+
+{% load static dsfr_tags stats_tags %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'vendor/DSFRChart.css' %}" />
+{% endblock extra_css %}
+
+{% block extra_head_js %}
+<script type="module" src="{% static 'vendor/DSFRChart.js' %}"></script>
+{% endblock extra_head_js %}
+
+{% block title %}Statistiques{% endblock title %}
+
+{% block content %}
+  {% dsfr_summary summary_data %}
+  {% for name, data in stats.items %}
+    <h2 id="{{ name|slugify }}">{{ name }}</h2>
+    <data-box id="databox-{{ name|slugify }}" title="{{ name }}"></data-box>
+    <line-chart databox-id="databox-{{ name|slugify }}"
+                databox-type="chart"
+                x='{{ data.x|stats_json }}'
+                y="{{ data.y|stats_json }}"
+                name='{{ data.name|stats_json }}'
+    ></line-chart>
+    <table-chart databox-id="databox-{{ name|slugify }}"
+                 databox-type="table"
+                x='{{ data.all_dates|stats_json }}'
+                y='{{ data.y|stats_json }}'
+                name='{{ data.name|stats_json }}'
+    ></table-chart>
+  {% endfor %}
+{% endblock content %}
