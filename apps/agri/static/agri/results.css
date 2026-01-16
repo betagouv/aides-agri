@@ -47,7 +47,8 @@
 	--xl-block: 0;
 	--li-bottom: 0;
 	--ol-content: none;
-	display: inline;
+  display: flex;
+  gap: 1rem;
 	margin: 0 -.5rem;
 }
 
