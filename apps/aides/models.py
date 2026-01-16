@@ -2,6 +2,8 @@ from datetime import date
 
 from django.conf import settings
 from django.contrib.postgres import fields as postgres_fields
+from django.contrib.postgres.indexes import GinIndex
+from django.contrib.postgres.search import SearchVector, SearchVectorField
 from django.db import models
 from django.templatetags.static import static
 from django.urls import reverse
@@ -110,6 +112,18 @@ class Theme(models.Model):
 class SujetQuerySet(WithAidesCounterQuerySet):
     def published(self):
         return self.with_aides_count().filter(published=True, aides_count__gt=0)
+
+    def having_published_aides_in_departement_and_theme(
+        self, departement: "ZoneGeographique", theme: Theme
+    ):
+        return self.filter(
+            pk__in=set(
+                Aide.objects.published()
+                .by_departement(departement)
+                .by_theme(theme)
+                .values_list("sujets", flat=True)
+            )
+        )
 
 
 class Sujet(models.Model):
@@ -317,8 +331,14 @@ class AideQuerySet(models.QuerySet):
     def having_published_children(self):
         return self.filter(children__is_published=True).distinct()
 
+    def by_theme(self, theme: Theme) -> models.QuerySet:
+        return self.filter(sujets__themes=theme.pk)
+
     def by_sujets(self, sujets: list[Sujet]) -> models.QuerySet:
         return self.filter(sujets__in=sujets)
+
+    def by_types(self, types: list[Type]) -> models.QuerySet:
+        return self.filter(types__in=types)
 
     def by_effectif(self, effectif_low: int, effectif_high: int) -> models.QuerySet:
         return self.filter(
@@ -342,7 +362,7 @@ class AideQuerySet(models.QuerySet):
     def by_filieres(self, filieres: list[Filiere]):
         return self.filter(models.Q(filieres=None) | models.Q(filieres__in=filieres))
 
-    def by_zone_geographique(self, commune: ZoneGeographique) -> models.QuerySet:
+    def by_commune(self, commune: ZoneGeographique) -> models.QuerySet:
         if not commune:
             return self
 
@@ -364,13 +384,37 @@ class AideQuerySet(models.QuerySet):
             models.Q(organisme__zones_geographiques=commune)
         )
 
+    def by_departement(self, departement: ZoneGeographique):
+        return self.filter(
+            models.Q(couverture_geographique=Aide.CouvertureGeographique.NATIONAL)
+            | models.Q(zones_geographiques__in=[departement.pk, departement.parent_id])
+        )
+
+    def by_departements(self, departements: list[ZoneGeographique]):
+        q = models.Q(couverture_geographique=Aide.CouvertureGeographique.NATIONAL)
+        for departement in departements:
+            q = q | models.Q(
+                zones_geographiques__in=[departement.pk, departement.parent_id]
+            )
+        return self.filter(q)
+
 
 class Aide(models.Model):
     class Meta:
         verbose_name = "Aide"
         verbose_name_plural = "Aides"
+        indexes = [GinIndex(fields=["search_vector"], name="aides_aide_full_text_gin")]
 
     objects = AideQuerySet.as_manager()
+    search_vector = models.GeneratedField(
+        expression=SearchVector("nom", weight="A", config="french_unaccent")
+        + SearchVector("promesse", weight="A", config="french_unaccent")
+        + SearchVector("description", weight="B", config="french_unaccent")
+        + SearchVector("type_depense", weight="B", config="french_unaccent")
+        + SearchVector("conditions", weight="B", config="french_unaccent"),
+        output_field=SearchVectorField(),
+        db_persist=True,
+    )
 
     class Status(models.TextChoices):
         TODO = "00", "0. Backlog - À prioriser"
