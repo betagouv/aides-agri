@@ -4,6 +4,7 @@ from aides.tests import factories  # noqa
 
 
 register(factories.ThemeFactory)
+register(factories.ThemeFactory, "theme_urgence", urgence=True)
 register(factories.SujetFactory, with_themes=1)
 register(factories.TypeFactory, "type_aide_conseil", nom="Conseil")
 register(factories.ZoneGeographiqueFactory)
