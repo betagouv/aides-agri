@@ -15,7 +15,7 @@ class AideDetailView(DetailView):
         if self.request.user and self.request.user.has_perm("aides.view_aide"):
             return Aide.objects.all()
         else:
-            return Aide.objects.published()
+            return Aide.objects.published_validated()
 
     def get(self, *args, **kwargs):
         self.object = self.get_object()

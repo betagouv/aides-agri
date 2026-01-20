@@ -305,11 +305,11 @@ class AideQuerySet(models.QuerySet):
     def validated(self):
         return self.filter(status=Aide.Status.VALIDATED)
 
-    def pending(self):
-        return self.validated().filter(date_target_publication=date.today())
-
     def published(self):
         return self.filter(is_published=True)
+
+    def published_validated(self):
+        return self.published().validated()
 
     def having_children(self):
         return self.exclude(children=None).distinct()
