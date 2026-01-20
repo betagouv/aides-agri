@@ -8,7 +8,7 @@ class AidesSitemap(Sitemap):
     priority = 1.0
 
     def items(self):
-        return Aide.objects.published()
+        return Aide.objects.published_validated()
 
     def lastmod(self, obj: Aide):
         return obj.last_published_at

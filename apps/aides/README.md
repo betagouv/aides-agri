@@ -34,19 +34,32 @@ Notes :
 * L’entité `Aide` contient, en plus des champs nécessaires à sa publication sur le site Aides Agri, un champ dynamique (de type `HStore` de PostgreSQL) qui permet de garder une trace des données brutes présentes lors de l’insertion du dispositif en base, au cas où celle-ci aurait été faite de manière automatisée ;
 * L’entité `ZoneGeographique` contient le découpage administratif du territoire français jusqu’au niveau des communes (donc régions/collectivités d’outre-mer/départements/EPCIs/communes) ; cette base est peuplée automatiquement grâce à la commande Django [aides_load_zones_geographiques](management/commands/aides_load_zones_geographiques.py) qui charge les données depuis https://geo.api.gouv.fr/.
 
-## Cycle de vie des aides
+## Flux de travail pour l’intégration des aides
 
 États possibles pour l’objet `Aide` :
 
 * `0. Backlog - À prioriser` : on sait que le dispositif existe, il est entré dans notre système sous une forme minimaliste (souvent juste un nom, un organisme porteur) ;
 * `1. Priorisée - Scope à vérif` : on a saisi quelques informations permettant de prioriser son intégration (son potentiel en matière de volume financier et de proportion des exploitations agricoles impactées, son impact politique, son degré d’urgence, etc.) ; reste à savoir s’il est pertinent pour notre produit (ce n’est pas forcément la même personne qui est décideur sur ce sujet) ;
+* `1.1 Bloquée` : pas pertinente pour le moment, mais pourrait le devenir ;
 * `2. Ok scope - À éditer` : ce dispositif doit être enrichi éditorialement en vue de sa publication sur le site Aides Agri ;
 * `3. Ok édito - À valider` : le dispositif a été enrichi, aussi bien sur ses caractéristiques que de manière éditoriale ; il nécessite une validation avant publication ;
-* `3.1 En attente validation métier` : la validation avant publication est en attente d’un avis extérieur à l’équipe Aides Agri, une expertise métier par exemple ;
-* `4. Publiée sous embargo` : le dispositif est complètement enrichi et validé, mais ne peut pas encore être publié ; si une date de publication est fixée, sa publication sera automatique ;
-* `4.1 À décliner` : le dispositif est complètement enrichi et validé, mais n’a pas vocation à être publié : c’est un dispositif-chapeau qui a vocation à être décliné ;
-* `5. Publiée` : l’aide est visible sur le site, elle peut apparaître dans les recommandations faites aux utilisatrices et utilisateurs, et est référencée par les moteurs de recherche ;
-* `6. Archivée` : le dispositif est exclu, soit temporairement soit définitivement ; la raison doit en être documentée dans un champ de commentaire interne.
+* `3.1 En attente validation métier` : la validation est en attente d’un avis extérieur à l’équipe Aides Agri, une expertise métier par exemple ;
+* `4. Validée` : le dispositif est complètement intégré, qualifié, enrichi et validé ;
+* `4.1 Validée puis à décliner` : le dispositif est complètement enrichi et validé, mais a vocation à être décliné, car c’est un dispositif-chapeau ;
+* `99. Archivée` : le dispositif n’est pas pertinent, ou est fermé définitivement.
+
+## Statut de publication
+
+Le statut de publication n’est pas un état du flux de travail ; en effet, Aides Agri se réserve le droit de publier sur son site des dispositifs pas complètement éditorialisés dans l’objectif de les faire découvrir le plus rapidement possible aux usagers et usagères.
+
+Pour ce faire, le statut de publication est implémenté par un champ booléen `is_published` qui répond aux contraintes suivantes :
+
+* Les dispositifs dont l'état est compris dans la liste suivante **ne peuvent pas être publiés** (méthode `Aide.can_be_published()`) :
+  * `0. Backlog - À prioriser`
+  * `1. Priorisée - Scope à vérif`
+  * `1.1 Bloquée`
+  * `99. Archivée`
+* Les dispositifs publiés qui ne sont pas `4. Validée` ou `4.1 Validée puis à décliner` n’ont pas de page publique sur le site : ils apparaissent dans les recommandations faites aux usagers et usagères, mais seuls les liens vers les sites officiels/externes sont affichés.
 
 ## Priorisation automatique des aides
 
