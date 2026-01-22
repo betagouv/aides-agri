@@ -154,7 +154,14 @@ class AideToSchema:
 
 
 class AideToInternalSchema(
-    AideToSchema, added_fields={1: "parent", 11: "filieres", 12: "sujets", 18: "etat"}
+    AideToSchema,
+    added_fields={
+        1: "parent",
+        11: "filieres",
+        12: "sujets",
+        18: "etat",
+        19: "est_publiee",
+    },
 ):
     def _prepare_parent(self):
         return self.aide.parent_id
@@ -167,6 +174,9 @@ class AideToInternalSchema(
 
     def _prepare_etat(self):
         return self.aide.get_status_display()
+
+    def _prepare_est_publiee(self):
+        return "OUI" if self.aide.is_published else "NON"
 
 
 def write_aides_as_csv(f, aides_ids: list[int]):
