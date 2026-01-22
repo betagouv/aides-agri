@@ -33,9 +33,10 @@ def test_write_aides_as_csv(aide):
                     "date_cloture",
                     "date_mise_a_jour",
                     "etat",
+                    "est_publiee",
                 ]
             elif i == 1:
-                assert len(row) == 19
+                assert len(row) == 20
                 assert row[0] == str(aide.pk)
             else:
                 assert False
