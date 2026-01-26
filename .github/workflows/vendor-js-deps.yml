@@ -1,0 +1,36 @@
+name: Vendor JS dependencies
+on: pull_request
+
+concurrency:
+  group: ${{ github.head_ref || github.ref }}
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  build:
+    name: Vendoring of JS dependencies
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - name: Clean-install JS dependencies
+        run: npm ci --ignore-scripts
+      - name: Vendor JS dependencies that distribute a bundle
+        run: |
+          while read jsfile; do cp "node_modules/$jsfile" "static/vendor/" && echo "Vendored $jsfile"; done <vendor.txt
+      - name: Compile-then-vendor JS dependencies that don't
+        run: |
+          echo 'export * as Sentry from "@sentry/browser"' | ./node_modules/.bin/esbuild --bundle --minify --format=esm --outfile=static/vendor/sentry.js
+      - uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          file_pattern: 'static/vendor/*.js'
+          commit_message: 'chore(deps): vendor dependencies'
