@@ -9,11 +9,7 @@ install-python:
 
 # Install Javascript dependencies
 install-js:
-    npm install
-    # For JS deps that distribute a bundle, just vendor it
-    while read jsfile; do cp "node_modules/$jsfile" "static/vendor/" && echo "Vendored $jsfile"; done <vendor.txt
-    # For JS deps that don't, build'em then vendor the bundle
-    echo 'export * as Sentry from "@sentry/browser"' | ./node_modules/.bin/esbuild --bundle --minify --format=esm --outfile=static/vendor/sentry.js
+    npm ci --ignore-scripts
 
 # Install Talisman as pre-push hook
 install-talisman:
