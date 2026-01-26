@@ -65,3 +65,29 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Load fixtures for E2E testing
+        run: |
+          uv run --no-sync manage.py migrate
+          uv run --no-sync manage.py loaddata conf/fixtures/dsfr_config.json cypress/e2e/fixtures/aides_01_sujets.json cypress/e2e/fixtures/aides_02_filieres.json cypress/e2e/fixtures/aides_03_zones_geographiques.json
+        env:
+          DJANGO_SETTINGS_MODULE: conf.settings.testing
+          SECRET_KEY: notsecret
+      - name: Run website for E2E tests
+        run: |
+          uv run --no-sync manage.py runserver --noreload --insecure --settings conf.settings.testing &
+        env:
+          DJANGO_SETTINGS_MODULE: conf.settings.testing
+          SECRET_KEY: notsecret
+      - name: Setup Javascript runtime
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install JS dependencies for E2E testing
+        run: npm ci --ignore-scripts
+      - name: Run Lighthouse
+        run: npx lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+      - name: Run Cypress E2E tests
+        uses: cypress-io/github-action@v6
