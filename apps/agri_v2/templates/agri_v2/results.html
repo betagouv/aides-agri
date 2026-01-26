@@ -9,22 +9,35 @@
   <link rel="stylesheet" href="{% static 'aides_feedback/base.css' %}">
 {% endblock extra_css %}
 
-{% block extra_js %}
+{% block extra_head_js %}
 <script nonce="{{ request.csp_nonce }}">
-// handle print button
 document.onreadystatechange = evt => {
+  if (document.readyState !== "complete") {
+    return
+  }
+  // handle print button
   document.getElementById("button-print").onclick = () => window.print()
-}
-// catch external links to open a confirmation modal
-document.querySelectorAll("a[href][target=_blank]").forEach(elt => {
-  elt.addEventListener("click", evt => {
-    evt.preventDefault()
-    const href = elt.getAttribute("href")
-    document.getElementById("modal-external-link-domain").textContent = href.split("/")[2]
-    document.getElementById("modal-external-link-href").setAttribute("href", href)
-    window.dsfr(document.getElementById("modal-external-link")).modal.disclose()
+
+  // catch external links to open a confirmation modal
+  document.querySelectorAll("a[href][target=_blank]").forEach(elt => {
+    elt.addEventListener("click", evt => {
+      evt.preventDefault()
+      const href = elt.getAttribute("href")
+      document.getElementById("modal-external-link-domain").textContent = href.split("/")[2]
+      document.getElementById("modal-external-link-href").setAttribute("href", href)
+      window.dsfr(document.getElementById("modal-external-link")).modal.disclose()
+    })
   })
-})
+
+  // FIXME very hacky way to prevent DSFR crash because of Toggle component not supporting htmx swapping
+  document.body.addEventListener("htmx:afterSwap", evt => {
+    dsfr.internals.state.modules.register.collection.forEach(item => {
+      if(item.creator && !item.creator.node.isConnected && item.instanceClassName === "ToggleInput") {
+        dsfr.internals.state.modules.register.remove(item.creator.registration)
+      }
+    })
+  })
+}
 </script>
 <script type="module" nonce="{{ request.csp_nonce }}">
   import { Application } from "stimulus"
@@ -36,7 +49,7 @@ document.querySelectorAll("a[href][target=_blank]").forEach(elt => {
   Stimulus.register("alert", Alert)
   Stimulus.register("select-rich", SelectRich)
 </script>
-{% endblock extra_js %}
+{% endblock extra_head_js %}
 
 {% block breadcrumb %}{% endblock %}
 
