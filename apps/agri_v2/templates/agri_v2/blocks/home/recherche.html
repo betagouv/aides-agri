@@ -1,0 +1,17 @@
+{% load dsfr_tags %}
+
+<h2 class="fr-mb-2w">Saisissez votre recherche</h2>
+{% dsfr_stepper current_step_id=2 total_steps=3 %}
+
+<form action="{% url 'agri_v2:results' %}">
+  <input type="hidden" name="departements" value="{{ departement }}">
+  <input type="hidden" name="beneficiaires" value="{{ beneficiaires_agris.pk }}">
+  <input type="hidden" name="inclure_fermes" value="on">
+  <div class="fr-search-bar" role="search">
+      <label class="fr-label" for="search-input">
+          Rechercher
+      </label>
+      <input class="fr-input" placeholder="Rechercher" id="search-input" type="search" name="q">
+      <button title="Rechercher" type="button" class="fr-btn">Rechercher</button>
+  </div>
+</form>
