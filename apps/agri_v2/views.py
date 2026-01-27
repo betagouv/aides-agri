@@ -32,11 +32,14 @@ class HomeView(TemplateView):
         super().setup(request, *args, **kwargs)
         self.departement_code = request.GET.get("departement", None)
         self.choose_theme = request.GET.get("choisir_theme", False)
+        self.search = request.GET.get("recherche", False)
 
     def get_template_names(self):
         if self.request.htmx:
             if self.choose_theme:
                 template_name = "agri_v2/blocks/home/themes.html"
+            elif self.search:
+                template_name = "agri_v2/blocks/home/recherche.html"
             else:
                 template_name = "agri_v2/blocks/home/choix_parcours.html"
             return [template_name]
@@ -61,6 +64,8 @@ class HomeView(TemplateView):
                     .prefetch_related("sujets")
                 }
             )
+        elif self.search:
+            context_data.update({"recherche": True})
         else:
             context_data.update(
                 {

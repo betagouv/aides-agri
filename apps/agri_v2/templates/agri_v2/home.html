@@ -54,6 +54,8 @@
         <div id="recherche" class="fr-background-default--grey fr-border-plain--grey fr-px-2w fr-px-md-12w fr-py-6w">
           {% if themes %}
             {% include "agri_v2/blocks/home/themes.html" %}
+          {% elif recherche %}
+            {% include "agri_v2/blocks/home/recherche.html" %}
           {% else %}
             <h2 class="fr-mb-2w">Pour commencer, dites-nous en plus :</h2>
             <form hx-trigger="change"
