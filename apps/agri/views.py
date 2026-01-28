@@ -356,7 +356,7 @@ class ResultsView(ResultsMixin, ListView):
                                         "extra_classes": "fr-icon-arrow-right-line fr-link--icon-right",
                                         "is_external": True,
                                     }
-                                    if aide.url_demarche
+                                    if aide.url_descriptif
                                     else {},
                                     {
                                         "url": aide.url_demarche,
