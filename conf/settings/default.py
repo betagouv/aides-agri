@@ -8,3 +8,4 @@ from .apps.sentry import *  # noqa
 
 from .apps.agri import *  # noqa
 from .apps.aides import *  # noqa
+from .apps.ui import *  # noqa

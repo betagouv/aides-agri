@@ -14,6 +14,7 @@
   {% include 'ui/blocks/header.html' %}
 
   {% dsfr_theme_modale %}
+  {% if UI_SHOW_DEMO_SITE_MODAL %}{% include "ui/blocks/demo_site_modal.html" %}{% endif %}
   {% include 'agri/blocks/modal_feedback_themes_sujets.html' with form=feedback_themes_sujets_form %}
 
   {% if SITE_CONFIG.notice_title or SITE_CONFIG.notice_description %}
