@@ -1,0 +1,96 @@
+#actions {
+  gap: .5rem;
+}
+
+.fr-card--horizontal-eighth .fr-card__img img {
+  object-fit: contain;
+}
+
+.fr-card__content {
+  padding: .75rem 2rem 0;
+}
+
+.fr-card__footer {
+  padding-bottom: .75rem;
+}
+
+.fr-toggle__label::before {
+  --toggle-status-width: 1rem !important;
+}
+
+label.fr-tag.fr-tag--remove-filter {
+  cursor: pointer;
+  --idle:transparent;
+  --hover:var(--background-action-high-blue-france-hover);
+  --active:var(--background-action-high-blue-france-active);
+  background-color:var(--background-action-high-blue-france);
+  color:var(--text-inverted-blue-france);
+}
+
+label.fr-tag--remove-filter:after {
+  --icon-size:1rem;
+  background-color:currentColor;
+  content:"";
+  display:inline-block;
+  flex:0 0 auto;
+  height:var(--icon-size);
+  margin-left:.25rem;
+  margin-right:-.25rem;
+  -webkit-mask-image:url(/static/dsfr/dist/icons/system/close-line.svg);
+  mask-image:url(/static/dsfr/dist/icons/system/close-line.svg);
+  -webkit-mask-size:100% 100%;
+  mask-size:100% 100%;
+  vertical-align:calc((.75em - var(--icon-size))*.5);
+  width:var(--icon-size);
+}
+
+/* TODO remove when https://github.com/numerique-gouv/django-dsfr/pull/267 will be merged */
+.fr-card__footer .fr-links-group {
+	--ul-type: none;
+	--ol-type: none;
+	--ul-start: 0;
+	--ol-start: 0;
+	--xl-block: 0;
+	--li-bottom: 0;
+	--ol-content: none;
+  display: flex;
+  gap: 1rem;
+	margin: 0;
+}
+
+.fr-responsive-img {
+  width: 20%;
+}
+
+.fr-card__header .fr-badges-group {
+  left: unset;
+  right: 0;
+}
+
+@media (min-width: 62em) {
+  .fr-card--horizontal-eighth .fr-card__header {
+    flex: 0 0 12.5%;
+    width: 12.5%;
+  }
+
+  .fr-responsive-img {
+    width: 100%;
+  }
+
+  .fr-card__header .fr-badges-group {
+    right: unset;
+    left: 0;
+  }
+}
+
+@media print {
+  #actions,
+  #filters,
+  #footer,
+  .fr-breadcrumb,
+  .fr-alert,
+  .fr-btn,
+  #aides-feedback {
+    display: none;
+  }
+}

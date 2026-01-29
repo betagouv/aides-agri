@@ -1,0 +1,34 @@
+{% load dsfr_tags %}
+
+<h2 class="fr-mb-2w">Quel est votre besoin ?</h2>
+{% dsfr_stepper current_step_id=2 total_steps=3 %}
+
+<form action="{% url 'agri_v2:results' %}">
+  <input type="hidden" name="departements" value="{{ departement }}">
+  <input type="hidden" name="beneficiaires" value="{{ beneficiaires_agris.pk }}">
+  <input type="hidden" name="inclure_fermes" value="on">
+  <fieldset class="fr-fieldset">
+    <legend class="fr-fieldset__legend fr-fieldset__legend--regular">Sélectionnez une famille de besoins.</legend>
+    {% for theme in themes %}
+      <div class="fr-fieldset__element">
+        <div class="fr-radio-group fr-radio-rich">
+          <input id="fr-radios-theme-{{ theme.pk }}"
+                 type="radio"
+                 name="themes"
+                 value="{{ theme.pk }}"
+                 {% if theme.pk == theme_id %}checked{% endif %}
+          >
+          <label class="fr-label" for="fr-radios-theme-{{ theme.pk }}">
+            <strong>{{ theme.nom }}</strong>
+            <span class="fr-hint-text">
+              {% for sujet in theme.sujets.all %}
+                {{ sujet.nom_court }}{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            </span>
+          </label>
+        </div>
+      </div>
+    {% endfor %}
+  </fieldset>
+  <button class="fr-btn" type="submit">Voir les dispositifs</button>
+</form>

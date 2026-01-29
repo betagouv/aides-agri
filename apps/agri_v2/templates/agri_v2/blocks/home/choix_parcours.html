@@ -1,0 +1,35 @@
+{% load dsfr_tags %}
+
+{% if departement %}
+  <p class="fr-mt-3w fr-mb-2w fr-label">Quelle recherche souhaitez-vous effectuer ?</p>
+  <div class="fr-container-fluid">
+    {% url "agri_v2:home" as url_home %}
+    {% querystring departement=departement recherche=1 as qs_recherche %}
+    {% querystring departement=departement choisir_theme=1 as qs_themes %}
+    {% url "agri_v2:results" as url_results %}
+    {% querystring departement=None departements=departement beneficiaires=beneficiaires_agris.pk inclure_fermes="on" as qs_results %}
+    {% querystring departement=None departements=departement beneficiaires=beneficiaires_agris.pk inclure_fermes="on" themes=theme_urgence_id as qs_results_urgence %}
+    <div class="fr-my-2w">
+      {% dsfr_tile extra_classes="fr-tile--horizontal fr-tile--sm fr-tile--no-icon fr-py-3v fr-background-alt--blue-ecume fr-tile--shadow" title="Je souhaite voir tous les dispositifs liés à une difficulté urgente impactant l’activité de mon exploitation." description="Visualisez tous les dispositifs qui pourraient vous aider à traverser une crise, un différend, une complexité administrative ou encore un problème de santé." url=url_results|add:qs_results_urgence %}
+    </div>
+    <div class="fr-my-2w"
+         hx-boost="true"
+         hx-target="#recherche"
+         hx-swap="innerHTML show:none"
+         hx-push-url="true"
+    >
+      {% dsfr_tile extra_classes="fr-tile--horizontal fr-tile--sm fr-tile--no-icon fr-py-3v" title="Je souhaite réaliser une recherche de dispositifs par mots-clés." description="Réalisez une recherche précise en utilisant des mots-clés pertinents pour votre situation ou besoin (ex : remplacement tracteur)." url=url_home|add:qs_recherche %}
+    </div>
+    <div class="fr-my-2w"
+         hx-boost="true"
+         hx-target="#recherche"
+         hx-swap="innerHTML show:none"
+         hx-push-url="true"
+    >
+      {% dsfr_tile extra_classes="fr-tile--horizontal fr-tile--sm fr-tile--no-icon fr-py-3v" title="Je souhaite réaliser une recherche des dispositifs par besoins." description="Sélectionnez parmi une liste les besoins correspondant à votre situation (ex : Je souhaite développer ou optimiser mon/mes activités.)" url=url_home|add:qs_themes %}
+    </div>
+    <div class="fr-my-2w">
+      {% dsfr_tile extra_classes="fr-tile--horizontal fr-tile--sm fr-tile--no-icon fr-py-3v" title="Je souhaite voir tous les dispositifs de la plateforme." description="Accédez à l’ensemble des dispositifs disponibles sur notre plateforme nationaux et locaux." url=url_results|add:qs_results %}
+    </div>
+  </div>
+{% endif %}

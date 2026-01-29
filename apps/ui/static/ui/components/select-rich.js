@@ -12,18 +12,20 @@ export class SelectRich extends Controller {
     keepDefaultButtonLabel: Boolean
   }
   static targets = ["button", "entries", "search", "searchButton", "option", "helper", "error", "tags", "addButton"]
+  static classExpanded = "fr-collapse--expanded"
 
   connect() {
     super.connect()
+    this.hasChanged = false
 
     // Close the select-rich element on click elsewhere or hit Esc
     document.body.addEventListener("click", evt => {
-      if (!evt.target.closest("#" + this.element.id)) {
+      if (this.entriesTarget.classList.contains("fr-collapse--expanded") && !evt.target.closest("#" + this.element.id)) {
         this._close()
       }
     })
     document.body.addEventListener("keydown", evt => {
-      if (evt.code === "Escape") {
+      if (evt.code === "Escape" && this.entriesTarget.classList.contains("fr-collapse--expanded")) {
         this._close()
       }
     })
@@ -176,7 +178,7 @@ export class SelectRich extends Controller {
     if (this.hasButtonTarget) {
       this.buttonTarget.setAttribute("aria-expanded", true)
     } else {
-      this.entriesTarget.classList.add("fr-collapse--expanded")
+      this.entriesTarget.classList.add(SelectRich.classExpanded)
     }
   }
 
@@ -184,13 +186,22 @@ export class SelectRich extends Controller {
     if (this.hasButtonTarget) {
       this.buttonTarget.setAttribute("aria-expanded", false)
     } else {
-      this.entriesTarget.classList.remove("fr-collapse--expanded")
+      this.entriesTarget.classList.remove(SelectRich.classExpanded)
     }
     this._updateButtons()
+    if (this.hasChanged) {
+      this.hasChanged = false
+      this.element.dispatchEvent(new Event("change", {bubbles: true}))
+    }
+  }
+
+  _isOpened() {
+    return this.entriesTarget.classList.contains(SelectRich.classExpanded)
   }
 
   changed(evt) {
     this._updateButton()
+    this.hasChanged = true
     if (this.hasSearchTarget) {
       this.searchTarget.value = ""
       this.search()
@@ -203,10 +214,12 @@ export class SelectRich extends Controller {
           this._removeTag(evt.target)
         }
       }
+      if (this._isOpened()) {
+        evt.stopPropagation()
+      }
     } else {
       this._close()
     }
-    this.element.dispatchEvent(new Event("change"))
   }
 
   _setErrorState() {
