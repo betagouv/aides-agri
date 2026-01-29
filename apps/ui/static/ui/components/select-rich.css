@@ -81,3 +81,11 @@
 .fr-select-rich__error {
   width: 100%;
 }
+
+/* override fr-menu "md and more" behavior for all screen sizes */
+.fr-select-rich .fr-collapse.fr-menu {
+  filter: drop-shadow(var(--overlap-shadow));
+  position: absolute;
+  top: 100%;
+  z-index: calc(var(--ground) + 1000);
+}
