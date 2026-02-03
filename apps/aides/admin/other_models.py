@@ -11,6 +11,8 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 from reversion.admin import VersionAdmin
 
+from ui.admin.widgets import ArrayFieldCheckboxSelectMultiple
+
 from ..models import (
     Theme,
     Sujet,
@@ -22,7 +24,6 @@ from ..models import (
     Beneficiaires,
     BaseJuridique,
 )
-from ._common import ArrayFieldCheckboxSelectMultiple
 
 
 class CsvExportMixin(ExtraButtonsMixin):
