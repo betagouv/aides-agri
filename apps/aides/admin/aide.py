@@ -18,10 +18,10 @@ from markdown import markdown
 from reversion.admin import VersionAdmin
 
 from admin_concurrency.admin import ConcurrentModelAdmin
+from ui.admin.widgets import ArrayFieldCheckboxSelectMultiple
 
 from ..models import ZoneGeographique, Aide, Sujet, BaseJuridique
 from ..interop import write_aides_as_csv
-from ._common import ArrayFieldCheckboxSelectMultiple
 
 
 class EasyMDEWidget(forms.widgets.Textarea):
