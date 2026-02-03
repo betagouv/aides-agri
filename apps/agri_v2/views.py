@@ -128,7 +128,7 @@ class ResultsMixin:
                     SearchQuery(self.search, config="french_unaccent"),
                 )
             ).filter(rank__gt=0)
-            order_by = ("-rank", "-date_fin")
+            order_by = ("-rank", "-priority", "-date_fin")
         else:
             order_by = self.__class__.ORDER_BY[self.order_by]
         if self.departements:
