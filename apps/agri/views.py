@@ -1,4 +1,3 @@
-import datetime
 from copy import copy
 
 from django.db.models import Q
@@ -8,15 +7,7 @@ from django.urls import reverse
 from django.views.generic import TemplateView, ListView, View
 from django.views.generic.base import ContextMixin
 
-from aides.models import (
-    Theme,
-    Sujet,
-    Aide,
-    ZoneGeographique,
-    Beneficiaires,
-    Filiere,
-    Type,
-)
+from aides.models import Theme, Sujet, Aide, ZoneGeographique, Filiere, Type
 
 from aides_feedback.forms import (
     FeedbackOnThemesAndSujetsForm,
@@ -66,19 +57,16 @@ class HomeView(TemplateView):
 class AgriMixin(ContextMixin):
     STEPS = {
         2: "Veuillez préciser votre besoin.",
-        3: "Renseignez votre exploitation.",
+        3: "Renseignez la localisation de votre exploitation.",
         4: "Décrivez votre activité.",
     }
     STEP = None
     BREADCRUMB_TITLE = ""
     theme = None
     sujets = []
-    etablissement = None
     commune = None
-    date_installation = None
     filieres = []
     code_effectif = None
-    groupements = []
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -88,35 +76,22 @@ class AgriMixin(ContextMixin):
         sujets_ids = request.GET.getlist("sujets", [])
         if sujets_ids:
             self.sujets = Sujet.objects.filter(pk__in=sujets_ids)
-        code_siret = request.GET.get("siret", None)
-        if code_siret:
-            self.etablissement = siret.get(code_siret)
         code_commune = request.GET.get("commune", None)
         if code_commune:
             self.commune = ZoneGeographique.objects.communes().get(code=code_commune)
         self.code_effectif = request.GET.get("tranche_effectif_salarie", None)
-        date_installation = request.GET.get("date_installation", None)
-        if date_installation:
-            self.date_installation = datetime.date.fromisoformat(date_installation)
         filieres_ids = request.GET.getlist("filieres", [])
         if filieres_ids:
             self.filieres = Filiere.objects.published().filter(pk__in=filieres_ids)
-        groupements_ids = request.GET.getlist("regroupements", [])
-        if groupements_ids:
-            self.groupements = Beneficiaires.objects.filter(pk__in=groupements_ids)
 
     def _get_breadcrumb_data(self):
         querydict = copy(self.request.GET)
-        querydict.pop("siret-search", None)
         querydict.pop("commune-search", None)
         querydict.pop("filieres", None)
         querydict.pop("tranche_effectif_salarie", None)
-        querydict.pop("regroupements", None)
         query_step_5 = copy(querydict)
-        querydict.pop("siret", None)
         querydict.pop("commune", None)
-        querydict.pop("date_installation", None)
-        query_step_3 = copy(querydict)
+        query_step_4 = copy(querydict)
         querydict.pop("sujets", None)
         return {
             "links": [
@@ -125,8 +100,8 @@ class AgriMixin(ContextMixin):
                     "title": Step2View.BREADCRUMB_TITLE,
                 },
                 {
-                    "url": reverse("agri:step-3", query=query_step_3),
-                    "title": Step3View.BREADCRUMB_TITLE,
+                    "url": reverse("agri:step-4", query=query_step_4),
+                    "title": Step4View.BREADCRUMB_TITLE,
                 },
                 {
                     "url": reverse("agri:step-5", query=query_step_5),
@@ -153,17 +128,12 @@ class AgriMixin(ContextMixin):
                 ],
                 "summary_theme": self.theme,
                 "summary_sujets": self.sujets,
-                "summary_siret": self.etablissement.get("siret")
-                if self.etablissement
-                else None,
                 "summary_filieres": self.filieres,
-                "summary_date_installation": self.date_installation,
                 "summary_commune": self.commune,
                 "code_effectif": self.code_effectif,
                 "summary_effectif": siret.mapping_effectif.get(self.code_effectif, None)
                 if self.code_effectif
                 else None,
-                "summary_regroupements": self.groupements,
             }
         )
 
@@ -203,29 +173,10 @@ class Step2View(AgriMixin, TemplateView):
         return extra_context
 
 
-class Step3View(AgriMixin, TemplateView):
-    template_name = "agri/step-3.html"
-    STEP = 3
-    BREADCRUMB_TITLE = "Exploitation"
-
-
 class Step4View(AgriMixin, TemplateView):
     template_name = "agri/step-4.html"
     STEP = 3
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data.update(
-            {
-                "etablissement": self.etablissement,
-                "commune": ZoneGeographique.objects.communes()
-                .filter(code=self.etablissement.get("commune"))
-                .first()
-                if self.etablissement
-                else None,
-            }
-        )
-        return context_data
+    BREADCRUMB_TITLE = "Localisation"
 
 
 class Step5View(AgriMixin, TemplateView):
@@ -236,41 +187,14 @@ class Step5View(AgriMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        if self.etablissement:
-            naf = self.etablissement.get("activite_principale", "")
-            if naf[-1].isalpha():
-                naf = naf[:-1]
-            filiere = (
-                Filiere.objects.published().filter(codes_naf__contains=[naf]).first()
-            )
-            code_effectif_salarie = siret.mapping_effectif_by_insee_codes.get(
-                self.etablissement.get("tranche_effectif_salarie", ""), None
-            )
-        else:
-            filiere = None
-            code_effectif_salarie = None
         context_data.update(
             {
                 "mapping_tranches_effectif": siret.mapping_effectif,
-                "code_effectif_salarie": code_effectif_salarie,
-                "tranche_effectif_salarie": siret.mapping_effectif.get(
-                    code_effectif_salarie, None
-                )
-                if self.etablissement
-                else None,
-                "etablissement": self.etablissement,
-                "groupements": [
-                    (g.pk, g.nom, g.libelle)
-                    for g in Beneficiaires.objects.groupements()
-                ],
                 "filieres": [
                     (pk, nom, nom)
                     for pk, nom in Filiere.objects.published().values_list("pk", "nom")
                 ],
-                "filieres_initials": [filiere.pk] if filiere else [],
-                "filieres_helper": "Nous n'avons pas trouvé la filière de votre exploitation, veuillez l’indiquer ici."
-                if self.etablissement and not filiere
-                else "",
+                "filieres_initials": [],
             }
         )
 
@@ -287,10 +211,11 @@ class ResultsMixin(AgriMixin):
                 siret.mapping_effectif_complete[self.code_effectif]["min"],
                 siret.mapping_effectif_complete[self.code_effectif]["max"],
             )
-            .by_beneficiaires(self.groupements)
             .by_filieres(self.filieres)
             .select_related("organisme")
-            .prefetch_related("zones_geographiques", "types")
+            .prefetch_related(
+                "zones_geographiques", "types", "eligibilite_beneficiaires", "children"
+            )
             .order_by("-date_fin")
             .defer("organisme__logo")
         )
@@ -368,6 +293,16 @@ class ResultsView(ResultsMixin, ListView):
                                     else {},
                                 ]
                             },
+                            "top_detail": {
+                                "tags": [
+                                    {
+                                        "label": beneficiaires.nom,
+                                        "extra_classes": "fr-tag--sm",
+                                    }
+                                    for beneficiaires in aide.eligibilite_beneficiaires.all()
+                                    if beneficiaires.is_groupement
+                                ]
+                            },
                         }
                         for aide in aides
                     ]
@@ -377,35 +312,6 @@ class ResultsView(ResultsMixin, ListView):
             }
         )
 
-        return context_data
-
-
-class SearchEtablissementView(TemplateView):
-    template_name = "agri/_partials/search_etablissement.html"
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-        context_data.update(
-            {
-                "self": {
-                    "name": "siret",
-                    "searchable": True,
-                }
-            }
-        )
-
-        q = self.request.GET.get("siret-search", "")
-        if q:
-            try:
-                context_data.update({"hits": siret.search(q)})
-            except siret.SearchUnavailable:
-                context_data.update(
-                    {
-                        "error": "La recherche d’entreprise est indisponible pour le moment. Vous pouvez continuer votre parcours en saisissant les quelques données nécessaires manuellement comme si vous n’aviez pas de numéro de Siret en cliquant sur le bouton ci-dessous. Veuillez nous excuser pour la gêne occasionnée.",
-                    }
-                )
-        else:
-            context_data.update({"error": "Veuillez saisir une recherche"})
         return context_data
 
 
@@ -448,16 +354,9 @@ class SendResultsByMailView(ResultsMixin, View):
             base_url=f"{self.request.scheme}://{self.request.headers['host']}",
             theme_id=self.theme.pk,
             sujets_ids=[s.pk for s in self.sujets],
-            etablissement={
-                k: v for k, v in self.etablissement.items() if k in ("siret", "nom")
-            }
-            if self.etablissement
-            else None,
             commune_id=self.commune.pk,
-            date_installation=self.date_installation.isoformat(),
             effectif=(self.code_effectif, siret.mapping_effectif[self.code_effectif]),
             filieres_ids=[f.pk for f in self.filieres],
-            groupements_ids=[g.pk for g in self.groupements],
             aides_ids=[a.pk for a in self.get_results()],
         )
         return render(request, "agri/_partials/send-results-by-mail-ok.html")

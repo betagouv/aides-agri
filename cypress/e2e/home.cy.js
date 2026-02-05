@@ -3,6 +3,6 @@ describe('homepage', () => {
         cy.visit('http://localhost:8000/')
 
         cy.findByRole('heading', { level: 1 })
-          .should('have.text', 'Agriculteurs, agricultrices :un projet, une difficulté ?')
+          .should('have.text', 'Agriculteurs, agricultrices :un projet ou une difficulté ?')
     })
 })

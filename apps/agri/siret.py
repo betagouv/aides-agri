@@ -1,9 +1,7 @@
 import csv
-import datetime
 import os
 
 from django.conf import settings
-import requests
 
 
 mapping_naf_short = dict()
@@ -42,52 +40,3 @@ with open(
         }
         for insee_code in row[4].split(","):
             mapping_effectif_by_insee_codes[insee_code] = row[0]
-
-
-class SearchUnavailable(RuntimeError):
-    pass
-
-
-def search(query: str) -> list[dict]:
-    try:
-        r = requests.get(
-            f"https://recherche-entreprises.api.gouv.fr/search?q={query}",
-            timeout=3,
-        )
-        r.raise_for_status()
-        hits = []
-        for hit in r.json()["results"]:
-            if (
-                hit["matching_etablissements"] and hit["nombre_etablissements"] == 0
-            ):  # corrupted data from API
-                raise SearchUnavailable()
-            for etablissement in hit["matching_etablissements"]:
-                try:
-                    libelle_naf = mapping_naf_short[
-                        etablissement["activite_principale"]
-                    ]
-                except KeyError:
-                    libelle_naf = ""
-                etablissement["libelle_activite_principale"] = libelle_naf
-            hits.append(hit)
-        return hits
-    except requests.RequestException:
-        raise SearchUnavailable()
-
-
-def get(query: str) -> dict:
-    societe = search(query)[0]
-    matching_etablissements = societe.pop("matching_etablissements")
-    etablissement = matching_etablissements[0]
-    etablissement["societe"] = societe
-    etablissement["nom"] = (
-        etablissement["nom_commercial"]
-        if etablissement["nom_commercial"]
-        else societe["nom_complet"]
-    )
-    if etablissement["tranche_effectif_salarie"] == "NN":
-        etablissement["tranche_effectif_salarie"] = "00"
-    for key in etablissement:
-        if isinstance(key, str) and key.startswith("date_") and etablissement[key]:
-            etablissement[key] = datetime.date.fromisoformat(etablissement[key])
-    return etablissement

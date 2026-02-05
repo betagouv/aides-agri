@@ -14,7 +14,7 @@
 {% block action %}{% url 'agri:results' %}{% endblock action %}
 
 {% block extra_form_attributes %}
-  data-controller="dsfr-form steps"
+  data-controller="dsfr-form"
   data-dsfr-form-select-rich-outlet="[data-controller=select-rich]"
   data-dsfr-form-checkbox-group-field-outlet="[data-controller=checkbox-group-field]"
 {% endblock extra_form_attributes %}
@@ -22,48 +22,31 @@
 {% block form %}
 <div class="fr-alert fr-alert--info fr-alert--sm fr-mb-3w">
   <p>
-    {% if etablissement %}
-      Veuillez vérifier et compléter les champs ci-dessous. Ils nous permettront de sélectionner les dispositifs pertinents.
-    {% else %}
-      Nous avons encore besoin de quelques informations concernant votre exploitation pour sélectionner les dispositifs pertinents.
-    {% endif %}
+    Nous avons encore besoin de quelques informations concernant votre exploitation pour sélectionner les dispositifs pertinents.
   </p>
 </div>
 <div class="fr-grid-row">
   <fieldset class="fr-fieldset fr-col">
-    <div class="fr-fieldset__element fr-mb-3w fr-select-group">
-      <label for="input-effectif" class="fr-label fr-mb-2v">
-        Effectifs
-        {% if etablissement and not tranche_effectif_salarie %}
-        <span class="fr-hint-text fr-info-text">Nous n’avons pas trouvé l’effectif de votre exploitation, veuillez l’indiquer ici.</span>
-        {% endif %}
-      </label>
-      {% if tranche_effectif_salarie %}
-        <button type="button"
-                class="fr-tag fr-tag--dismiss"
-                aria-label="Tranche d‘effectif salarié trouvée pour l’exploitation choisie : {{ tranche_effectif_salarie }}. Cliquer ici pour en choisir une autre."
-                data-action="click->steps#overrideEffectif"
+    <div class="fr-fieldset__element">
+      {% ui_select_rich_multi label="Filières" name="filieres" required=True options=filieres initials=filieres_initials searchable=True search_placeholder="élevage, légumes, etc." with_tags=True %}
+    </div>
+    <div class="fr-fieldset__element fr-mb-3w">
+      <div class="fr-select-group">
+        <label for="input-effectif" class="fr-label fr-mb-2v">
+          Effectifs
+        </label>
+        <select id="input-effectif"
+                class="fr-select {% if tranche_effectif_salarie %}fr-hidden{% endif %}"
+                name="tranche_effectif_salarie"
+                required
         >
-          {{ tranche_effectif_salarie }}
-        </button>
-      {% endif %}
-      <select id="input-effectif"
-              class="fr-select {% if tranche_effectif_salarie %}fr-hidden{% endif %}"
-              name="tranche_effectif_salarie"
-              required
-      >
-        <option value="" disabled {% if not tranche_effectif_salarie %}selected{% endif %}>Sélectionner une option</option>
-        {% for code, label in mapping_tranches_effectif.items %}
-        <option value="{% if code %}{{ code }}{% endif %}" {% if code == code_effectif_salarie %}selected{% endif %}>{{ label }}</option>
-        {% endfor %}
-      </select>
-      <span class="fr-error-text fr-hidden">Ce champ est requis pour passer à la suite</span>
-    </div>
-    <div class="fr-fieldset__element">
-      {% ui_select_rich_multi label="Filières" name="filieres" required=True options=filieres initials=filieres_initials searchable=True search_placeholder="élevage, légumes, etc." with_tags=True helper=filieres_helper %}
-    </div>
-    <div class="fr-fieldset__element">
-      {% ui_checkbox_group_field label="Faites-vous partie d’un ou plusieurs regroupements ? (optionnel)" name="regroupements" options=groupements required=False %}
+          <option value="" disabled selected>Sélectionner une option</option>
+          {% for code, label in mapping_tranches_effectif.items %}
+          <option value="{% if code %}{{ code }}{% endif %}">{{ label }}</option>
+          {% endfor %}
+        </select>
+        <span class="fr-error-text fr-hidden">Ce champ est requis.</span>
+      </div>
     </div>
   </fieldset>
 </div>

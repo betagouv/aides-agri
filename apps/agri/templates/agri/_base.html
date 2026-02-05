@@ -14,7 +14,6 @@
   import { CheckboxGroupField } from "checkbox-group-field"
   import { SelectRich } from "select-rich"
   import { SummaryMobile } from "summary-mobile"
-  import { Steps } from "steps"
 
   window.Stimulus ??= Application.start()
 
@@ -23,7 +22,6 @@
   Stimulus.register("checkbox-group-field", CheckboxGroupField)
   Stimulus.register("select-rich", SelectRich)
   Stimulus.register("summary-mobile", SummaryMobile)
-  Stimulus.register("steps", Steps)
 </script>
 {% endblock extra_head_js %}
 
@@ -72,16 +70,12 @@
         {% if summary_commune %}
           <h3 class="fr-text--bold fr-text--md fr-my-3v">Votre exploitation et activités :</h3>
           <dl class="fr-p-0 summary-dl">
-            {% if summary_siret %}
-              <dt class="fr-sr-only">Numéro de Siret</dt>
-              <dd class="fr-tag fr-tag--sm">Siret {{ summary_siret }}</dd>
-            {% endif %}
             {% if summary_commune %}
               <dt class="fr-sr-only">Commune</dt>
               <dd class="fr-tag fr-tag--sm">{{ summary_commune.nom }}</dd>
             {% endif %}
             {% if summary_effectif %}
-              <dt class="fr-sr-only">Filières</dt>
+              <dt class="fr-sr-only">Effectifs</dt>
               <dd class="fr-tag fr-tag--sm">{{ summary_effectif }}</dd>
             {% endif %}
             {% if summary_filieres %}
@@ -92,17 +86,9 @@
                 {% endfor %}
               </div>
             {% endif %}
-            {% if summary_regroupements %}
-              <div class="fr-tags-group fr-mt-n2v">
-                <dt class="fr-sr-only">Regroupements</dt>
-                {% for regroupement in summary_regroupements %}
-                  <dd class="fr-tag fr-tag--sm">{{ regroupement.nom }}</dd>
-                {% endfor %}
-              </div>
-            {% endif %}
           </dl>
           <div class="fr-mt-2w">
-            <a class="fr-btn fr-btn--tertiary fr-link--sm fr-px-2w" href="{% url 'agri:step-3' %}{% querystring siret=None commune=None date_installation=None regroupements=None filieres=None tranche_effectif_salarie=None %}">
+            <a class="fr-btn fr-btn--tertiary fr-link--sm fr-px-2w" href="{% url 'agri:step-4' %}{% querystring commune=None filieres=None tranche_effectif_salarie=None %}">
               Modifier
             </a>
           </div>

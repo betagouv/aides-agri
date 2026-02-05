@@ -10,7 +10,7 @@ Ce module porte le parcours utilisateur proposé aux exploitantes et exploitants
 
 ## Dépendances externes
 
-* L’annuaire des entreprises : ce service public numérique (https://annuaire-entreprises.data.gouv.fr/) expose une API JSON/HTTP qui permet de trouver des informations sur les entreprises à partir d’une recherche textuelle (nom de l’entreprise et nom de commune, numéro Siret, etc.). Ce module interroge cette API au moment de récolter des informations afin de qualifier la situation de l’exploitation agricole.
+Aucune
 
 ## Modèle de données
 
