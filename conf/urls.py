@@ -32,8 +32,13 @@ urlpatterns = [
     path("", include("agri.urls")),
     path("", include("aides.urls")),
     path("", include("aides_feedback.urls")),
+    path("api/", include(("referentiel.urls", "api-referentiel"))),
+    path(
+        "api/", include(("referentiel_integration.urls", "api-referentiel-integration"))
+    ),
     path("", include("product.urls")),
     path("", include(two_factors_urls)),
+    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("ui/", include("ui.urls")),
 ]
 

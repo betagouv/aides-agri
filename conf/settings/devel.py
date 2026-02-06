@@ -40,3 +40,7 @@ HTTP_SCHEME = "http://"
 
 CONTENT_SECURITY_POLICY_REPORT_ONLY = CONTENT_SECURITY_POLICY  # noqa: F405
 CONTENT_SECURITY_POLICY = {}
+
+REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"].append(  # noqa: F405
+    "rest_framework.authentication.SessionAuthentication"
+)

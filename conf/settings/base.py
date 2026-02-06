@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     "pgtrigger",
     "reversion",
     "importmap",
+    "rest_framework",
+    "rest_framework.authtoken",
     "two_factor",
     "widget_tweaks",
     "dsfr",
@@ -63,7 +65,8 @@ INSTALLED_APPS = [
     "agri",
     "aides",
     "aides_feedback",
-    "pac",
+    "referentiel",
+    "referentiel_integration",
     "conf.apps.AidesAgriAdminConfig",
 ]
 
