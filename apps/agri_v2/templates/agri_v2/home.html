@@ -1,0 +1,94 @@
+{% extends "ui/base.html" %}
+
+{% load i18n static dsfr_tags %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'agri_v2/home.css' %}">
+{% endblock extra_css %}
+
+{% block pagetitle %}{{ SITE_CONFIG.site_title }}{% endblock pagetitle %}
+
+{% block body %}
+  {% dsfr_skiplinks skiplinks %}
+
+  {% include 'ui/blocks/header.html' %}
+
+  {% dsfr_theme_modale %}
+  {% if UI_SHOW_DEMO_SITE_MODAL %}{% include "ui/blocks/demo_site_modal.html" %}{% endif %}
+
+  {% if SITE_CONFIG.notice_title or SITE_CONFIG.notice_description %}
+    {% dsfr_notice title=SITE_CONFIG.notice_title description=SITE_CONFIG.notice_description link=SITE_CONFIG.notice_link type=SITE_CONFIG.notice_type icon=SITE_CONFIG.notice_icon_class is_collapsible=SITE_CONFIG.notice_is_collapsible %}
+  {% endif %}
+
+  <main id="content" role="main" aria-label="Contenu">
+    <div class="fr-container">
+      <section id="intro" class="fr-pt-6w fr-pt-md-12w">
+        <h1>Agriculteurs, agricultrices :<br>un projet, une difficulté ?</h1>
+        <p class="fr-text--xl fr-text--regular">{{ SITE_CONFIG.site_title }} vous oriente vers les dispositifs les plus pertinents pour votre exploitation : aide financière, formation, accompagnement, etc.</p>
+        <a class="fr-btn fr-btn--lg fr-mt-4w fr-mt-md-12w" href="#recherche">Découvrez les dispositifs !</a>
+      </section>
+      <section id="proposition" class="fr-grid-row fr-grid-row--gutters fr-mt-6w fr-mt-md-16w">
+        <div class="fr-col fr-col-12 fr-col-md-4">
+          <article class="fr-p-3w fr-background-default--grey">
+            <div class="fr-icon-bookmark-fill fr-mb-2w" aria-hidden="true"></div>
+            <strong>Une centralisation des aides publiques</strong>
+            à destination des agriculteurs mises à jour.
+          </article>
+        </div>
+        <div class="fr-col fr-col-12 fr-col-md-4">
+          <article class="fr-p-3w fr-background-default--grey">
+            <div class="fr-icon-selection-fill fr-mb-2w" aria-hidden="true"></div>
+            <strong>Une sélection personnalisée de dispositifs</strong>
+            adaptée à votre situation en seulement 4 étapes.
+          </article>
+        </div>
+        <div class="fr-col fr-col-12 fr-col-md-4">
+          <article class="fr-p-3w fr-background-default--grey">
+            <div class="fr-icon-orientation-fill fr-mb-2w" aria-hidden="true"></div>
+            <strong>Une orientation</strong>
+            vers les interlocuteurs pertinents pour déposer votre dossier.
+          </article>
+        </div>
+      </section>
+      <section class="fr-mt-12w">
+        <div id="recherche" class="fr-background-default--grey fr-border-plain--grey fr-px-2w fr-px-md-12w fr-py-6w">
+          {% if themes %}
+            {% include "agri_v2/blocks/home/themes.html" %}
+          {% elif recherche %}
+            {% include "agri_v2/blocks/home/recherche.html" %}
+          {% else %}
+            <h2 class="fr-mb-2w">Pour commencer, dites-nous en plus :</h2>
+            <form hx-trigger="change"
+                  hx-get="{% url 'agri_v2:home' %}"
+                  hx-target="#choix-parcours"
+                  hx-push-url="true"
+            >
+              {% dsfr_select id="departement" label="Quel est votre département ? <span class='fr-hint-text'>Retrouvez votre département en tapant son numéro</<span>" options=departements default=departements_default selected=departement %}
+            </form>
+            <div id="choix-parcours" aria-live="polite">
+              {% include "agri_v2/blocks/home/choix_parcours.html" %}
+            </div>
+          {% endif %}
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <aside id="a-propos" class="fr-background-alt--blue-ecume fr-mt-4w" aria-label="À propos">
+    <div class="fr-container">
+      <section class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-mb-0">
+        <div class="fr-col">
+          <div class="fr-py-3v fr-px-2w fr-px-md-12w">
+            <h2>À propos d’Aides Agri</h2>
+            <p>Aides Agri a pour ambition de recenser les aides des partenaires publics à destination des agriculteurs, de les rendre visibles et d'aiguiller les agriculteurs selon leur besoin.</p>
+            <p>Ce service fait partie des solutions mises en œuvre par le Ministère de l’Agriculture, de l’Agro-alimentaire et de la Souveraineté Alimentaire dans le cadre de la simplification numérique. La méthode de fabrication employée est <a class="fr-link" href="https://beta.gouv.fr/startups/plateforme-agriculteurs.html" target="_blank" title="la démarche dite “beta.gouv” - {% translate 'Opens a new window' %}">la démarche dite “beta.gouv”</a> qui met l’usager au centre pour répondre vraiment à ses besoins.</p>
+            <p>Aides Agri est aujourd’hui en phase de construction, une étape expérimentale qui signifie que le service n’est pas abouti et que nous apportons des améliorations fréquentes et importantes.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </aside>
+
+  {% include "ui/blocks/footer.html" %}
+  {% dsfr_js nonce=request.csp_nonce %}
+{% endblock body %}

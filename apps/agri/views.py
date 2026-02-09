@@ -282,7 +282,7 @@ class ResultsMixin(AgriMixin):
         return (
             Aide.objects.published()
             .by_sujets(self.sujets)
-            .by_zone_geographique(self.commune)
+            .by_commune(self.commune)
             .by_effectif(
                 siret.mapping_effectif_complete[self.code_effectif]["min"],
                 siret.mapping_effectif_complete[self.code_effectif]["max"],
