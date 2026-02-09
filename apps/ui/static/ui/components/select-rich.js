@@ -18,7 +18,10 @@ export class SelectRich extends Controller {
 
     // Close the select-rich element on click elsewhere or hit Esc
     document.body.addEventListener("click", evt => {
-      if (!evt.target.closest("#" + this.element.id)) {
+      if (!this.entriesTarget.classList.contains("fr-collapse--expanded")) {
+        return
+      }
+      if (!evt.target.closest("#" + this.entriesTarget.id)) {
         this._close()
       }
     })
