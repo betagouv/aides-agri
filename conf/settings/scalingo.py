@@ -19,4 +19,6 @@ STORAGES["staticfiles"]["BACKEND"] = (  # noqa: F405
 )
 WHITENOISE_ROOT = BASE_DIR / "webroot"  # noqa: F405
 
-TASKS = {"default": {"BACKEND": "django_tasks.backends.database.DatabaseBackend"}}
+TASKS = {
+    "default": {"BACKEND": "django_tasks_db.DatabaseBackend", "QUEUES": ["default"]}
+}
