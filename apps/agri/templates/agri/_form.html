@@ -10,14 +10,8 @@
   {% for sujet in summary_sujets %}
     <input type="hidden" name="sujets" value="{{ sujet.pk }}">
   {% endfor %}
-  {% if summary_siret %}
-    <input type="hidden" name="siret" value="{{ summary_siret }}">
-  {% endif %}
   {% if summary_commune %}
     <input type="hidden" name="commune" value="{{ summary_commune.code }}">
-  {% endif %}
-  {% if summary_date_installation %}
-    <input type="hidden" name="date_installation" value="{{ summary_date_installation|date:"c" }}">
   {% endif %}
   {% for filiere in summary_filieres %}
     <input type="hidden" name="filieres" value="{{ filiere.pk }}">
@@ -25,9 +19,6 @@
   {% if code_effectif %}
     <input type="hidden" name="tranche_effectif_salarie" value="{{ code_effectif }}">
   {% endif %}
-  {% for regroupement in summary_regroupements %}
-    <input type="hidden" name="regroupements" value="{{ regroupement.pk }}">
-  {% endfor %}
 
   <section class="fr-container fr-p-0 form-fields">
     {% block form %}{% endblock form %}

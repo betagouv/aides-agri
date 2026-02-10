@@ -114,6 +114,7 @@ def ui_select_rich_single(*args, **kwargs) -> dict:
         "button_text",
         "options",
         "initial",
+        "helper",
         "required",
         "required_error_message",
         "search_url",

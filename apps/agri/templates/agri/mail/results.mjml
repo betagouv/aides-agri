@@ -39,16 +39,8 @@
                 {{ sujet.nom_court }}{% if not forloop.last %},{% endif %}
               {% endfor %}
             </li>
-            {% if etablissement %}
-            <li>
-              <strong>Exploitation</strong> : {{ etablissement.nom }} (SIRET {{ etablissement.siret }})
-            </li>
-            {% endif %}
             <li>
               <strong>Commune</strong> : {{ commune.nom }} ({{ commune.code_postal }})
-            </li>
-            <li>
-              <strong>Date d’installation</strong> : {{ date_installation|date:"SHORT_DATE_FORMAT" }}
             </li>
             <li>
               <strong>Effectif</strong> : {{ effectif }}
@@ -57,12 +49,6 @@
               <strong>Filières</strong> :
               {% for filiere in filieres %}
                 {{ filiere.nom }}{% if not forloop.last %},{% endif %}
-              {% endfor %}
-            </li>
-            <li>
-              <strong>Regroupements de producteurs</strong> :
-              {% for groupement in groupements %}
-                {{ groupement.nom }}{% if not forloop.last %},{% endif %}
               {% endfor %}
             </li>
           </ul>

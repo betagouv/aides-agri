@@ -5,8 +5,9 @@
       "url": [
         "http://localhost:8000/",
         "http://localhost:8000/etape-2?theme=1",
-        "http://localhost:8000/etape-3?theme=1&sujets=1&sujets=3",
-        "http://localhost:8000/etape-5?theme=1&sujets=1&sujets=3&siret=11007001800012&commune=13038&date_installation=1983-03-01"
+        "http://localhost:8000/etape-4?theme=1&sujets=1&sujets=3",
+        "http://localhost:8000/etape-5?theme=1&sujets=1&sujets=3&commune=13038",
+        "http://localhost:8000/resultats?theme=1&sujets=1&sujets=3&commune=13038&filieres=1&tranche_effectif_salarie=1019"
       ]
     },
     "assert": {

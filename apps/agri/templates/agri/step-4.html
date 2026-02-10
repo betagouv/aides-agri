@@ -17,69 +17,15 @@
 {% endblock extra_form_attributes %}
 
 {% block form %}
-<div class="fr-alert fr-alert--info fr-alert--sm {% if etablissement %}fr-mb-4w{% endif %}">
+<div class="fr-alert fr-alert--info fr-alert--sm fr-mb-4w">
   <p>
-    {% if etablissement %}
-      Veuillez vérifier et compléter les champs ci-dessous. Ils nous permettront de sélectionner les dispositifs pertinents.
-    {% else %}
-      Nous avons besoin d’un certain nombre d’informations concernant votre exploitation pour sélectionner les dispositifs pertinents.
-    {% endif %}
+    Nous avons besoin d’un certain nombre d’informations concernant votre exploitation pour sélectionner les dispositifs pertinents.
   </p>
 </div>
 <div class="fr-grid-row">
   <fieldset class="fr-fieldset fr-col">
-    <div class="fr-fieldset__element fr-mt-2v">
-      {% if etablissement %}
-      <span class="fr-label fr-mb-2v">Nom de l’exploitation</span>
-      <button type="button"
-              class="fr-tag fr-tag--dismiss"
-              aria-label="Annuler le choix de l’établissement"
-              data-action="click->steps#cancelEtablissement:prevent"
-      >
-        {{ etablissement.nom|default_if_none:etablissement.societe.nom_complet }} - {{ etablissement.siret }}
-      </button>
-      {% endif %}
-    </div>
     <div class="fr-fieldset__element">
-      {% if commune %}
-        <span class="fr-label fr-mb-2v">Commune</span>
-        <button type="button"
-                class="fr-tag fr-tag--dismiss"
-                aria-label="Commune trouvée attachée à l’exploitation choisie : {{ commune.code_postal }} {{ commune.nom }}. Cliquer ici pour en choisir une autre."
-                data-action="click->steps#overrideCommune"
-        >
-          {{ commune.code_postal }} {{ commune.nom }}
-        </button>
-        <input type="hidden" name="commune" value="{{ commune.code }}">
-        {% ui_select_rich_single label="Commune" name="commune" required=True search_url="agri:search-commune" search_field_name="commune-search" extra_classes="fr-hidden" %}
-      {% else %}
-        {% if etablissement %}
-          <span class="fr-info-text">Nous n’avons pas pu trouver la commune de votre exploitation, veuillez la sélectionner ici</span>
-        {% endif %}
-        {% ui_select_rich_single label="Commune" name="commune" required=True search_url="agri:search-commune" search_field_name="commune-search" %}
-      {% endif %}
-    </div>
-    <div class="fr-fieldset__element fr-mt-2v">
-      <div class="fr-input-group">
-        <label for="input-date-installation" class="fr-label fr-mb-2v">Date d’installation</label>
-        {% if etablissement %}
-        <button type="button"
-                class="fr-tag fr-tag--dismiss"
-                aria-label="Date d’installation trouvée pour l’exploitation choisie : {{ etablissement.date_creation|date:"SHORT_DATE_FORMAT" }}. Cliquer ici pour en choisir une autre."
-                data-action="click->steps#overrideDateInstallation"
-        >
-          {{ etablissement.date_creation|date:"SHORT_DATE_FORMAT" }}
-        </button>
-        {% endif %}
-        <input type="date"
-               id="input-date-installation"
-               class="fr-input {% if etablissement %}fr-hidden{% endif %}"
-               name="date_installation"
-               required
-               value="{{ etablissement.date_creation|date:"c" }}"
-        >
-        <div class="fr-error-text fr-hidden">Ce champ est requis</div>
-      </div>
+      {% ui_select_rich_single label="Commune" name="commune" required=True search_url="agri:search-commune" search_field_name="commune-search" helper="Recherchez votre commune par nom ou code postal puis sélectionnez-la." search_placeholder="Crozon, 13990, Charpey…" %}
     </div>
   </fieldset>
 </div>

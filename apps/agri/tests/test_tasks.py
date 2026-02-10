@@ -29,10 +29,8 @@ def test_send_results_by_mail(
         theme.pk,
         [sujet.pk],
         zone_geographique_commune_75001.pk,
-        "2025-12-01",
         ("0", "10"),
         [filiere.pk],
-        [beneficiaire.pk],
         [aide.pk],
     )
 
