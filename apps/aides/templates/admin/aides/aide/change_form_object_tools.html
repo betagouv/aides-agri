@@ -7,8 +7,8 @@
   {% endif %}
   {% if original.is_to_be_validated_externally %}
   <li>
-    <a href="{% url 'aides:aide-sneak-peek' original.pk original.sneak_peek_token %}">
-      Lien de partage pour le bureau valideur
+    <a href="{% url 'aides:aide-sneak-peek' original.pk original.sneak_peek_token %}" target="_blank" class="viewsitelink">
+      Lien de partage pour le bureau valideur (nouvel onglet)
     </a>
   </li>
   {% endif %}
