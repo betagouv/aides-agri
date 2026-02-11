@@ -1,6 +1,8 @@
 import pytest
 from django.urls import reverse
 
+from aides.models import Aide
+
 
 @pytest.mark.django_db
 def test_aide_detail_not_published(client, aide):
@@ -57,3 +59,54 @@ def test_parent_aide_detail_published(client, aide_published_with_parent):
     assert res.status_code == 200
     html = res.content.decode("utf-8")
     assert f'class="fr-breadcrumb__link" href="{aide_url}?"' in html
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("aide__status", [Aide.Status.REVIEW_EXPERT])
+def test_sneak_peek_view(client, aide):
+    # GIVEN a non-published Aide which requires external validation
+    assert not aide.is_published
+    assert aide.status == Aide.Status.REVIEW_EXPERT
+
+    # WHEN calling its sneak-peek view
+    aide_sneak_peek_url = reverse(
+        "aides:aide-sneak-peek", args=[aide.pk, aide.sneak_peek_token]
+    )
+    res = client.get(aide_sneak_peek_url)
+
+    # THEN get a 200
+    assert res.status_code == 200
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("aide__status", [Aide.Status.REVIEW_EXPERT])
+def test_sneak_peek_view_returns_404_if_wrong_token(client, aide):
+    # GIVEN a non-published Aide which requires external validation
+    assert not aide.is_published
+    assert aide.status == Aide.Status.REVIEW_EXPERT
+
+    # WHEN calling its sneak-peek view
+    aide_sneak_peek_url = reverse(
+        "aides:aide-sneak-peek", args=[aide.pk, "wrong_token"]
+    )
+    res = client.get(aide_sneak_peek_url)
+
+    # THEN get a 404
+    assert res.status_code == 404
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("aide_published__status", [Aide.Status.REVIEW_EXPERT])
+def test_sneak_peek_view_returns_404_for_published_aide(client, aide_published):
+    # GIVEN a published Aide
+    aide = aide_published
+    assert aide.is_published
+
+    # WHEN calling its sneak-peek view
+    aide_sneak_peek_url = reverse(
+        "aides:aide-sneak-peek", args=[aide.pk, aide.sneak_peek_token]
+    )
+    res = client.get(aide_sneak_peek_url)
+
+    # THEN get a 404
+    assert res.status_code == 404

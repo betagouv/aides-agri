@@ -1,3 +1,4 @@
+import uuid
 from datetime import date
 
 from django.conf import settings
@@ -439,6 +440,7 @@ class Aide(models.Model):
         related_name="children",
     )
     status = models.CharField(choices=Status, default=Status.TODO, verbose_name="État")
+    sneak_peek_token = models.UUIDField(unique=True, editable=False, default=uuid.uuid4)
     assigned_to = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         null=True,
@@ -648,6 +650,10 @@ class Aide(models.Model):
     @property
     def is_to_be_derived(self):
         return self.status == Aide.Status.TO_BE_DERIVED
+
+    @property
+    def is_to_be_validated_externally(self):
+        return not self.is_published and self.status == Aide.Status.REVIEW_EXPERT
 
     @property
     def is_complete(self):

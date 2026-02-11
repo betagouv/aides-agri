@@ -1,7 +1,7 @@
 from urllib.parse import urlparse
 
 from django.db.models import Q, Count
-from django.http.response import HttpResponsePermanentRedirect
+from django.http.response import HttpResponsePermanentRedirect, Http404
 from django.urls import resolve
 from django.views.generic import DetailView
 
@@ -111,6 +111,20 @@ class AideDetailView(DetailView):
         )
 
         return context_data
+
+
+class AideDetailSeakPeekView(AideDetailView):
+    extra_context = {"sneak_peek": True}
+
+    def get_queryset(self):
+        return Aide.objects.filter(is_published=False, status=Aide.Status.REVIEW_EXPERT)
+
+    def get(self, *args, **kwargs):
+        self.object = self.get_object()
+        if str(self.object.sneak_peek_token) != self.kwargs["token"]:
+            raise Http404()
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
 
 
 class ParentAideDetailView(DetailView):

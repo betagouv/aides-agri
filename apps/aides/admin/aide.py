@@ -1,5 +1,6 @@
 import copy
 import datetime
+import uuid
 
 from admin_extra_buttons.api import ExtraButtonsMixin, button
 from django.contrib import admin
@@ -374,6 +375,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         aide.parent_id = parent_pk
         aide.nom = nom
         aide.slug = ""
+        aide.sneak_peek_token = uuid.uuid4()
         aide.is_derivable = is_derivable
         aide.save()
         aide.sujets.set(sujets)
@@ -394,9 +396,11 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
 
     @button(
         label="Décliner dans chaque département",
-        visible=lambda widget: widget.context["original"].is_departemental
-        and not widget.context["original"].zones_geographiques.exists()
-        and widget.context["original"].is_to_be_derived,
+        visible=lambda widget: (
+            widget.context["original"].is_departemental
+            and not widget.context["original"].zones_geographiques.exists()
+            and widget.context["original"].is_to_be_derived
+        ),
         html_attrs={"class": "addlink"},
     )
     def derive_for_departements(self, request, object_id):

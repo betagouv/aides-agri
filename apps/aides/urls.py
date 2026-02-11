@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import AideDetailView, ParentAideDetailView
+from .views import AideDetailView, ParentAideDetailView, AideDetailSeakPeekView
 
 
 app_name = "aides"
@@ -10,5 +10,10 @@ urlpatterns = [
         "ensemble-d-aides/<int:pk>-<str:slug>",
         ParentAideDetailView.as_view(),
         name="parent-aide",
+    ),
+    path(
+        "aide-pour-validation/<int:pk>-<str:token>",
+        AideDetailSeakPeekView.as_view(),
+        name="aide-sneak-peek",
     ),
 ]
