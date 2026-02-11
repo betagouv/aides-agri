@@ -5,4 +5,11 @@
   {% if original.children.exists %}
   <li><a href="../../?parent__id__exact={{ original.pk }}">Voir les aides déclinées</a></li>
   {% endif %}
+  {% if original.is_to_be_validated_externally %}
+  <li>
+    <a href="{% url 'aides:aide-sneak-peek' original.pk original.sneak_peek_token %}">
+      Lien de partage pour le bureau valideur
+    </a>
+  </li>
+  {% endif %}
 {% endblock %}
