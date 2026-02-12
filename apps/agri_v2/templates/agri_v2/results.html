@@ -206,16 +206,23 @@ document.onreadystatechange = evt => {
       <div class="fr-col fr-col-sm-6 fr-col-lg-4 fr-col-offset-lg-4--right fr-py-0-5v fr-px-2v">
         {% ui_select_rich_multi label="Filières" name="filieres" searchable=True options=filter_filieres initials=filter_filieres_initials %}
       </div>
-      <div class="fr-col fr-col-sm-6 fr-col-lg-4 fr-py-0-5v fr-px-2v">
-        {% ui_select_rich_multi label="Besoins" helper="Difficulté urgente, nouvelles pratiques, etc." name="themes" searchable=True options=filter_themes initials=filter_themes_initials %}
-      </div>
-      <div class="fr-col fr-col-sm-6 fr-col-lg-4 fr-py-0-5v fr-px-2v">
-        {% ui_select_rich_multi label="Types de dispositif" helper="Investissement, conseil, assistance, etc." name="types" options=filter_types initials=filter_types_initials %}
-      </div>
-      <div class="fr-col fr-col-sm-6 fr-col-lg-4 fr-py-0-5v fr-px-2v">
-        {% ui_select_rich_multi label="Types de bénéficiaires" helper="Coopératives, OP, etc." name="beneficiaires" options=filter_beneficiaires initials=filter_beneficiaires_initials %}
-      </div>
     </div>
+    <section class="fr-accordion fr-my-2w">
+      <p class="fr-accordion__title">
+        <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="filters-advanced">Filtres avancés</button>
+      </p>
+      <div id="filters-advanced" class="fr-collapse fr-grid-row fr-grid-row--gutters fr-grid-row--bottom">
+        <div class="fr-col fr-col-sm-6 fr-col-lg-4 fr-py-0-5v fr-px-2v">
+          {% ui_select_rich_multi label="Besoins" helper="Difficulté urgente, nouvelles pratiques, etc." name="themes" searchable=True options=filter_themes initials=filter_themes_initials %}
+        </div>
+        <div class="fr-col fr-col-sm-6 fr-col-lg-4 fr-py-0-5v fr-px-2v">
+          {% ui_select_rich_multi label="Types de dispositif" helper="Investissement, conseil, assistance, etc." name="types" options=filter_types initials=filter_types_initials %}
+        </div>
+        <div class="fr-col fr-col-sm-6 fr-col-lg-4 fr-py-0-5v fr-px-2v">
+          {% ui_select_rich_multi label="Types de bénéficiaires" helper="Coopératives, OP, etc." name="beneficiaires" options=filter_beneficiaires initials=filter_beneficiaires_initials %}
+        </div>
+      </div>
+    </section>
     <div class="fr-grid-row fr-mb-2w">
       <div class="fr-col">
         <div class="fr-tags-group">
