@@ -39,6 +39,9 @@ dev = [
   "requests-mock",
 ]
 
+[tool.uv]
+exclude-newer = "P7D"
+
 [tool.coverage.run]
 omit = ["**/tests/*"]
 
