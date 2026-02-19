@@ -62,6 +62,7 @@ Liste que je vais tenter de garder à jour :
 - [django-dsfr](https://pypi.org/project/django-dsfr/) : intégration du DSFR avec Django
 - [django-anymail](https://pypi.org/project/django-anymail) : envoi de courriels via Brevo sans complexité
 - [django-csp](https://pypi.org/project/django-csp/) : sécurisation des ressources demandées par les pages web
+- [django-enum](https://pypi.org/project/django-enum/) : gestion puissante de types énumérations dans les modèles
 - [dj-importmap](https://pypi.org/project/dj-importmap) : automatisation de la construction de l’élément `<importmap>`
 - [django-two-factor-auth](https://pypi.org/project/django-two-factor-auth/) : second facteur d’authentification pour l’interface d’admin
 - [django-pgtrigger](https://pypi.org/project/django-pgtrigger/) : gestion d’un TTL sur des valeurs écrites dans PostgreSQL, pour un système de verrou
@@ -94,13 +95,18 @@ Liste que je vais tenter de garder à jour :
 
 ```mermaid
 graph TD;
-    agri-->aides;
     agri-->aides_feedback;
+    agri-->aides;
+    aides-->ui;
+    product-->ui;
     agri-->ui;
     aides-->admin_concurrency;
     aides-->aides_feedback;
-    aides-->ui;
-    product-->ui;
+    aides-->referentiel;
+    referentiel_integration-->referentiel;
+    workflow-->referentiel_integration;
+    workflow-->referentiel;
+    workflow-->aides;
 ```
 
 ## 💅 L’architecture de l’interface web publique (le "front-end")

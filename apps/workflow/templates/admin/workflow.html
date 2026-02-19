@@ -1,0 +1,121 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static admin_urls %}
+
+{% block extrastyle %}
+  <link rel="stylesheet" href="{% static 'admin/workflow/workflow.css' %}">
+{% endblock %}
+
+{% block extrahead %}
+  <script src="{% static 'admin/workflow/workflow.js' %}"></script>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+&rsaquo; Workflow d’intégration/édition des aides
+</div>
+{% endblock %}
+
+{% block content %}
+<ul class="object-tools">
+  <li>
+    {% if request.GET.mine %}
+      <a href="{% querystring mine=None %}">Celles de tout le monde</a>
+    {% else %}
+      <a href="{% querystring mine=1 %}">Seulement les miennes</a>
+    {% endif %}
+  </li>
+  <li>
+    {% if request.GET.unpublished %}
+      <a href="{% querystring unpublished=None %}">Afficher les publiées</a>
+    {% else %}
+      <a href="{% querystring unpublished=1 %}">Cacher les publiées</a>
+    {% endif %}
+  </li>
+</ul>
+<div class="dashboard">
+  <section class="status">
+    <h2>Intégrations à traiter</h2>
+    <ul class="status__aides">
+      {% for raw in raw_todo %}
+        <li class="aide">
+          <a href="{% url raw.get_admin_urlname raw.pk %}">{{ raw }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+  <section class="status">
+    <h2>Démarches à traiter</h2>
+    <ul class="status__aides">
+      {% for demarche in demarches_todo %}
+        <li class="aide">
+          <a href="{% url 'admin:referentiel_demarcheagricole_change' demarche.pk %}">{{ demarche }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+  <section class="status">
+    <h2>Démarches prêtes</h2>
+    <ul class="status__aides">
+    {% for demarche in demarches_done %}
+      <li class="aide" data-aide-id="{{ demarche.pk }}">
+        {{ demarche }}
+
+        <dialog id="dialog-{{ demarche.pk }}">
+          <h2><strong>Nom</strong> : {{ demarche.titre }}</h2>
+          <form method="post" action="{% url 'admin:aides_aide_addfromdemarche' %}">
+            {% csrf_token %}
+            <input type="hidden" name="demarche_id" value="{{ demarche.pk }}">
+            <button type="submit">Envoyer dans Aides Agri</button>
+          </form>
+        </dialog>
+      </li>
+    {% endfor %}
+    </ul>
+  </section>
+  {% for status, aides in aides_by_status.items %}
+    <section class="status">
+      <h2>{{ status }}</h2>
+      <ul class="status__aides">
+      {% for aide in aides %}
+        <li class="aide" data-aide-id="{{ aide.pk }}">
+          {{ aide.nom }}
+          <span class="aide__badges">
+            <span class="badge">{{ aide.organisme.nom_court }}</span>
+          </span>
+          <span class="aide__badges">
+            <span class="badge priority-{{ aide.priority }}">Score prio : {{ aide.priority }}</span>
+            {% if aide.date_target_publication %}
+              {% now "c" as today %}
+              <time datetime="{{ aide.date_target_publication|date:"c" }}"
+                    class="badge {% if aide.date_target_publication|date:"c" < today %} overdue{% endif %}"
+              >
+                {{ aide.date_target_publication|date:"SHORT_DATE_FORMAT" }}
+              </time>
+            {% endif %}
+            {% if aide.is_published %}
+              <span class="badge published">Publiée</span>
+            {% endif %}
+            {% if aide.parent_id %}
+              <span class="badge parent {% if not aide.parent_id %}-root{% endif %}">Aide déclinée</span>
+            {% endif %}
+          </span>
+          <dialog id="dialog-{{ aide.id }}">
+            <h2><strong>Nom</strong> : {{ aide.nom }}</h2>
+            <h3><strong>Organisme</strong> : {{ aide.organisme.nom_court }}</h3>
+            <p><strong>Commentaires internes</strong> : {{ aide.internal_comments|default:"aucun" }}</p>
+            <p><a href="{% url 'admin:aides_aide_change' aide.pk %}?from_dashboard=1">Travailler sur cette aide</a></p>
+            {% if aide.parent_id %}
+              <p><a href="{% url 'admin:aides_aide_change' aide.parent_id %}?from_dashboard=1">Travailler sur l’aide parente</a></p>
+            {% endif %}
+            {% if aide.is_derivable %}
+              <p><a href="?parent={{ aide.pk }}">Où en sont les déclinaisons ?</a></p>
+            {% endif %}
+          </dialog>
+        </li>
+      {% endfor %}
+      </ul>
+    </section>
+  {% endfor %}
+</div>
+{% endblock %}
