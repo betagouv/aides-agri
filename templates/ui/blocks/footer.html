@@ -1,29 +1,30 @@
 {% extends "dsfr/footer.html" %}
 
-{% load i18n %}
-
 {% block footer_links %}
   <li class="fr-footer__bottom-item">
     <a class="fr-footer__bottom-link" href="{% url 'product:declaration-accessibilite' %}">
       {% with accessibility_status=SITE_CONFIG.get_accessibility_status_display|default:"non" %}
-        {% blocktranslate %}Accessibility: {{ accessibility_status }} compliant{% endblocktranslate %}
+        Accessibilité : {{ accessibility_status }} conforme
       {% endwith %}
     </a>
   </li>
   <li class="fr-footer__bottom-item">
-    <a class="fr-footer__bottom-link" href="{% url 'product:mentions-legales' %}">{% translate "Legal notice" %}</a>
+    <a class="fr-footer__bottom-link" href="{% url 'product:mentions-legales' %}">Mentions légales</a>
   </li>
   <li class="fr-footer__bottom-item">
     <a class="fr-footer__bottom-link" href="{% url 'product:cgu' %}">Conditions Générales d’Utilisation</a>
   </li>
   <li class="fr-footer__bottom-item">
-    <a class="fr-footer__bottom-link" href="{% url 'product:donnees-personnelles' %}">{% translate "Personal data" %}</a>
+    <a class="fr-footer__bottom-link" href="{% url 'product:donnees-personnelles' %}">Données personnelles</a>
+  </li>
+  <li class="fr-footer__bottom-item">
+    <a class="fr-footer__bottom-link" href="{% url 'product:statistiques' %}">Statistiques</a>
   </li>
   <li class="fr-footer__bottom-item">
     <a class="fr-footer__bottom-link"
        target="_blank"
        href="https://github.com/betagouv/aides-agri"
-       title="Code source de ce site - {% translate 'Opens a new window' %}"
+       title="Code source de ce site - Ouvre une nouvelle fenêtre"
     >Code source de ce site</a>
   </li>
   <li class="fr-footer__bottom-item">
