@@ -44,4 +44,12 @@ urlpatterns = [
         ),
         name="urgence-dnc",
     ),
+    path(
+        "pages/statistiques",
+        StaticPageView.as_view(
+            title="Statistiques",
+            content_filename="statistiques",
+        ),
+        name="statistiques",
+    ),
 ]
