@@ -1,4 +1,9 @@
 import csv
+from functools import cached_property
+
+from django.conf import settings
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
 
 from .models import Aide
 
@@ -161,8 +166,15 @@ class AideToInternalSchema(
         12: "sujets",
         18: "etat",
         19: "est_publiee",
+        20: "url_site",
+        21: "url_bureau_valideur",
+        22: "url_bo",
     },
 ):
+    @cached_property
+    def base_url(self):
+        return settings.HTTP_SCHEME + get_current_site(None).domain
+
     def _prepare_parent(self):
         return self.aide.parent_id
 
@@ -177,6 +189,15 @@ class AideToInternalSchema(
 
     def _prepare_est_publiee(self):
         return "OUI" if self.aide.is_published else "NON"
+
+    def _prepare_url_site(self):
+        return self.base_url + self.aide.get_absolute_url()
+
+    def _prepare_url_bureau_valideur(self):
+        return self.base_url + reverse("aides:aide-sneak-peek", args=[self.aide.pk, self.aide.sneak_peek_token])
+
+    def _prepare_url_bo(self):
+        return self.base_url + reverse("admin:aides_aide_change", args=[self.aide.pk])
 
 
 def write_aides_as_csv(f, aides_ids: list[int]):

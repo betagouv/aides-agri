@@ -34,9 +34,12 @@ def test_write_aides_as_csv(aide):
                     "date_mise_a_jour",
                     "etat",
                     "est_publiee",
+                    "url_site",
+                    "url_bureau_valideur",
+                    "url_bo",
                 ]
             elif i == 1:
-                assert len(row) == 20
+                assert len(row) == 23
                 assert row[0] == str(aide.pk)
             else:
                 assert False
