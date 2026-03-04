@@ -246,6 +246,9 @@ class ZoneGeographique(models.Model):
         verbose_name="EPCI",
     )
     code_postal = models.CharField(max_length=5, blank=True, verbose_name="Code postal")
+    prefix = models.CharField(
+        blank=True, verbose_name="Préfixe", help_text='Exemples : "Dans le", "En", etc.'
+    )
 
     @property
     def is_region(self):
@@ -270,6 +273,10 @@ class ZoneGeographique(models.Model):
     @property
     def cog(self):
         return f"{ZoneGeographique.Type(self.type).name[:3]}-{self.code}"
+
+    @property
+    def full_name_with_prefix(self):
+        return f"{self.prefix} {self.nom}"
 
     def __str__(self):
         prefix = self.code_postal if self.is_commune else self.type
