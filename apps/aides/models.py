@@ -14,7 +14,13 @@ from django.utils.timezone import now
 
 class WithAidesCounterQuerySet(models.QuerySet):
     def with_aides_count(self):
-        return self.annotate(aides_count=models.Count("aides", distinct=True))
+        return self.annotate(
+            aides_count=models.Count(
+                "aides",
+                filter=Aide.objects.get_related_q_official_published("aides"),
+                distinct=True,
+            )
+        )
 
 
 class OrganismeQuerySet(WithAidesCounterQuerySet):
@@ -87,7 +93,13 @@ class ThemeQuerySet(models.QuerySet):
         return self.annotate(sujets_count=models.Count("sujets", distinct=True))
 
     def with_aides_count(self):
-        return self.annotate(aides_count=models.Count("sujets__aides", distinct=True))
+        return self.annotate(
+            aides_count=models.Count(
+                "sujets__aides",
+                filter=Aide.objects.get_related_q_official_published("sujets__aides"),
+                distinct=True,
+            )
+        )
 
 
 class Theme(models.Model):
@@ -114,17 +126,6 @@ class SujetQuerySet(WithAidesCounterQuerySet):
     def published(self):
         return self.with_aides_count().filter(published=True, aides_count__gt=0)
 
-    def having_published_aides_in_departement_and_theme(
-        self, departement: "ZoneGeographique", theme: Theme
-    ):
-        return self.filter(
-            pk__in=set(
-                Aide.objects.published()
-                .by_departement(departement)
-                .by_theme(theme)
-                .values_list("sujets", flat=True)
-            )
-        )
 
 
 class Sujet(models.Model):
@@ -325,6 +326,46 @@ class AideQuerySet(models.QuerySet):
 
     def published(self):
         return self.filter(is_published=True)
+
+    q_official_published_dicts = (
+        {"is_published": True},
+        {
+            "zones_geographiques__isnull": False,
+            "parent__isnull": False,
+            "parent__zones_geographiques__isnull": True,
+            "parent__couverture_geographique": "Départemental",  # FIXME hard-coded
+        },
+    )
+
+    @property
+    def q_official_published(self) -> models.Q:
+        return models.Q(**self.q_official_published_dicts[0]) & ~models.Q(
+            **self.q_official_published_dicts[1]
+        )
+
+    def get_related_q_official_published(self, related_name: str) -> models.Q:
+        return models.Q(
+            **{
+                f"{related_name}__{k}": v
+                for k, v in self.q_official_published_dicts[0].items()
+            }
+        ) & ~models.Q(
+            **{
+                f"{related_name}__{k}": v
+                for k, v in self.q_official_published_dicts[1].items()
+            }
+        )
+
+    def official_published_count(self):
+        return self.filter(self.q_official_published).count()
+
+    def official_published_organismes_count(self):
+        return (
+            self.filter(self.q_official_published)
+            .order_by("organisme_id")
+            .distinct("organisme_id")
+            .count()
+        )
 
     def published_validated(self):
         return self.published().validated()
