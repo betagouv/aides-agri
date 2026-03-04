@@ -12,6 +12,25 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 
 
+class WithIllustrationQuerySet(models.QuerySet):
+    def without_illustration(self):
+        return self.defer("illustration")
+
+
+class WithIllustration(models.Model):
+    class Meta:
+        abstract = True
+
+    illustration = models.BinaryField(blank=True)
+    illustration_filename = models.CharField(blank=True)
+
+    def get_illustration_url(self):
+        if self.illustration_filename:
+            return f"/aides/illustrations-{self._meta.model_name}/{self.illustration_filename}"
+        else:
+            return static("agri/images/placeholder.1x1.svg")
+
+
 class WithAidesCounterQuerySet(models.QuerySet):
     def with_aides_count(self):
         return self.annotate(
@@ -23,12 +42,11 @@ class WithAidesCounterQuerySet(models.QuerySet):
         )
 
 
-class OrganismeQuerySet(WithAidesCounterQuerySet):
-    def with_logo(self):
-        return self.exclude(logo_filename="").filter(logo_filename__isnull=False)
+class OrganismeQuerySet(WithAidesCounterQuerySet, WithIllustrationQuerySet):
+    pass
 
 
-class Organisme(models.Model):
+class Organisme(WithIllustration, models.Model):
     class Meta:
         verbose_name = "Organisme"
         verbose_name_plural = "Organismes"
@@ -65,8 +83,6 @@ class Organisme(models.Model):
     zones_geographiques = models.ManyToManyField(
         "ZoneGeographique", blank=True, verbose_name="Zones géographiques"
     )
-    logo = models.BinaryField(blank=True, verbose_name="Logo")
-    logo_filename = models.CharField(blank=True)
     url = models.URLField(blank=True, verbose_name="Lien")
     courriel = models.EmailField(blank=True, verbose_name="Adresse courriel")
     is_masa = models.BooleanField(default=False, verbose_name="Made in MASA")
@@ -74,18 +90,12 @@ class Organisme(models.Model):
     def __str__(self):
         return self.acronyme or self.nom
 
-    def get_logo_url(self):
-        if self.logo_filename:
-            return f"/aides/organismes-logos/{self.logo_filename}"
-        else:
-            return static("agri/images/placeholder.1x1.svg")
-
     @property
     def nom_court(self):
         return self.acronyme or self.nom
 
 
-class ThemeQuerySet(models.QuerySet):
+class ThemeQuerySet(WithIllustrationQuerySet, models.QuerySet):
     def published(self):
         return self.with_aides_count().filter(published=True, aides_count__gt=0)
 
@@ -102,7 +112,7 @@ class ThemeQuerySet(models.QuerySet):
         )
 
 
-class Theme(models.Model):
+class Theme(WithIllustration, models.Model):
     class Meta:
         verbose_name = "Thème"
         verbose_name_plural = "Thèmes"
@@ -122,13 +132,12 @@ class Theme(models.Model):
         return self.nom_court
 
 
-class SujetQuerySet(WithAidesCounterQuerySet):
+class SujetQuerySet(WithIllustrationQuerySet, WithAidesCounterQuerySet):
     def published(self):
         return self.with_aides_count().filter(published=True, aides_count__gt=0)
 
 
-
-class Sujet(models.Model):
+class Sujet(WithIllustration, models.Model):
     class Meta:
         verbose_name = "Sujet"
         verbose_name_plural = "Sujets"
