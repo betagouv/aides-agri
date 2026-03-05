@@ -1,0 +1,16 @@
+{% load dsfr_tags %}
+
+{% for aide in aide_list|slice:"3:" %}
+  <div class="fr-col fr-col-12 fr-mb-1w loaded-lazily">
+      {% dsfr_card aide %}
+  </div>
+{% endfor %}
+<div class="fr-col fr-col-12 fr-mb-1w load-more">
+  <button class="fr-btn"
+          type="button"
+          hx-get="{% url 'agri_v2:results-less' %}{% querystring less=type_aides.pk %}"
+          hx-target="closest .load-more"
+  >
+    Voir moins de dispositifs
+  </button>
+</div>
