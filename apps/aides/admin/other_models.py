@@ -18,8 +18,6 @@ from ._common import ArrayFieldCheckboxSelectMultiple
 
 
 class WithIllustration:
-    exclude = ("illustration_filename",)
-
     def get_queryset(self, request):
         return super().get_queryset(request).without_illustration()
 
@@ -75,9 +73,9 @@ class SujetAdmin(WithIllustration, VersionAdmin):
 
 @admin.register(Type)
 class TypeAdmin(VersionAdmin):
-    list_display = ("id", "nom", "urgence", "aides_count")
+    list_display = ("id", "nom", "position", "urgence", "aides_count")
     list_display_links = ("id", "nom")
-    ordering = ("nom",)
+    ordering = ("position",)
 
     def aides_count(self, obj):
         return mark_safe(

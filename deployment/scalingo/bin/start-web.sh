@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# extract Organismes logos from DB and store them on local storage
-python manage.py aides_organismes_logos_files_from_db
+# extract illustrations from DB and store them on local storage
+python manage.py aides_publish_illustrations_from_db
 
 # Symlink the correct robots.txt
 if [[ "$ENVIRONMENT" == "prod" ]]; then

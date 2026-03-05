@@ -1,7 +1,9 @@
-from django.contrib.postgres.search import SearchQuery, SearchRank
-from django.db.models import Count, Prefetch, Q
+import operator
+
 from django.shortcuts import render
 from django.templatetags.static import static
+from django.urls import reverse
+from django.utils.text import slugify
 from django.views.generic import TemplateView, ListView, View
 
 from aides.models import (
@@ -10,7 +12,6 @@ from aides.models import (
     Aide,
     ZoneGeographique,
     Filiere,
-    Beneficiaires,
     Type,
 )
 
@@ -22,27 +23,20 @@ class HomeView(TemplateView):
     template_name = "agri_v2/home.html"
     extra_context = {
         "skiplinks": [
-            {"link": "#proposition", "label": "Présentation"},
-            {"link": "#recherche", "label": "Votre recherche"},
-            {"link": "#a-propos", "label": "À propos"},
+            {"link": "#recherche", "label": "Chercher des dispositifs"},
+            {"link": "#proposition-header", "label": "Présentation"},
+            {"link": "#besoin", "label": "Thématiques"},
         ],
     }
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
         self.departement_code = request.GET.get("departement", None)
-        self.choose_theme = request.GET.get("choisir_theme", False)
-        self.search = request.GET.get("recherche", False)
+        self.filieres_ids = request.GET.getlist("filieres", [])
 
     def get_template_names(self):
         if self.request.htmx:
-            if self.choose_theme:
-                template_name = "agri_v2/blocks/home/themes.html"
-            elif self.search:
-                template_name = "agri_v2/blocks/home/recherche.html"
-            else:
-                template_name = "agri_v2/blocks/home/choix_parcours.html"
-            return [template_name]
+            return ["agri_v2/blocks/home/themes.html"]
         else:
             return super().get_template_names()
 
@@ -51,32 +45,104 @@ class HomeView(TemplateView):
 
         context_data.update(
             {
-                "departement": self.departement_code,
-                "beneficiaires_agris": Beneficiaires.objects.agris(),
+                "departement_code": self.departement_code,
+                "filieres_ids": self.filieres_ids,
             }
         )
 
-        if self.choose_theme:
+        # on full page, whatever the step
+        if not self.request.htmx:
+            themes = [
+                (
+                    {
+                        "title": theme.nom,
+                        "link": reverse(
+                            "agri_v2:results", query={"themes": [theme.pk]}
+                        ),
+                        "enlarge_link": False,
+                        "image_url": theme.get_illustration_url(),
+                        "top_detail": {
+                            "badges": [
+                                {
+                                    "label": f"{theme.aides_count} dispositifs",
+                                    "extra_classes": "fr-badge--sm fr-badge--purple-glycine",
+                                }
+                            ]
+                        },
+                    },
+                    theme.aides_count,
+                )
+                for theme in Theme.objects.published()
+            ]
+            sujets = [
+                (
+                    {
+                        "title": sujet.nom,
+                        "link": reverse(
+                            "agri_v2:results", query={"sujets": [sujet.pk]}
+                        ),
+                        "enlarge_link": False,
+                        "image_url": sujet.get_illustration_url(),
+                        "top_detail": {
+                            "badges": [
+                                {
+                                    "label": f"{sujet.aides_count} dispositifs",
+                                    "extra_classes": "fr-badge--sm fr-badge--purple-glycine",
+                                }
+                            ]
+                        },
+                    },
+                    sujet.aides_count,
+                )
+                for sujet in Sujet.objects.published()
+            ]
+            # mix themes and sujets, and sort the mix by aides_count (stored as the second term of each 2-tuple)
+            besoins = [
+                besoin[0]
+                for besoin in sorted(
+                    themes + sujets, key=operator.itemgetter(1), reverse=True
+                )
+            ]
             context_data.update(
                 {
-                    "themes": Theme.objects.published()
-                    .exclude(sujets__aides=None)
-                    .prefetch_related("sujets")
+                    "stats_aides_count": Aide.objects.official_published_count(),
+                    "stats_organismes_count": Aide.objects.official_published_organismes_count(),
+                    "besoins": besoins[:4],
                 }
             )
-        elif self.search:
-            context_data.update({"recherche": True})
+
+        # whether htmx or not, depending on input departement, load a form or the other
+        if self.departement_code:
+            context_data.update(
+                {
+                    "departement": ZoneGeographique.objects.departements().get(
+                        code=self.departement_code
+                    ),
+                    "filieres": Filiere.objects.filter(pk__in=self.filieres_ids),
+                    "urgent_sujets": Theme.objects.filter(urgence=True)
+                    .first()
+                    .sujets.published()
+                    .order_by("-aides_count"),
+                    "themes": Theme.objects.published()
+                    .filter(urgence=False)
+                    .order_by("-aides_count"),
+                }
+            )
         else:
             context_data.update(
                 {
-                    "theme_urgence_id": Theme.objects.filter(urgence=True).first().pk,
-                    "departements_default": {
+                    "departement_default": {
                         "text": "Sélectionnez un département",
                         "disabled": True,
+                        "value": "",
                     },
-                    "departements": [
+                    "departement_options": [
                         {"value": dept.code, "text": f"{dept.code} {dept.nom}"}
                         for dept in ZoneGeographique.objects.departements()
+                    ],
+                    "filieres_options": [
+                        (filiere.pk, filiere.nom, filiere.nom)
+                        for filiere in Filiere.objects.published()
                     ],
                 }
             )
@@ -85,27 +151,17 @@ class HomeView(TemplateView):
 
 class ResultsMixin:
     ORDER_BY = {
-        "pertinence": ("-priority", "-date_fin"),
-        "publication": ("-last_published_at", "-date_fin"),
-        "cloture": ("date_fin", "-priority"),
+        "cloture": ("date_fin", "-last_published_at"),
+        "mise-a-jour": ("-last_published_at",),
     }
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        self.search = request.GET.get("q", None)
-        departements_codes = request.GET.getlist("departements", [])
-        self.departements = (
-            ZoneGeographique.objects.departements().filter(code__in=departements_codes)
-            if departements_codes
-            else []
-        )
-        types_ids = request.GET.getlist("types", [])
-        self.types = Type.objects.filter(pk__in=types_ids) if types_ids else []
-        beneficiaires_ids = request.GET.getlist("beneficiaires", [])
-        self.beneficiaires = (
-            Beneficiaires.objects.filter(pk__in=beneficiaires_ids)
-            if beneficiaires_ids
-            else []
+        departement_code = request.GET.get("departement", None)
+        self.departement = (
+            ZoneGeographique.objects.departements().get(code__iexact=departement_code)
+            if departement_code
+            else None
         )
         filieres_ids = request.GET.getlist("filieres", [])
         self.filieres = (
@@ -113,39 +169,29 @@ class ResultsMixin:
             if filieres_ids
             else []
         )
-        themes_ids = request.GET.getlist("themes", None)
-        self.themes = Theme.objects.filter(pk__in=themes_ids) if themes_ids else []
-        self.can_include_closed = True
-        self.include_closed = request.GET.get("inclure_fermes", "off").lower() == "on"
-        self.order_by = request.GET.get("tri", "pertinence")
+        self.themes_ids = request.GET.getlist("themes", None)
+        self.themes = (
+            Theme.objects.filter(pk__in=self.themes_ids) if self.themes_ids else []
+        )
+        self.sujets_ids = request.GET.getlist("sujets", None)
+        self.sujets = (
+            Sujet.objects.filter(pk__in=self.sujets_ids) if self.sujets_ids else []
+        )
+        self.order_by = request.GET.get("tri", "cloture")
 
     def get_results(self):
-        qs = Aide.objects.filter(parent_id=None).published()
-        if self.search:
-            qs = qs.annotate(
-                rank=SearchRank(
-                    "search_vector",
-                    SearchQuery(self.search, config="french_unaccent"),
-                )
-            ).filter(rank__gt=0)
-            order_by = ("-rank", "-date_fin")
+        qs = Aide.objects.published()
+        order_by = self.__class__.ORDER_BY[self.order_by]
+        if self.departement:
+            qs = qs.by_departements([self.departement]).without_parents()
         else:
-            order_by = self.__class__.ORDER_BY[self.order_by]
-        if self.departements:
-            qs = qs.by_departements(self.departements)
-        if self.beneficiaires:
-            qs = qs.by_beneficiaires(self.beneficiaires)
-        if self.types:
-            qs = qs.by_types(self.types)
-        if self.themes:
-            qs = qs.by_themes(self.themes)
+            qs = qs.without_departemental_derivatives().without_non_departemental_parents()
         if self.filieres:
             qs = qs.by_filieres(self.filieres)
-        if self.order_by == "cloture":
-            self.include_closed = False
-            self.can_include_closed = False
-        if not self.include_closed:
-            qs = qs.only_open()
+        if self.themes:
+            qs = qs.by_themes(self.themes)
+        if self.sujets:
+            qs = qs.by_sujets(self.sujets)
         return (
             qs.distinct()
             .select_related("organisme")
@@ -153,205 +199,187 @@ class ResultsMixin:
                 "zones_geographiques",
                 "types",
                 "children",
-                Prefetch(
-                    "sujets", queryset=Sujet.objects.published().order_by("nom_court")
-                ),
+                "sujets",
+                "sujets__themes",
             )
             .order_by(*order_by)
-            .defer("organisme__logo")
+            .defer("organisme__illustration")
         )
-
-
-def fr_pluralize(counter: int):
-    return "s" if counter > 1 else ""
 
 
 class ResultsView(ResultsMixin, ListView):
     template_name = "agri_v2/results.html"
-    paginate_by = 50
 
     def get_queryset(self):
         return self.get_results()
 
+    def get_template_names(self):
+        if self.request.htmx and "more" in self.request.GET:
+            return ["agri_v2/_partials/more_results_from_type.html"]
+        else:
+            return super().get_template_names()
+
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        q_is_in_results = Q(aides__in=self.object_list)
-        context_data.update(
-            {
-                "skiplinks": [
-                    {
-                        "link": "#content",
-                        "label": "Votre recherche",
-                    },
-                ],
-                "aides": [
-                    {
-                        "heading_tag": "h3",
-                        "extra_classes": "fr-card--horizontal fr-card--horizontal-eighth fr-card--no-icon fr-mb-2w fr-pl-2w",
-                        "title": aide.nom,
-                        "description": aide.promesse,
-                        "call_to_action": {
-                            "links": [
-                                {
-                                    "url": aide.get_absolute_url(),
-                                    "label": "Voir la fiche dispositif",
-                                    "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right",
-                                }
-                                if aide.is_complete
-                                else {
-                                    "url": aide.url_descriptif,
-                                    "label": "Voir le descriptif",
-                                    "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right",
-                                    "is_external": True,
-                                }
-                                if aide.url_descriptif
-                                else {},
-                                {
-                                    "url": aide.url_demarche,
-                                    "label": "Déposer son dossier",
-                                    "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right",
-                                    "is_external": True,
-                                }
-                                if aide.url_demarche
-                                else {},
-                            ]
-                        },
-                        "image_url": aide.organisme.get_logo_url()
-                        if aide.organisme_id
-                        else static("agri/images/placeholder.1x1.svg"),
-                        "image_alt": aide.organisme.nom,
-                        "ratio_class": "fr-ratio-1x1",
-                        "media_badges": [
+        aides_by_type = {type_aide: set() for type_aide in Type.objects.all()}
+        for aide in self.get_queryset():
+            for type_aides in aide.types.all():
+                aides_by_type[type_aides].add(aide)
+        aides_by_type = {
+            type_aides: aides for type_aides, aides in aides_by_type.items() if aides
+        }
+
+        aides_data_by_type = {
+            type_aides: [
+                {
+                    "heading_tag": "h3",
+                    "extra_classes": "fr-card--horizontal fr-card--horizontal-eighth fr-card--no-icon fr-mb-2w fr-pl-2w",
+                    "title": aide.promesse or aide.nom,
+                    "description": aide.nom if aide.promesse else "",
+                    "call_to_action": {
+                        "links": [
                             {
-                                "extra_classes": "fr-badge--sm fr-badge--green-emeraude",
-                                "label": "En cours",
+                                "url": aide.get_absolute_url(),
+                                "label": "Consulter la fiche dispositif",
+                                "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right",
                             }
-                            if aide.is_ongoing
+                            if aide.is_complete
                             else {
-                                "extra_classes": "fr-badge--sm fr-badge--pink-tuile",
-                                "label": "Clôturé",
+                                "label": "Consulter la fiche dispositif",
+                                "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right fr-disabled",
+                            },
+                            {
+                                "url": aide.url_descriptif,
+                                "label": "Voir le site officiel",
+                                "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right",
+                                "is_external": True,
                             }
+                            if aide.url_descriptif and not aide.is_complete
+                            else {},
+                        ]
+                    },
+                    "image_url": aide.organisme.get_illustration_url()
+                    if aide.organisme_id
+                    else static("agri/images/placeholder.1x1.svg"),
+                    "image_alt": aide.organisme.nom,
+                    "ratio_class": "fr-ratio-1x1",
+                    "top_detail": {
+                        "tags": (
+                            [
+                                {
+                                    "label": f"Clôture le {aide.date_fin.strftime('%d/%m/%Y')}",
+                                    "extra_classes": f"fr-tag--sm fr-badge fr-badge--no-icon fr-badge--{aide.ui_badge_color}",
+                                },
+                            ]
+                            if aide.date_fin
+                            else [
+                                {
+                                    "label": "En cours",
+                                    "extra_classes": "fr-tag--sm fr-badge fr-badge--no-icon fr-badge--success",
+                                },
+                            ]
+                        )
+                        + [
+                            {
+                                "label": besoin.nom_court,
+                                "extra_classes": f"fr-tag--sm fr-tag--icon-left fr-icon-{besoin.icon_name}",
+                            }
+                            for besoin in aide.besoins
                         ],
-                        "top_detail": {
-                            "tags": [
-                                {
-                                    "label": aide.couverture_geographique,
-                                    "extra_classes": "fr-tag--sm",
-                                }
-                            ]
-                            + [
-                                {
-                                    "label": type_aide.nom,
-                                    "extra_classes": f"fr-tag--sm fr-tag--icon-left fr-icon-{type_aide.icon_name}-fill",
-                                }
-                                for type_aide in aide.types.all()
-                            ]
-                            + [
-                                {
-                                    "label": sujet.nom_court,
-                                    "extra_classes": "fr-tag--sm fr-hidden fr-unhidden-md",
-                                }
-                                for sujet in aide.sujets.all()
-                            ],
+                    },
+                }
+                for aide in aides
+            ]
+            for type_aides, aides in aides_by_type.items()
+        }
+
+        if type_id := self.request.GET.get("more", None):
+            type_aides = Type.objects.get(pk=type_id)
+            context_data.update(
+                {"type_aides": type_aides, "aide_list": aides_data_by_type[type_aides]}
+            )
+        else:
+            context_data.update(
+                {
+                    "skiplinks": [
+                        {
+                            "link": "#content",
+                            "label": "Vos résultats",
                         },
-                    }
-                    for aide in context_data["page_obj"]
-                ],
-                "filter_departements": [
-                    (
-                        departement.code,
-                        f"{departement.code} {departement.nom}",
-                        departement.nom,
-                    )
-                    for departement in ZoneGeographique.objects.departements()
-                ],
-                "filter_departements_initials": [
-                    dept.code for dept in self.departements
-                ],
-                "filtered_departements": self.departements,
-                "filter_types": [
-                    (
-                        type_aides.pk,
-                        f"{type_aides.nom} ({type_aides.aides_count} dispositif{fr_pluralize(type_aides.aides_count)})",
-                        type_aides.nom,
-                    )
-                    for type_aides in Type.objects.annotate(
-                        aides_count=Count(
-                            "aides",
-                            filter=q_is_in_results,
-                            distinct=True,
+                    ],
+                    "breadcrumb_data": {
+                        "current": "Vos résultats",
+                    },
+                    "sidemenu_data": {
+                        "title": "Menu par types d’aides",
+                        "items": [
+                            {
+                                "link": f"#type-aides-{slugify(type_aides.nom)}",
+                                "label": type_aides.nom,
+                            }
+                            for type_aides in aides_by_type.keys()
+                        ],
+                    },
+                    "aides": aides_data_by_type,
+                    "departement_options": [
+                        {"value": dept.code, "text": f"{dept.code} {dept.nom}"}
+                        for dept in ZoneGeographique.objects.departements()
+                    ],
+                    "departement": self.departement.code if self.departement else None,
+                    "departement_default": {
+                        "text": "Sélectionnez un département",
+                        "disabled": True,
+                    },
+                    "filieres_options": [
+                        (filiere.pk, filiere.nom, filiere.nom)
+                        for filiere in Filiere.objects.published()
+                    ],
+                    "filieres_initials": [filiere.pk for filiere in self.filieres],
+                    "besoins_options": [
+                        {
+                            "type": "theme",
+                            "id": t.pk,
+                            "label": t.nom_court,
+                            "icon": t.icon_name,
+                        }
+                        for t in Theme.objects.published()
+                        .filter(urgence=False)
+                        .exclude(pk__in=self.themes_ids)
+                    ]
+                    + [
+                        {
+                            "type": "sujet",
+                            "id": s.pk,
+                            "label": s.nom_court,
+                            "icon": s.icon_name,
+                        }
+                        for s in Sujet.objects.filter(themes__urgence=True).exclude(
+                            pk__in=self.sujets_ids
                         )
-                    )
-                    .distinct()
-                    .order_by("nom")
-                ],
-                "filtered_types": self.types,
-                "filter_types_initials": [type_aides.pk for type_aides in self.types],
-                "filter_themes": [
-                    (
-                        theme.pk,
-                        f"{theme.nom_court} ({theme.aides_count} dispositif{fr_pluralize(theme.aides_count)})",
-                        theme.nom_court,
-                    )
-                    for theme in Theme.objects.published()
-                    .order_by("nom_court")
-                    .annotate(
-                        aides_count=Count(
-                            "sujets__aides",
-                            filter=Q(sujets__aides__in=self.object_list),
-                            distinct=True,
-                        )
-                    )
-                    .distinct()
-                ],
-                "filtered_themes": self.themes,
-                "filter_themes_initials": [theme.pk for theme in self.themes],
-                "filter_filieres": [
-                    (
-                        filiere.pk,
-                        f"{filiere.nom} ({filiere.aides_count} dispositif{fr_pluralize(filiere.aides_count)})",
-                        filiere.nom,
-                    )
-                    for filiere in Filiere.objects.published()
-                    .annotate(
-                        aides_count=Count(
-                            "aides",
-                            filter=q_is_in_results,
-                            distinct=True,
-                        )
-                    )
-                    .distinct()
-                ],
-                "filtered_filieres": self.filieres,
-                "filter_filieres_initials": [filiere.pk for filiere in self.filieres],
-                "filter_beneficiaires": [
-                    (
-                        beneficiaires.pk,
-                        f"{beneficiaires.nom} ({beneficiaires.aides_count} dispositif{fr_pluralize(beneficiaires.aides_count)})",
-                        beneficiaires.nom,
-                    )
-                    for beneficiaires in Beneficiaires.objects.all()
-                    .order_by("nom")
-                    .annotate(
-                        aides_count=Count(
-                            "aides",
-                            filter=q_is_in_results,
-                            distinct=True,
-                        )
-                    )
-                    .distinct()
-                ],
-                "filtered_beneficiaires": self.beneficiaires,
-                "filter_beneficiaires_initials": [
-                    beneficiaires.pk for beneficiaires in self.beneficiaires
-                ],
-                "include_closed": self.include_closed,
-                "can_include_closed": self.can_include_closed,
-                "order_by": self.order_by,
-                "create_feedback_on_aides_form": CreateFeedbackOnAidesForm(),
-            }
-        )
+                    ],
+                    "besoins_initials": [
+                        {
+                            "type": "theme",
+                            "id": t.pk,
+                            "label": t.nom_court,
+                            "icon": t.icon_name,
+                        }
+                        for t in self.themes
+                    ]
+                    + [
+                        {
+                            "type": "sujet",
+                            "id": s.pk,
+                            "label": s.nom_court,
+                            "icon": s.icon_name,
+                        }
+                        for s in self.sujets
+                    ],
+                    "order_by": self.order_by,
+                    "create_feedback_on_aides_form": CreateFeedbackOnAidesForm(),
+                }
+            )
 
         return context_data
 

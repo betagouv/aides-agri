@@ -9,7 +9,8 @@ export class SelectRich extends Controller {
     name: String,
     multi: Boolean,
     required: Boolean,
-    keepDefaultButtonLabel: Boolean
+    keepDefaultButtonLabel: Boolean,
+    showValuesOnButtonLabel: Boolean
   }
   static targets = ["button", "entries", "search", "searchButton", "option", "helper", "error", "tags", "addButton"]
   static classExpanded = "fr-collapse--expanded"
@@ -122,10 +123,14 @@ export class SelectRich extends Controller {
     if (this.multiValue && !this.keepDefaultButtonLabelValue) {
       const checkedInputs = this.entriesTarget.querySelectorAll("input[type=checkbox]:checked")
       if (checkedInputs.length) {
-        if (checkedInputs.length === 1) {
-          this.buttonTarget.textContent = "1 option sélectionnée"
+        if (this.showValuesOnButtonLabelValue) {
+          this.buttonTarget.textContent = `(${checkedInputs.length}) ` + Array.from(checkedInputs).map(({dataset}) => dataset).map(({label}) => label).join(", ")
         } else {
-          this.buttonTarget.textContent = checkedInputs.length + " options sélectionnées"
+          if (checkedInputs.length === 1) {
+            this.buttonTarget.textContent = "1 option sélectionnée"
+          } else {
+            this.buttonTarget.textContent = checkedInputs.length + " options sélectionnées"
+          }
         }
       } else {
         this.buttonTarget.textContent = this.buttonText

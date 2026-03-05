@@ -1,5 +1,5 @@
 import uuid
-from datetime import date
+from datetime import date, timedelta
 
 from django.conf import settings
 from django.contrib.postgres import fields as postgres_fields
@@ -22,11 +22,10 @@ class WithIllustration(models.Model):
         abstract = True
 
     illustration = models.BinaryField(blank=True)
-    illustration_filename = models.CharField(blank=True)
 
     def get_illustration_url(self):
-        if self.illustration_filename:
-            return f"/aides/illustrations-{self._meta.model_name}/{self.illustration_filename}"
+        if self.illustration:
+            return f"/aides/illustrations-{self._meta.model_name}/{self.pk}.png"
         else:
             return static("agri/images/placeholder.1x1.svg")
 
@@ -163,10 +162,7 @@ class Type(models.Model):
     class Meta:
         verbose_name = "Type d'aides"
         verbose_name_plural = "Types d'aides"
-        ordering = (
-            "-urgence",
-            "nom",
-        )
+        ordering = ("position",)
 
     objects = TypeQuerySet.as_manager()
 
@@ -175,6 +171,7 @@ class Type(models.Model):
     urgence = models.BooleanField(default=False, verbose_name="Urgence")
     icon_name = models.CharField(blank=True, verbose_name="(technique) Nom de l’icône")
     score_priorite_aides = models.PositiveSmallIntegerField(default=1)
+    position = models.PositiveSmallIntegerField(null=True, blank=True, unique=True)
 
     def __str__(self):
         return f"{self.nom} ({self.description})"
@@ -347,6 +344,21 @@ class AideQuerySet(models.QuerySet):
 
     def closed(self):
         return self.filter(date_fin__lt=date.today())
+
+    def without_parents(self):
+        return self.filter(children=None)
+
+    def without_non_departemental_parents(self):
+        return self.filter(
+            models.Q(children=None)
+            | models.Q(
+                couverture_geographique=Aide.CouvertureGeographique.DEPARTEMENTAL,
+                zones_geographiques=None,
+            )
+        )
+
+    def without_departemental_derivatives(self):
+        return self.exclude(models.Q(**self.q_official_published_dicts[1]))
 
     q_official_published_dicts = (
         {"is_published": True},
@@ -774,6 +786,41 @@ class Aide(models.Model):
     @property
     def is_complete(self):
         return self.status in (Aide.Status.VALIDATED, Aide.Status.TO_BE_DERIVED)
+
+    @property
+    def besoins(self) -> list[Theme | Sujet]:
+        return [s for s in self.sujets.filter(themes__urgence=True).distinct()] + [
+            t
+            for t in Theme.objects.filter(
+                urgence=False, sujets__in=self.sujets.all()
+            ).distinct()
+        ]
+
+    def _closes_in_less_than(self, weeks: int) -> bool:
+        return self.date_fin and date.today() + timedelta(weeks=weeks) > self.date_fin
+
+    @property
+    def closes_in_less_than_a_month(self):
+        return self._closes_in_less_than(4)
+
+    @property
+    def closes_in_less_than_two_weeks(self):
+        return self._closes_in_less_than(2)
+
+    @property
+    def is_closed(self):
+        return self.date_fin and self.date_fin < date.today()
+
+    @property
+    def ui_badge_color(self):
+        if self.is_closed:
+            return ""
+        elif self.closes_in_less_than_two_weeks:
+            return "warning"
+        elif self.closes_in_less_than_a_month:
+            return "green-tilleul-verveine"
+        else:
+            return "success"
 
     def compute_priority(self):
         priority = 0
