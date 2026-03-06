@@ -1,0 +1,189 @@
+#content {
+  background-color: var(--artwork-background-green-emeraude);
+}
+
+#photo {
+  background-image: linear-gradient(
+      to right top,
+      var(--artwork-background-green-emeraude) calc(48% - 15px),
+      white calc(48% - 15px) 49%,
+      transparent 50%
+  ), url("images/home/background.webp");
+  background-position: bottom left, center;
+  background-repeat: no-repeat;
+  background-size: 140% 200px, cover;
+  overflow-x: hidden;
+}
+
+h1 {
+  width: 80%;
+  margin-inline: auto;
+}
+
+#proposition-header {
+  margin-top: -10px;
+}
+
+#proposition-header h2 {
+  width: 80%;
+  text-wrap: balance;
+}
+
+#proposition {
+  height: 300px;
+  background-image: url("images/home/slalom.svg");
+  background-repeat: no-repeat;
+  background-position: 100px 50px;
+}
+
+#proposition ol {
+  position: relative;
+  list-style: none;
+}
+
+#proposition ol li {
+  position: absolute;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#proposition ol li::marker {
+  content: "";
+}
+
+#proposition ol li:nth-child(odd) {
+  top: 60px;
+}
+
+#proposition ol li:nth-child(even) {
+  top: 210px;
+}
+
+#proposition ol li:nth-child(1) {
+  left: 60px;
+}
+
+#proposition ol li:nth-child(2) {
+  left: 240px;
+}
+
+#proposition ol li:nth-child(3) {
+  left: 500px;
+}
+
+#proposition ol li:nth-child(4) {
+  left: 840px;
+}
+
+#proposition ol li > span:first-child span,
+#proposition ol li > span:last-child {
+  background-color: var(--artwork-background-green-emeraude);
+}
+
+#proposition ol li > span:first-child {
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+#intro p {
+  color: var(--text-title-grey);
+}
+
+#recherche {
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, .95);
+  filter: drop-shadow(var(--raised-shadow));
+  position: relative;
+}
+
+#besoin .fr-card__title {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+#stats {
+  background: linear-gradient(to bottom, transparent 20%, var(--artwork-minor-green-emeraude) 20% 80%, transparent 80%);
+}
+
+#stats-content {
+  background-color: var(--background-default-grey);
+  width: 60%;
+  margin-inline: auto;
+  border-width: 3px !important;
+  border-radius: 8px;
+  text-align: center;
+}
+
+#stats-tags {
+  width: 80%;
+  margin-inline: auto;
+  justify-content: center;
+}
+
+#intro, #recherche h2, #besoin h2 {
+  text-align: center;
+  text-wrap: balance;
+}
+
+#besoins .fr-badges-group {
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+#besoins .fr-text--almost-bold {
+  font-weight: 500;
+}
+
+#besoins .fr-tag {
+	--idle: transparent;
+	--hover: var(--background-action-low-blue-france-hover);
+	--active: var(--background-action-low-blue-france-active);
+	background-color: var(--background-action-low-blue-france);
+	color: var(--text-action-high-blue-france);
+}
+
+#besoins .fr-fieldset__element {
+  cursor: pointer;
+}
+
+#besoins .fr-checkbox-group input[type="checkbox"] + label::before {
+  left: unset;
+  right: 0;
+}
+
+#besoins .fr-checkbox-group input[type="checkbox"] + label {
+  margin-left: 0;
+}
+
+#besoins .fr-form-buttons {
+  gap: 1rem;
+}
+
+@media (min-width:992px) {
+  #photo {
+    /*background-position-y: -300px;*/
+  }
+
+  #biseau {
+    width: 120%;
+    height: 200px;
+    margin-top: -100px;
+  }
+
+  #proposition-header {
+    margin-top: -50px;
+  }
+
+  #proposition-header h2 {
+    width: 60%;
+  }
+}
+
+@media (min-width:1921px) {
+  #photo {
+    background-size: contain, cover;
+  }
+}

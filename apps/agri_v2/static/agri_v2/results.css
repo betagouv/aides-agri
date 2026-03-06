@@ -1,0 +1,169 @@
+#actions {
+  gap: .5rem;
+}
+
+.fr-card--horizontal-eighth .fr-card__img img {
+  object-fit: contain;
+}
+
+.fr-card__content {
+  padding: .75rem 2rem 0;
+}
+
+.fr-card__footer {
+  padding-bottom: .75rem;
+}
+
+.fr-toggle__label::before {
+  --toggle-status-width: 1rem !important;
+}
+
+.fr-sidemenu {
+  position: sticky;
+  top: 0;
+  padding-right: 0;
+}
+
+.fr-tag.fr-badge {
+	--text-spacing: 0;
+	--title-spacing: 0;
+	--underline-img: none;
+	--hover-tint: var(--hover);
+	--idle: transparent;
+	--hover: var(--background-contrast-grey-hover);
+	--active: var(--background-contrast-grey-active);
+	align-items: center;
+	background-color: var(--background-contrast-grey);
+	border-radius: .25rem;
+	color: var(--text-default-grey);
+	display: inline-flex;
+	flex-direction: row;
+	font-size: .875rem;
+	font-weight: 700;
+	line-height: 1.5rem;
+	max-height: none;
+	max-width: 100%;
+	min-height: 1.5rem;
+	overflow: initial;
+	padding: 0 .5rem;
+	text-transform: uppercase;
+	width: fit-content;
+}
+
+.fr-tag.fr-badge.fr-badge--success {
+	--idle: transparent;
+	--hover: var(--background-contrast-success-hover);
+	--active: var(--background-contrast-success-active);
+	background-color: var(--background-contrast-success);
+	color: var(--text-default-success);
+}
+
+.fr-tag.fr-badge--purple-glycine {
+	--idle: transparent;
+	--hover: var(--background-contrast-purple-glycine-hover);
+	--active: var(--background-contrast-purple-glycine-active);
+	background-color: var(--background-contrast-purple-glycine);
+	color: var(--text-label-purple-glycine);
+}
+
+.load-more {
+  text-align: center;
+}
+
+label.fr-tag[aria-pressed=true] {
+  cursor: pointer;
+}
+label.fr-tag[aria-pressed=true]:not(:disabled) {
+  background-color:transparent;
+  background-image:radial-gradient(circle at 100% .25rem,transparent .578125rem,var(--background-active-blue-france) .625rem);
+  color:var(--text-inverted-blue-france)
+}
+label.fr-tag[aria-pressed=true]:not(:disabled):hover {
+  background-image:radial-gradient(circle at 100% .25rem,transparent .578125rem,var(--background-active-blue-france-hover) .625rem)
+}
+label.fr-tag[aria-pressed=true]:not(:disabled):active {
+  background-image:radial-gradient(circle at 100% .25rem,transparent .578125rem,var(--background-active-blue-france-active) .625rem)
+}
+label.fr-tag[aria-pressed=true]:after {
+  color:var(--text-action-high-blue-france)
+}
+label.fr-tag[aria-pressed=true] {
+  background-position:50%;
+  background-repeat:no-repeat;
+  background-size:100%;
+  overflow:visible;
+  position:relative
+}
+label.fr-tag[aria-pressed=true]:after {
+  --icon-size:1rem;
+  background-color:currentColor;
+  content:"";
+  display:inline-block;
+  flex:0 0 auto;
+  height:var(--icon-size);
+  margin:-.5rem;
+  -webkit-mask-image:url(/static/dsfr/dist/icons/system/checkbox-circle-line.svg);
+  mask-image:url(/static/dsfr/dist/icons/system/checkbox-circle-line.svg);
+  -webkit-mask-size:100% 100%;
+  mask-size:100% 100%;
+  position:absolute;
+  right:0;
+  top:4px;
+  vertical-align:calc((.75em - var(--icon-size))*.5);
+  width:var(--icon-size)
+}
+
+/* TODO remove when https://github.com/numerique-gouv/django-dsfr/pull/267 will be merged */
+.fr-card__footer .fr-links-group {
+	--ul-type: none;
+	--ol-type: none;
+	--ul-start: 0;
+	--ol-start: 0;
+	--xl-block: 0;
+	--li-bottom: 0;
+	--ol-content: none;
+  display: flex;
+  gap: 1rem;
+	margin: 0;
+}
+
+.fr-responsive-img {
+  width: 20%;
+}
+
+.fr-card__header .fr-badges-group {
+  left: unset;
+  right: 0;
+}
+
+.fr-card__start .fr-tags-group li {
+  line-height: 2rem;
+}
+
+@media (min-width: 62em) {
+  .fr-card--horizontal-eighth .fr-card__header {
+    flex: 0 0 12.5%;
+    width: 12.5%;
+  }
+
+  .fr-responsive-img {
+    width: 100%;
+  }
+
+  .fr-card__header .fr-badges-group {
+    right: unset;
+    left: 0;
+  }
+}
+
+@media print {
+  #actions,
+  #filters,
+  #footer,
+  .fr-breadcrumb,
+  .fr-alert,
+  .fr-btn,
+  #aides-feedback {
+    display: none;
+  }
+}
