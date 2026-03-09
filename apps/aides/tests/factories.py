@@ -85,6 +85,7 @@ class AideFactory(factory.django.DjangoModelFactory):
     is_published = False
     date_target_publication = None
     url_descriptif = ""
+    couverture_geographique = models.Aide.CouvertureGeographique.NATIONAL
     is_derivable = False
     importance = models.Aide.Importance.BASE
     urgence = models.Aide.Urgence.MEDIUM

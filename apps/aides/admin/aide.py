@@ -371,7 +371,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         zones_geographiques = aide.zones_geographiques.all()
         aide.pk = None
         aide._state.adding = True
-        aide.status = Aide.Status.TODO
+        aide.status = Aide.Status.CHOSEN
         aide.parent_id = parent_pk
         aide.nom = nom
         aide.slug = ""

@@ -1,6 +1,6 @@
 from pytest_factoryboy import register
 
-from aides.models import Aide
+from aides.models import Aide, ZoneGeographique
 from aides.tests import factories  # noqa
 
 
@@ -11,6 +11,12 @@ register(factories.SujetFactory)
 register(factories.SujetFactory, "sujet_2")
 register(factories.TypeFactory, "type_aide")
 register(factories.ZoneGeographiqueFactory)
+register(
+    factories.ZoneGeographiqueFactory,
+    "zone_geographique_departement_13",
+    type=ZoneGeographique.Type.DEPARTEMENT,
+    code="13",
+)
 register(factories.AideFactory)
 register(
     factories.AideFactory,

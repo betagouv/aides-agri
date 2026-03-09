@@ -73,6 +73,45 @@ def test_derive_aide(admin_client, monkeypatch, aide):
     )
 
     # THEN an Aide has been created:
+    # - At initial edition status
+    # - With relation to its parent
+    # - And other properties copied
+    assert res.status_code == 302
+    assert Aide.objects.count() == 2
+    derived = Aide.objects.order_by("pk").last()
+    assert derived.parent == aide
+    assert derived.status == Aide.Status.CHOSEN
+    assert derived.organisme == aide.organisme
+    assert derived.url_descriptif == aide.url_descriptif
+
+
+@pytest.mark.parametrize("aide__is_derivable", [True])
+@pytest.mark.parametrize("aide__status", [Aide.Status.TO_BE_DERIVED])
+@pytest.mark.parametrize("aide__organisme", [LazyFixture("organisme")])
+@pytest.mark.parametrize("aide__url_descriptif", ["https://www.franceagrimer.fr"])
+@pytest.mark.parametrize(
+    "aide__couverture_geographique", [Aide.CouvertureGeographique.DEPARTEMENTAL]
+)
+@pytest.mark.parametrize("aide__is_published", [True])
+def test_derive_aide_departementale(
+    admin_client, monkeypatch, aide, zone_geographique_departement_13
+):
+    # we don't care about 2FA here, let's skip it
+    monkeypatch.setattr(django_otp_middleware, "is_verified", lambda u: True)
+
+    # GIVEN one derivable Departemental published Aide
+    assert Aide.objects.count()
+    aide = Aide.objects.first()
+    assert aide.is_derivable
+    assert aide.organisme is not None
+    assert aide.is_published
+    assert aide.is_departemental
+
+    # WHEN POSTing to add an Aide derived from the existing one
+    url = reverse("admin:aides_aide_derive_for_departements", args=[aide.pk])
+    res = admin_client.post(url, headers={"host": "localhost"})
+
+    # THEN an Aide has been created:
     # - At initial status
     # - With relation to its parent
     # - And other properties copied
@@ -80,6 +119,8 @@ def test_derive_aide(admin_client, monkeypatch, aide):
     assert Aide.objects.count() == 2
     derived = Aide.objects.order_by("pk").last()
     assert derived.parent == aide
-    assert derived.status == Aide.Status.TODO
+    assert derived.status == Aide.Status.CHOSEN
     assert derived.organisme == aide.organisme
     assert derived.url_descriptif == aide.url_descriptif
+    assert derived.is_published
+    assert set(derived.zones_geographiques.all()) == {zone_geographique_departement_13}
