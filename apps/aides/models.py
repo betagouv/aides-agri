@@ -309,6 +309,9 @@ class AideQuerySet(models.QuerySet):
     def published(self):
         return self.filter(is_published=True)
 
+    def closed(self):
+        return self.filter(date_fin__lt=date.today())
+
     def published_validated(self):
         return self.published().validated()
 
