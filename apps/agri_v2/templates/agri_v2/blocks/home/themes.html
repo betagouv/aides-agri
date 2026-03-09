@@ -27,6 +27,7 @@
         </legend>
         {% for sujet in urgent_sujets %}
           <div class="fr-fieldset__element fr-background-default--grey fr-border-default--grey fr-py-3v fr-px-2w">
+            <label for="checkbox-sujets-{{ sujet.pk }}"></label>
             <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
               <input type="checkbox" id="checkbox-sujets-{{ sujet.pk }}" name="sujets" value="{{ sujet.pk }}">
               <label for="checkbox-sujets-{{ sujet.pk }}" class="fr-label">
@@ -46,6 +47,7 @@
         </legend>
         {% for theme in themes %}
           <div class="fr-fieldset__element fr-background-default--grey fr-border-default--grey fr-py-3v fr-px-2w">
+          <label for="checkbox-themes-{{ theme.pk }}"></label>
             <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
               <input type="checkbox" id="checkbox-themes-{{ theme.pk }}" name="themes" value="{{ theme.pk }}">
               <label for="checkbox-themes-{{ theme.pk }}" class="fr-label">
