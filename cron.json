@@ -4,7 +4,7 @@
       "command": "0 4 * * * python manage.py aides_unpublish_aides_having_invalid_link"
     },
     {
-      "command": "0 3 * * * python manage.py aides_publish_pending_aides"
+      "command": "0 3 * * * python manage.py aides_unpublish_closed_aides"
     },
     {
       "command": "0 6 * * * python manage.py aides_feedback_reporting"
