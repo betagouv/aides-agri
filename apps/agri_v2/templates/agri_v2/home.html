@@ -18,27 +18,6 @@
 </script>
 {% endblock extra_head_js %}
 
-{% block extra_js %}
-<script nonce="{{ request.csp_nonce }}">
-
-function enlargeBesoinsClickZone() {
-  document.querySelectorAll("#besoins .fr-fieldset__element").forEach(elt => elt.addEventListener("click", evt => {
-    elt.querySelector("label").click()
-  }))
-}
-
-document.onreadystatechange = evt => {
-  if (document.readyState !== "complete") {
-    return
-  }
-  enlargeBesoinsClickZone()
-  document.body.addEventListener("htmx:load", evt => {
-    enlargeBesoinsClickZone()
-  })
-}
-</script>
-{% endblock extra_js %}
-
 {% block pagetitle %}{{ SITE_CONFIG.site_title }}{% endblock pagetitle %}
 
 {% block body %}

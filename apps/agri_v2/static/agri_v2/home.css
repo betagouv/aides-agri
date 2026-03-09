@@ -146,7 +146,27 @@ h1 {
 }
 
 #besoins .fr-fieldset__element {
+  position: relative;
+}
+
+#besoins .fr-fieldset__element > label {
+  display: block;
+  margin-left: 0;
+  position: absolute;
+  inset: 0;
   cursor: pointer;
+}
+
+#besoins .fr-fieldset__element * {
+  user-select: none;
+}
+
+#besoins .fr-fieldset__element:hover {
+  background-color: var(--hover) !important;
+}
+
+#besoins .fr-fieldset__element:active {
+  background-color: var(--active) !important;
 }
 
 #besoins .fr-checkbox-group input[type="checkbox"] + label::before {
