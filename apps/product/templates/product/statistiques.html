@@ -1,0 +1,60 @@
+{% extends "ui/base.html" %}
+
+{% load dsfr_tags %}
+
+{% block breadcrumb %}{% endblock %}
+
+{% block title %}Statistiques et matrice d’impact{% endblock %}
+
+{% block content %}
+  <h1>Statistiques et matrice d’impact</h1>
+  <h2>Contexte</h2>
+  <dl class="fr-background-alt--grey fr-p-2w fr-mb-2w">
+    <dt class="fr-text--bold">Service :</dt>
+    <dd>Aides Agri recense les dispositifs d’aides publics aux exploitations agricoles, et permet de les découvrir, de les parcourir et de les étudier.</dd>
+    <dt class="fr-text--bold">Irritant :</dt>
+    <dd>
+      Il est difficile pour un exploitant agricole de se tenir au courant de tous les dispositifs d’aides publics qui lui sont disponibles ;
+      cela nécessite une veille permanente auprès d’une multiplicité d’acteurs qui ont chacun leurs canaux de communication.
+      Il est également difficile de comprendre les dispositifs, leurs conditions d’éligibilité, leur valeur concrète à l’échelle d’une exploitation dans un certain contexte, etc.
+    </dd>
+    <dt class="fr-text--bold">Politique publique :</dt>
+    <dd>Aide à l’agriculture, simplification des démarches.</dd>
+    <dt class="fr-text--bold">Cible prioritaire :</dt>
+    <dd>Exploitants agricoles</dd>
+    <dt class="fr-text--bold">Dates marquantes de la plateforme Aides Agri :</dt>
+    <dd>
+      <ul>
+        <li><time datetime="2024-09">Septembre 2024</time> : début de l’investigation</li>
+        <li><time datetime="2025-10">Janvier 2025</time> : démarrage de la construction du produit</li>
+      </ul>
+    </dd>
+  </dl>
+  <h2>Matrice d’impact</h2>
+  <div class="fr-container--fluid">
+    <div class="fr-grid-row fr-grid-row--gutters">
+      {% for category, stats in stats.items %}
+      <div class="fr-col fr-col-12 fr-col-md-6">
+        <div class="fr-card">
+          <div class="fr-card__body">
+            <div class="fr-card__content">
+              <h3 class="fr-card__title">{{ category }}</h3>
+              <ul class="fr-card__desc">
+                {% for stat in stats %}
+                <li>
+                  <strong>{{ stat.label }} : {{ stat.data|last|last }}</strong>
+                  <details>
+                    <summary>Voir l’évolution</summary>
+                    {% dsfr_table header=tables_headers content=stat.data %}
+                  </details>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock content %}
