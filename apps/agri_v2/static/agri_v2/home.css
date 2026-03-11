@@ -184,7 +184,7 @@ h1 {
 
 @media (min-width:992px) {
   #photo {
-    /*background-position-y: -300px;*/
+    background-position-y: bottom, -125px;
   }
 
   #biseau {
@@ -202,8 +202,14 @@ h1 {
   }
 }
 
-@media (min-width:1921px) {
+@media (min-width:1400px) {
   #photo {
-    background-size: contain, cover;
+    background-position-y: bottom, -150px;
+  }
+}
+
+@media (min-width:1900px) {
+  #photo {
+    background-position-y: bottom, -300px;
   }
 }

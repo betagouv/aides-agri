@@ -284,7 +284,9 @@ document.onreadystatechange = evt => {
               </div>
             </div>
             {% for type_aide, aide_list in aides.items %}
-              <h2 id="type-aides-{{ type_aide.nom|slugify }}" class="fr-text--xs fr-text-label--green-emeraude fr-mb-1w">
+              <h2 id="type-aides-{{ type_aide.nom|slugify }}"
+                  class="fr-text--xs fr-background-alt--grey fr-p-1w fr-text-label--green-emeraude fr-mb-1w"
+              >
                 {{ type_aide.nom|upper }}
                 ({{ aide_list|length }} DISPOSITIF{{ aide_list|length|pluralize|upper }})
                 <span class="fr-text-default--grey fr-text--regular">{{ type_aide.description }}</span>
@@ -310,6 +312,9 @@ document.onreadystatechange = evt => {
                     </button>
                   </div>
                 {% endif %}
+                <div class="fr-col back-to-top">
+                  <a href="#content" target="_self" class="fr-link fr-icon-arrow-up-fill fr-link--icon-left">Haut de page</a>
+                </div>
               </div>
             {% endfor %}
           </div>
