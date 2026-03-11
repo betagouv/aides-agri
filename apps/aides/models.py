@@ -418,6 +418,11 @@ class AideQuerySet(models.QuerySet):
     def by_sujets(self, sujets: list[Sujet]) -> models.QuerySet:
         return self.filter(sujets__in=sujets)
 
+    def by_besoins(self, themes: list[Theme], sujets: list[Sujet]):
+        return self.filter(
+            models.Q(sujets__themes__in=themes) | models.Q(sujets__in=sujets)
+        )
+
     def by_types(self, types: list[Type]) -> models.QuerySet:
         return self.filter(types__in=types)
 

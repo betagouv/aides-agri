@@ -188,10 +188,8 @@ class ResultsMixin:
             qs = qs.without_departemental_derivatives().without_non_departemental_parents()
         if self.filieres:
             qs = qs.by_filieres(self.filieres)
-        if self.themes:
-            qs = qs.by_themes(self.themes)
-        if self.sujets:
-            qs = qs.by_sujets(self.sujets)
+        if self.themes or self.sujets:
+            qs = qs.by_besoins(self.themes, self.sujets)
         return (
             qs.distinct()
             .select_related("organisme")
@@ -354,9 +352,9 @@ class ResultsView(ResultsMixin, ListView):
                             "label": s.nom_court,
                             "icon": s.icon_name,
                         }
-                        for s in Sujet.objects.filter(themes__urgence=True).exclude(
-                            pk__in=self.sujets_ids
-                        )
+                        for s in Sujet.objects.published()
+                        .filter(themes__urgence=True)
+                        .exclude(pk__in=self.sujets_ids)
                     ],
                     "besoins_initials": [
                         {
