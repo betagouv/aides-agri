@@ -1,10 +1,12 @@
 import operator
 
+from django import forms
 from django.shortcuts import render
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.text import slugify
 from django.views.generic import TemplateView, ListView, View
+from dsfr.forms import DsfrBaseForm
 
 from aides.models import (
     Theme,
@@ -129,17 +131,31 @@ class HomeView(TemplateView):
                 }
             )
         else:
-            context_data.update(
-                {
-                    "departement_default": {
-                        "text": "Sélectionnez un département",
-                        "disabled": True,
-                        "value": "",
-                    },
-                    "departement_options": [
-                        {"value": dept.code, "text": f"{dept.code} {dept.nom}"}
+
+            class SelectWithDisabledEmptyOption(forms.Select):
+                def create_option(self, name, value, *args, attrs=None, **kwargs):
+                    option_dict = super().create_option(
+                        name, value, *args, attrs=attrs, **kwargs
+                    )
+                    if value == "":
+                        option_dict["attrs"].update({"disabled": True})
+                    return option_dict
+
+            class HomePageForm(DsfrBaseForm):
+                departement = forms.ChoiceField(
+                    label="Votre département",
+                    required=True,
+                    widget=SelectWithDisabledEmptyOption,
+                    choices=[("", "Sélectionnez un département")]
+                    + [
+                        (dept.code, f"{dept.code} {dept.nom}")
                         for dept in ZoneGeographique.objects.departements()
                     ],
+                )
+
+            context_data.update(
+                {
+                    "form": HomePageForm(),
                     "filieres_options": [
                         (filiere.pk, filiere.nom, filiere.nom)
                         for filiere in Filiere.objects.published()
@@ -178,10 +194,15 @@ class ResultsMixin:
         self.sujets = (
             Sujet.objects.filter(pk__in=self.sujets_ids) if self.sujets_ids else []
         )
+        self.only_closed = request.GET.get("voir_fermees", "off").lower() == "on"
         self.order_by = request.GET.get("tri", "cloture")
 
     def get_results(self):
         qs = Aide.objects.published()
+        if self.only_closed:
+            qs = qs.only_closed()
+        else:
+            qs = qs.only_open()
         order_by = self.__class__.ORDER_BY[self.order_by]
         if self.departement:
             qs = qs.by_departements([self.departement]).without_parents()
@@ -191,6 +212,7 @@ class ResultsMixin:
             qs = qs.by_filieres(self.filieres)
         if self.themes or self.sujets:
             qs = qs.by_besoins(self.themes, self.sujets)
+
         return (
             qs.distinct()
             .select_related("organisme")
@@ -230,6 +252,8 @@ class ResultsView(ResultsMixin, ListView):
             for type_aides, aides in aides_by_type.items()
             if aides
         }
+
+        total_count = sum(len(aides) for aides in aides_by_type.values())
 
         links_querydict = self.request.GET.copy()
         links_querydict["breadcrumb_entry_point_title"] = "Vos résultats"
@@ -329,6 +353,7 @@ class ResultsView(ResultsMixin, ListView):
                         ],
                     },
                     "aides": aides_data_by_type,
+                    "aides_count": total_count,
                     "departement_options": [
                         {"value": dept.code, "text": f"{dept.code} {dept.nom}"}
                         for dept in ZoneGeographique.objects.departements()
@@ -383,6 +408,7 @@ class ResultsView(ResultsMixin, ListView):
                         }
                         for s in self.sujets
                     ],
+                    "only_closed": self.only_closed,
                     "order_by": self.order_by,
                     "create_feedback_on_aides_form": CreateFeedbackOnAidesForm(),
                 }

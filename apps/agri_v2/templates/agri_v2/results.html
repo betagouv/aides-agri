@@ -35,6 +35,15 @@ document.onreadystatechange = evt => {
     elt.setAttribute("role", "link")
     elt.setAttribute("aria-disabled", true)
   })
+
+  // FIXME very hacky way to prevent DSFR crash because of Toggle component not supporting htmx swapping
+  document.body.addEventListener("htmx:afterSwap", evt => {
+    dsfr.internals.state.modules.register.collection.forEach(item => {
+      if(item.creator && !item.creator.node.isConnected && item.instanceClassName === "ToggleInput") {
+        dsfr.internals.state.modules.register.remove(item.creator.registration)
+      }
+    })
+  })
 }
 </script>
 <script type="module" nonce="{{ request.csp_nonce }}">
@@ -189,12 +198,34 @@ document.onreadystatechange = evt => {
 
       <div class="fr-background-alt--grey fr-pt-2w">
         <div class="fr-container">
-          <h1 class="fr-text-label--green-emeraude fr-mb-1w">Vos résultats</h1>
+          <div class="fr-grid-row">
+            <div class="fr-col fr-col-12 fr-col-md-6">
+              <h1 class="fr-text-label--green-emeraude fr-mb-1w">Vos résultats</h1>
+            </div>
+            <div id="actions" class="fr-col fr-col-12 fr-col-md-6 fr-col--bottom fr-mb-3w fr-grid-row fr-grid-row--reverse">
+              <button type="button"
+                      class="fr-btn fr-btn--icon-left fr-btn--secondary fr-icon-mail-line"
+                      aria-controls="modal-send-by-mail"
+                      data-fr-opened="false"
+              >
+                Recevoir par e-mail
+              </button>
+              <button type="button"
+                      class="fr-btn fr-btn--icon-left fr-btn--secondary fr-icon-file-pdf-line"
+                      id="button-print"
+                      data-action="click->matomo#trackEvent"
+                      data-event-page="Recommandation"
+                      data-event-name="Impression"
+              >
+                Enregistrer en PDF
+              </button>
+            </div>
+          </div>
 
           <p class="fr-text--xl fr-mb-1w">
-            {% if object_list %}
-              {{ object_list.count }}
-              résultat{{ object_list|pluralize }}
+            {% if aides_count %}
+              {{ aides_count }}
+              résultat{{ aides_count|pluralize }}
             {% else %}
               Aucun dispositif ne correspond à votre recherche.
             {% endif %}
@@ -257,7 +288,7 @@ document.onreadystatechange = evt => {
             {% dsfr_sidemenu sidemenu_data button_label="Sommaire" %}
           </div>
           <div class="fr-col fr-col-12 fr-col-md-9 fr-container">
-            <div class="fr-grid-row">
+            <div class="fr-grid-row fr-grid-row--gutters">
               <div class="fr-col fr-col-12 fr-col-md-6 fr-select-group">
                 <label class="fr-label" for="select-tri">Trier les résultats</label>
                 <select form="filters" class="fr-select" id="select-tri" name="tri">
@@ -266,23 +297,20 @@ document.onreadystatechange = evt => {
                   <option value="couverture-geographique" {% if order_by == "couverture-geographique" %}selected{% endif %}>Couverture géographique : la plus locale</option>
                 </select>
               </div>
-              <div id="actions" class="fr-col fr-col-12 fr-col-md-6 fr-col--bottom fr-mb-3w fr-grid-row fr-grid-row--reverse">
-                <button type="button"
-                        class="fr-btn fr-btn--icon-left fr-btn--secondary fr-icon-mail-line"
-                        aria-controls="modal-send-by-mail"
-                        data-fr-opened="false"
-                >
-                  Recevoir par e-mail
-                </button>
-                <button type="button"
-                        class="fr-btn fr-btn--icon-left fr-btn--secondary fr-icon-file-pdf-line"
-                        id="button-print"
-                        data-action="click->matomo#trackEvent"
-                        data-event-page="Recommandation"
-                        data-event-name="Impression"
-                >
-                  Enregistrer en PDF
-                </button>
+              <div class="fr-col fr-col-md-6 fr-col--middle">
+                <div class="fr-toggle">
+                  <input type="checkbox"
+                         class="fr-toggle__input"
+                         id="toggle-voir-fermees"
+                         name="voir_fermees"
+                         {% if only_closed %}checked{% endif %}
+                  >
+                  <label class="fr-toggle__label"
+                         for="toggle-voir-fermees"
+                  >
+                    Voir uniquement les dispositifs fermés
+                  </label>
+                </div>
               </div>
             </div>
             {% for type_aide, aide_list in aides.items %}

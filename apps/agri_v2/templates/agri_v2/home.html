@@ -11,10 +11,12 @@
 <script type="module" nonce="{{ request.csp_nonce }}">
   import { Application } from "stimulus"
   import { SelectRich } from "select-rich"
+  import { DsfrForm } from "dsfr-form"
 
   window.Stimulus ??= Application.start()
 
   Stimulus.register("select-rich", SelectRich)
+  Stimulus.register("dsfr-form", DsfrForm)
 </script>
 {% endblock extra_head_js %}
 
@@ -76,13 +78,23 @@
                     hx-target="this"
                     hx-swap="outerHTML"
                     hx-push-url="true"
+                    data-controller="dsfr-form"
+                    data-dsfr-form-select-rich-outlet="[data-controller=select-rich]"
               >
                 <div class="fr-grid-row fr-grid-row--gutters">
                   <div class="fr-col fr-col-12 fr-col-md-6">
-                    {% dsfr_select id="departement" label="Votre département" options=departement_options default=departement_default selected=departement_code %}
+                    <div class="fr-select-group">
+                      <label class="fr-label" for="id_departement">{{ form.departement.label }} :</label>
+                      {{ form.departement }}
+                      <div class="fr-messages-group" aria-live="polite">
+                        <p class="fr-select-rich__error fr-error-text fr-hidden">
+                          Ce champ est requis
+                        </p>
+                      </div>
+                    </div>
                   </div>
                   <div class="fr-col fr-col-12 fr-col-md-6">
-                    {% ui_select_rich_multi label="Vos filières :" name="filieres" options=filieres_options show_values_on_button_label=True %}
+                    {% ui_select_rich_multi label="Vos filières :" name="filieres" required=True options=filieres_options show_values_on_button_label=True %}
                   </div>
                 </div>
                 <div class="fr-grid-row fr-grid-row--right fr-mt-3w">
