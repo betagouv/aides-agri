@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import StaticPageView
+from .views import StaticPageView, StatistiquesPageView
 
 app_name = "product"
 urlpatterns = [
@@ -44,12 +44,5 @@ urlpatterns = [
         ),
         name="urgence-dnc",
     ),
-    path(
-        "pages/statistiques",
-        StaticPageView.as_view(
-            title="Statistiques",
-            content_filename="statistiques",
-        ),
-        name="statistiques",
-    ),
+    path("pages/statistiques", StatistiquesPageView.as_view(), name="statistiques"),
 ]
