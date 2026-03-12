@@ -8,6 +8,7 @@ from django.contrib.postgres.search import SearchVector, SearchVectorField
 from django.db import models
 from django.templatetags.static import static
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.text import slugify
 from django.utils.timezone import now
 
@@ -22,9 +23,18 @@ class WithIllustration(models.Model):
         abstract = True
 
     illustration = models.BinaryField(blank=True)
+    has_illustration = models.GeneratedField(
+        expression=models.Case(
+            models.When(illustration=b"", then=False),
+            default=True,
+            output_field=models.BooleanField(),
+        ),
+        output_field=models.BooleanField(),
+        db_persist=True,
+    )
 
     def get_illustration_url(self):
-        if self.illustration:
+        if self.has_illustration:
             return f"/aides/illustrations-{self._meta.model_name}/{self.pk}.png"
         else:
             return static("agri/images/placeholder.1x1.svg")
@@ -366,7 +376,7 @@ class AideQuerySet(models.QuerySet):
             "zones_geographiques__isnull": False,
             "parent__isnull": False,
             "parent__zones_geographiques__isnull": True,
-            "parent__couverture_geographique": "Départemental",  # FIXME hard-coded
+            "parent__couverture_geographique": "05 Départemental",  # FIXME hard-coded
         },
     )
 
@@ -487,6 +497,9 @@ class AideQuerySet(models.QuerySet):
         return self.filter(
             models.Q(date_fin=None) | models.Q(date_fin__gte=date.today())
         )
+
+    def only_closed(self):
+        return self.filter(date_fin__isnull=False, date_fin__lt=date.today())
 
 
 class Aide(models.Model):
@@ -792,7 +805,7 @@ class Aide(models.Model):
     def is_complete(self):
         return self.status in (Aide.Status.VALIDATED, Aide.Status.TO_BE_DERIVED)
 
-    @property
+    @cached_property
     def besoins(self) -> list[Theme | Sujet]:
         return [s for s in self.sujets.filter(themes__urgence=True).distinct()] + [
             t
