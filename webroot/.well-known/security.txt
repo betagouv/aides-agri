@@ -1,0 +1,21 @@
+Contact: mailto:aides-agri@beta.gouv.fr
+Encryption: https://aides-agri.beta.gouv.fr/.well-known/pgp-publickey.txt
+Preferred-Languages: fr,en
+Canonical: https://aides-agri.beta.gouv.fr/.well-known/security.txt
+Expires: 2026-03-31T18:00:00+02:00
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Contact: mailto:aides-agri@beta.gouv.fr
+Encryption: https://aides-agri.beta.gouv.fr/.well-known/pgp-publickey.txt
+Preferred-Languages: fr,en
+Canonical: https://aides-agri.beta.gouv.fr/.well-known/security.txt
+Expires: 2026-03-31T18:00:00+02:00
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQQF24GuRgoSQCsGkIyRee0Dr7Fy+wUCabLxbAAKCRCRee0Dr7Fy
+++2QAQDW8KGeDzJqlykvEzbxDxY0p/B15WCY/wPhYXzeg1sVwgEAjr0fW08sKA+C
+5Q7vPcp2rBpdruz3BxU29zRew3DGTwM=
+=Hd/Y
+-----END PGP SIGNATURE-----
