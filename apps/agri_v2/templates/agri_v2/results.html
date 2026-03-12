@@ -184,6 +184,7 @@ document.onreadystatechange = evt => {
           hx-select="#content"
           hx-target="#content"
           hx-swap="outerHTML"
+          hx-disinherit="*"
     >
 
       <div class="fr-background-alt--grey fr-pt-2w">
@@ -260,8 +261,9 @@ document.onreadystatechange = evt => {
               <div class="fr-col fr-col-12 fr-col-md-6 fr-select-group">
                 <label class="fr-label" for="select-tri">Trier les résultats</label>
                 <select form="filters" class="fr-select" id="select-tri" name="tri">
-                  <option value="cloture" {% if order_by == "cloture" %}selected{% endif %}>Date de clôture : du plus proche au plus lointain</option>
-                  <option value="mise-a-jour" {% if order_by == "mise-a-jour" %}selected{% endif %}>Date de mise à jour : du plus récent au plus ancien</option>
+                  <option value="cloture" {% if order_by == "cloture" %}selected{% endif %}>Date de clôture : la plus proche</option>
+                  <option value="mise-a-jour" {% if order_by == "mise-a-jour" %}selected{% endif %}>Date de mise à jour : la plus récente</option>
+                  <option value="couverture-geographique" {% if order_by == "couverture-geographique" %}selected{% endif %}>Couverture géographique : la plus locale</option>
                 </select>
               </div>
               <div id="actions" class="fr-col fr-col-12 fr-col-md-6 fr-col--bottom fr-mb-3w fr-grid-row fr-grid-row--reverse">

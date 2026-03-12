@@ -153,6 +153,7 @@ class ResultsMixin:
     ORDER_BY = {
         "cloture": ("date_fin", "-last_published_at"),
         "mise-a-jour": ("-last_published_at",),
+        "couverture-geographique": ("-couverture_geographique", "-last_published_at"),
     }
 
     def setup(self, request, *args, **kwargs):
@@ -220,13 +221,21 @@ class ResultsView(ResultsMixin, ListView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        aides_by_type = {type_aide: set() for type_aide in Type.objects.all()}
+        aides_by_type = {type_aide: dict() for type_aide in Type.objects.all()}
         for aide in self.get_queryset():
             for type_aides in aide.types.all():
-                aides_by_type[type_aides].add(aide)
+                aides_by_type[type_aides][aide] = None
         aides_by_type = {
-            type_aides: aides for type_aides, aides in aides_by_type.items() if aides
+            type_aides: aides.keys()
+            for type_aides, aides in aides_by_type.items()
+            if aides
         }
+
+        links_querydict = self.request.GET.copy()
+        links_querydict["breadcrumb_entry_point_title"] = "Vos résultats"
+        links_querydict["breadcrumb_entry_point_url"] = (
+            f"{self.request.path}?{self.request.GET.urlencode()}"
+        )
 
         aides_data_by_type = {
             type_aides: [
@@ -238,7 +247,7 @@ class ResultsView(ResultsMixin, ListView):
                     "call_to_action": {
                         "links": [
                             {
-                                "url": aide.get_absolute_url(),
+                                "url": f"{aide.get_absolute_url()}?{links_querydict.urlencode()}",
                                 "label": "Consulter la fiche dispositif",
                                 "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right",
                             }
