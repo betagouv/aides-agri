@@ -59,9 +59,11 @@
       {% endblock breadcrumb %}
 
       {% block content_wrapper %}
-      <main id="content" role="main" aria-label="Contenu">
-        {% block content %}{% endblock content %}
-      </main>
+        {% block beforecontent %}{% endblock %}
+        <main id="content" role="main" aria-label="Contenu">
+          {% block content %}{% endblock content %}
+        </main>
+        {% block aftercontent %}{% endblock %}
       {% endblock content_wrapper %}
     </div>
     {% endblock container %}

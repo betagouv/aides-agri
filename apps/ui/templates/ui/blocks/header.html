@@ -13,7 +13,31 @@
     Pour revenir ici, scannez ce code :
     {{ qrcode|safe }}
   </div>
+  <div class="fr-header__tools-links">
+    <ul class="fr-btns-group">
+      <li>
+        <a class="fr-icon-profil-fill fr-btn" href="{% url 'agri_v2:results' %}">Catalogue de dispositifs</a>
+      </li>
+    </ul>
+  </div>
 {% endblock header_tools_links %}
 
-{% block burger_menu %}{% endblock burger_menu %}
-{% block main_menu %}{% endblock main_menu %}
+{% block main_menu %}
+  <div class="fr-header__menu fr-modal"
+       id="fr-menu-mobile"
+       aria-labelledby="fr-btn-menu-mobile">
+    <div class="fr-container">
+      <button class="fr-btn--close fr-btn" aria-controls="fr-menu-mobile">
+        {% translate "Close" %}
+      </button>
+      <div class="fr-header__menu-links">
+      </div>
+      {% translate "Main menu" as main_menu_label %}
+      <nav role="navigation"
+           class="fr-nav"
+           id="fr-navigation"
+           aria-label="{{ main_menu_label }}">
+      </nav>
+    </div>
+  </div>
+{% endblock main_menu %}

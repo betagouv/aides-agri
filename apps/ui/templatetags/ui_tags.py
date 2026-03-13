@@ -148,6 +148,7 @@ def ui_select_rich_multi(*args, **kwargs) -> dict:
         "add_button_label",
         "extra_classes",
         "keep_default_button_label",
+        "show_values_on_button_label",
     ]
     tag_data = parse_tag_args(args, kwargs, allowed_keys)
     tag_data["multi"] = True

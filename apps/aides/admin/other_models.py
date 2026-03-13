@@ -17,8 +17,13 @@ from ..models import (
 from ._common import ArrayFieldCheckboxSelectMultiple
 
 
+class WithIllustration:
+    def get_queryset(self, request):
+        return super().get_queryset(request).without_illustration()
+
+
 @admin.register(Theme)
-class ThemeAdmin(VersionAdmin):
+class ThemeAdmin(WithIllustration, VersionAdmin):
     list_display = (
         "id",
         "nom_court",
@@ -49,7 +54,7 @@ class ThemeAdmin(VersionAdmin):
 
 
 @admin.register(Sujet)
-class SujetAdmin(VersionAdmin):
+class SujetAdmin(WithIllustration, VersionAdmin):
     list_display = ("id", "nom_court", "nom", "published", "aides_count")
     list_display_links = ("id", "nom")
     list_filter = ("published", "themes")
@@ -68,9 +73,9 @@ class SujetAdmin(VersionAdmin):
 
 @admin.register(Type)
 class TypeAdmin(VersionAdmin):
-    list_display = ("id", "nom", "urgence", "aides_count")
+    list_display = ("id", "nom", "position", "urgence", "aides_count")
     list_display_links = ("id", "nom")
-    ordering = ("nom",)
+    ordering = ("position",)
 
     def aides_count(self, obj):
         return mark_safe(
@@ -111,13 +116,12 @@ class OrganismeForm(forms.ModelForm):
 
 
 @admin.register(Organisme)
-class OrganismeAdmin(VersionAdmin):
+class OrganismeAdmin(WithIllustration, VersionAdmin):
     list_display = ("id", "nom", "acronyme", "famille", "secteurs", "aides_count")
     list_display_links = ("id", "nom")
     list_filter = ("famille",)
     search_fields = ("nom", "acronyme")
     autocomplete_fields = ("zones_geographiques",)
-    exclude = ("logo_filename",)
     ordering = ("nom",)
 
     form = OrganismeForm
@@ -130,7 +134,7 @@ class OrganismeAdmin(VersionAdmin):
     aides_count.short_description = "Nombre d’aides"
 
     def get_queryset(self, request):
-        return super().get_queryset(request).defer("logo").with_aides_count()
+        return super().get_queryset(request).with_aides_count()
 
 
 @admin.register(ZoneGeographique)

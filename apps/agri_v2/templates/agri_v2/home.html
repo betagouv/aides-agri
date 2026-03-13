@@ -1,0 +1,181 @@
+{% extends "ui/base.html" %}
+
+{% load i18n static dsfr_tags ui_tags %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'ui/components/select-rich.css' %}">
+  <link rel="stylesheet" href="{% static 'agri_v2/home.css' %}">
+{% endblock extra_css %}
+
+{% block extra_head_js %}
+<script type="module" nonce="{{ request.csp_nonce }}">
+  import { Application } from "stimulus"
+  import { SelectRich } from "select-rich"
+  import { DsfrForm } from "dsfr-form"
+
+  window.Stimulus ??= Application.start()
+
+  Stimulus.register("select-rich", SelectRich)
+  Stimulus.register("dsfr-form", DsfrForm)
+</script>
+{% endblock extra_head_js %}
+
+{% block pagetitle %}{{ SITE_CONFIG.site_title }}{% endblock pagetitle %}
+
+{% block body %}
+  {% dsfr_skiplinks skiplinks %}
+
+  {% include 'ui/blocks/header.html' %}
+
+  {% dsfr_theme_modale %}
+  {% if UI_SHOW_DEMO_SITE_MODAL %}{% include "ui/blocks/demo_site_modal.html" %}{% endif %}
+
+  {% if SITE_CONFIG.notice_title or SITE_CONFIG.notice_description %}
+    {% dsfr_notice title=SITE_CONFIG.notice_title description=SITE_CONFIG.notice_description link=SITE_CONFIG.notice_link type=SITE_CONFIG.notice_type icon=SITE_CONFIG.notice_icon_class is_collapsible=SITE_CONFIG.notice_is_collapsible %}
+  {% endif %}
+
+  <dialog id="ecosysteme-modal" class="fr-modal" aria-labelledby="ecosysteme-modal-title">
+    <div class="fr-container fr-container--fluid fr-container-md">
+      <div class="fr-grid-row fr-grid-row--center">
+        <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+          <div class="fr-modal__body">
+            <div class="fr-modal__header">
+              <button class="fr-btn--close fr-btn"
+                      aria-describedby="ecosysteme-modal-title"
+                      aria-controls="ecosysteme-modal">
+                {% translate "Close" %}
+              </button>
+            </div>
+            <div class="fr-modal__content">
+              <h2 id="ecosysteme-modal-title" class="fr-modal__title">
+                <span class="fr-icon-info-line fr-icon--lg" aria-hidden="true"></span>
+                Page en cours de construction
+              </h2>
+              <p>
+                Sur cette nouvelle page vous pourrez retrouver les organismes porteurs d’aides.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <main id="content" role="main" aria-label="Contenu" class="fr-pb-8w">
+    <div id="photo">
+      <div class="fr-container">
+        <section id="intro" class="fr-py-6w fr-py-md-12w">
+          <h1>Agriculteurs, agricultrices : un projet ou une difficulté ?</h1>
+          <p class="fr-text--xl fr-text--regular">{{ SITE_CONFIG.site_title }} vous oriente vers les dispositifs les plus pertinents pour votre exploitation : aide financière, prêt, assistance, accompagnement, etc.</p>
+        </section>
+        <section>
+          <div id="recherche" class="fr-container fr-px-5v fr-py-7v">
+            <h2 class="fr-text-label--green-emeraude">Chercher des dispositifs</h2>
+            {% if departement %}
+              {% include "agri_v2/blocks/home/themes.html" %}
+            {% else %}
+              <form hx-get="{% url 'agri_v2:home' %}"
+                    hx-target="this"
+                    hx-swap="outerHTML"
+                    hx-push-url="true"
+                    data-controller="dsfr-form"
+                    data-dsfr-form-select-rich-outlet="[data-controller=select-rich]"
+              >
+                <div class="fr-grid-row fr-grid-row--gutters">
+                  <div class="fr-col fr-col-12 fr-col-md-6">
+                    <div class="fr-select-group">
+                      <label class="fr-label" for="id_departement">{{ form.departement.label }} :</label>
+                      {{ form.departement }}
+                      <div class="fr-messages-group" aria-live="polite">
+                        <p class="fr-select-rich__error fr-error-text fr-hidden">
+                          Ce champ est requis
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="fr-col fr-col-12 fr-col-md-6">
+                    {% ui_select_rich_multi label="Vos filières :" name="filieres" required=True options=filieres_options show_values_on_button_label=True %}
+                  </div>
+                </div>
+                <div class="fr-grid-row fr-grid-row--right fr-mt-3w">
+                  <button type="submit" class="fr-btn fr-btn--icon-left fr-icon-arrow-right-circle-line">Suivant</button>
+                </div>
+              </form>
+            {% endif %}
+          </div>
+        </section>
+      </div>
+      <div id="biseau"></div>
+    </div>
+    <div id="proposition-header" class="fr-container">
+      <h2 class="fr-h1">Toutes les aides agricoles, au même endroit</h2>
+    </div>
+    <div class="fr-container">
+      <section id="proposition">
+        <ol>
+          <li>
+            <span><span class="fr-px-1v">1</span></span>
+            <span class="fr-px-1v"><span>
+              Renseignez <strong>votre département</strong> et <strong>vos filières.</strong>
+            </span></span>
+          </li>
+          <li>
+            <span><span class="fr-px-1v">2</span></span>
+            <span class="fr-px-1v"><span>
+              Découvrez notre <strong>sélection de dispositifs adaptée</strong> à votre besoin.
+            </span></span>
+          </li>
+          <li>
+            <span><span class="fr-px-1v">3</span></span>
+            <span class="fr-px-1v"><span>
+              Accédez à des <strong>résumés des dispositifs</strong> et identifiez rapidement les enjeux clés : éligibilité, démarche, montant, etc.
+            </span></span>
+          </li>
+          <li>
+            <span><span class="fr-px-1v">4</span></span>
+            <span class="fr-px-1v"><span>
+              <strong>Rentrez en contact</strong> directement avec les acteurs pour déposer votre dossier.
+            </span></span>
+          </li>
+        </ol>
+      </section>
+    </div>
+  </main>
+
+  <aside id="besoin" class="fr-mt-2w">
+    <div class="fr-container">
+      <h2 class="fr-text-label--green-emeraude">Des dispositifs adaptés à votre situation</h2>
+      <div class="fr-grid-row fr-grid-row--gutters">
+        {% for besoin in besoins %}
+          <div class="fr-col fr-col-12 fr-col-md-3">
+            {% dsfr_card besoin %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </aside>
+
+  <aside id="stats" class="fr-my-4w">
+    <div class="fr-container">
+      <div id="stats-content" class="fr-px-2w fr-py-4w fr-border-default--green-emeraude">
+        <h2 class="fr-h3">
+          {{ stats_aides_count }} dispositifs nationaux et régionaux recensés,
+          issus de {{ stats_organismes_count }} acteurs publics
+        </h2>
+        <p>Notre base de données recense à date les dispositifs nationaux ainsi que les aides des régions suivantes :</p>
+        <div class="fr-tags-group" id="stats-tags">
+          {% dsfr_tag label="Bretagne" %}
+        </div>
+        <div class="fr-mt-2w">
+          <a href="#recherche" class="fr-btn">Chercher des dispositifs</a>
+          <button type="button" class="fr-btn fr-btn--secondary" aria-controls="ecosysteme-modal" data-fr-opened="false">
+            Découvrez l’écosystème agricole
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  {% include "ui/blocks/footer.html" %}
+  {% dsfr_js nonce=request.csp_nonce %}
+{% endblock body %}

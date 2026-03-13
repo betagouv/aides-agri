@@ -33,7 +33,7 @@ document.onreadystatechange = evt => {
     <div class="fr-container">
       {% block breadcrumb %}{% dsfr_breadcrumb %}{% endblock breadcrumb %}
 
-      <img src="{{ object.organisme.get_logo_url }}" alt="" class="organisme-logo">
+      <img src="{{ object.organisme.get_illustration_url }}" alt="" class="organisme-logo">
 
       <div class="fr-grid-row fr-mt-2w">
         <div class="fr-col fr-tags-group fr-tags-group--with-badges">
@@ -94,29 +94,34 @@ document.onreadystatechange = evt => {
       </div>
       {% endif %}
 
-      <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--right fr-my-1w">
-      {% block content_header_actions %}
-        {% if object.url_demarche %}
-          <a class="fr-btn fr-btn--sm fr-btn--primary fr-mx-1w fr-my-2w"
-             target="_blank"
-             href="{{ object.url_demarche }}"
-             data-action="click->matomo#trackEvent"
-             data-event-page="Aide"
-             data-event-name="Lien démarche"
-          >
-            Déposer mon dossier
-          </a>
-        {% endif %}
-        <button type="button"
-                class="fr-btn fr-btn--sm fr-btn--secondary fr-mx-1w fr-my-2w"
-                id="button-print"
-                data-action="click->matomo#trackEvent"
-                data-event-page="Aide"
-                data-event-name="Impression"
-        >
-          Télécharger cette fiche
-        </button>
-      {% endblock content_header_actions %}
+      <div class="fr-grid-row fr-my-1w">
+        <div class="fr-col fr-col--middle fr-text--sm fr-mb-0">
+          Mise à jour le <time datetime="{{ object.last_published_at|date:"SHORT_DATE_FORMAT" }}">{{ object.last_published_at|date:"d/m/Y" }}</time>
+        </div>
+        <div class="fr-col fr-grid-row fr-grid-row--gutters fr-grid-row--right">
+          {% block content_header_actions %}
+            {% if object.url_demarche %}
+              <a class="fr-btn fr-btn--sm fr-btn--primary fr-mx-1w fr-my-2w"
+                 target="_blank"
+                 href="{{ object.url_demarche }}"
+                 data-action="click->matomo#trackEvent"
+                 data-event-page="Aide"
+                 data-event-name="Lien démarche"
+              >
+                Déposer mon dossier
+              </a>
+            {% endif %}
+            <button type="button"
+                    class="fr-btn fr-btn--sm fr-btn--secondary fr-mx-1w fr-my-2w"
+                    id="button-print"
+                    data-action="click->matomo#trackEvent"
+                    data-event-page="Aide"
+                    data-event-name="Impression"
+            >
+              Télécharger cette fiche
+            </button>
+          {% endblock content_header_actions %}
+        </div>
       </div>
     </div>
   </div>
