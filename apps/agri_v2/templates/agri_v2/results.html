@@ -77,7 +77,7 @@ document.onreadystatechange = evt => {
         <div class="fr-col-12 fr-col-md-8 fr-col-lg-7">
           <div class="fr-modal__body">
             <form method="post"
-                  action="{% url 'agri:send-results-by-mail' %}{% querystring %}"
+                  action="{% url 'agri_v2:send-results-by-mail' %}{% querystring %}"
                   hx-boost="true"
                   hx-target="#alert-placeholder"
                   hx-swap="innerHTML show:none"

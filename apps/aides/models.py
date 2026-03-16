@@ -37,7 +37,7 @@ class WithIllustration(models.Model):
         if self.has_illustration:
             return f"/aides/illustrations-{self._meta.model_name}/{self.pk}.png"
         else:
-            return static("agri/images/placeholder.1x1.svg")
+            return static("agri_v2/images/placeholder.1x1.svg")
 
 
 class WithAidesCounterQuerySet(models.QuerySet):

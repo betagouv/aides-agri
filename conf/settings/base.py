@@ -60,7 +60,6 @@ INSTALLED_APPS = [
     "admin_concurrency",
     "ui",
     "product",
-    "agri",
     "agri_v2",
     "aides",
     "aides_feedback",

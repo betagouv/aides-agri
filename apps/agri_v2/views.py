@@ -16,9 +16,9 @@ from aides.models import (
     Filiere,
     Type,
 )
-
-from agri import tasks
 from aides_feedback.forms import CreateFeedbackOnAidesForm
+
+from .tasks import send_results_by_mail
 
 
 class HomeView(TemplateView):
@@ -292,7 +292,7 @@ class ResultsView(ResultsMixin, ListView):
                     },
                     "image_url": aide.organisme.get_illustration_url()
                     if aide.organisme_id
-                    else static("agri/images/placeholder.1x1.svg"),
+                    else static("agri_v2/images/placeholder.1x1.svg"),
                     "image_alt": aide.organisme.nom,
                     "ratio_class": "fr-ratio-1x1",
                     "top_detail": {
@@ -419,14 +419,11 @@ class ResultsView(ResultsMixin, ListView):
 
 class SendResultsByMailView(ResultsMixin, View):
     def post(self, request, *args, **kwargs):
-        tasks.send_results_by_mail.enqueue(
+        send_results_by_mail.enqueue(
             email=self.request.POST.get("email"),
             base_url=f"{self.request.scheme}://{self.request.headers['host']}",
-            theme_id=self.theme.pk,
-            sujets_ids=[s.pk for s in self.themes],
-            commune_id=self.commune.pk,
-            filieres_ids=[f.pk for f in self.filieres],
-            groupements_ids=[g.pk for g in self.groupements],
+            themes_ids=self.themes_ids,
+            sujets_ids=self.sujets_ids,
             aides_ids=[a.pk for a in self.get_results()],
         )
-        return render(request, "agri/_partials/send-results-by-mail-ok.html")
+        return render(request, "agri_v2/_partials/send-results-by-mail-ok.html")
