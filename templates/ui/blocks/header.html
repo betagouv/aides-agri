@@ -1,0 +1,43 @@
+{% extends "dsfr/header.html" %}
+
+{% load i18n static %}
+
+{% block operator_logo %}
+  <div class="fr-header__operator">
+    <img class="fr-responsive-img" src="{% static 'ui/logos/aides-agri.svg' %}" alt="">
+  </div>
+{% endblock operator_logo %}
+
+{% block header_tools_links %}
+  <div class="fr-print-only fr-text--xs">
+    Pour revenir ici, scannez ce code :
+    {{ qrcode|safe }}
+  </div>
+  <div class="fr-header__tools-links">
+    <ul class="fr-btns-group">
+      <li>
+        <a class="fr-icon-profil-fill fr-btn" href="{% url 'agri:results' %}">Catalogue de dispositifs</a>
+      </li>
+    </ul>
+  </div>
+{% endblock header_tools_links %}
+
+{% block main_menu %}
+  <div class="fr-header__menu fr-modal"
+       id="fr-menu-mobile"
+       aria-labelledby="fr-btn-menu-mobile">
+    <div class="fr-container">
+      <button class="fr-btn--close fr-btn" aria-controls="fr-menu-mobile">
+        {% translate "Close" %}
+      </button>
+      <div class="fr-header__menu-links">
+      </div>
+      {% translate "Main menu" as main_menu_label %}
+      <nav role="navigation"
+           class="fr-nav"
+           id="fr-navigation"
+           aria-label="{{ main_menu_label }}">
+      </nav>
+    </div>
+  </div>
+{% endblock main_menu %}
