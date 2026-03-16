@@ -4,6 +4,9 @@
 
 .fr-select-rich .fr-select {
   text-align: left;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
 }
 
 .fr-select-rich__tags {
