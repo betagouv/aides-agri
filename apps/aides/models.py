@@ -430,12 +430,12 @@ class Aide(models.Model):
         BULK_IMPORT = "Import BDD", "Import BDD"
 
     class CouvertureGeographique(models.TextChoices):
-        NATIONAL = "National", "National"
-        REGIONAL = "Régional", "Régional"
-        METROPOLE = "France métropolitaine", "France métropolitaine"
-        OUTRE_MER = "Outre-mer", "Outre-mer"
-        DEPARTEMENTAL = "Départemental", "Départemental"
-        LOCAL = "Local", "Local"
+        NATIONAL = "01 National", "National"
+        REGIONAL = "04 Régional", "Régional"
+        METROPOLE = "02 France métropolitaine", "France métropolitaine"
+        OUTRE_MER = "03 Outre-mer", "Outre-mer"
+        DEPARTEMENTAL = "05 Départemental", "Départemental"
+        LOCAL = "06 Local", "Local"
 
     class Recurrence(models.TextChoices):
         PERMANENTE = "Permanente"
