@@ -157,9 +157,9 @@ class SujetAdmin(CsvExportMixin, IllustrationMixin, VersionAdmin):
 
 @admin.register(Type)
 class TypeAdmin(CsvExportMixin, VersionAdmin):
-    list_display = ("id", "nom", "urgence", "aides_count")
+    list_display = ("id", "nom", "position", "urgence", "aides_count")
     list_display_links = ("id", "nom")
-    ordering = ("nom",)
+    ordering = ("position",)
 
     def aides_count(self, obj):
         return mark_safe(
