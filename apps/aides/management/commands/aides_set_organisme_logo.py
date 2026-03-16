@@ -10,12 +10,12 @@ class Command(BaseCommand):
         parser.add_argument("organisme_id", type=int)
         parser.add_argument("logo_file", type=pathlib.Path)
 
-    def handle(self, *args, **options):
+    def handle(self, *args, organisme_id: int, logo_file: pathlib.Path, **options):
         try:
-            organisme = Organisme.objects.get(pk=options["organisme_id"])
+            organisme = Organisme.objects.get(pk=organisme_id)
             with open(options["logo_file"], "rb") as f:
                 organisme.logo = f.read()
-                organisme.logo_filename = str(options["logo_file"])
+                organisme.logo_filename = logo_file.name
                 organisme.save()
         except Organisme.DoesNotExist:
             print("Wrong organisme_id")
