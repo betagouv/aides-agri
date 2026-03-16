@@ -1,9 +1,12 @@
+/.github
 /scripts
 /apps/*/static
 /apps/*/tests
 /conf/settings/devel.py
 /conf/settings/testing.py
+/conf/tests
 /cypress*
+.lighthouserc.json
 /docker-compose.yml
 /package*.json
 pyproject.toml
@@ -13,3 +16,4 @@ README.md
 LICENSE
 /static
 justfile
+SECURITY.md
