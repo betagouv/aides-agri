@@ -73,3 +73,7 @@ scalingo-django-command environment command:
 
 # Scalingo: login to Django shell
 scalingo-django-shell environment: (scalingo-django-command environment "shell")
+
+# Scalingo: set an Organisme logo
+scalingo-set-organisme-logo environment organisme_id file:
+    scalingo run --app aides-agri-{{environment}} --file {{file}} python manage.py aides_set_organisme_logo {{organisme_id}} /tmp/uploads/{{file}}
