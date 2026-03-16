@@ -17,6 +17,7 @@ class ThemeFactory(factory.django.DjangoModelFactory):
 
     nom = factory.Sequence(lambda n: f"Thème {n}")
     is_prioritaire = False
+    urgence = False
 
 
 class SujetFactory(factory.django.DjangoModelFactory):
