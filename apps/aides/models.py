@@ -121,6 +121,7 @@ class Theme(WithIllustration, models.Model):
     is_prioritaire = models.BooleanField(
         default=False, verbose_name="Thématique prioritaire"
     )
+    icon_name = models.CharField(blank=True, verbose_name="(technique) Nom de l’icône")
 
     def __str__(self):
         return self.nom_court
@@ -146,6 +147,7 @@ class Sujet(WithIllustration, models.Model):
     nom_court = models.CharField(verbose_name="Nom court")
     themes = models.ManyToManyField(Theme, related_name="sujets", verbose_name="Thèmes")
     published = models.BooleanField(default=False, verbose_name="Publié")
+    icon_name = models.CharField(blank=True, verbose_name="(technique) Nom de l’icône")
 
     def __str__(self):
         return self.nom_court
