@@ -55,8 +55,13 @@ class CsvExportMixin(ExtraButtonsMixin):
         return response
 
 
+class IllustrationMixin:
+    def get_queryset(self, request):
+        return super().get_queryset(request).without_illustration()
+
+
 @admin.register(Theme)
-class ThemeAdmin(CsvExportMixin, VersionAdmin):
+class ThemeAdmin(CsvExportMixin, IllustrationMixin, VersionAdmin):
     list_display = (
         "id",
         "nom_court",
@@ -112,7 +117,7 @@ class ThemeAdmin(CsvExportMixin, VersionAdmin):
 
 
 @admin.register(Sujet)
-class SujetAdmin(CsvExportMixin, VersionAdmin):
+class SujetAdmin(CsvExportMixin, IllustrationMixin, VersionAdmin):
     list_display = ("id", "nom_court", "nom", "published", "aides_count")
     list_display_links = ("id", "nom")
     list_filter = ("published", "themes")
@@ -224,14 +229,12 @@ class OrganismeForm(forms.ModelForm):
         )
 
 
-@admin.register(Organisme)
-class OrganismeAdmin(CsvExportMixin, VersionAdmin):
+class OrganismeAdmin(CsvExportMixin, IllustrationMixin, VersionAdmin):
     list_display = ("id", "nom", "acronyme", "famille", "secteurs", "aides_count")
     list_display_links = ("id", "nom")
     list_filter = ("famille",)
     search_fields = ("nom", "acronyme")
     autocomplete_fields = ("zones_geographiques",)
-    exclude = ("logo_filename",)
     ordering = ("nom",)
     change_form_template = "admin/aides/organisme/change_form.html"
 
@@ -245,7 +248,7 @@ class OrganismeAdmin(CsvExportMixin, VersionAdmin):
     aides_count.short_description = "Nombre d’aides"
 
     def get_queryset(self, request):
-        return super().get_queryset(request).defer("logo").with_aides_count()
+        return super().get_queryset(request).with_aides_count()
 
     def _get_csv_fields(self) -> list[str]:
         return [
