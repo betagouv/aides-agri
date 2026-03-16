@@ -33,9 +33,9 @@
 	--hover: var(--background-contrast-grey-hover);
 	--active: var(--background-contrast-grey-active);
 	align-items: center;
-	background-color: var(--background-contrast-grey);
+	background-color: var(--background);
 	border-radius: .25rem;
-	color: var(--text-default-grey);
+	color: var(--color);
 	display: inline-flex;
 	flex-direction: row;
 	font-size: .875rem;
@@ -51,19 +51,24 @@
 }
 
 .fr-tag.fr-badge.fr-badge--success {
-	--idle: transparent;
 	--hover: var(--background-contrast-success-hover);
 	--active: var(--background-contrast-success-active);
-	background-color: var(--background-contrast-success);
-	color: var(--text-default-success);
+	--background: var(--background-contrast-success);
+	--color: var(--text-default-success);
+}
+
+.fr-tag.fr-badge.fr-badge--warning {
+	--hover: var(--background-contrast-warning-hover);
+	--active: var(--background-contrast-warning-active);
+	--background: var(--background-contrast-warning);
+	--color: var(--text-default-warning);
 }
 
 .fr-tag.fr-badge--purple-glycine {
-	--idle: transparent;
 	--hover: var(--background-contrast-purple-glycine-hover);
 	--active: var(--background-contrast-purple-glycine-active);
-	background-color: var(--background-contrast-purple-glycine);
-	color: var(--text-label-purple-glycine);
+	--background: var(--background-contrast-purple-glycine);
+	--color: var(--text-label-purple-glycine);
 }
 
 .load-more {

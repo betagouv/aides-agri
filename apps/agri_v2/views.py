@@ -167,7 +167,7 @@ class HomeView(TemplateView):
 
 class ResultsMixin:
     ORDER_BY = {
-        "cloture": ("date_fin", "-last_published_at"),
+        "cloture": ("date_fin", "-organisme__is_masa", "organisme__nom"),
         "mise-a-jour": ("-last_published_at",),
         "couverture-geographique": ("-couverture_geographique", "-last_published_at"),
     }
