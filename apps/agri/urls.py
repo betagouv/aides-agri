@@ -1,27 +1,21 @@
+from django.views.generic import TemplateView
 from django.urls import path
 
-from .views import (
-    HomeView,
-    Step2View,
-    Step4View,
-    Step5View,
-    ResultsView,
-    SearchCommuneView,
-    SendResultsByMailView,
-)
+from .views import HomeView, ResultsView, SendResultsByMailView
 
 
 app_name = "agri"
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
-    path("etape-2", Step2View.as_view(), name="step-2"),
-    path("etape-4", Step4View.as_view(), name="step-4"),
-    path("etape-5", Step5View.as_view(), name="step-5"),
-    path("resultats", ResultsView.as_view(), name="results"),
+    path("aides", ResultsView.as_view(), name="results"),
+    path(
+        "aides-less",
+        TemplateView.as_view(template_name="agri/_partials/results_less.html"),
+        name="results-less",
+    ),
     path(
         "envoyer-les-resultats-par-courriel",
         SendResultsByMailView.as_view(),
         name="send-results-by-mail",
     ),
-    path("trouver-ma-commune", SearchCommuneView.as_view(), name="search-commune"),
 ]

@@ -96,6 +96,7 @@ class AideFactory(factory.django.DjangoModelFactory):
     is_meconnue = False
     is_filiere_sous_representee = False
     is_territoire_en_deploiement = False
+    date_fin = None
 
     @factory.post_generation
     def with_given_type(obj, create, value, **kwargs):
