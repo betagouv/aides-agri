@@ -13,7 +13,7 @@ class Command(BaseCommand):
     def handle(self, *args, organisme_id: int, logo_file: pathlib.Path, **options):
         try:
             organisme = Organisme.objects.get(pk=organisme_id)
-            with open(options["logo_file"], "rb") as f:
+            with open(logo_file, "rb") as f:
                 organisme.logo = f.read()
                 organisme.logo_filename = logo_file.name
                 organisme.save()
