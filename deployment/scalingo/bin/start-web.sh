@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 # extract Organismes logos from DB and store them on local storage
 python manage.py aides_organismes_logos_files_from_db
 
