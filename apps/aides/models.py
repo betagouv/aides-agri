@@ -1,11 +1,12 @@
 import uuid
-from datetime import date
+from datetime import date, timedelta
 
 from django.conf import settings
 from django.contrib.postgres import fields as postgres_fields
 from django.db import models
 from django.templatetags.static import static
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.text import slugify
 from django.utils.timezone import now
 
@@ -39,7 +40,13 @@ class WithIllustration(models.Model):
 
 class WithAidesCounterQuerySet(models.QuerySet):
     def with_aides_count(self):
-        return self.annotate(aides_count=models.Count("aides", distinct=True))
+        return self.annotate(
+            aides_count=models.Count(
+                "aides",
+                filter=Aide.objects.get_related_q_official_published("aides"),
+                distinct=True,
+            )
+        )
 
 
 class OrganismeQuerySet(WithAidesCounterQuerySet, WithIllustrationQuerySet):
@@ -99,11 +106,20 @@ class ThemeQuerySet(WithIllustrationQuerySet, models.QuerySet):
     def published(self):
         return self.with_aides_count().filter(published=True, aides_count__gt=0)
 
+    def published_non_urgence(self):
+        return self.published().exclude(urgence=True)
+
     def with_sujets_count(self):
         return self.annotate(sujets_count=models.Count("sujets", distinct=True))
 
     def with_aides_count(self):
-        return self.annotate(aides_count=models.Count("sujets__aides", distinct=True))
+        return self.annotate(
+            aides_count=models.Count(
+                "sujets__aides",
+                filter=Aide.objects.get_related_q_official_published("sujets__aides"),
+                distinct=True,
+            )
+        )
 
 
 class Theme(WithIllustration, models.Model):
@@ -134,6 +150,9 @@ class SujetQuerySet(WithIllustrationQuerySet, WithAidesCounterQuerySet):
             .without_illustration()
             .filter(published=True, aides_count__gt=0)
         )
+
+    def published_with_urgent_themes(self):
+        return self.published().exclude(themes__urgence=False)
 
 
 class Sujet(WithIllustration, models.Model):
@@ -306,18 +325,11 @@ class Filiere(models.Model):
         return self.nom
 
 
-class BeneficiairesQuerySet(models.QuerySet):
-    def groupements(self):
-        return self.filter(is_groupement=True)
-
-
 class Beneficiaires(models.Model):
     class Meta:
         verbose_name = "Type de bénéficiaires"
         verbose_name_plural = "Types de bénéficiaires"
         ordering = ("nom",)
-
-    objects = BeneficiairesQuerySet.as_manager()
 
     nom = models.CharField(max_length=100, verbose_name="Nom court")
     libelle = models.CharField(
@@ -341,6 +353,60 @@ class AideQuerySet(models.QuerySet):
     def closed(self):
         return self.filter(date_fin__lt=date.today())
 
+    def without_parents(self):
+        return self.filter(children=None)
+
+    def without_non_departemental_parents(self):
+        return self.filter(
+            models.Q(children=None)
+            | models.Q(
+                couverture_geographique=Aide.CouvertureGeographique.DEPARTEMENTAL,
+                zones_geographiques=None,
+            )
+        )
+
+    def without_departemental_derivatives(self):
+        return self.exclude(models.Q(**self.q_official_published_dicts[1]))
+
+    q_official_published_dicts = (
+        {"is_published": True},
+        {
+            "zones_geographiques__isnull": False,
+            "parent__isnull": False,
+            "parent__couverture_geographique": "05 Départemental",  # FIXME hard-coded
+        },
+    )
+
+    @property
+    def q_official_published(self) -> models.Q:
+        return models.Q(**self.q_official_published_dicts[0]) & ~models.Q(
+            **self.q_official_published_dicts[1]
+        )
+
+    def get_related_q_official_published(self, related_name: str) -> models.Q:
+        return models.Q(
+            **{
+                f"{related_name}__{k}": v
+                for k, v in self.q_official_published_dicts[0].items()
+            }
+        ) & ~models.Q(
+            **{
+                f"{related_name}__{k}": v
+                for k, v in self.q_official_published_dicts[1].items()
+            }
+        )
+
+    def official_published_count(self):
+        return self.filter(self.q_official_published).count()
+
+    def official_published_organismes_count(self):
+        return (
+            self.filter(self.q_official_published)
+            .order_by("organisme_id")
+            .distinct("organisme_id")
+            .count()
+        )
+
     def published_validated(self):
         return self.published().validated()
 
@@ -350,8 +416,10 @@ class AideQuerySet(models.QuerySet):
     def having_published_children(self):
         return self.filter(children__is_published=True).distinct()
 
-    def by_sujets(self, sujets: list[Sujet]) -> models.QuerySet:
-        return self.filter(sujets__in=sujets)
+    def by_besoins(self, themes: list[Theme], sujets: list[Sujet]):
+        return self.filter(
+            models.Q(sujets__themes__in=themes) | models.Q(sujets__in=sujets)
+        )
 
     def by_effectif(self, effectif_low: int, effectif_high: int) -> models.QuerySet:
         return self.filter(
@@ -365,35 +433,24 @@ class AideQuerySet(models.QuerySet):
             )
         )
 
-    def by_beneficiaires(self, beneficiaires: list[Beneficiaires]):
-        return self.filter(
-            models.Q(eligibilite_beneficiaires=None)
-            | models.Q(eligibilite_beneficiaires__is_groupement=False)
-            | models.Q(eligibilite_beneficiaires__in=beneficiaires)
-        )
-
     def by_filieres(self, filieres: list[Filiere]):
         return self.filter(models.Q(filieres=None) | models.Q(filieres__in=filieres))
 
-    def by_zone_geographique(self, commune: ZoneGeographique) -> models.QuerySet:
-        if not commune:
-            return self
+    def by_departements(self, departements: list[ZoneGeographique]):
+        q = models.Q(couverture_geographique=Aide.CouvertureGeographique.NATIONAL)
+        for departement in departements:
+            q = q | models.Q(
+                zones_geographiques__in=[departement.pk, departement.parent_id]
+            )
+        return self.filter(q)
 
-        departement = commune.parent
-        region = departement.parent
+    def only_open(self):
         return self.filter(
-            # Nationales
-            models.Q(couverture_geographique=Aide.CouvertureGeographique.NATIONAL)
-            |
-            # Same region
-            models.Q(zones_geographiques=region)
-            |
-            # Same departement
-            models.Q(zones_geographiques=departement)
-            |
-            # The commune itself
-            models.Q(zones_geographiques=commune)
+            models.Q(date_fin=None) | models.Q(date_fin__gte=date.today())
         )
+
+    def only_closed(self):
+        return self.filter(date_fin__isnull=False, date_fin__lt=date.today())
 
 
 class Aide(models.Model):
@@ -726,6 +783,30 @@ class Aide(models.Model):
     @property
     def is_complete(self):
         return self.status in (Aide.Status.VALIDATED, Aide.Status.TO_BE_DERIVED)
+
+    @cached_property
+    def besoins(self) -> list[Theme | Sujet]:
+        return [s for s in self.sujets.filter(themes__urgence=True).distinct()] + [
+            t
+            for t in Theme.objects.filter(
+                urgence=False, sujets__in=self.sujets.all()
+            ).distinct()
+        ]
+
+    def _closes_in_less_than(self, weeks: int) -> bool:
+        return self.date_fin and date.today() + timedelta(weeks=weeks) > self.date_fin
+
+    @property
+    def closes_in_less_than_a_month(self):
+        return self._closes_in_less_than(4)
+
+    @property
+    def closes_in_less_than_two_weeks(self):
+        return self._closes_in_less_than(2)
+
+    @property
+    def is_closed(self):
+        return self.date_fin and self.date_fin < date.today()
 
     def compute_priority(self):
         priority = 0
