@@ -161,10 +161,7 @@ class Type(models.Model):
     class Meta:
         verbose_name = "Type d'aides"
         verbose_name_plural = "Types d'aides"
-        ordering = (
-            "-urgence",
-            "nom",
-        )
+        ordering = ("position",)
 
     objects = TypeQuerySet.as_manager()
 
@@ -173,6 +170,7 @@ class Type(models.Model):
     urgence = models.BooleanField(default=False, verbose_name="Urgence")
     icon_name = models.CharField(blank=True, verbose_name="(technique) Nom de l’icône")
     score_priorite_aides = models.PositiveSmallIntegerField(default=1)
+    position = models.PositiveSmallIntegerField(null=True, blank=True, unique=True)
 
     def __str__(self):
         return f"{self.nom} ({self.description})"
