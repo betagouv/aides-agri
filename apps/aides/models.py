@@ -6,7 +6,6 @@ from django.contrib.postgres import fields as postgres_fields
 from django.db import models
 from django.templatetags.static import static
 from django.urls import reverse
-from django.utils.functional import cached_property
 from django.utils.text import slugify
 from django.utils.timezone import now
 
@@ -783,15 +782,6 @@ class Aide(models.Model):
     @property
     def is_complete(self):
         return self.status in (Aide.Status.VALIDATED, Aide.Status.TO_BE_DERIVED)
-
-    @cached_property
-    def besoins(self) -> list[Theme | Sujet]:
-        return [s for s in self.sujets.filter(themes__urgence=True).distinct()] + [
-            t
-            for t in Theme.objects.filter(
-                urgence=False, sujets__in=self.sujets.all()
-            ).distinct()
-        ]
 
     def _closes_in_less_than(self, weeks: int) -> bool:
         return self.date_fin and date.today() + timedelta(weeks=weeks) > self.date_fin
