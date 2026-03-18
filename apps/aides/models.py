@@ -351,21 +351,19 @@ class AideQuerySet(models.QuerySet):
             return self
 
         departement = commune.parent
+        region = departement.parent
         return self.filter(
             # Nationales
             models.Q(couverture_geographique=Aide.CouvertureGeographique.NATIONAL)
             |
             # Same region
-            models.Q(zones_geographiques__enfants=departement)
+            models.Q(zones_geographiques=region)
             |
             # Same departement
             models.Q(zones_geographiques=departement)
             |
-            # Organisme : same EPCI
-            models.Q(organisme__zones_geographiques__enfants=commune)
-            |
-            # Organisme : same commune
-            models.Q(organisme__zones_geographiques=commune)
+            # The commune itself
+            models.Q(zones_geographiques=commune)
         )
 
 
