@@ -1,5 +1,12 @@
+import csv
+import datetime
+
+from admin_extra_buttons.decorators import button
+from admin_extra_buttons.mixins import ExtraButtonsMixin
 from django.contrib import admin
+from django.db import models
 from django import forms
+from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from reversion.admin import VersionAdmin
@@ -17,8 +24,39 @@ from ..models import (
 from ._common import ArrayFieldCheckboxSelectMultiple
 
 
+class CsvExportMixin(ExtraButtonsMixin):
+    @staticmethod
+    def _bool_to_csv_str(value: bool):
+        return "OUI" if value else "NON"
+
+    def _get_csv_fields(self) -> list[models.Field]:
+        raise NotImplementedError(
+            "_get_csv_header() has to be implemented by WithCsvExportMixin subclasses"
+        )
+
+    def _get_csv_content(self) -> list:
+        raise NotImplementedError(
+            "_get_csv_content() has to be implemented by WithCsvExportMixin subclasses"
+        )
+
+    @button(label="Exporter tout en CSV")
+    def export_to_csv(self, request):
+        filename = f"{datetime.date.today().isoformat()}-aides-agri-{self.model._meta.model_name}"
+        response = HttpResponse(
+            content_type="text/csv",
+            headers={"Content-Disposition": f'attachment; filename="{filename}.csv"'},
+        )
+
+        writer = csv.writer(response)
+        writer.writerow([field.field.verbose_name for field in self._get_csv_fields()])
+        for row in self._get_csv_content():
+            writer.writerow(row)
+
+        return response
+
+
 @admin.register(Theme)
-class ThemeAdmin(VersionAdmin):
+class ThemeAdmin(CsvExportMixin, VersionAdmin):
     list_display = (
         "id",
         "nom_court",
@@ -30,6 +68,31 @@ class ThemeAdmin(VersionAdmin):
     list_display_links = ("id", "nom_court")
     list_filter = ("published",)
     ordering = ("nom_court",)
+
+    def _get_csv_fields(self) -> list[str]:
+        return [
+            Theme.nom_court,
+            Theme.nom,
+            Theme.description,
+            Theme.urgence,
+            Theme.is_prioritaire,
+            Theme.published,
+        ]
+
+    def _get_csv_content(self) -> list:
+        content = []
+        for obj in Theme.objects.all():
+            content.append(
+                [
+                    obj.nom_court,
+                    obj.nom,
+                    obj.description,
+                    self._bool_to_csv_str(obj.urgence),
+                    self._bool_to_csv_str(obj.is_prioritaire),
+                    self._bool_to_csv_str(obj.published),
+                ]
+            )
+        return content
 
     def sujets_count(self, obj):
         return mark_safe(
@@ -49,7 +112,7 @@ class ThemeAdmin(VersionAdmin):
 
 
 @admin.register(Sujet)
-class SujetAdmin(VersionAdmin):
+class SujetAdmin(CsvExportMixin, VersionAdmin):
     list_display = ("id", "nom_court", "nom", "published", "aides_count")
     list_display_links = ("id", "nom")
     list_filter = ("published", "themes")
@@ -65,9 +128,30 @@ class SujetAdmin(VersionAdmin):
     def get_queryset(self, request):
         return super().get_queryset(request).with_aides_count()
 
+    def _get_csv_fields(self) -> list[str]:
+        return [
+            Sujet.nom_court,
+            Sujet.nom,
+            Sujet.themes,
+            Sujet.published,
+        ]
+
+    def _get_csv_content(self) -> list:
+        content = []
+        for obj in Sujet.objects.all().prefetch_related("themes"):
+            content.append(
+                [
+                    obj.nom_court,
+                    obj.nom,
+                    ", ".join([theme.nom_court for theme in obj.themes.all()]),
+                    self._bool_to_csv_str(obj.published),
+                ]
+            )
+        return content
+
 
 @admin.register(Type)
-class TypeAdmin(VersionAdmin):
+class TypeAdmin(CsvExportMixin, VersionAdmin):
     list_display = ("id", "nom", "urgence", "aides_count")
     list_display_links = ("id", "nom")
     ordering = ("nom",)
@@ -82,9 +166,30 @@ class TypeAdmin(VersionAdmin):
     def get_queryset(self, request):
         return super().get_queryset(request).with_aides_count()
 
+    def _get_csv_fields(self) -> list[str]:
+        return [
+            Type.nom,
+            Type.description,
+            Type.urgence,
+            Type.score_priorite_aides,
+        ]
+
+    def _get_csv_content(self) -> list:
+        content = []
+        for obj in Type.objects.all():
+            content.append(
+                [
+                    obj.nom,
+                    obj.description,
+                    self._bool_to_csv_str(obj.urgence),
+                    obj.score_priorite_aides,
+                ]
+            )
+        return content
+
 
 @admin.register(Programme)
-class ProgrammeAdmin(VersionAdmin):
+class ProgrammeAdmin(CsvExportMixin, VersionAdmin):
     list_display = ("id", "nom", "aides_count")
     list_display_links = ("id", "nom")
     ordering = ("nom",)
@@ -99,6 +204,15 @@ class ProgrammeAdmin(VersionAdmin):
     def get_queryset(self, request):
         return super().get_queryset(request).with_aides_count()
 
+    def _get_csv_fields(self) -> list[str]:
+        return [Programme.nom]
+
+    def _get_csv_content(self) -> list:
+        content = []
+        for obj in Type.objects.all():
+            content.append([obj.nom])
+        return content
+
 
 class OrganismeForm(forms.ModelForm):
     model = Organisme
@@ -111,7 +225,7 @@ class OrganismeForm(forms.ModelForm):
 
 
 @admin.register(Organisme)
-class OrganismeAdmin(VersionAdmin):
+class OrganismeAdmin(CsvExportMixin, VersionAdmin):
     list_display = ("id", "nom", "acronyme", "famille", "secteurs", "aides_count")
     list_display_links = ("id", "nom")
     list_filter = ("famille",)
@@ -131,6 +245,33 @@ class OrganismeAdmin(VersionAdmin):
 
     def get_queryset(self, request):
         return super().get_queryset(request).defer("logo").with_aides_count()
+
+    def _get_csv_fields(self) -> list[str]:
+        return [
+            Organisme.nom,
+            Organisme.acronyme,
+            Organisme.famille,
+            Organisme.secteurs,
+            Organisme.url,
+            Organisme.courriel,
+            Organisme.is_masa,
+        ]
+
+    def _get_csv_content(self) -> list:
+        content = []
+        for obj in Organisme.objects.all():
+            content.append(
+                [
+                    obj.nom,
+                    obj.acronyme,
+                    obj.famille,
+                    ", ".join(obj.secteurs),
+                    obj.url,
+                    obj.courriel,
+                    self._bool_to_csv_str(obj.is_masa),
+                ]
+            )
+        return content
 
 
 @admin.register(ZoneGeographique)
@@ -163,13 +304,24 @@ class ZoneGeographiqueAdmin(admin.ModelAdmin):
 
 
 @admin.register(Beneficiaires)
-class BeneficiairesAdmin(VersionAdmin):
+class BeneficiairesAdmin(CsvExportMixin, VersionAdmin):
     list_display = ("nom", "libelle", "is_groupement")
     ordering = ("nom",)
 
+    def _get_csv_fields(self) -> list[str]:
+        return [Beneficiaires.nom, Beneficiaires.libelle, Beneficiaires.is_groupement]
+
+    def _get_csv_content(self) -> list:
+        content = []
+        for obj in Beneficiaires.objects.all():
+            content.append(
+                [obj.nom, obj.libelle, self._bool_to_csv_str(obj.is_groupement)]
+            )
+        return content
+
 
 @admin.register(Filiere)
-class FiliereAdmin(VersionAdmin):
+class FiliereAdmin(CsvExportMixin, VersionAdmin):
     list_display = ("id", "nom", "published", "position", "aides_count")
     list_display_links = ("id", "nom")
     list_filter = ("published",)
@@ -184,3 +336,19 @@ class FiliereAdmin(VersionAdmin):
 
     def get_queryset(self, request):
         return super().get_queryset(request).with_aides_count()
+
+    def _get_csv_fields(self) -> list[str]:
+        return [Filiere.nom, Filiere.codes_naf, Filiere.published, Filiere.position]
+
+    def _get_csv_content(self) -> list:
+        content = []
+        for obj in Filiere.objects.all():
+            content.append(
+                [
+                    obj.nom,
+                    obj.codes_naf,
+                    self._bool_to_csv_str(obj.published),
+                    obj.position,
+                ]
+            )
+        return content
