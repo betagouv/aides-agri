@@ -41,7 +41,17 @@ document.addEventListener("htmx:load", evt => {
       }
     })
   })
-}
+
+  // Besoin tag filters handler
+  document.querySelectorAll("button[type=button][aria-pressed][data-for]").forEach(elt => {
+    elt.addEventListener("click", evt => {
+      const input = document.getElementById(elt.dataset.for)
+      input.checked = !input.checked
+      input.dispatchEvent(new Event("change", {bubbles: true}))
+      evt.preventDefault()
+    })
+  })
+})
 </script>
 <script type="module" nonce="{{ request.csp_nonce }}">
   import { Application } from "stimulus"
@@ -243,12 +253,13 @@ document.addEventListener("htmx:load", evt => {
                          class="fr-hidden"
                          checked
                   >
-                  <label for="besoin-{{ besoin.type }}-{{ besoin.id }}"
-                         class="fr-tag fr-tag--icon-left fr-icon-{{ besoin.icon }}"
-                         aria-pressed="true"
+                  <button type="button"
+                          class="fr-tag fr-tag--icon-left fr-icon-{{ besoin.icon }}"
+                          aria-pressed="true"
+                          data-for="besoin-{{ besoin.type }}-{{ besoin.id }}"
                   >
                     {{ besoin.label }}
-                  </label>
+                  </button>
                 {% endfor %}
                 <button type="button" class="fr-btn fr-btn--secondary fr-btn--sm fr-mb-1w fr-ml-1w" aria-controls="more-besoins" aria-expanded="false">
                   Voir tous les thèmes
@@ -262,12 +273,13 @@ document.addEventListener("htmx:load", evt => {
                          value="{{ besoin.id }}"
                          class="fr-hidden"
                   >
-                  <label for="besoin-{{ besoin.type }}-{{ besoin.id }}"
-                         class="fr-tag fr-tag--icon-left fr-icon-{{ besoin.icon }}"
-                         aria-pressed="false"
+                  <button type="button"
+                          class="fr-tag fr-tag--icon-left fr-icon-{{ besoin.icon }}"
+                          aria-pressed="false"
+                          data-for="besoin-{{ besoin.type }}-{{ besoin.id }}"
                   >
                     {{ besoin.label }}
-                  </label>
+                  </button>
                 {% endfor %}
               </div>
             </div>
