@@ -75,49 +75,6 @@
   text-align: center;
 }
 
-label.fr-tag[aria-pressed=true] {
-  cursor: pointer;
-}
-label.fr-tag[aria-pressed=true]:not(:disabled) {
-  background-color:transparent;
-  background-image:radial-gradient(circle at 100% .25rem,transparent .578125rem,var(--background-active-blue-france) .625rem);
-  color:var(--text-inverted-blue-france)
-}
-label.fr-tag[aria-pressed=true]:not(:disabled):hover {
-  background-image:radial-gradient(circle at 100% .25rem,transparent .578125rem,var(--background-active-blue-france-hover) .625rem)
-}
-label.fr-tag[aria-pressed=true]:not(:disabled):active {
-  background-image:radial-gradient(circle at 100% .25rem,transparent .578125rem,var(--background-active-blue-france-active) .625rem)
-}
-label.fr-tag[aria-pressed=true]:after {
-  color:var(--text-action-high-blue-france)
-}
-label.fr-tag[aria-pressed=true] {
-  background-position:50%;
-  background-repeat:no-repeat;
-  background-size:100%;
-  overflow:visible;
-  position:relative
-}
-label.fr-tag[aria-pressed=true]:after {
-  --icon-size:1rem;
-  background-color:currentColor;
-  content:"";
-  display:inline-block;
-  flex:0 0 auto;
-  height:var(--icon-size);
-  margin:-.5rem;
-  -webkit-mask-image:url(/static/dsfr/dist/icons/system/checkbox-circle-line.svg);
-  mask-image:url(/static/dsfr/dist/icons/system/checkbox-circle-line.svg);
-  -webkit-mask-size:100% 100%;
-  mask-size:100% 100%;
-  position:absolute;
-  right:0;
-  top:4px;
-  vertical-align:calc((.75em - var(--icon-size))*.5);
-  width:var(--icon-size)
-}
-
 .back-to-top {
   text-align: right;
 }
