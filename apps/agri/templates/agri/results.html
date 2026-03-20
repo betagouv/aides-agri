@@ -15,12 +15,14 @@ window.onbeforeprint = evt => {
     elt.classList.add("fr-collapse--expanded")
     elt.classList.add("fr-collapse--expanded-for-print")
   })
+  document.getElementById("summary-print-placeholder").appendChild(document.getElementById("summary"))
 }
 window.onafterprint = evt => {
   document.querySelectorAll(".fr-collapse--expanded-for-print").forEach(elt => {
     elt.classList.remove("fr-collapse--expanded")
     elt.classList.remove("fr-collapse--expanded-for-print")
   })
+  document.getElementById("left-column").appendChild(document.getElementById("summary"))
 }
 document.onreadystatechange = evt => {
   // print page on custom button
@@ -156,6 +158,7 @@ document.onreadystatechange = evt => {
 <div class="fr-col fr-col-12" id="alert-placeholder"></div>
 <main id="content" role="main" aria-label="Contenu" class="fr-col fr-col-12 fr-col-md-9">
   <h1 class="fr-h1">Votre sélection personnalisée</h1>
+  <div id="summary-print-placeholder"></div>
 
   <div class="fr-alert fr-alert--info fr-alert--sm">
     {% if aides %}
