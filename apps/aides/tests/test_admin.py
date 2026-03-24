@@ -44,7 +44,7 @@ def test_add_aide(admin_client, monkeypatch, organisme):
     assert res.status_code == 302
     assert Aide.objects.count() == 1
     aide = Aide.objects.first()
-    assert aide.slug == "organisme-1-aide-de-test"
+    assert aide.slug == f"organisme-{organisme.nom.split()[-1]}-aide-de-test"
     assert aide.status == Aide.Status.TODO
 
 
