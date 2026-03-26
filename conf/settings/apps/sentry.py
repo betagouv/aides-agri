@@ -7,7 +7,7 @@ from ..base import ENVIRONMENT
 
 SENTRY_DSN = os.getenv("SENTRY_DSN", "")
 SENTRY_PERFORMANCE_SAMPLE_RATE = os.getenv("SENTRY_PERFORMANCE_SAMPLE_RATE", 0.1)
-if SENTRY_DSN:
+if SENTRY_DSN:  # pragma: no cover
     sentry_sdk.init(
         dsn=SENTRY_DSN,
         environment=ENVIRONMENT,
