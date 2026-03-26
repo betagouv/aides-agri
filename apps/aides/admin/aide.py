@@ -8,19 +8,25 @@ from django.contrib.admin.utils import flatten_fieldsets
 from django.contrib.admin.views.main import ChangeList
 from django import forms
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
-from django.db.models import TextField, Q
-from django.http.response import HttpResponseRedirect, HttpResponse
+from django.db.models import TextField
+from django.http.response import (
+    HttpResponseRedirect,
+    HttpResponse,
+    HttpResponseNotAllowed,
+)
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.urls import reverse
+from django.urls import reverse, URLPattern, path
 from django.utils.safestring import mark_safe
 from reversion.admin import VersionAdmin
 
 from admin_concurrency.admin import ConcurrentModelAdmin
+from referentiel.models import DemarcheAgricole
+from ui.admin.widgets import ArrayFieldCheckboxSelectMultiple
 
+from ..adapters.referentiel import create_aide_from_demarche_agricole
 from ..models import ZoneGeographique, Aide, Sujet
 from ..interop import write_aides_as_csv
-from ._common import ArrayFieldCheckboxSelectMultiple
 
 
 class EasyMDEWidget(forms.widgets.Textarea):
@@ -73,7 +79,6 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         ("filieres", admin.RelatedOnlyFieldListFilter),
         ("eligibilite_beneficiaires", admin.RelatedOnlyFieldListFilter),
         ("zones_geographiques", admin.RelatedOnlyFieldListFilter),
-        ("assigned_to", admin.RelatedOnlyFieldListFilter),
         ("parent", admin.RelatedOnlyFieldListFilter),
     )
     autocomplete_fields = ("zones_geographiques", "organisme", "organismes_secondaires")
@@ -111,7 +116,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                         "first_published_at",
                         "last_published_at",
                     ),
-                    ("status", "assigned_to", "cc_to"),
+                    ("status",),
                     "bureau_valideur",
                     "raison_desactivation",
                     "internal_comments",
@@ -436,33 +441,6 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                 request, "admin/derive_for_departements.html", context
             )
 
-    @button(label="Vue Kanban")
-    def dashboard(self, request):
-        context = self.get_common_context(request)
-        q_filter = Q()
-        if parent_id := request.GET.get("parent", None):
-            q_filter = q_filter & Q(parent_id=parent_id)
-        context.update(
-            {
-                "title": "Vue des aides en Kanban",
-                "aides_by_status": {
-                    status.label: Aide.objects.filter(status=status)
-                    .filter(q_filter)
-                    .select_related("organisme", "assigned_to", "parent")
-                    .order_by("date_target_publication", "-priority")
-                    for status in Aide.Status
-                    if status not in (Aide.Status.ARCHIVED,)
-                },
-            }
-        )
-        if request.GET.get("mine", None):
-            for status, qs in context["aides_by_status"].items():
-                context["aides_by_status"][status] = qs.filter(assigned_to=request.user)
-        if request.GET.get("unpublished", None):
-            for status, qs in context["aides_by_status"].items():
-                context["aides_by_status"][status] = qs.filter(is_published=False)
-        return TemplateResponse(request, "admin/dashboard.html", context)
-
     @button(label="Exporter toutes les aides en CSV")
     def export_csv(self, request):
         filename = f"{datetime.date.today().isoformat()}-aides-agri-toutes-les-aides"
@@ -494,3 +472,22 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         if not change:
             return
         super().save_related(request, form, formsets, change)
+
+    def add_from_demarche(self, request):
+        if request.method != "POST":
+            return HttpResponseNotAllowed("This view is POST only")
+        aide = create_aide_from_demarche_agricole(
+            DemarcheAgricole.objects.get(pk=request.POST.get("demarche_id"))
+        )
+        return redirect(reverse("admin:aides_aide_change", args=[aide.pk]))
+
+    def get_urls(self) -> list[URLPattern]:
+        urls = super().get_urls()
+        urls.append(
+            path(
+                r"add_from_demarche",
+                self.admin_site.admin_view(self.add_from_demarche),
+                name="aides_aide_addfromdemarche",
+            )
+        )
+        return urls

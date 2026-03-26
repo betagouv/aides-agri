@@ -9,7 +9,7 @@ from django.core.management.base import BaseCommand
 from django.urls import reverse
 from django.utils.timezone import now
 
-from ...models import Aide
+from aides.models import Aide
 
 
 class Command(BaseCommand):
