@@ -19,11 +19,15 @@ for update in $(uv lock --upgrade --dry-run 2>&1 |grep 'Update '); do
         slugified_dep=$(echo "$dep" | sed -E 's/[^a-zA-Z0-9]+/-/g')
         dependabot_branch_pattern="dependabot/uv/$slugified_dep-$to_version"
         echo "-> Found $dep to be bumped from $from_version to $to_version..."
-        if [[ -n `git branch -a |grep "$dependabot_branch_pattern"` ]]; then
+        if [[ -n $(git branch -a |grep "$dependabot_branch_pattern") ]]; then
             echo "... ignoring because Dependabot seems to already have opened a PR about it."
             continue
         fi
         branch="dependencies/$slugified_dep-$from_version-$to_version"
+        if [[ -n $(git branch -q --no-color |grep "$branch") ]]; then
+          echo "... ignoring because there is already a local branch about it."
+          continue
+        fi
         echo "... pushing branch $branch for that..."
         git switch -c "$branch" --quiet
         uv lock --quiet --upgrade-package "$dep"
