@@ -10,7 +10,6 @@
     },
     "assert": {
       "assertions": {
-        "categories:performance": "off",
         "categories:pwa": "off",
         "categories:accessibility": [ "error", {
           "minScore": 1
