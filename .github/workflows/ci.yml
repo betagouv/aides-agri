@@ -62,7 +62,7 @@ jobs:
           DJANGO_SETTINGS_MODULE: conf.settings.testing
           SECRET_KEY: notsecret
       - name: Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Load fixtures for E2E testing
@@ -90,4 +90,4 @@ jobs:
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
       - name: Run Cypress E2E tests
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7
