@@ -26,6 +26,38 @@ def test_step_2(client, sujet):
 
 
 @pytest.mark.django_db
+def test_step_2_allow_internal_redirection(client, sujet):
+    # WHEN requesting step 2
+    querydict = QueryDict(mutable=True)
+    querydict.update({"theme": sujet.themes.first().pk, "next": reverse("agri:step-5")})
+    url = reverse("agri:step-2") + "?" + querydict.urlencode()
+    response = client.get(url)
+
+    # THEN it's a 200
+    assert response.status_code == 200
+    assert (
+        f'<form id="form" action="{reverse("agri:step-5")}"'
+        in response.content.decode("utf-8")
+    )
+
+
+@pytest.mark.django_db
+def test_step_2_disallow_open_redirection(client, sujet):
+    # WHEN requesting step 2
+    querydict = QueryDict(mutable=True)
+    querydict.update({"theme": sujet.themes.first().pk, "next": "https://beta.gouv.fr"})
+    url = reverse("agri:step-2") + "?" + querydict.urlencode()
+    response = client.get(url)
+
+    # THEN it's a 200
+    assert response.status_code == 200
+    assert (
+        '<form id="form" action="https://beta.gouv.fr"'
+        not in response.content.decode("utf-8")
+    )
+
+
+@pytest.mark.django_db
 def test_step_4(client, sujet, zone_geographique_commune_75001):
     # WHEN requesting step 4 with that Siret
     querydict = QueryDict(mutable=True)
