@@ -1,6 +1,7 @@
 from .base import *  # noqa
 
 from .apps.anymail import *  # noqa
+from .apps.axes import *  # noqa
 from .apps.csp import *  # noqa
 from .apps.dsfr import *  # noqa
 from .apps.matomo import *  # noqa

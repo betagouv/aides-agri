@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "admin_extra_buttons",
     "anymail",
+    "axes",
     "csp",
     "django_htmx",
     "django_otp",
@@ -78,6 +79,7 @@ MIDDLEWARE = [
     "django_otp.middleware.OTPMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
     "csp.middleware.CSPMiddleware",
+    "axes.middleware.AxesMiddleware",
 ]
 
 ROOT_URLCONF = "conf.urls"
@@ -117,6 +119,12 @@ DATABASES = {
     }
 }
 
+# Authentication
+
+AUTHENTICATION_BACKENDS = [
+    "axes.backends.AxesStandaloneBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
