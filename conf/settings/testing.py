@@ -11,5 +11,4 @@ STORAGES["staticfiles"]["BACKEND"] = (  # noqa: F405
     "django.contrib.staticfiles.storage.StaticFilesStorage"
 )
 
-# Apps specific
-AGRI_PATH_DATA = "tests/data"
+TASKS = {"default": {"BACKEND": "django_tasks.backends.dummy.DummyBackend"}}

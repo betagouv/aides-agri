@@ -16,7 +16,10 @@ class ThemeFactory(factory.django.DjangoModelFactory):
         model = models.Theme
 
     nom = factory.Sequence(lambda n: f"Thème {n}")
+    nom_court = factory.Sequence(lambda n: f"Thème {n}")
     is_prioritaire = False
+    urgence = False
+    published = False
 
 
 class SujetFactory(factory.django.DjangoModelFactory):
@@ -25,6 +28,8 @@ class SujetFactory(factory.django.DjangoModelFactory):
         skip_postgeneration_save = True
 
     nom = factory.Sequence(lambda n: f"Sujet {n}")
+    nom_court = factory.Sequence(lambda n: f"Sujet {n}")
+    published = False
 
     @factory.post_generation
     def with_themes(obj, create, value: int, **kwargs):
@@ -45,6 +50,7 @@ class FiliereFactory(factory.django.DjangoModelFactory):
         model = models.Filiere
 
     nom = factory.Sequence(lambda n: f"Filière {n}")
+    published = False
 
 
 class BeneficiairesFactory(factory.django.DjangoModelFactory):
@@ -79,6 +85,11 @@ class AideFactory(factory.django.DjangoModelFactory):
         model = models.Aide
         skip_postgeneration_save = True
 
+    class Params:
+        published = factory.Trait(
+            status=models.Aide.Status.VALIDATED, is_published=True
+        )
+
     nom = factory.Sequence(lambda n: f"Aide {n}")
     organisme = None
     status = models.Aide.Status.TODO
@@ -95,6 +106,7 @@ class AideFactory(factory.django.DjangoModelFactory):
     is_meconnue = False
     is_filiere_sous_representee = False
     is_territoire_en_deploiement = False
+    date_fin = None
 
     @factory.post_generation
     def with_given_type(obj, create, value, **kwargs):
@@ -118,3 +130,32 @@ class AideFactory(factory.django.DjangoModelFactory):
             is_published=True,
         )
         obj.save()
+
+    @factory.post_generation
+    def with_given_zone_geographique(
+        obj, create, value: models.ZoneGeographique, **kwargs
+    ):
+        if not value or not create:
+            return
+        if value.type == models.ZoneGeographique.Type.REGION:
+            obj.couverture_geographique = models.Aide.CouvertureGeographique.REGIONAL
+        elif value.type == models.ZoneGeographique.Type.DEPARTEMENT:
+            obj.couverture_geographique = (
+                models.Aide.CouvertureGeographique.DEPARTEMENTAL
+            )
+        elif value.type == models.ZoneGeographique.Type.COM:
+            obj.couverture_geographique = models.Aide.CouvertureGeographique.OUTRE_MER
+        else:
+            raise ValueError("Type de zone géographique non géré pour l’instant")
+        obj.save()
+        obj.zones_geographiques.set([value])
+
+    @factory.post_generation
+    def with_given_filiere(obj, create, value, **kwargs):
+        if not value or not create:
+            return
+        obj.filieres.set([value])
+
+
+class PublishedAideFactory(AideFactory):
+    published = True
