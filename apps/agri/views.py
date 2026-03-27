@@ -4,6 +4,7 @@ from django.db.models import Q
 from django.shortcuts import render
 from django.templatetags.static import static
 from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import TemplateView, ListView, View
 from django.views.generic.base import ContextMixin
 
@@ -136,6 +137,10 @@ class AgriMixin(ContextMixin):
                 else None,
             }
         )
+
+        if url_next := self.request.GET.get("next", None):
+            if url_has_allowed_host_and_scheme(url_next, allowed_hosts=None):
+                context_data["url_next"] = url_next
 
         if self.__class__.STEP:
             context_data.update(
