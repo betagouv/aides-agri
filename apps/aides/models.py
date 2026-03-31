@@ -554,11 +554,8 @@ class Aide(models.Model):
     programmes = models.ManyToManyField(
         Programme, related_name="aides", blank=True, verbose_name="Programmes"
     )
-    base_juridique = models.CharField(
+    base_juridique = models.TextField(
         blank=True, default="", verbose_name="Base juridique"
-    )
-    aap_ami = models.BooleanField(
-        default=False, verbose_name="Appel à projet ou manifestation d'intérêt"
     )
     conditions = models.TextField(blank=True, verbose_name="Conditions d’éligibilité")
     montant = models.TextField(blank=True, verbose_name="Montaux ou taux de l’aide")
@@ -584,9 +581,6 @@ class Aide(models.Model):
         blank=True,
         verbose_name="Éligibilité : étape d’avancement du projet",
     )
-    eligibilite_age = models.TextField(
-        blank=True, verbose_name="Éligibilité : âge de l’exploitation"
-    )
     eligibilite_cumulable = models.TextField(
         blank=True, verbose_name="Éligibilité : dispositif cumulable ?"
     )
@@ -603,9 +597,6 @@ class Aide(models.Model):
         related_name="aides",
         blank=True,
         verbose_name="Zones géographiques",
-    )
-    duree_accompagnement = models.CharField(
-        blank=True, verbose_name="Durée de l’accompagnement"
     )
     etapes = models.TextField(blank=True, verbose_name="Étapes")
     eligibilite_beneficiaires = models.ManyToManyField(
