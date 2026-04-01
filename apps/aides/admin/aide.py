@@ -433,7 +433,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                 }
             )
             return TemplateResponse(
-                request, "admin/derive_for_departements.html", context
+                request, "admin/aides/aide/derive_for_departements.html", context
             )
 
     @button(label="Vue Kanban")
@@ -461,7 +461,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         if request.GET.get("unpublished", None):
             for status, qs in context["aides_by_status"].items():
                 context["aides_by_status"][status] = qs.filter(is_published=False)
-        return TemplateResponse(request, "admin/dashboard.html", context)
+        return TemplateResponse(request, "admin/aides/aide/dashboard.html", context)
 
     @button(label="Exporter toutes les aides en CSV")
     def export_csv(self, request):
