@@ -129,6 +129,78 @@ def test_derive_aide_departementale(
     assert set(derived.zones_geographiques.all()) == {zone_geographique_departement_13}
 
 
+@pytest.mark.parametrize("aide_published__organisme", [LazyFixture("organisme")])
+@pytest.mark.parametrize(
+    "aide_published__couverture_geographique", [Aide.CouvertureGeographique.REGIONAL]
+)
+@pytest.mark.parametrize(
+    "aide_published__url_descriptif", ["https://www.franceagrimer.fr"]
+)
+@pytest.mark.parametrize("aide_published__with_given_sujet", [LazyFixture("sujet")])
+def test_duplicate_aide_form(admin_client, monkeypatch, aide_published, sujet):
+    # we don't care about 2FA here, let's skip it
+    monkeypatch.setattr(django_otp_middleware, "is_verified", lambda u: True)
+
+    # GIVEN one published Aide
+    assert Aide.objects.count() == 1
+    aide = Aide.objects.first()
+    assert aide.organisme is not None
+    assert set(aide.sujets.all()) == {sujet}
+    assert aide.is_published
+
+    # WHEN going to its "duplicate Aide" form
+    url = reverse("admin:aides_aide_duplicate", args=[aide.pk])
+    res = admin_client.get(url)
+
+    # THEN
+    assert res.status_code == 200
+    assert list(res.context_data["fields"].keys()) == [
+        Aide.url_descriptif.field,
+        Aide.urgence.field,
+        Aide.sujets.field,
+        Aide.organisme.field,
+        Aide.couverture_geographique.field,
+    ]
+
+
+@pytest.mark.parametrize("aide_published__status", [Aide.Status.VALIDATED])
+@pytest.mark.parametrize("aide_published__organisme", [LazyFixture("organisme")])
+@pytest.mark.parametrize(
+    "aide_published__couverture_geographique", [Aide.CouvertureGeographique.REGIONAL]
+)
+@pytest.mark.parametrize(
+    "aide_published__url_descriptif", ["https://www.franceagrimer.fr"]
+)
+@pytest.mark.parametrize("aide_published__with_given_sujet", [LazyFixture("sujet")])
+def test_duplicate_aide(admin_client, monkeypatch, aide_published, sujet):
+    # we don't care about 2FA here, let's skip it
+    monkeypatch.setattr(django_otp_middleware, "is_verified", lambda u: True)
+
+    # GIVEN one published Aide
+    assert Aide.objects.count() == 1
+    aide = Aide.objects.first()
+    assert aide.organisme is not None
+    assert set(aide.sujets.all()) == {sujet}
+    assert aide.is_published
+
+    # WHEN going to its "duplicate Aide" form
+    url = reverse("admin:aides_aide_duplicate", args=[aide.pk])
+    res = admin_client.post(
+        url, data={"fields": ["url_descriptif", "organisme", "sujets"]}
+    )
+
+    # THEN
+    assert res.status_code == 302
+    assert Aide.objects.count() == 2
+    new_aide = Aide.objects.order_by("pk").last()
+    assert not new_aide.is_published
+    assert new_aide.status == Aide.Status.CHOSEN
+    assert new_aide.url_descriptif == aide.url_descriptif
+    assert new_aide.organisme == aide.organisme
+    assert set(new_aide.sujets.all()) == set(aide.sujets.all())
+    assert new_aide.couverture_geographique != aide.couverture_geographique
+
+
 def test_themes_csv_export(admin_client, monkeypatch, theme):
     # we don't care about 2FA here, let's skip it
     monkeypatch.setattr(django_otp_middleware, "is_verified", lambda u: True)
