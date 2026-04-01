@@ -14,6 +14,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+from markdown import markdown
 from reversion.admin import VersionAdmin
 
 from admin_concurrency.admin import ConcurrentModelAdmin
@@ -433,8 +434,68 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                 }
             )
             return TemplateResponse(
-                request, "admin/derive_for_departements.html", context
+                request, "admin/aides/aide/derive_for_departements.html", context
             )
+
+    @button(label="Dupliquer", html_attrs={"class": "addlink"})
+    def duplicate(self, request, object_id):
+        aide = Aide.objects.get(pk=object_id)
+        context = self.get_common_context(request)
+        if request.method == "POST":
+            new_aide = Aide()
+            new_aide.nom = f"{aide.nom} (copie)"
+            new_aide.status = Aide.Status.CHOSEN
+            new_aide.save()
+            for field in request.POST.getlist("fields"):
+                if getattr(Aide, field).field.many_to_many:
+                    getattr(new_aide, field).set(getattr(aide, field).all())
+                else:
+                    setattr(new_aide, field, getattr(aide, field))
+            new_aide.save()
+            return redirect(
+                reverse(admin_urlname(context["opts"], "change"), args=[new_aide.pk])
+            )
+        else:
+            context.update(
+                {
+                    "title": "Dupliquer une aide",
+                    "original": aide,
+                    "fields": {
+                        getattr(Aide, f).field: ", ".join(
+                            [str(rel) for rel in getattr(aide, f).all()]
+                        )
+                        if getattr(Aide, f).field.many_to_many
+                        else markdown(getattr(aide, f))
+                        if isinstance(getattr(aide, f), str)
+                        else getattr(aide, f"get_{f}_display")
+                        if getattr(Aide, f).field.choices
+                        else getattr(aide, f)
+                        for f in self.get_fields(request, aide)
+                        if f
+                        not in (
+                            "nom",
+                            "assigned_to",
+                            "cc_to",
+                            "is_published",
+                            "status",
+                            "internal_comments",
+                            "priority",
+                            "slug",
+                            "raw_data",
+                            "date_created",
+                            "date_modified",
+                            "first_published_at",
+                            "last_published_at",
+                        )
+                        and (
+                            getattr(aide, f).exists()
+                            if getattr(Aide, f).field.many_to_many
+                            else getattr(aide, f)
+                        )
+                    },
+                }
+            )
+            return TemplateResponse(request, "admin/aides/aide/duplicate.html", context)
 
     @button(label="Vue Kanban")
     def dashboard(self, request):
@@ -461,7 +522,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         if request.GET.get("unpublished", None):
             for status, qs in context["aides_by_status"].items():
                 context["aides_by_status"][status] = qs.filter(is_published=False)
-        return TemplateResponse(request, "admin/dashboard.html", context)
+        return TemplateResponse(request, "admin/aides/aide/dashboard.html", context)
 
     @button(label="Exporter toutes les aides en CSV")
     def export_csv(self, request):
