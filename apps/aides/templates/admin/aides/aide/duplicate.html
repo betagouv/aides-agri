@@ -13,8 +13,8 @@
 
 {% block extrahead %}
   {{ block.super }}
-  <script>
-  document.onreadystatechange = evt => {
+  <script nonce="{{ request.csp_nonce }}">
+  document.onreadystatechange = () => {
     if (document.readyState !== "complete") {
       return
     }
@@ -22,7 +22,7 @@
       elt.checked = evt.target.checked
     })
     document.querySelectorAll("input[name=fields]").forEach(elt => {
-      elt.addEventListener("change", evt => {
+      elt.addEventListener("change", () => {
         document.getElementById("checkbox-toggle-all").indeterminate = true
       })
     })
