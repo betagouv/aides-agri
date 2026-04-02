@@ -135,63 +135,48 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             },
         ),
         (
-            "Présentation",
-            {
-                "classes": ["collapse"],
-                "fields": [
-                    "promesse",
-                    "description",
-                    "exemple_projet",
-                    "etapes",
-                ],
-            },
-        ),
-        (
-            "Caractéristiques",
+            "Pour publication minimale",
             {
                 "classes": ["collapse"],
                 "fields": [
                     "types",
-                    "organismes_secondaires",
-                    "programmes",
-                    "base_juridique",
-                    "aap_ami",
-                    ("eligibilite_beneficiaires", "filieres"),
-                    ("montant", "participation_agriculteur"),
-                    "duree_accompagnement",
+                    "filieres",
                     ("couverture_geographique", "zones_geographiques"),
-                ],
-            },
-        ),
-        (
-            "Besoins",
-            {
-                "classes": ["collapse"],
-                "fields": ["sujets"],
-            },
-        ),
-        (
-            "Guichet",
-            {
-                "classes": ["collapse"],
-                "fields": [
+                    "sujets",
+                    ("eligibilite_effectif_min", "eligibilite_effectif_max"),
+                    "recurrence_aide",
+                    ("date_debut", "date_fin"),
                     "url_descriptif",
                     "url_demarche",
                     "contact",
-                    ("recurrence_aide", "date_debut", "date_fin"),
                 ],
             },
         ),
         (
-            "Éligibilité",
+            "Pour publication éditorialisée",
             {
                 "classes": ["collapse"],
                 "fields": [
-                    ("eligibilite_effectif_min", "eligibilite_effectif_max"),
-                    "eligibilite_age",
-                    "conditions",
-                    "type_depense",
+                    "promesse",
+                    "description_de_base",
+                    "description",
+                    "exemple_projet",
+                    ("montant", "participation_agriculteur"),
+                    "etapes",
+                    "eligibilite_beneficiaires",
+                    ("conditions", "type_depense"),
                     "eligibilite_cumulable",
+                    "base_juridique",
+                ],
+            },
+        ),
+        (
+            "Autres / Nice-to-have",
+            {
+                "classes": ["collapse"],
+                "fields": [
+                    "organismes_secondaires",
+                    "programmes",
                 ],
             },
         ),
@@ -268,9 +253,11 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         if obj:
             fieldsets = copy.deepcopy(self.fieldsets)
             if obj.parent:
-                fieldsets[0][1]["fields"].insert(0, ("parent",))
-            if obj.is_derivable or obj.parent:
-                fieldsets[3][1]["fields"].insert(1, ("description_de_base",))
+                fieldsets[0][1]["fields"].insert(0, "parent")
+            if not obj.is_derivable and not obj.parent:
+                fieldsets[4][1]["fields"].remove("description_de_base")
+            elif obj.is_derivable:
+                fieldsets[4][1]["fields"].remove("description")
             return fieldsets
         elif "parent" in request.GET:
             return [("Infos de base", {"fields": ["parent", "nom", "is_derivable"]})]
@@ -280,38 +267,8 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                     "Infos de base",
                     {"fields": ["nom", "organisme", "url_descriptif", "is_derivable"]},
                 ),
-                (
-                    "Cycle de vie",
-                    {
-                        "classes": ["collapse"],
-                        "fields": [
-                            ("source", "integration_method"),
-                            ("priority", "date_target_publication"),
-                            ("status", "assigned_to"),
-                            "internal_comments",
-                            "bureau_valideur",
-                        ],
-                    },
-                ),
-                (
-                    "Priorisation",
-                    {
-                        "classes": ["collapse"],
-                        "fields": [
-                            (
-                                "importance",
-                                "demande_du_pourvoyeur",
-                                "is_territoire_en_deploiement",
-                            ),
-                            (
-                                "urgence",
-                                "enveloppe_globale",
-                                "taille_cible_potentielle",
-                            ),
-                            "is_meconnue",
-                        ],
-                    },
-                ),
+                self.fieldsets[1],
+                self.fieldsets[2],
             ]
 
     def get_changeform_initial_data(self, request):
