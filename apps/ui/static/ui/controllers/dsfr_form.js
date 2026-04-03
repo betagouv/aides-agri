@@ -38,11 +38,21 @@ export class DsfrForm extends Controller {
   }
 
   connect() {
-    this.element.addEventListener("submit", evt => {
+    this.element.querySelectorAll("[type=submit]").forEach(elt => elt.addEventListener("click", evt => {
+      let isValid = true
+      this.element.querySelectorAll("input,select").forEach(inputElt => {
+        if (!inputElt.checkValidity()) {
+          isValid = false
+          inputElt.reportValidity()
+        }
+      })
       if (!this.validateCustomFields()) {
+        isValid = false
+      }
+      if (!isValid) {
         evt.preventDefault()
       }
-    })
+    }))
 
     for (let i = 0; i < this.element.elements.length; i++) {
       const inputElement = this.element.elements[i]

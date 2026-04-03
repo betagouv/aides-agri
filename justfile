@@ -40,12 +40,6 @@ shell: (manage "shell")
 makemigrations: (manage "makemigrations")
     ruff format apps/*/migrations/*.py
 
-# Dump fixtures for end-to-end testing
-dump-fixtures:
-    uv run --no-sync manage.py dumpdata --natural-primary --natural-foreign aides.Theme aides.Sujet --output=cypress/e2e/fixtures/aides_01_sujets.json
-    uv run --no-sync manage.py dumpdata --natural-primary --natural-foreign aides.Filiere aides.SousFiliere aides.Production aides.GroupementProducteurs --output=cypress/e2e/fixtures/aides_02_filieres.json
-    uv run --no-sync manage.py dumpdata --natural-primary --natural-foreign aides.ZoneGeographique --pks=13,26,265,5754 --output=cypress/e2e/fixtures/aides_03_zones_geographiques.json
-
 # Run Django tests
 test:
     DJANGO_SETTINGS_MODULE=conf.settings.testing uv run pytest --cov
