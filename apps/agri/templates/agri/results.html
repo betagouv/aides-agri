@@ -231,7 +231,7 @@ document.onreadystatechange = evt => {
               <div id="accordeon-type-{{ forloop.counter }}" class="fr-collapse">
                 {% for aide in aide_list %}
                 <div class="fr-col fr-col-12 fr-mb-1w">
-                  {% dsfr_card aide %}
+                  {% dsfr_card aide title_max_length=180 description_max_length=300 %}
                 </div>
                 {% endfor %}
               </div>

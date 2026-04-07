@@ -1,6 +1,6 @@
 {% extends "ui/base.html" %}
 
-{% load static dsfr_tags ui_tags %}
+{% load static dsfr_tags dsfr_md_tags %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'aides/aide_detail.css' %}">
@@ -138,14 +138,14 @@ document.onreadystatechange = evt => {
           {{ sections.presentation }}
         </h2>
         <div class="fr-pl-4w fr-mb-4w">
-          {{ object.description|urlize|ui_markdown }}
+          {{ object.description|urlize|dsfr_md }}
 
           {% if object.exemple_projet %}
             <div id="exemple_projet"
                  class="fr-highlight fr-background-contrast--grey fr-px-3w fr-pt-2w fr-pb-1w fr-mb-2w"
             >
               <h3 class="fr-h6 fr-mb-1w">Exemple</h3>
-              {{ object.exemple_projet|urlize|ui_markdown }}
+              {{ object.exemple_projet|urlize|dsfr_md }}
             </div>
           {% endif %}
 
@@ -175,7 +175,7 @@ document.onreadystatechange = evt => {
           {{ sections.montant }}
         </h2>
         <div class="fr-pl-4w fr-mb-4w">
-          {{ object.montant|urlize|ui_markdown }}
+          {{ object.montant|urlize|dsfr_md }}
         </div>
         {% endif %}
 
@@ -186,7 +186,7 @@ document.onreadystatechange = evt => {
           {{ sections.participation }}
         </h2>
         <div class="fr-pl-4w fr-mb-4w">
-          {{ object.participation_agriculteur|urlize|ui_markdown }}
+          {{ object.participation_agriculteur|urlize|dsfr_md }}
         </div>
         {% endif %}
 
@@ -197,7 +197,7 @@ document.onreadystatechange = evt => {
           {{ sections.etapes }}
         </h2>
         <div class="fr-pl-4w fr-mb-4w">
-          {{ object.etapes|urlize|ui_markdown }}
+          {{ object.etapes|urlize|dsfr_md }}
         </div>
         {% endif %}
 
@@ -207,7 +207,7 @@ document.onreadystatechange = evt => {
           {{ sections.eligibilite }}
         </h2>
         <div class="fr-pl-4w fr-mb-4w">
-          {{ object.conditions|urlize|ui_markdown }}
+          {{ object.conditions|urlize|dsfr_md }}
           {% if object.eligibilite_effectif_min or object.eligibilite_effectif_max %}
             <h3 class="fr-h5" id="effectifs_salaries">Effectifs salariés</h3>
             <ul>
@@ -221,11 +221,11 @@ document.onreadystatechange = evt => {
           {% endif %}
           {% if object.type_depense %}
             <h3 class="fr-h5" id="type_depense">Dépenses éligibles</h3>
-            {{ object.type_depense|urlize|ui_markdown }}
+            {{ object.type_depense|urlize|dsfr_md }}
           {% endif %}
           {% if object.eligibilite_cumulable %}
             <h3 class="fr-h5" id="eligibilite_cumulable">Cette aide est-elle cumulable avec d’autres dispositifs ?</h3>
-            {{ object.eligibilite_cumulable|urlize|ui_markdown }}
+            {{ object.eligibilite_cumulable|urlize|dsfr_md }}
           {% endif %}
         </div>
 
@@ -248,7 +248,7 @@ document.onreadystatechange = evt => {
         <div class="fr-background-alt--blue-france fr-py-3w fr-px-5w" id="contact">
           <h2 class="fr-h6 fr-icon-mail-fill fr-icon--md fr-mb-2w fr-text-default--grey">Contact</h2>
           <p class="fr-text--sm">
-            {{ object.contact|urlize|ui_markdown }}
+            {{ object.contact|urlize|dsfr_md }}
           </p>
         </div>
       </div>

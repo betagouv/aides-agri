@@ -1,13 +1,13 @@
 {% extends "ui/base.html" %}
 
-{% load ui_tags %}
+{% load dsfr_md_tags %}
 
 {% block title %}{{ title }}{% endblock title %}
 
 {% block breadcrumb %}{% endblock breadcrumb %}
 
 {% block content %}
-  {{ content|ui_markdown }}
+  {{ content|dsfr_md }}
 {% endblock content %}
 
 {% block extra_js %}
