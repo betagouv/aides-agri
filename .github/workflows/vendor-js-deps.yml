@@ -1,5 +1,8 @@
 name: Vendor JS dependencies
-on: pull_request
+on:
+  pull_request:
+    paths:
+      - 'package-lock.json'
 
 concurrency:
   group: ${{ github.head_ref || github.ref }}
