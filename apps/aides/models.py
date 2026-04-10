@@ -432,7 +432,7 @@ class Aide(models.Model):
         LOW = 2, "3. Pas urgent ou dure que quelques semaines"
 
     @classmethod
-    def _get_derivable_fields(cls) -> list[models.Field]:
+    def get_derivable_fields(cls) -> list[models.Field]:
         return [
             f
             for f in cls._meta.get_fields()
@@ -466,7 +466,7 @@ class Aide(models.Model):
     def derivable_fields(self) -> list[models.Field]:
         return [
             f
-            for f in self.__class__._get_derivable_fields()
+            for f in self.__class__.get_derivable_fields()
             if not f.many_to_many and getattr(self, f.name)
         ]
 
@@ -474,7 +474,7 @@ class Aide(models.Model):
     def derivable_m2m_relationships(self) -> list[models.Field]:
         return [
             f
-            for f in self.__class__._get_derivable_fields()
+            for f in self.__class__.get_derivable_fields()
             if f.many_to_many and getattr(self, f.name).exists()
         ]
 
