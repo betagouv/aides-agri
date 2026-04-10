@@ -183,6 +183,55 @@ def test_change_parent_aide_applies_changes_to_children(
     assert aide.nom != aide.parent.nom
 
 
+@pytest.mark.parametrize("aide__organisme", [LazyFixture("organisme")])
+@pytest.mark.parametrize("aide_published__organisme", [LazyFixture("organisme")])
+@pytest.mark.parametrize("aide__url_descriptif", ["https://beta.gouv.fr"])
+@pytest.mark.parametrize("aide_published__url_descriptif", ["https://beta.gouv.fr"])
+@pytest.mark.parametrize(
+    "aide__couverture_geographique", [Aide.CouvertureGeographique.REGIONAL]
+)
+@pytest.mark.parametrize(
+    "aide_published__couverture_geographique",
+    [Aide.CouvertureGeographique.DEPARTEMENTAL],
+)
+def test_make_parent_aide_from_existing_aides(
+    admin_client, monkeypatch, aide, aide_published
+):
+    # we don't care about 2FA here, let's skip it
+    monkeypatch.setattr(django_otp_middleware, "is_verified", lambda u: True)
+
+    # GIVEN 2 Aides
+    assert Aide.objects.count() == 2
+    assert aide.parent is None
+    assert aide_published.parent is None
+    assert aide.organisme == aide_published.organisme
+
+    # WHEN going to its "duplicate Aide" form
+    url = reverse("admin:aides_aide_changelist")
+    res = admin_client.post(
+        url,
+        data={
+            "action": "make_parent_aide_from_existing_aides",
+            "_selected_action": [aide.pk, aide_published.pk],
+        },
+    )
+
+    # THEN a new Aide was created
+    assert res.status_code == 302
+    assert Aide.objects.count() == 3
+    aide.refresh_from_db()
+    aide_published.refresh_from_db()
+    # both selected Aide have now a parent
+    parent = aide.parent
+    assert parent is not None
+    assert aide_published.parent == parent
+    # identical fields have been factorized to the parent
+    assert parent.organisme == aide.organisme
+    assert parent.url_descriptif == aide.url_descriptif
+    # fields with different values have not been
+    assert parent.couverture_geographique != aide.couverture_geographique
+
+
 @pytest.mark.parametrize("aide_published__organisme", [LazyFixture("organisme")])
 @pytest.mark.parametrize(
     "aide_published__couverture_geographique", [Aide.CouvertureGeographique.REGIONAL]

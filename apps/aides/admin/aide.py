@@ -8,7 +8,7 @@ from django.contrib.admin.utils import flatten_fieldsets
 from django.contrib.admin.views.main import ChangeList
 from django import forms
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
-from django.db.models import TextField, Q
+from django.db.models import TextField, Q, Count
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -51,6 +51,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         css = {"screen": ["admin/aides/aide/form.css"]}
         js = ["admin/aides/aide/init_easymde.js"]
 
+    actions = ["make_parent_aide_from_existing_aides"]
     list_display = (
         "id",
         "nom",
@@ -393,6 +394,37 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             return TemplateResponse(
                 request, "admin/aides/aide/derive_for_departements.html", context
             )
+
+    @admin.action(description="Créer une fiche mère à partir de ces aides")
+    def make_parent_aide_from_existing_aides(self, request, queryset):
+        parent = Aide.objects.create(
+            nom="Fiche mère (nom temporaire à modifier)",
+            status=Aide.Status.CHOSEN,
+            is_derivable=True,
+        )
+        first_aide = queryset.first()
+        for fieldname in [
+            k
+            for k, v in queryset.aggregate(
+                **{
+                    field.name: Count(field.name, distinct=True)
+                    for field in Aide.get_derivable_fields()
+                }
+            ).items()
+            if v == 1
+        ]:
+            if getattr(Aide, fieldname).field.many_to_many:
+                getattr(parent, fieldname).set(getattr(first_aide, fieldname).all())
+            else:
+                setattr(parent, fieldname, getattr(first_aide, fieldname))
+        parent.save()
+        queryset.update(parent_id=parent.pk)
+        self.message_user(
+            request, f"L’aide parent {parent.nom} a bien été créée, la voici."
+        )
+        return HttpResponseRedirect(
+            reverse("admin:aides_aide_changelist", query={"id__iexact": parent.pk})
+        )
 
     @button(label="Dupliquer", html_attrs={"class": "addlink"})
     def duplicate(self, request, object_id):
