@@ -431,6 +431,53 @@ class Aide(models.Model):
         MEDIUM = 5, "2. Moyen urgent, ou dure quelques mois"
         LOW = 2, "3. Pas urgent ou dure que quelques semaines"
 
+    @classmethod
+    def _get_derivable_fields(cls) -> list[models.Field]:
+        return [
+            f
+            for f in cls._meta.get_fields()
+            if f.editable
+            and f
+            not in {
+                field_descriptor.field
+                for field_descriptor in {
+                    Aide.id,
+                    Aide.is_derivable,
+                    Aide.parent,
+                    Aide.is_published,
+                    Aide.status,
+                    Aide.sneak_peek_token,
+                    Aide.assigned_to,
+                    Aide.cc_to,
+                    Aide.date_created,
+                    Aide.date_modified,
+                    Aide.internal_comments,
+                    Aide.first_published_at,
+                    Aide.last_published_at,
+                    Aide.slug,
+                    Aide.nom,
+                    Aide.description_de_base,
+                    Aide.raw_data,
+                }
+            }
+        ]
+
+    @property
+    def derivable_fields(self) -> list[models.Field]:
+        return [
+            f
+            for f in self.__class__._get_derivable_fields()
+            if not f.many_to_many and getattr(self, f.name)
+        ]
+
+    @property
+    def derivable_m2m_relationships(self) -> list[models.Field]:
+        return [
+            f
+            for f in self.__class__._get_derivable_fields()
+            if f.many_to_many and getattr(self, f.name).exists()
+        ]
+
     is_derivable = models.BooleanField(default=False, verbose_name="Est déclinable")
     is_published = models.BooleanField(default=False, verbose_name="Publiée")
     parent = models.ForeignKey(

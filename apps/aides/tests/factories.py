@@ -114,6 +114,7 @@ class AideFactory(factory.django.DjangoModelFactory):
             return
         obj.parent = AideFactory.create(
             nom=f"Parent of {obj.nom}",
+            organisme=obj.organisme,
             status=models.Aide.Status.VALIDATED,
             is_published=True,
         )

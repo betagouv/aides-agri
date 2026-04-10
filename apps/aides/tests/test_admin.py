@@ -129,6 +129,60 @@ def test_derive_aide_departementale(
     assert set(derived.zones_geographiques.all()) == {zone_geographique_departement_13}
 
 
+@pytest.mark.parametrize(
+    "aide_published_with_parent__url_descriptif", ["https://beta.gouv.fr"]
+)
+def test_change_parent_aide_applies_changes_to_children(
+    monkeypatch,
+    admin_client,
+    aide_published_with_parent,
+    zone_geographique_departement_13,
+):
+    # we don't care about 2FA here, let's skip it
+    monkeypatch.setattr(django_otp_middleware, "is_verified", lambda u: True)
+
+    aide = aide_published_with_parent
+
+    # GIVEN a derived Aide
+    assert aide.parent.url_descriptif != aide.url_descriptif
+
+    # WHEN POSTing to change the parent Aide
+    url = reverse("admin:aides_aide_change", args=[aide.parent.pk])
+    res = admin_client.post(
+        url,
+        headers={"host": "localhost"},
+        data={
+            "nom": "Coucou trop bien",
+            "organisme": aide.parent.organisme_id,
+            "status": aide.parent.status,
+            "importance": aide.parent.importance,
+            "urgence": aide.parent.urgence,
+            "couverture_geographique": Aide.CouvertureGeographique.DEPARTEMENTAL,
+            "zones_geographiques": [zone_geographique_departement_13.pk],
+            "url_descriptif": "https://aides-agri.beta.gouv.fr",
+        },
+    )
+
+    # THEN the child Aide has been changed as well, but not everything
+    assert res.status_code == 302
+    aide.refresh_from_db()
+    # have changed on both parent and child
+    assert aide.parent.url_descriptif == "https://aides-agri.beta.gouv.fr"
+    assert aide.url_descriptif == aide.parent.url_descriptif
+    assert (
+        aide.parent.couverture_geographique == Aide.CouvertureGeographique.DEPARTEMENTAL
+    )
+    assert aide.couverture_geographique == aide.parent.couverture_geographique
+    assert set(aide.parent.zones_geographiques.all()) == {
+        zone_geographique_departement_13
+    }
+    assert set(aide.zones_geographiques.all()) == set(
+        aide.parent.zones_geographiques.all()
+    )
+    # have changed on parent only
+    assert aide.nom != aide.parent.nom
+
+
 @pytest.mark.parametrize("aide_published__organisme", [LazyFixture("organisme")])
 @pytest.mark.parametrize(
     "aide_published__couverture_geographique", [Aide.CouvertureGeographique.REGIONAL]
