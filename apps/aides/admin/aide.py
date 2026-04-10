@@ -508,7 +508,21 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         else:
             return super().save_form(request, form, change)
 
-    def save_related(self, request, form, formsets, change):
+    def save_model(self, request, obj: Aide, *args) -> None:
+        super().save_model(request, obj, *args)
+        for child in obj.children.all():
+            for field in obj.derivable_fields:
+                setattr(child, field.name, getattr(obj, field.name))
+            child.save()
+
+    def save_related(
+        self, request, form: forms.BaseModelForm, formsets, change
+    ) -> None:
         if not change:
             return
         super().save_related(request, form, formsets, change)
+        obj: Aide = form.instance
+        for child in obj.children.all():
+            for field in obj.derivable_m2m_relationships:
+                getattr(child, field.name).set(getattr(obj, field.name).all())
+            child.save()

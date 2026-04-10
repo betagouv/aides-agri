@@ -1,4 +1,4 @@
-from pytest_factoryboy import register
+from pytest_factoryboy import register, LazyFixture
 
 from aides.models import Aide, ZoneGeographique
 from aides.tests import factories  # noqa
@@ -27,6 +27,7 @@ register(
 register(
     factories.AideFactory,
     "aide_published_with_parent",
+    organisme=LazyFixture("organisme"),
     status=Aide.Status.VALIDATED,
     is_published=True,
     with_parent=True,
