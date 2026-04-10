@@ -11,7 +11,7 @@ git fetch origin --quiet
 echo "... done"
 
 echo "Then, check which packages uv wants to upgrade..."
-for update in $(uv lock --upgrade --dry-run 2>&1 |grep 'Update '); do
+for update in $(uv lock --upgrade --dry-run --exclude-newer P7D 2>&1 |grep 'Update '); do
     if [[ "$update" =~ $regex ]]; then
         dep="${BASH_REMATCH[1]}"
         from_version="${BASH_REMATCH[2]}"
@@ -30,7 +30,7 @@ for update in $(uv lock --upgrade --dry-run 2>&1 |grep 'Update '); do
         fi
         echo "... pushing branch $branch for that..."
         git switch -c "$branch" --quiet
-        uv lock --quiet --upgrade-package "$dep"
+        uv lock --quiet --exclude-newer P7D --upgrade-package "$dep"
         git add uv.lock
         git commit --quiet -m "feat(deps): Bump $dep from $from_version to $to_version"
         git push --quiet -u origin "$branch"
