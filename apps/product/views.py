@@ -28,6 +28,7 @@ class StatistiquesPageView(TemplateView):
                         ("Décembre 2025", "62"),
                         ("Janvier 2026", "88"),
                         ("Février 2026", "99"),
+                        ("Mars 2026", "110"),
                     ],
                 },
                 {
@@ -35,7 +36,8 @@ class StatistiquesPageView(TemplateView):
                     "data": [
                         ("Décembre 2025", "49 %"),
                         ("Janvier 2026", "45 %"),
-                        ("Février 2026", "52 %"),
+                        ("Février 2026", "57 %"),
+                        ("Mars 2026", "62 %"),
                     ],
                 },
                 {
@@ -44,6 +46,7 @@ class StatistiquesPageView(TemplateView):
                         ("Décembre 2025", "37 %"),
                         ("Janvier 2026", "47 %"),
                         ("Février 2026", "48 %"),
+                        ("Mars 2026", "64 %"),
                     ],
                 },
             ],
@@ -54,6 +57,7 @@ class StatistiquesPageView(TemplateView):
                         ("Décembre 2025", "1 010"),
                         ("Janvier 2026", "1 700"),
                         ("Février 2026", "1 542"),
+                        ("Mars 2026", "1 336"),
                     ],
                 },
                 {
@@ -62,6 +66,7 @@ class StatistiquesPageView(TemplateView):
                         ("Décembre 2025", "2 min 10s"),
                         ("Janvier 2026", "2 min 35s"),
                         ("Février 2026", "1 min 50s"),
+                        ("Mars 2026", "1 min 59s"),
                     ],
                 },
             ],
@@ -72,6 +77,7 @@ class StatistiquesPageView(TemplateView):
                         ("Décembre 2025", "108"),
                         ("Janvier 2026", "160"),
                         ("Février 2026", "142"),
+                        ("Mars 2026", "252"),
                     ],
                 },
                 {
@@ -79,6 +85,7 @@ class StatistiquesPageView(TemplateView):
                     "data": [
                         ("Janvier 2026", "1,7"),
                         ("Février 2026", "2,02"),
+                        ("Mars 2026", "3,75"),
                     ],
                 },
                 {
@@ -86,6 +93,7 @@ class StatistiquesPageView(TemplateView):
                     "data": [
                         ("Janvier 2026", "2,95"),
                         ("Février 2026", "3,35"),
+                        ("Mars 2026", "3,125"),
                     ],
                 },
             ],
