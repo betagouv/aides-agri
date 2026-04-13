@@ -249,12 +249,15 @@ document.onreadystatechange = evt => {
         </div>
         {% endif %}
 
+        {% if object.contact %}
         <div class="fr-background-alt--blue-france fr-py-3w fr-px-5w" id="contact">
           <h2 class="fr-h6 fr-icon-mail-fill fr-icon--md fr-mb-2w fr-text-default--grey">Contact</h2>
           <p class="fr-text--sm">
             {{ object.contact|urlize|dsfr_md }}
           </p>
         </div>
+        {% endif %}
+
       </div>
     </div>
   </div>

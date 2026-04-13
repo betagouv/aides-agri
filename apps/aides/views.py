@@ -90,7 +90,8 @@ class AideDetailView(DetailView):
 
         if self.object.url_demarche:
             sidemenu_items.append({"link": "#deposer", "label": "Déposer mon dossier"})
-        sidemenu_items.append({"link": "#contact", "label": "Contact"})
+        if self.object.contact:
+            sidemenu_items.append({"link": "#contact", "label": "Contact"})
 
         context_data.update(
             {
