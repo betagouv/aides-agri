@@ -59,7 +59,7 @@ requires-dist = [
     { name = "django-reversion", specifier = "~=6.0" },
     { name = "django-tasks", specifier = "~=0.12" },
     { name = "django-tasks-db", specifier = "~=0.12" },
-    { name = "django-two-factor-auth", extras = ["phonenumberslite"], specifier = "~=1.17" },
+    { name = "django-two-factor-auth", extras = ["phonenumberslite"], specifier = "~=1.18" },
     { name = "gunicorn", specifier = "~=25.0" },
     { name = "markdown", specifier = "~=3.8" },
     { name = "markdown-grid-tables", specifier = "~=0.6" },
