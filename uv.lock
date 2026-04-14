@@ -11,6 +11,7 @@ dependencies = [
     { name = "django" },
     { name = "django-admin-extra-buttons" },
     { name = "django-anymail" },
+    { name = "django-auto-admin-fieldsets" },
     { name = "django-axes" },
     { name = "django-csp" },
     { name = "django-dsfr", extra = ["markdown"] },
@@ -51,6 +52,7 @@ requires-dist = [
     { name = "django", specifier = "~=5.2" },
     { name = "django-admin-extra-buttons", specifier = "~=2.2" },
     { name = "django-anymail", extras = ["brevo"], specifier = "~=15.0" },
+    { name = "django-auto-admin-fieldsets", specifier = "~=0.3" },
     { name = "django-axes", specifier = "~=8.3" },
     { name = "django-csp", specifier = "~=4.0" },
     { name = "django-dsfr", extras = ["markdown"], specifier = "~=3.5" },
@@ -306,6 +308,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/00/43/f0aadb31f2c58afcd9f001f4291998cbd6d289898167e79d908506fc6faf/django_anymail-15.0.tar.gz", hash = "sha256:23d8ab6589afe8cc1ae7665c26879814ad192f4c3ed837a2a1868b0a056869e0", size = 106985, upload-time = "2026-04-18T20:44:19.237Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/75/d1/daae99ec3b30886010a499975880ec20c32c622bee6b92c226b715e42f0c/django_anymail-15.0-py3-none-any.whl", hash = "sha256:64d33dd1084bfc8e4e12245f56629be40aa0b0498fc7fc7544d87b9b2048be1e", size = 147229, upload-time = "2026-04-18T20:44:17.323Z" },
+]
+
+[[package]]
+name = "django-auto-admin-fieldsets"
+version = "0.3.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e2/b8/ccff57e030e2b6684b37b51d52401a330008115c7dd8d17fb3303f851807/django_auto_admin_fieldsets-0.3.0.tar.gz", hash = "sha256:db916626edd233de1eeda876d6aab6f93eac6d0a1c34f87491d3d03543802ca2", size = 4938, upload-time = "2026-02-16T08:20:12.369Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9d/1b/f6bb7972b7580495d3f01e9a45ee021683eea22a787c33873a056462f9ef/django_auto_admin_fieldsets-0.3.0-py3-none-any.whl", hash = "sha256:8e24f4757d6bd056c2392b044ab0cdb21d813f69e33caa981dda26ffe703db91", size = 5562, upload-time = "2026-02-16T08:20:11.419Z" },
 ]
 
 [[package]]
