@@ -2,6 +2,10 @@ version = 1
 revision = 3
 requires-python = ">=3.13"
 
+[options]
+exclude-newer = "0001-01-01T00:00:00Z" # This has no effect and is included for backwards compatibility when using relative exclude-newer values.
+exclude-newer-span = "P7D"
+
 [[package]]
 name = "aides-agri"
 version = "0.1.0"
@@ -14,6 +18,7 @@ dependencies = [
     { name = "django-axes" },
     { name = "django-csp" },
     { name = "django-dsfr", extra = ["markdown"] },
+    { name = "django-enum" },
     { name = "django-htmx" },
     { name = "django-pgtrigger" },
     { name = "django-reversion" },
@@ -53,6 +58,7 @@ requires-dist = [
     { name = "django-axes", specifier = "~=8.3" },
     { name = "django-csp", specifier = "~=4.0" },
     { name = "django-dsfr", extras = ["markdown"], specifier = "~=3.4" },
+    { name = "django-enum", specifier = "~=2.4" },
     { name = "django-htmx", specifier = "~=1.23" },
     { name = "django-pgtrigger", specifier = "~=4.15" },
     { name = "django-reversion", specifier = "~=6.2" },
@@ -375,6 +381,18 @@ wheels = [
 markdown = [
     { name = "markdown" },
     { name = "pymdown-extensions" },
+]
+
+[[package]]
+name = "django-enum"
+version = "2.4.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/eb/18/0e28863f1f8b88d8a408caf06fe59fa2b9b431dbbcd5194f39a491d97e08/django_enum-2.4.2.tar.gz", hash = "sha256:38cf1a9a117533223810a250e7629c62530a7f82e5331a1a1156e986cdfe5d9d", size = 653980, upload-time = "2026-03-05T19:09:46.231Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1b/5b/b757d8a9cd6ced6af74dbdf5954c3716a048ca5b0b37f48de8ea6569f503/django_enum-2.4.2-py3-none-any.whl", hash = "sha256:4592376d1ac3902706a0f683ca79b9a0d59059916f6b0f99e366ddf2342fa829", size = 39384, upload-time = "2026-03-05T19:09:44.962Z" },
 ]
 
 [[package]]
