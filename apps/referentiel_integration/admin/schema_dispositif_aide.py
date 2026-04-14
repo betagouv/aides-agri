@@ -42,7 +42,7 @@ class RawDemarcheSchemaDispositifAideAdmin(
     )
     def integrate(self, request, object_id):
         raw_demarche = self.get_object(request, object_id)
-        demarche = schema_dispositif_aide.create_demarche_agricole(raw_demarche)
+        demarche = schema_dispositif_aide.create_demarche(raw_demarche)
         return redirect(
             reverse("admin:referentiel_demarcheagricole_change", args=[demarche.pk])
         )
