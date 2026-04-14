@@ -1,12 +1,13 @@
 from admin_extra_buttons.api import ExtraButtonsMixin, button
 from django_auto_admin_fieldsets.admin import AutoFieldsetsMixin
 from django.contrib import admin
+from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse
 from reversion.admin import VersionAdmin
 
 
-from ..adapters import schema_dispositif_aide
+from ..adapters.schema_dispositif_aide import SchemaDispositifAideIntegrationAdapter
 from ..models.schema_dispositif_aide import RawDemarcheSchemaDispositifAide
 
 
@@ -46,7 +47,14 @@ class RawDemarcheSchemaDispositifAideAdmin(
     )
     def integrate(self, request, object_id):
         raw_demarche = self.get_object(request, object_id)
-        demarche = schema_dispositif_aide.create_demarche_agricole(raw_demarche)
+        integration_adapter = SchemaDispositifAideIntegrationAdapter()
+        demarche = integration_adapter.create_demarche(raw_demarche)
+        self.message_user(
+            request,
+            "La démarche a bien été intégrée dans le référentiel, voici sa fiche.",
+        )
+        for error in integration_adapter.errors:
+            self.message_user(request, error, messages.WARNING)
         return redirect(
             reverse(
                 f"admin:{demarche._meta.app_label}_{demarche._meta.model_name}_change",
