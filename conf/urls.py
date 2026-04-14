@@ -45,6 +45,9 @@ if settings.DEBUG:  # pragma: no cover
         debug_toolbar_urls()
         + [
             path("__reload__/", include("django_browser_reload.urls")),
+            path(
+                "api-auth/", include("rest_framework.urls", namespace="rest_framework")
+            ),
             re_path(r"^(?P<path>.*)$", views.serve),
         ]
     )
