@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "aides_feedback",
     "pac",
     "referentiel",
+    "referentiel_integration",
     "conf.apps.AidesAgriAdminConfig",
 ]
 
