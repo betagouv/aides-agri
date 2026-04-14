@@ -1,0 +1,8 @@
+.vTextField {
+  width: 100%;
+}
+
+/* todo remove after django 6.1 */
+.form-row select option:checked {
+    background-color: var(--selected-row);
+}
