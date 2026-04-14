@@ -17,6 +17,7 @@ dependencies = [
   "django-tasks-db ~=0.12",
   "django-htmx ~=1.23",
   "django-two-factor-auth[phonenumberslite]~=1.18",
+  "djangorestframework ~=3.16",
   "dj-importmap ~=1.0",
   "gunicorn~=25.0",
   "markdown ~=3.8",
