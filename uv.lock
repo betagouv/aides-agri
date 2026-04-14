@@ -22,6 +22,7 @@ dependencies = [
     { name = "django-tasks" },
     { name = "django-tasks-db" },
     { name = "django-two-factor-auth", extra = ["phonenumberslite"] },
+    { name = "djangorestframework" },
     { name = "gunicorn" },
     { name = "markdown" },
     { name = "mjml-python" },
@@ -63,6 +64,7 @@ requires-dist = [
     { name = "django-tasks", specifier = "~=0.12" },
     { name = "django-tasks-db", specifier = "~=0.12" },
     { name = "django-two-factor-auth", extras = ["phonenumberslite"], specifier = "~=1.18" },
+    { name = "djangorestframework", specifier = "~=3.17" },
     { name = "gunicorn", specifier = "~=26.0" },
     { name = "markdown", specifier = "~=3.8" },
     { name = "mjml-python", specifier = "~=1.4" },
@@ -563,6 +565,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/01/6d/d1b5a3ae3bccfee96e10315373298cea51e5e0d6853d022181b7b0861a4d/django_widget_tweaks-1.5.1.tar.gz", hash = "sha256:084acc9eeb5a3208f2670522de6284287973e54d54488ce6d402f4b99bc5f452", size = 16233, upload-time = "2026-01-02T12:46:28.907Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/64/6a/ad176284371005426b9a1c424e6cd77a9018ab1b17dc23948bfbeb2f6a21/django_widget_tweaks-1.5.1-py3-none-any.whl", hash = "sha256:3f5080f8365740fc1c14607498c975cbfed896dd0c40e1b563095716ee31e3b5", size = 9634, upload-time = "2026-01-02T12:46:02.18Z" },
+]
+
+[[package]]
+name = "djangorestframework"
+version = "3.17.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ca/d7/c016e69fac19ff8afdc89db9d31d9ae43ae031e4d1993b20aca179b8301a/djangorestframework-3.17.1.tar.gz", hash = "sha256:a6def5f447fe78ff853bff1d47a3c59bf38f5434b031780b351b0c73a62db1a5", size = 905742, upload-time = "2026-03-24T16:58:33.705Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5a/e1/2c516bdc83652b1a60c6119366ac2c0607b479ed05cd6093f916ca8928f8/djangorestframework-3.17.1-py3-none-any.whl", hash = "sha256:c3c74dd3e83a5a3efc37b3c18d92bd6f86a6791c7b7d4dff62bb068500e76457", size = 898844, upload-time = "2026-03-24T16:58:31.845Z" },
 ]
 
 [[package]]
