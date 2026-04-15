@@ -8,19 +8,21 @@ from django.contrib.admin.utils import flatten_fieldsets
 from django.contrib.admin.views.main import ChangeList
 from django import forms
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
-from django.db.models import TextField, Q, Count
 from django.db.models import TextField, Count
+from django.http.response import HttpResponseNotAllowed
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.urls import reverse
+from django.urls import reverse, URLPattern, path
 from django.utils.safestring import mark_safe
 from markdown import markdown
 from reversion.admin import VersionAdmin
 
 from admin_concurrency.admin import ConcurrentModelAdmin
+from referentiel.models import Demarche
 from ui.admin.widgets import ArrayFieldCheckboxSelectMultiple
 
+from ..adapters.referentiel import create_aide_from_demarche
 from ..models import ZoneGeographique, Aide, Sujet
 from ..interop import write_aides_as_csv
 
@@ -529,3 +531,22 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             for field in obj.derivable_m2m_relationships:
                 getattr(child, field.name).set(getattr(obj, field.name).all())
             child.save()
+
+    def add_from_demarche(self, request):
+        if request.method != "POST":
+            return HttpResponseNotAllowed("This view is POST only")
+        aide = create_aide_from_demarche(
+            Demarche.objects.get(pk=request.POST.get("demarche_id"))
+        )
+        return redirect(reverse("admin:aides_aide_change", args=[aide.pk]))
+
+    def get_urls(self) -> list[URLPattern]:
+        urls = super().get_urls()
+        urls.append(
+            path(
+                r"add_from_demarche",
+                self.admin_site.admin_view(self.add_from_demarche),
+                name="aides_aide_addfromdemarche",
+            )
+        )
+        return urls
