@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.utils.timezone import now
 from reversion.models import Revision
 
-from ...models import Aide
+from aides.models import Aide
 
 
 class Command(BaseCommand):

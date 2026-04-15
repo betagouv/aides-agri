@@ -9,6 +9,7 @@ from django.contrib.admin.views.main import ChangeList
 from django import forms
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.db.models import TextField, Q, Count
+from django.db.models import TextField, Count
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -98,7 +99,6 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         ("filieres", admin.RelatedOnlyFieldListFilter),
         ("eligibilite_beneficiaires", admin.RelatedOnlyFieldListFilter),
         ("zones_geographiques", admin.RelatedOnlyFieldListFilter),
-        ("assigned_to", admin.RelatedOnlyFieldListFilter),
         ("parent", admin.RelatedOnlyFieldListFilter),
     )
     autocomplete_fields = ("zones_geographiques", "organisme", "organismes_secondaires")
@@ -136,7 +136,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                         "first_published_at",
                         "last_published_at",
                     ),
-                    ("status", "assigned_to", "cc_to"),
+                    ("status",),
                     "bureau_valideur",
                     "raison_desactivation",
                     "internal_comments",
@@ -513,8 +513,6 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                         if f
                         not in (
                             "nom",
-                            "assigned_to",
-                            "cc_to",
                             "is_published",
                             "status",
                             "internal_comments",
@@ -543,33 +541,6 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                     )
                 )
             return TemplateResponse(request, "admin/aides/aide/duplicate.html", context)
-
-    @button(label="Vue Kanban")
-    def dashboard(self, request):
-        context = self.get_common_context(request)
-        q_filter = Q()
-        if parent_id := request.GET.get("parent", None):
-            q_filter = q_filter & Q(parent_id=parent_id)
-        context.update(
-            {
-                "title": "Vue des aides en Kanban",
-                "aides_by_status": {
-                    status.label: Aide.objects.filter(status=status)
-                    .filter(q_filter)
-                    .select_related("organisme", "assigned_to", "parent")
-                    .order_by("date_target_publication", "-priority")
-                    for status in Aide.Status
-                    if status not in (Aide.Status.ARCHIVED,)
-                },
-            }
-        )
-        if request.GET.get("mine", None):
-            for status, qs in context["aides_by_status"].items():
-                context["aides_by_status"][status] = qs.filter(assigned_to=request.user)
-        if request.GET.get("unpublished", None):
-            for status, qs in context["aides_by_status"].items():
-                context["aides_by_status"][status] = qs.filter(is_published=False)
-        return TemplateResponse(request, "admin/aides/aide/dashboard.html", context)
 
     @button(label="Exporter toutes les aides en CSV")
     def export_csv(self, request):
