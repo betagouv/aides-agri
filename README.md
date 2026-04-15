@@ -62,6 +62,8 @@ Liste que je vais tenter de garder à jour :
 - [django-dsfr](https://pypi.org/project/django-dsfr/) : intégration du DSFR avec Django
 - [django-anymail](https://pypi.org/project/django-anymail) : envoi de courriels via Brevo sans complexité
 - [django-csp](https://pypi.org/project/django-csp/) : sécurisation des ressources demandées par les pages web
+- [django-enum](https://pypi.org/project/django-enum/) : gestion puissante de types énumérations dans les modèles
+- [djangorestframework](https://pypi.org/project/djangorestframework/) : framework-dans-le-framework pour gérer des API JSON/HTTP
 - [dj-importmap](https://pypi.org/project/dj-importmap) : automatisation de la construction de l’élément `<importmap>`
 - [django-two-factor-auth](https://pypi.org/project/django-two-factor-auth/) : second facteur d’authentification pour l’interface d’admin
 - [django-pgtrigger](https://pypi.org/project/django-pgtrigger/) : gestion d’un TTL sur des valeurs écrites dans PostgreSQL, pour un système de verrou
@@ -86,6 +88,9 @@ Liste que je vais tenter de garder à jour :
 - `aides_feedback` : implémente de quoi permettre à nos utilisatrices et utilisateurs de donner leur avis sur le parcours qui leur est proposé ainsi que sur les contenus qui leur sont présentés
 - `pac` : implémente une représentation en base de données relationnelle du Plan Stratégique National de la PAC 2023-2027 ; c’est un outil à usage interne technique uniquement
 - `product` : implémente les aspects périphériques du site web, comme les pages légales ; cette app Django pourrait être amenée à être extraite de cette base de code pour la rendre réutilisable au sein d’un modèle de base de code Django pour beta.gouv.fr
+- `referentiel` : implémente un référentiel des démarches agricoles et de leurs données officielles, avec API d’export
+- `referentiel_integration` : implémente des points d’entrée divers et variés pour intégrer des données venant de toutes sortes de sources vers le référentiel des démarches agricoles
+- `workflow` : implémente une interface d’administration de l’intégration et de l’enrichissement des données de leur intégration via `referentiel_integration` à leur publication par `aides` sur le site Aides Agri
 
 ### Diagramme des dépendances entre les apps Django spécifiques
 
@@ -94,13 +99,18 @@ Liste que je vais tenter de garder à jour :
 
 ```mermaid
 graph TD;
-    agri-->aides;
     agri-->aides_feedback;
+    agri-->aides;
+    aides-->ui;
+    product-->ui;
     agri-->ui;
     aides-->admin_concurrency;
     aides-->aides_feedback;
-    aides-->ui;
-    product-->ui;
+    aides-->referentiel;
+    referentiel_integration-->referentiel;
+    workflow-->referentiel_integration;
+    workflow-->referentiel;
+    workflow-->aides;
 ```
 
 ## 💅 L’architecture de l’interface web publique (le "front-end")
