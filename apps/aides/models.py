@@ -1,7 +1,6 @@
 import uuid
 from datetime import date, timedelta
 
-from django.conf import settings
 from django.contrib.postgres import fields as postgres_fields
 from django.db import models
 from django.templatetags.static import static
@@ -557,8 +556,6 @@ class Aide(models.Model):
                     Aide.is_published,
                     Aide.status,
                     Aide.sneak_peek_token,
-                    Aide.assigned_to,
-                    Aide.cc_to,
                     Aide.date_created,
                     Aide.date_modified,
                     Aide.internal_comments,
@@ -599,16 +596,6 @@ class Aide(models.Model):
     )
     status = models.CharField(choices=Status, default=Status.TODO, verbose_name="État")
     sneak_peek_token = models.UUIDField(unique=True, editable=False, default=uuid.uuid4)
-    assigned_to = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        verbose_name="Assigné à",
-    )
-    cc_to = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, blank=True, verbose_name="CC", related_name="aides_cc"
-    )
     priority = models.PositiveSmallIntegerField(default=1, verbose_name="Priorité")
     is_territoire_en_deploiement = models.BooleanField(
         default=False, verbose_name="Territoire en déploiement"

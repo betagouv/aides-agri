@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     "pac",
     "referentiel",
     "referentiel_integration",
+    "workflow",
     "conf.apps.AidesAgriAdminConfig",
 ]
 
