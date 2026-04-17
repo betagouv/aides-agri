@@ -32,6 +32,11 @@ urlpatterns = [
     path("", include("agri.urls")),
     path("", include("aides.urls")),
     path("", include("aides_feedback.urls")),
+    path("api/", include(("referentiel.urls", "api-referentiel"))),
+    path(
+        "api/integration/",
+        include(("referentiel_integration.urls", "api-referentiel-integration")),
+    ),
     path("", include("product.urls")),
     path("", include(two_factors_urls)),
     path("ui/", include("ui.urls")),

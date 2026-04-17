@@ -4,7 +4,7 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import resolve_url
-from django.urls import reverse
+from django.urls import reverse, path
 from django.utils.http import url_has_allowed_host_and_scheme
 from two_factor.admin import AdminSiteOTPRequiredMixin
 
@@ -12,6 +12,7 @@ from two_factor.admin import AdminSiteOTPRequiredMixin
 class AidesAgriAdminSite(AdminSiteOTPRequiredMixin, admin.AdminSite):
     site_title = "Aides Agri"
     site_header = "Administration Aides Agri"
+    index_template = "admin/index_custom.html"
 
     def login(self, request, extra_context=None):
         redirect_to = request.POST.get(
@@ -32,3 +33,10 @@ class AidesAgriAdminSite(AdminSiteOTPRequiredMixin, admin.AdminSite):
             redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
 
         return redirect_to_login(redirect_to)
+
+    def get_urls(self):
+        from workflow.admin import workflow_view
+
+        urls = super().get_urls()
+        urls.insert(-1, path("workflow", workflow_view, name="workflow"))
+        return urls
