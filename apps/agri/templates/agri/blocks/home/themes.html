@@ -1,0 +1,69 @@
+{% load dsfr_tags %}
+
+<form action="{% url 'agri:results' %}" id="besoins" class="fr-container">
+  <input type="hidden" name="departement" value="{{ departement_code }}">
+  {% for filiere in filieres_ids %}
+    <input type="hidden" name="filieres" value="{{ filiere }}">
+  {% endfor %}
+
+  <div class="fr-badges-group fr-mb-2w">
+    <span class="fr-background-alt--green-emeraude fr-text-label--green-emeraude fr-text--almost-bold fr-py-1w fr-px-2w">
+      {{ departement.full_name_with_prefix }}
+    </span>
+    <span class="fr-background-alt--green-emeraude fr-text-label--green-emeraude fr-text--almost-bold fr-py-1w fr-px-2w">
+      Pour {{ filieres|pluralize:"la,les" }}
+      filière{{ filieres|pluralize }}
+      {% for filiere in filieres %}{% if not forloop.first %}, {% endif %}{{ filiere.nom }}{% endfor %}
+    </span>
+    <a href="{% url 'agri:home' %}" class="fr-btn fr-btn--tertiary-no-outline fr-btn--sm fr-btn--icon-left fr-icon-edit-line">Modifier</a>
+  </div>
+
+  <div class="fr-grid-row fr-grid-row--gutters">
+
+    <div class="fr-col fr-col-12 fr-col-md-6">
+      <fieldset class="fr-fieldset">
+        <legend class="fr-fieldset__legend fr-fieldset__legend--regular">
+          <h3 class="fr-h6 fr-mb-2w">Pour faire face à une difficulté :</h3>
+        </legend>
+        {% for sujet in urgent_sujets %}
+          <div class="fr-fieldset__element fr-background-default--grey fr-border-default--grey fr-py-3v fr-px-2w fr-mb-3v">
+            <label for="checkbox-sujets-{{ sujet.pk }}"></label>
+            <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
+              <input type="checkbox" id="checkbox-sujets-{{ sujet.pk }}" name="sujets" value="{{ sujet.pk }}">
+              <label for="checkbox-sujets-{{ sujet.pk }}" class="fr-label">
+                {% dsfr_tag label=sujet.nom_court extra_classes="fr-tag--icon-left fr-icon-"|add:sujet.icon_name %}
+              </label>
+            </div>
+            <p class="fr-text--md fr-mb-3v">{{ sujet.nom }}</p>
+          </div>
+        {% endfor %}
+      </fieldset>
+    </div>
+
+    <div class="fr-col fr-col-12 fr-col-md-6">
+      <fieldset class="fr-fieldset">
+        <legend class="fr-fieldset__legend fr-fieldset__legend--regular">
+          <h3 class="fr-h6 fr-mb-2w">Pour réaliser un projet lié à la vie de mon exploitation :</h3>
+        </legend>
+        {% for theme in themes %}
+          <div class="fr-fieldset__element fr-background-default--grey fr-border-default--grey fr-py-3v fr-px-2w fr-mb-3v">
+          <label for="checkbox-themes-{{ theme.pk }}"></label>
+            <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
+              <input type="checkbox" id="checkbox-themes-{{ theme.pk }}" name="themes" value="{{ theme.pk }}">
+              <label for="checkbox-themes-{{ theme.pk }}" class="fr-label">
+                {% dsfr_tag label=theme.nom_court extra_classes="fr-tag--icon-left fr-icon-"|add:theme.icon_name %}
+              </label>
+            </div>
+            <p class="fr-text--md fr-mb-3v">{{ theme.nom }}</p>
+          </div>
+        {% endfor %}
+      </fieldset>
+    </div>
+
+  </div>
+
+  <div class="fr-grid-row fr-grid-row--right fr-btns-group fr-btns-group--icon-left fr-btns-group--inline">
+    <button class="fr-btn fr-btn--icon-left fr-icon-eye-line" type="submit">Voir les dispositifs</button>
+    <button class="fr-btn fr-btn--icon-left fr-icon-arrow-go-forward-line fr-btn--secondary" type="submit">Passer cette étape</button>
+  </div>
+</form>

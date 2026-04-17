@@ -1,5 +1,5 @@
 import uuid
-from datetime import date
+from datetime import date, timedelta
 
 from django.conf import settings
 from django.contrib.postgres import fields as postgres_fields
@@ -10,17 +10,49 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 
 
+class WithIllustrationQuerySet(models.QuerySet):
+    def without_illustration(self):
+        return self.defer("illustration")
+
+
+class WithIllustration(models.Model):
+    class Meta:
+        abstract = True
+
+    illustration = models.BinaryField(blank=True)
+    has_illustration = models.GeneratedField(
+        expression=models.Case(
+            models.When(illustration=b"", then=False),
+            default=True,
+            output_field=models.BooleanField(),
+        ),
+        output_field=models.BooleanField(),
+        db_persist=True,
+    )
+
+    def get_illustration_url(self):
+        if self.has_illustration:
+            return f"/aides/illustrations-{self._meta.model_name}/{self.pk}.png"
+        else:
+            return static("aides/images/placeholder.1x1.svg")
+
+
 class WithAidesCounterQuerySet(models.QuerySet):
     def with_aides_count(self):
-        return self.annotate(aides_count=models.Count("aides", distinct=True))
+        return self.annotate(
+            aides_count=models.Count(
+                "aides",
+                filter=Aide.objects.get_related_q_official_published("aides"),
+                distinct=True,
+            )
+        )
 
 
-class OrganismeQuerySet(WithAidesCounterQuerySet):
-    def with_logo(self):
-        return self.exclude(logo_filename="").filter(logo_filename__isnull=False)
+class OrganismeQuerySet(WithAidesCounterQuerySet, WithIllustrationQuerySet):
+    pass
 
 
-class Organisme(models.Model):
+class Organisme(WithIllustration, models.Model):
     class Meta:
         verbose_name = "Organisme"
         verbose_name_plural = "Organismes"
@@ -57,8 +89,6 @@ class Organisme(models.Model):
     zones_geographiques = models.ManyToManyField(
         "ZoneGeographique", blank=True, verbose_name="Zones géographiques"
     )
-    logo = models.BinaryField(blank=True, verbose_name="Logo")
-    logo_filename = models.CharField(blank=True)
     url = models.URLField(blank=True, verbose_name="Lien")
     courriel = models.EmailField(blank=True, verbose_name="Adresse courriel")
     is_masa = models.BooleanField(default=False, verbose_name="Made in MASA")
@@ -66,29 +96,32 @@ class Organisme(models.Model):
     def __str__(self):
         return self.acronyme or self.nom
 
-    def get_logo_url(self):
-        if self.logo_filename:
-            return f"/aides/organismes-logos/{self.logo_filename}"
-        else:
-            return static("agri/images/placeholder.1x1.svg")
-
     @property
     def nom_court(self):
         return self.acronyme or self.nom
 
 
-class ThemeQuerySet(models.QuerySet):
+class ThemeQuerySet(WithIllustrationQuerySet, models.QuerySet):
     def published(self):
         return self.with_aides_count().filter(published=True, aides_count__gt=0)
+
+    def published_non_urgence(self):
+        return self.published().exclude(urgence=True)
 
     def with_sujets_count(self):
         return self.annotate(sujets_count=models.Count("sujets", distinct=True))
 
     def with_aides_count(self):
-        return self.annotate(aides_count=models.Count("sujets__aides", distinct=True))
+        return self.annotate(
+            aides_count=models.Count(
+                "sujets__aides",
+                filter=Aide.objects.get_related_q_official_published("sujets__aides"),
+                distinct=True,
+            )
+        )
 
 
-class Theme(models.Model):
+class Theme(WithIllustration, models.Model):
     class Meta:
         verbose_name = "Thème"
         verbose_name_plural = "Thèmes"
@@ -103,17 +136,25 @@ class Theme(models.Model):
     is_prioritaire = models.BooleanField(
         default=False, verbose_name="Thématique prioritaire"
     )
+    icon_name = models.CharField(blank=True, verbose_name="(technique) Nom de l’icône")
 
     def __str__(self):
         return self.nom_court
 
 
-class SujetQuerySet(WithAidesCounterQuerySet):
+class SujetQuerySet(WithIllustrationQuerySet, WithAidesCounterQuerySet):
     def published(self):
-        return self.with_aides_count().filter(published=True, aides_count__gt=0)
+        return (
+            self.with_aides_count()
+            .without_illustration()
+            .filter(published=True, aides_count__gt=0)
+        )
+
+    def published_with_urgent_themes(self):
+        return self.published().exclude(themes__urgence=False)
 
 
-class Sujet(models.Model):
+class Sujet(WithIllustration, models.Model):
     class Meta:
         verbose_name = "Sujet"
         verbose_name_plural = "Sujets"
@@ -124,6 +165,7 @@ class Sujet(models.Model):
     nom_court = models.CharField(verbose_name="Nom court")
     themes = models.ManyToManyField(Theme, related_name="sujets", verbose_name="Thèmes")
     published = models.BooleanField(default=False, verbose_name="Publié")
+    icon_name = models.CharField(blank=True, verbose_name="(technique) Nom de l’icône")
 
     def __str__(self):
         return self.nom_court
@@ -137,10 +179,7 @@ class Type(models.Model):
     class Meta:
         verbose_name = "Type d'aides"
         verbose_name_plural = "Types d'aides"
-        ordering = (
-            "-urgence",
-            "nom",
-        )
+        ordering = ("position",)
 
     objects = TypeQuerySet.as_manager()
 
@@ -149,6 +188,7 @@ class Type(models.Model):
     urgence = models.BooleanField(default=False, verbose_name="Urgence")
     icon_name = models.CharField(blank=True, verbose_name="(technique) Nom de l’icône")
     score_priorite_aides = models.PositiveSmallIntegerField(default=1)
+    position = models.PositiveSmallIntegerField(null=True, blank=True, unique=True)
 
     def __str__(self):
         return f"{self.nom} ({self.description})"
@@ -220,6 +260,9 @@ class ZoneGeographique(models.Model):
         verbose_name="EPCI",
     )
     code_postal = models.CharField(max_length=5, blank=True, verbose_name="Code postal")
+    prefix = models.CharField(
+        blank=True, verbose_name="Préfixe", help_text='Exemples : "Dans le", "En", etc.'
+    )
 
     @property
     def is_region(self):
@@ -244,6 +287,10 @@ class ZoneGeographique(models.Model):
     @property
     def cog(self):
         return f"{ZoneGeographique.Type(self.type).name[:3]}-{self.code}"
+
+    @property
+    def full_name_with_prefix(self):
+        return f"{self.prefix} {self.nom}"
 
     def __str__(self):
         prefix = self.code_postal if self.is_commune else self.type
@@ -277,18 +324,11 @@ class Filiere(models.Model):
         return self.nom
 
 
-class BeneficiairesQuerySet(models.QuerySet):
-    def groupements(self):
-        return self.filter(is_groupement=True)
-
-
 class Beneficiaires(models.Model):
     class Meta:
         verbose_name = "Type de bénéficiaires"
         verbose_name_plural = "Types de bénéficiaires"
         ordering = ("nom",)
-
-    objects = BeneficiairesQuerySet.as_manager()
 
     nom = models.CharField(max_length=100, verbose_name="Nom court")
     libelle = models.CharField(
@@ -312,6 +352,60 @@ class AideQuerySet(models.QuerySet):
     def closed(self):
         return self.filter(date_fin__lt=date.today())
 
+    def without_parents(self):
+        return self.filter(children=None)
+
+    def without_non_departemental_parents(self):
+        return self.filter(
+            models.Q(children=None)
+            | models.Q(
+                couverture_geographique=Aide.CouvertureGeographique.DEPARTEMENTAL,
+                zones_geographiques=None,
+            )
+        )
+
+    def without_departemental_derivatives(self):
+        return self.exclude(models.Q(**self.q_official_published_dicts[1]))
+
+    q_official_published_dicts = (
+        {"is_published": True},
+        {
+            "zones_geographiques__isnull": False,
+            "parent__isnull": False,
+            "parent__couverture_geographique": "05 Départemental",  # FIXME hard-coded
+        },
+    )
+
+    @property
+    def q_official_published(self) -> models.Q:
+        return models.Q(**self.q_official_published_dicts[0]) & ~models.Q(
+            **self.q_official_published_dicts[1]
+        )
+
+    def get_related_q_official_published(self, related_name: str) -> models.Q:
+        return models.Q(
+            **{
+                f"{related_name}__{k}": v
+                for k, v in self.q_official_published_dicts[0].items()
+            }
+        ) & ~models.Q(
+            **{
+                f"{related_name}__{k}": v
+                for k, v in self.q_official_published_dicts[1].items()
+            }
+        )
+
+    def official_published_count(self):
+        return self.filter(self.q_official_published).count()
+
+    def official_published_organismes_count(self):
+        return (
+            self.filter(self.q_official_published)
+            .order_by("organisme_id")
+            .distinct("organisme_id")
+            .count()
+        )
+
     def published_validated(self):
         return self.published().validated()
 
@@ -321,8 +415,10 @@ class AideQuerySet(models.QuerySet):
     def having_published_children(self):
         return self.filter(children__is_published=True).distinct()
 
-    def by_sujets(self, sujets: list[Sujet]) -> models.QuerySet:
-        return self.filter(sujets__in=sujets)
+    def by_besoins(self, themes: list[Theme], sujets: list[Sujet]):
+        return self.filter(
+            models.Q(sujets__themes__in=themes) | models.Q(sujets__in=sujets)
+        )
 
     def by_effectif(self, effectif_low: int, effectif_high: int) -> models.QuerySet:
         return self.filter(
@@ -336,35 +432,24 @@ class AideQuerySet(models.QuerySet):
             )
         )
 
-    def by_beneficiaires(self, beneficiaires: list[Beneficiaires]):
-        return self.filter(
-            models.Q(eligibilite_beneficiaires=None)
-            | models.Q(eligibilite_beneficiaires__is_groupement=False)
-            | models.Q(eligibilite_beneficiaires__in=beneficiaires)
-        )
-
     def by_filieres(self, filieres: list[Filiere]):
         return self.filter(models.Q(filieres=None) | models.Q(filieres__in=filieres))
 
-    def by_zone_geographique(self, commune: ZoneGeographique) -> models.QuerySet:
-        if not commune:
-            return self
+    def by_departements(self, departements: list[ZoneGeographique]):
+        q = models.Q(couverture_geographique=Aide.CouvertureGeographique.NATIONAL)
+        for departement in departements:
+            q = q | models.Q(
+                zones_geographiques__in=[departement.pk, departement.parent_id]
+            )
+        return self.filter(q)
 
-        departement = commune.parent
-        region = departement.parent
+    def only_open(self):
         return self.filter(
-            # Nationales
-            models.Q(couverture_geographique=Aide.CouvertureGeographique.NATIONAL)
-            |
-            # Same region
-            models.Q(zones_geographiques=region)
-            |
-            # Same departement
-            models.Q(zones_geographiques=departement)
-            |
-            # The commune itself
-            models.Q(zones_geographiques=commune)
+            models.Q(date_fin=None) | models.Q(date_fin__gte=date.today())
         )
+
+    def only_closed(self):
+        return self.filter(date_fin__isnull=False, date_fin__lt=date.today())
 
 
 class Aide(models.Model):
@@ -401,12 +486,12 @@ class Aide(models.Model):
         BULK_IMPORT = "Import BDD", "Import BDD"
 
     class CouvertureGeographique(models.TextChoices):
-        NATIONAL = "National", "National"
-        REGIONAL = "Régional", "Régional"
-        METROPOLE = "France métropolitaine", "France métropolitaine"
-        OUTRE_MER = "Outre-mer", "Outre-mer"
-        DEPARTEMENTAL = "Départemental", "Départemental"
-        LOCAL = "Local", "Local"
+        NATIONAL = "01 National", "National"
+        REGIONAL = "04 Régional", "Régional"
+        METROPOLE = "02 France métropolitaine", "France métropolitaine"
+        OUTRE_MER = "03 Outre-mer", "Outre-mer"
+        DEPARTEMENTAL = "05 Départemental", "Départemental"
+        LOCAL = "06 Local", "Local"
 
     class Recurrence(models.TextChoices):
         PERMANENTE = "Permanente"
@@ -697,6 +782,21 @@ class Aide(models.Model):
     @property
     def is_complete(self):
         return self.status in (Aide.Status.VALIDATED, Aide.Status.TO_BE_DERIVED)
+
+    def _closes_in_less_than(self, weeks: int) -> bool:
+        return self.date_fin and date.today() + timedelta(weeks=weeks) > self.date_fin
+
+    @property
+    def closes_in_less_than_a_month(self):
+        return self._closes_in_less_than(4)
+
+    @property
+    def closes_in_less_than_two_weeks(self):
+        return self._closes_in_less_than(2)
+
+    @property
+    def is_closed(self):
+        return self.date_fin and self.date_fin < date.today()
 
     def compute_priority(self):
         priority = 0
