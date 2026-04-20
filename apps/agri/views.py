@@ -378,6 +378,9 @@ class ResultsView(ResultsMixin, ListView):
                     },
                     "aides": aides_data_by_type,
                     "aides_count": total_count,
+                    "national_aides_only_disclaimer": f"Pour {self.departement.full_name_with_determinant}, seuls les dispositifs nationaux sont disponibles pour le moment."
+                    if not self.get_queryset().has_local_only_aides()
+                    else "",
                     "departement_options": [
                         {"value": dept.code, "text": f"{dept.code} {dept.nom}"}
                         for dept in ZoneGeographique.objects.departements()

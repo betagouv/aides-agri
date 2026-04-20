@@ -92,6 +92,15 @@ document.addEventListener("htmx:load", evt => {
           hx-swap="outerHTML"
           hx-disinherit="*"
     >
+      {% if national_aides_only_disclaimer %}
+      <div class="fr-container fr-mb-3w">
+        <div class="fr-grid-row">
+          <div class="fr-col">
+            {% dsfr_alert type="info" is_collapsible=True title="En cours de recensement des aides" content=national_aides_only_disclaimer %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
 
       <div class="fr-background-alt--grey fr-pt-2w">
         <div class="fr-container">
