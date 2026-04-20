@@ -16,7 +16,10 @@ from aides.models import (
     Filiere,
     Type,
 )
-from aides_feedback.forms import CreateFeedbackOnAidesForm
+from aides_feedback.forms import (
+    CreateFeedbackOnAidesForm,
+    FeedbackOnThemesAndSujetsForm,
+)
 
 from .tasks import send_results_by_mail
 
@@ -432,6 +435,7 @@ class ResultsView(ResultsMixin, ListView):
                     "only_closed": self.only_closed,
                     "order_by": self.order_by,
                     "create_feedback_on_aides_form": CreateFeedbackOnAidesForm(),
+                    "feedback_themes_sujets_form": FeedbackOnThemesAndSujetsForm(),
                 }
             )
 
