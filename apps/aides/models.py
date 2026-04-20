@@ -451,6 +451,13 @@ class AideQuerySet(models.QuerySet):
     def only_closed(self):
         return self.filter(date_fin__isnull=False, date_fin__lt=date.today())
 
+    def has_local_only_aides(self) -> bool:
+        return (
+            self.exclude(couverture_geographique=Aide.CouvertureGeographique.NATIONAL)
+            .filter(parent_id=None)
+            .exists()
+        )
+
 
 class Aide(models.Model):
     class Meta:
