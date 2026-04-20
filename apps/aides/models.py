@@ -214,13 +214,13 @@ class Programme(models.Model):
 
 class ZoneGeographiqueQuerySet(WithAidesCounterQuerySet):
     def regions(self):
-        return self.filter(type=ZoneGeographique.Type.REGION).order_by("code")
+        return self.filter(type=ZoneGeographique.Type.REGION)
 
     def coms(self):
-        return self.filter(type=ZoneGeographique.Type.COM).order_by("code")
+        return self.filter(type=ZoneGeographique.Type.COM)
 
     def departements(self):
-        return self.filter(type=ZoneGeographique.Type.DEPARTEMENT).order_by("code")
+        return self.filter(type=ZoneGeographique.Type.DEPARTEMENT)
 
     def communes(self):
         return self.filter(type=ZoneGeographique.Type.COMMUNE)
@@ -231,7 +231,7 @@ class ZoneGeographique(models.Model):
         verbose_name = "Zone géographique"
         verbose_name_plural = "Zones géographiques"
         unique_together = ("type", "code")
-        ordering = ("type", "code")
+        ordering = ("type", "position", "code")
 
     objects = ZoneGeographiqueQuerySet.as_manager()
 
@@ -260,8 +260,16 @@ class ZoneGeographique(models.Model):
         verbose_name="EPCI",
     )
     code_postal = models.CharField(max_length=5, blank=True, verbose_name="Code postal")
-    prefix = models.CharField(
-        blank=True, verbose_name="Préfixe", help_text='Exemples : "Dans le", "En", etc.'
+    position = models.PositiveIntegerField(default=0)
+    prefixe_localisation = models.CharField(
+        blank=True,
+        verbose_name="Préfixe en « dans »",
+        help_text="Exemples : « dans la », « en », etc.",
+    )
+    prefixe_determinant = models.CharField(
+        blank=True,
+        verbose_name="Déterminant",
+        help_text="Exemples : « les », « la », etc.",
     )
 
     @property
@@ -289,8 +297,18 @@ class ZoneGeographique(models.Model):
         return f"{ZoneGeographique.Type(self.type).name[:3]}-{self.code}"
 
     @property
-    def full_name_with_prefix(self):
-        return f"{self.prefix} {self.nom}"
+    def full_name_with_prefixe_localisation(self):
+        if self.prefixe_localisation:
+            prefix = self.prefixe_localisation
+        elif self.prefixe_determinant:
+            prefix = f"dans {self.prefixe_determinant}"
+        else:
+            prefix = ""
+        return f"{prefix}{self.nom}"
+
+    @property
+    def full_name_with_determinant(self):
+        return f"{self.prefixe_determinant}{self.nom}"
 
     def __str__(self):
         prefix = self.code_postal if self.is_commune else self.type
