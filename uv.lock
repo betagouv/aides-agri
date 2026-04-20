@@ -2,6 +2,10 @@ version = 1
 revision = 3
 requires-python = ">=3.13"
 
+[options]
+exclude-newer = "2026-04-13T07:52:35.448667279Z"
+exclude-newer-span = "P7D"
+
 [[package]]
 name = "aides-agri"
 version = "0.1.0"
@@ -362,15 +366,15 @@ wheels = [
 
 [[package]]
 name = "django-dsfr"
-version = "3.4.0"
+version = "3.4.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
     { name = "django-widget-tweaks" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7d/02/2a9d586659719def142c8919837b2a12465ea1ea40e1eb8aa9df1f18eca0/django_dsfr-3.4.0.tar.gz", hash = "sha256:4fdd162a68c280379e5683ecf3e3bcf0ec067ff079f09adadb5ad7bb676e626c", size = 2743913, upload-time = "2026-03-31T07:57:10.056Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b3/e5/a79f81ee051917b8f28a6914a9873ee5232f1b437db3b3a1f3e426eed069/django_dsfr-3.4.2.tar.gz", hash = "sha256:d4c997e62e63daec00c6bd84d285fad93d6fa1fdf0f3ba2c98276e4d4c242ade", size = 2747163, upload-time = "2026-04-20T10:17:46.485Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ef/c8/b82f54fcaceaa84ce1b02e5827a0ed6bd2a7441072581d07f9bef2dbf11e/django_dsfr-3.4.0-py3-none-any.whl", hash = "sha256:1f72c8fdf517b5f3b40bca78dba6ac7a1d08a7fdb8d8822d320569b9a983b457", size = 3492733, upload-time = "2026-03-31T07:57:11.493Z" },
+    { url = "https://files.pythonhosted.org/packages/f3/bf/68223da9424172c931bead99f97009c861560a549b8b3ad2f8a47cbda00d/django_dsfr-3.4.2-py3-none-any.whl", hash = "sha256:457f7ba48ae1b154c10dae9bc09777aaba262ea9bc42458b5e8aa0d917854941", size = 3494642, upload-time = "2026-04-20T10:17:47.966Z" },
 ]
 
 [package.optional-dependencies]
