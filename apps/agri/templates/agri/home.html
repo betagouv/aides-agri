@@ -77,7 +77,12 @@ window.onload = (evt) => {
                     {% ui_select_rich_multi label="Vos filières :" name="filieres" required=True options=filieres_options show_values_on_button_label=True %}
                   </div>
                 </div>
-                <div class="fr-grid-row fr-grid-row--right fr-mt-3w">
+                <div class="fr-grid-row fr-mt-3w">
+                  <div class="fr-col">
+                    {% dsfr_form_field form.profil %}
+                  </div>
+                </div>
+                <div class="fr-grid-row fr-grid-row--right fr-mt-1w">
                   <button type="submit" class="fr-btn fr-btn--icon-left fr-icon-arrow-right-circle-line">Suivant</button>
                 </div>
               </form>

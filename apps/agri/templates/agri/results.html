@@ -92,6 +92,8 @@ document.addEventListener("htmx:load", evt => {
           hx-swap="outerHTML"
           hx-disinherit="*"
     >
+      <input type="hidden" name="profil" value="{{ profil }}">
+
       {% if national_aides_only_disclaimer %}
       <div class="fr-container fr-mb-3w">
         <div class="fr-grid-row">
