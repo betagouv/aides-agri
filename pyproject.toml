@@ -23,7 +23,7 @@ dependencies = [
   "psycopg[binary]~=3.3",
   "qrcode ~=7.4",
   "requests ~=2.32",
-  "sentry-sdk[django]~=2.57",
+  "sentry-sdk[django]~=2.58",
   "whitenoise ~=6.8",
 ]
 
