@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "two_factor",
     "widget_tweaks",
     "dsfr",
+    "dsfr.extras.markdown",
     "admin_concurrency",
     "ui",
     "product",
