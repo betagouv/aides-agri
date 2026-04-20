@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.views.generic import TemplateView, ListView, View
 from dsfr.forms import DsfrBaseForm
+from dsfr.widgets import InlineRadioSelect
 
 from aides.models import (
     Theme,
@@ -38,6 +39,7 @@ class HomeView(TemplateView):
         super().setup(request, *args, **kwargs)
         self.departement_code = request.GET.get("departement", None)
         self.filieres_ids = request.GET.getlist("filieres", [])
+        self.profil = request.GET.get("profil", None)
 
     def get_template_names(self):
         if self.request.htmx:
@@ -52,6 +54,7 @@ class HomeView(TemplateView):
             {
                 "departement_code": self.departement_code,
                 "filieres_ids": self.filieres_ids,
+                "profil": self.profil,
             }
         )
 
@@ -135,6 +138,22 @@ class HomeView(TemplateView):
                         for dept in ZoneGeographique.objects.departements()
                     ],
                 )
+                profil = forms.ChoiceField(
+                    label="Vous êtes ?",
+                    required=False,
+                    choices=[
+                        ("agri", "Agriculteur, agricultrice"),
+                        (
+                            "acteur",
+                            "Acteur du secteur agricole (conseil, fournisseur, coopérative, etc.)",
+                        ),
+                        (
+                            "autre",
+                            "Autre",
+                        ),
+                    ],
+                    widget=InlineRadioSelect,
+                )
 
             context_data.update(
                 {
@@ -172,6 +191,7 @@ class ResultsMixin:
             if self.filieres_ids
             else []
         )
+        self.profil = request.GET.get("profil", None)
         self.themes_ids = request.GET.getlist("themes", None)
         self.themes = (
             Theme.objects.filter(pk__in=self.themes_ids) if self.themes_ids else []
@@ -395,6 +415,7 @@ class ResultsView(ResultsMixin, ListView):
                         for filiere in Filiere.objects.published()
                     ],
                     "filieres_initials": [filiere.pk for filiere in self.filieres],
+                    "profil": self.profil,
                     "besoins_options": [
                         {
                             "type": "theme",
