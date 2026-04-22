@@ -253,6 +253,11 @@ document.addEventListener("htmx:load", evt => {
                             hx-swap="outerHTML"
                     >
                       Voir plus de dispositifs
+                      {% if type_aide.nom|first|lower in "aeiouyéèîô" %}
+                        d’{{ type_aide.nom|lower }}
+                      {% else %}
+                        de {{ type_aide.nom|lower }}
+                      {% endif %}
                     </button>
                   </div>
                 {% endif %}
