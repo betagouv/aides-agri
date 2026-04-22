@@ -5342,4 +5342,3 @@ var htmx = (function() {
  * @property {(xhr: XMLHttpRequest, parameters: FormData, elt: Node) => *|string|null} encodeParameters
  * @property {() => string[]|null} getSelectors
  */
-export default htmx
