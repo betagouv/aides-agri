@@ -233,6 +233,7 @@ class OrganismeAdmin(CsvExportMixin, VersionAdmin):
     autocomplete_fields = ("zones_geographiques",)
     exclude = ("logo_filename",)
     ordering = ("nom",)
+    change_form_template = "admin/aides/organisme/change_form.html"
 
     form = OrganismeForm
 
