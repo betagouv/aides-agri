@@ -160,6 +160,8 @@ def test_change_parent_aide_applies_changes_to_children(
             "couverture_geographique": Aide.CouvertureGeographique.DEPARTEMENTAL,
             "zones_geographiques": [zone_geographique_departement_13.pk],
             "url_descriptif": "https://aides-agri.beta.gouv.fr",
+            "bases_juridiques-TOTAL_FORMS": 0,
+            "bases_juridiques-INITIAL_FORMS": 0,
         },
     )
 

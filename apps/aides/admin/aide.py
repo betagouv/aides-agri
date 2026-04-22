@@ -19,7 +19,7 @@ from reversion.admin import VersionAdmin
 
 from admin_concurrency.admin import ConcurrentModelAdmin
 
-from ..models import ZoneGeographique, Aide, Sujet
+from ..models import ZoneGeographique, Aide, Sujet, BaseJuridique
 from ..interop import write_aides_as_csv
 from ._common import ArrayFieldCheckboxSelectMultiple
 
@@ -43,6 +43,11 @@ class EasyMDEWidget(forms.widgets.Textarea):
 class SujetsMultipleChoiceField(forms.ModelMultipleChoiceField):
     def label_from_instance(self, obj: Sujet):
         return f"{obj.nom_court} ({', '.join([theme.nom_court for theme in obj.themes.all()])})"
+
+
+class BaseJuridiqueAdminInline(admin.StackedInline):
+    model = BaseJuridique
+    extra = 1
 
 
 @admin.register(Aide)
@@ -189,6 +194,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     formfield_overrides = {
         TextField: {"widget": EasyMDEWidget},
     }
+    inlines = (BaseJuridiqueAdminInline,)
 
     class AideChangeList(ChangeList):
         def get_queryset(self, request, **kwargs):
@@ -271,6 +277,12 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                 self.fieldsets[1],
                 self.fieldsets[2],
             ]
+
+    def get_inlines(self, request, obj):
+        if obj:
+            return super().get_inlines(request, obj)
+        else:
+            return []
 
     def get_changeform_initial_data(self, request):
         initial = super().get_changeform_initial_data(request)
