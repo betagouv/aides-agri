@@ -17,7 +17,7 @@
 
     {% importmap nonce=request.csp_nonce %}
 
-    <script type="module" src="{% static 'vendor/htmx.esm.js' %}"></script>
+    <script src="{% static 'vendor/htmx.js' %}"></script>
     <meta name="htmx-config" content='{"allowEval":false, "includeIndicatorStyles":false, "attributesToSettle":["class", "width", "height"]}'>
 
     {% if UI_SENTRY_PUBLIC_KEY %}{% include "ui/blocks/sentry.html" %}{% endif %}
