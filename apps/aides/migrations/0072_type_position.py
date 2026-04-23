@@ -21,7 +21,7 @@ def data_migration(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("aides", "0069_zonegeographique_prefix"),
+        ("aides", "0071_zonegeographique_prefix"),
     ]
 
     operations = [
