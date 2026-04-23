@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("aides", "0066_remove_aide_aap_ami_remove_aide_duree_accompagnement_and_more"),
+        ("aides", "0068_basejuridique_commentaire"),
     ]
 
     operations = [
