@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("aides", "0067_rename_logo_filename_organisme_illustration_filename_and_more"),
+        ("aides", "0069_rename_logo_filename_organisme_illustration_filename_and_more"),
     ]
 
     operations = [
