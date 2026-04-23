@@ -7,13 +7,14 @@
      data-select-rich-multi-value="{% if self.multi %}true{% else %}false{% endif %}"
      data-select-rich-required-value="{% if self.required %}true{% else %}false{% endif %}"
      data-select-rich-keep-default-button-label-value="{% if self.keep_default_button_label %}true{% else %}false{% endif %}"
+     data-select-rich-show-values-on-button-label-value="{% if self.show_values_on_button_label %}true{% else %}false{% endif %}"
 >
-  <div class="fr-label fr-mb-2v">
+  <label class="fr-label fr-mb-2v" for="select-rich-{{ self.name }}-button">
     {{ self.label }}
     {% if self.helper %}
     <span class="fr-hint-text" data-select-rich-target="helper">{{ self.helper }}</span>
     {% endif %}
-  </div>
+  </label>
 
   {% if self.with_tags %}
     <div class="fr-select-rich__tags fr-tags-group" data-select-rich-target="tags">
@@ -28,6 +29,7 @@
   {% endif %}
 
   <button type="button"
+          id="select-rich-{{ self.name }}-button"
           class="fr-select"
           data-select-rich-target="button"
           aria-controls="select-rich-{{ self.name }}-entries"
