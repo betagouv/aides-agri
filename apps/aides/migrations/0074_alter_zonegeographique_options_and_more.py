@@ -15,7 +15,7 @@ def data_populate_departements_position(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("aides", "0071_alter_aide_couverture_geographique"),
+        ("aides", "0073_alter_aide_couverture_geographique"),
     ]
 
     operations = [
