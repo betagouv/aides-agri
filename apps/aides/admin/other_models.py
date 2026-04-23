@@ -281,6 +281,7 @@ class ZoneGeographiqueAdmin(admin.ModelAdmin):
     list_display_links = ("code", "nom")
     list_filter = ("type",)
     search_fields = ("nom", "code_postal")
+    ordering = ("type", "code")
 
     def has_add_permission(self, *args):
         return False
