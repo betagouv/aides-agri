@@ -1,0 +1,10 @@
+{% extends "admin/change_form.html" %}
+
+{% block extrahead %}{{ block.super }}
+<script nonce="{{ request.csp_nonce }}">
+window.onload = (evt) => {
+  document.querySelector("fieldset:nth-of-type(5) details").appendChild(document.getElementById("bases_juridiques-group"))
+  document.getElementById("bases_juridiques-group").style.paddingBlock = "10px !important"
+}
+</script>
+{% endblock extrahead %}

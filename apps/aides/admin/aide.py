@@ -191,6 +191,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             {"classes": ["collapse"], "fields": ["raw_data"]},
         ),
     ]
+    change_form_template = "admin/aides/aide/change_form.html"
     formfield_overrides = {
         TextField: {"widget": EasyMDEWidget},
     }
