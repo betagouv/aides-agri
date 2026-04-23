@@ -737,8 +737,7 @@ class Aide(models.Model):
         )
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = f"{slugify(self.organisme.nom) if self.organisme_id else 'organisme-inconnu'}-{slugify(self.nom)}"
+        self.slug = f"{slugify(self.organisme.nom) if self.organisme_id else 'organisme-inconnu'}-{slugify(self.nom)}"
         if self.is_published:
             if not self.can_be_published():
                 raise ValueError("This Aide cannot be published")
