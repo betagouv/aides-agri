@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("aides", "0068_sujet_icon_name_theme_icon_name_and_more"),
+        ("aides", "0070_sujet_icon_name_theme_icon_name_and_more"),
     ]
 
     operations = [
