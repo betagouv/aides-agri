@@ -773,3 +773,4 @@ class BaseJuridique(models.Model):
         verbose_name="Adresse",
         help_text="Une URL valide, exemple https://legifrance.gouv.fr/",
     )
+    commentaire = models.CharField(blank=True, verbose_name="Commentaire")
