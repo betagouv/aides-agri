@@ -14,7 +14,7 @@ html[data-theme="light"], :root {
 }
 
 .status {
-  width: 12.5%;
+  flex: 1;
 }
 
 .status > h2 {
