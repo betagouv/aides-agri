@@ -3,7 +3,9 @@
 set -e
 
 # extract illustrations from DB and store them on local storage
-python manage.py aides_publish_illustrations_from_db
+if [[ -z "$TMP_DISABLE_PUBLISH_ILLUSTRATIONS" ]]; then
+  python manage.py aides_publish_illustrations_from_db
+fi
 
 # Symlink the correct robots.txt
 if [[ "$ENVIRONMENT" == "prod" ]]; then
