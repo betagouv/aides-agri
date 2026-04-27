@@ -32,25 +32,31 @@
         <mj-text font-family="Marianne, Arial">
           Votre recherche, que vous pouvez retrouver actualisée en suivant <strong><a href="{{ link }}">ce lien</a></strong>, concernait :
           <ul>
-            <li><strong>Thème</strong> : {{ theme.nom_court }}</li>
+            {% if departement %}
             <li>
-              <strong>Sujets</strong> :
-              {% for sujet in sujets %}
-                {{ sujet.nom_court }}{% if not forloop.last %},{% endif %}
-              {% endfor %}
+              <strong>Département</strong> :
+              {{ departement.code }} – {{ departement.nom }}
             </li>
-            <li>
-              <strong>Commune</strong> : {{ commune.nom }} ({{ commune.code_postal }})
-            </li>
-            <li>
-              <strong>Effectif</strong> : {{ effectif }}
-            </li>
+            {% endif %}
+            {% if filieres.exists %}
             <li>
               <strong>Filières</strong> :
               {% for filiere in filieres %}
                 {{ filiere.nom }}{% if not forloop.last %},{% endif %}
               {% endfor %}
             </li>
+            {% endif %}
+            {% if themes.exists or sujets.exists %}
+            <li>
+              <strong>Besoins</strong> :
+              {% for theme in themes %}
+                {{ theme.nom_court }}{% if not forloop.last or sujets %},{% endif %}
+              {% endfor %}
+              {% for sujet in sujets %}
+                {{ sujet.nom_court }}{% if not forloop.last %},{% endif %}
+              {% endfor %}
+            </li>
+            {% endif %}
           </ul>
         </mj-text>
         <mj-text font-family="Marianne, Arial">

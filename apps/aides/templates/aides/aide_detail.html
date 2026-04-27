@@ -33,7 +33,7 @@ document.onreadystatechange = evt => {
     <div class="fr-container">
       {% block breadcrumb %}{% dsfr_breadcrumb %}{% endblock breadcrumb %}
 
-      <img src="{{ object.organisme.get_logo_url }}" alt="" class="organisme-logo">
+      <img src="{{ object.organisme.get_illustration_url }}" alt="" class="organisme-logo">
 
       <div class="fr-grid-row fr-mt-2w">
         <div class="fr-col fr-tags-group fr-tags-group--with-badges">
@@ -56,18 +56,18 @@ document.onreadystatechange = evt => {
       <div class="fr-grid-row fr-mt-4w fr-mb-2w">
         <div class="fr-col">
           {% block content_header_highlight %}
-            {% dsfr_highlight content=object.promesse %}
+            <p>{{ object.promesse }}</p>
           {% endblock content_header_highlight %}
         </div>
       </div>
 
       {% if object.date_fin or aide.parent %}
-      <div class="fr-grid-row fr-mt-4w fr-ml-md-3w">
+      <div class="fr-grid-row fr-mt-4w">
         {% block content_header_date_fin %}
           {% if object.date_fin %}
             <div class="fr-col fr-col-12">
               <span class="fr-icon fr-icon-calendar-check-line fr-artwork-minor--blue-france" aria-hidden="true"></span>
-              <strong>Date d’échéance :</strong>
+              <strong>Date de clôture :</strong>
               <time datetime="{{ object.date_fin|date:"c" }}">{{ object.date_fin|date:"SHORT_DATE_FORMAT" }}</time>
             </div>
           {% endif %}
@@ -94,29 +94,35 @@ document.onreadystatechange = evt => {
       </div>
       {% endif %}
 
-      <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--right fr-my-1w">
-      {% block content_header_actions %}
-        {% if object.url_demarche %}
-          <a class="fr-btn fr-btn--sm fr-btn--primary fr-mx-1w fr-my-2w"
-             target="_blank"
-             href="{{ object.url_demarche }}"
-             data-action="click->matomo#trackEvent"
-             data-event-page="Aide"
-             data-event-name="Lien démarche"
-          >
-            Déposer mon dossier
-          </a>
-        {% endif %}
-        <button type="button"
-                class="fr-btn fr-btn--sm fr-btn--secondary fr-mx-1w fr-my-2w"
-                id="button-print"
-                data-action="click->matomo#trackEvent"
-                data-event-page="Aide"
-                data-event-name="Impression"
-        >
-          Télécharger cette fiche
-        </button>
-      {% endblock content_header_actions %}
+      <div class="fr-grid-row fr-my-1w">
+        <div class="fr-col fr-col--middle fr-text--sm fr-mb-0">
+          Date de mise à jour :
+          <time datetime="{{ object.last_published_at.date|date:"c" }}">{{ object.last_published_at|date:"SHORT_DATE_FORMAT" }}</time>
+        </div>
+        <div class="fr-col fr-grid-row fr-grid-row--gutters fr-grid-row--right">
+          {% block content_header_actions %}
+            {% if object.url_demarche %}
+              <a class="fr-btn fr-btn--sm fr-btn--primary fr-mx-1w fr-my-2w"
+                 target="_blank"
+                 href="{{ object.url_demarche }}"
+                 data-action="click->matomo#trackEvent"
+                 data-event-page="Aide"
+                 data-event-name="Lien démarche"
+              >
+                Déposer mon dossier
+              </a>
+            {% endif %}
+            <button type="button"
+                    class="fr-btn fr-btn--sm fr-btn--secondary fr-mx-1w fr-my-2w"
+                    id="button-print"
+                    data-action="click->matomo#trackEvent"
+                    data-event-page="Aide"
+                    data-event-name="Impression"
+            >
+              Télécharger cette fiche
+            </button>
+          {% endblock content_header_actions %}
+        </div>
       </div>
     </div>
   </div>
@@ -244,12 +250,14 @@ document.onreadystatechange = evt => {
         </div>
         {% endif %}
 
+        {% if object.contact %}
         <div class="fr-background-alt--blue-france fr-py-3w fr-px-5w" id="contact">
           <h2 class="fr-h6 fr-icon-mail-fill fr-icon--md fr-mb-2w fr-text-default--grey">Contact</h2>
           <p class="fr-text--sm">
             {{ object.contact|urlize|dsfr_md }}
           </p>
         </div>
+        {% endif %}
 
         {% if object.bases_juridiques.exists %}
         <h2 id="bases-juridiques"
@@ -269,7 +277,7 @@ document.onreadystatechange = evt => {
   {% endblock content_body %}
 
   <div class="fr-container fr-my-4w">
-    {% dsfr_alert type="info" extra_classes="fr-mb-4w" content="Aides Agri met à disposition une simple information. Tout dossier soumis dans le cadre du dispositif ci-dessous doit être instruit par les services compétents afin d’évaluer l’éligibilité du dossier." %}
+    {% dsfr_alert type="info" extra_classes="fr-mb-4w" content="Aides Agri met à disposition une simple information. Tout dossier soumis dans le cadre du dispositif ci-dessus doit être instruit par les services compétents afin d’évaluer l’éligibilité du dossier." %}
     {% include "aides_feedback/blocks/create_feedback_on_aides.html" with form=create_feedback_on_aides_form %}
   </div>
 </main>

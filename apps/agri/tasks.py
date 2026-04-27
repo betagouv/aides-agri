@@ -5,36 +5,32 @@ from django.urls import reverse
 from django_tasks import task
 from mjml import mjml2html
 
-from aides.models import Theme, Sujet, ZoneGeographique, Aide, Filiere
+from aides.models import Theme, Sujet, Aide, Filiere, ZoneGeographique
 
 
 @task()
 def send_results_by_mail(
     email: str,
     base_url: str,
-    theme_id: int,
-    sujets_ids: list[int],
-    commune_id: int,
-    effectif: tuple[str, str],
-    filieres_ids: list[int],
+    departement_code: str,
+    themes_ids: list[str],
+    sujets_ids: list[str],
+    filieres_ids: list[str],
     aides_ids: list[int],
 ):
-    theme = Theme.objects.get(pk=theme_id)
+    themes = Theme.objects.filter(pk__in=themes_ids)
     sujets = Sujet.objects.filter(pk__in=sujets_ids)
-    commune = ZoneGeographique.objects.get(pk=commune_id)
     filieres = Filiere.objects.filter(pk__in=filieres_ids)
+    departement = None
+    if departement_code:
+        departement = ZoneGeographique.objects.departements().get(code=departement_code)
     aides = Aide.objects.filter(pk__in=aides_ids)
 
     querystring_dict = QueryDict(mutable=True)
-    querystring_dict.update(
-        {
-            "theme": theme.pk,
-            "commune": commune.code,
-            "tranche_effectif_salarie": effectif[0],
-        }
-    )
-    querystring_dict.setlist("sujets", [s.pk for s in sujets])
-    querystring_dict.setlist("filieres", [f.pk for f in filieres])
+    querystring_dict.setdefault("departement", departement_code)
+    querystring_dict.setlist("themes", themes_ids)
+    querystring_dict.setlist("sujets", sujets_ids)
+    querystring_dict.setlist("filieres", filieres_ids)
 
     url = f"{base_url}{reverse('agri:results')}?{querystring_dict.urlencode()}"
 
@@ -49,10 +45,9 @@ def send_results_by_mail(
                 context={
                     "base_url": base_url,
                     "link": url,
-                    "theme": theme,
+                    "departement": departement,
+                    "themes": themes,
                     "sujets": sujets,
-                    "commune": commune,
-                    "effectif": effectif[1],
                     "filieres": filieres,
                     "aides": aides,
                 },

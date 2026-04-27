@@ -4,15 +4,13 @@
       "numberOfRuns": 1,
       "url": [
         "http://localhost:8000/",
-        "http://localhost:8000/etape-2?theme=1",
-        "http://localhost:8000/etape-4?theme=1&sujets=1&sujets=3",
-        "http://localhost:8000/etape-5?theme=1&sujets=1&sujets=3&commune=13038",
-        "http://localhost:8000/resultats?theme=1&sujets=1&sujets=3&commune=13038&filieres=1&tranche_effectif_salarie=1019"
+        "http://localhost:8000/?departement=13&filieres=1&filieres=2",
+        "http://localhost:8000/aides?themes=1&sujets=1&sujets=3&departement=13&filieres=1&filieres=2",
+        "http://localhost:8000/aide/3-organisme-1-aide-5"
       ]
     },
     "assert": {
       "assertions": {
-        "categories:performance": "off",
         "categories:pwa": "off",
         "categories:accessibility": [ "error", {
           "minScore": 1

@@ -1,0 +1,9 @@
+<button class="fr-btn"
+        type="button"
+        hx-get="{% querystring more=request.GET.less %}"
+        hx-target="closest .load-more"
+        hx-swap="outerHTML"
+>
+  Voir plus de dispositifs
+</button>
+<div hx-swap-oob="delete:.loaded-lazily"></div>

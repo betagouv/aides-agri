@@ -9,12 +9,15 @@ export class SelectRich extends Controller {
     name: String,
     multi: Boolean,
     required: Boolean,
-    keepDefaultButtonLabel: Boolean
+    keepDefaultButtonLabel: Boolean,
+    showValuesOnButtonLabel: Boolean
   }
   static targets = ["button", "entries", "search", "searchButton", "option", "helper", "error", "tags", "addButton"]
+  static classExpanded = "fr-collapse--expanded"
 
   connect() {
     super.connect()
+    this.hasChanged = false
 
     // Close the select-rich element on click elsewhere or hit Esc
     document.body.addEventListener("click", evt => {
@@ -26,7 +29,7 @@ export class SelectRich extends Controller {
       }
     })
     document.body.addEventListener("keydown", evt => {
-      if (evt.code === "Escape") {
+      if (evt.code === "Escape" && this.entriesTarget.classList.contains("fr-collapse--expanded")) {
         this._close()
       }
     })
@@ -120,10 +123,14 @@ export class SelectRich extends Controller {
     if (this.multiValue && !this.keepDefaultButtonLabelValue) {
       const checkedInputs = this.entriesTarget.querySelectorAll("input[type=checkbox]:checked")
       if (checkedInputs.length) {
-        if (checkedInputs.length === 1) {
-          this.buttonTarget.textContent = "1 option sélectionnée"
+        if (this.showValuesOnButtonLabelValue) {
+          this.buttonTarget.textContent = `(${checkedInputs.length}) ` + Array.from(checkedInputs).map(({dataset}) => dataset).map(({label}) => label).join(", ")
         } else {
-          this.buttonTarget.textContent = checkedInputs.length + " options sélectionnées"
+          if (checkedInputs.length === 1) {
+            this.buttonTarget.textContent = "1 option sélectionnée"
+          } else {
+            this.buttonTarget.textContent = checkedInputs.length + " options sélectionnées"
+          }
         }
       } else {
         this.buttonTarget.textContent = this.buttonText
@@ -179,7 +186,7 @@ export class SelectRich extends Controller {
     if (this.hasButtonTarget) {
       this.buttonTarget.setAttribute("aria-expanded", true)
     } else {
-      this.entriesTarget.classList.add("fr-collapse--expanded")
+      this.entriesTarget.classList.add(SelectRich.classExpanded)
     }
   }
 
@@ -187,13 +194,22 @@ export class SelectRich extends Controller {
     if (this.hasButtonTarget) {
       this.buttonTarget.setAttribute("aria-expanded", false)
     } else {
-      this.entriesTarget.classList.remove("fr-collapse--expanded")
+      this.entriesTarget.classList.remove(SelectRich.classExpanded)
     }
     this._updateButtons()
+    if (this.hasChanged) {
+      this.hasChanged = false
+      this.element.dispatchEvent(new Event("change", {bubbles: true}))
+    }
+  }
+
+  _isOpened() {
+    return this.entriesTarget.classList.contains(SelectRich.classExpanded)
   }
 
   changed(evt) {
     this._updateButton()
+    this.hasChanged = true
     if (this.hasSearchTarget) {
       this.searchTarget.value = ""
       this.search()
@@ -206,10 +222,12 @@ export class SelectRich extends Controller {
           this._removeTag(evt.target)
         }
       }
+      if (this._isOpened()) {
+        evt.stopPropagation()
+      }
     } else {
       this._close()
     }
-    this.element.dispatchEvent(new Event("change"))
   }
 
   _setErrorState() {

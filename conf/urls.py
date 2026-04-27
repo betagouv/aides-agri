@@ -37,7 +37,7 @@ urlpatterns = [
     path("ui/", include("ui.urls")),
 ]
 
-if settings.DEBUG:
+if settings.DEBUG:  # pragma: no cover
     from debug_toolbar.toolbar import debug_toolbar_urls
     from django.contrib.staticfiles import views
 
