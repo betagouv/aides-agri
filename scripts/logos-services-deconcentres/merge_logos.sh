@@ -38,8 +38,8 @@ for f in data/pref-*.png; do
   tmp=${f:10}
   code=${tmp%.*}
   if [[ ${departements_littoral[$code]} ]]; then
-    magick convert +append "$f" "ddtm.png" "data/ddt-$code.png"
+    magick convert +append "$f" "logos/ddtm.png" "data/ddt-$code.png"
   else
-    magick convert +append "$f" "ddt.png" "data/ddt-$code.png"
+    magick convert +append "$f" "logos/ddt.png" "data/ddt-$code.png"
   fi
 done
