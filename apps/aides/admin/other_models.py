@@ -229,6 +229,7 @@ class OrganismeForm(forms.ModelForm):
         )
 
 
+@admin.register(Organisme)
 class OrganismeAdmin(CsvExportMixin, IllustrationMixin, VersionAdmin):
     list_display = ("id", "nom", "acronyme", "famille", "secteurs", "aides_count")
     list_display_links = ("id", "nom")
