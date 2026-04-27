@@ -16,7 +16,7 @@ class Command(BaseCommand):
         try:
             organisme = Organisme.objects.get(pk=organisme_id)
             with open(illustration_file, "rb") as f:
-                organisme.logo = f.read()
+                organisme.illustration = f.read()
                 organisme.save()
         except Organisme.DoesNotExist:
             print("Wrong organisme_id")

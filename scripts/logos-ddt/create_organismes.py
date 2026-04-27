@@ -55,8 +55,7 @@ for dept in ZoneGeographique.objects.departements():
     organisme.zones_geographiques.set([dept])
     try:
         with open(f"data/ddt-{dept.code}.png", "rb") as f:
-            organisme.logo = f.read()
-            organisme.logo_filename = f"ddt-{dept.code}.png"
+            organisme.illustration = f.read()
             organisme.save()
     except FileNotFoundError:
         print(f"Logo non trouvé pour le département {dept.code}")
