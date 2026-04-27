@@ -71,3 +71,10 @@ scalingo-django-shell environment: (scalingo-django-command environment "shell")
 # Scalingo: set an Organisme logo
 scalingo-set-organisme-logo environment organisme_id file:
     scalingo run --app aides-agri-{{environment}} --file {{file}} python manage.py aides_set_organisme_illustration {{organisme_id}} /tmp/uploads/{{file}}
+
+# Security.txt: sign security.txt file
+securitytxt-sign:
+    sed -i '/-----BEGIN PGP SIGNED MESSAGE-----/,/-----END PGP SIGNATURE-----/d' webroot/.well-known/security.txt
+    gpg --clearsign webroot/.well-known/security.txt
+    cat webroot/.well-known/security.txt.asc >> webroot/.well-known/security.txt
+    rm webroot/.well-known/security.txt.asc
