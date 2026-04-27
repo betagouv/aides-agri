@@ -73,7 +73,7 @@ class HomeView(TemplateView):
                     "link": reverse(
                         "agri:results",
                         query={
-                            "sujet" if isinstance(besoin, Sujet) else "theme": [
+                            "sujets" if isinstance(besoin, Sujet) else "themes": [
                                 besoin.pk
                             ]
                         },
