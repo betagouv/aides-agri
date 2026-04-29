@@ -70,11 +70,11 @@
 	--color: var(--text-default-warning);
 }
 
-.fr-tag.fr-badge--purple-glycine {
-	--hover: var(--background-contrast-purple-glycine-hover);
-	--active: var(--background-contrast-purple-glycine-active);
-	--background: var(--background-contrast-purple-glycine);
-	--color: var(--text-label-purple-glycine);
+.fr-tag.fr-badge--green-tilleul-verveine {
+	--hover: var(--background-contrast-green-tilleul-verveine);
+	--active: var(--background-contrast-green-tilleul-verveine-active);
+	--background: var(--background-contrast-green-tilleul-verveine);
+	--color: var(--text-label-green-tilleul-verveine);
 }
 
 .load-more {
