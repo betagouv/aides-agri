@@ -2,10 +2,6 @@ version = 1
 revision = 3
 requires-python = ">=3.13"
 
-[options]
-exclude-newer = "2026-04-22T07:51:08.149309801Z"
-exclude-newer-span = "P7D"
-
 [[package]]
 name = "aides-agri"
 version = "0.1.0"
