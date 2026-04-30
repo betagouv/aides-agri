@@ -61,19 +61,29 @@
           hx-push-url="true"
     >
       {% if filter_departements and filter_departements|length > 1 %}
+      <div class="fr-col fr-col-12 fr-col-md-3">
         {% ui_select_rich_multi label="Filtrer par départements" name="filter_departements" button_text="Départements" keep_default_button_label=True options=filter_departements searchable=True initials=filter_departements_initials %}
+      </div>
       {% endif %}
       {% if filter_types and filter_types|length > 1 %}
+      <div class="fr-col fr-col-12 fr-col-md-3">
         {% ui_select_rich_multi label="Filtrer par types de dispositifs" name="filter_types" button_text="Types" keep_default_button_label=True options=filter_types initials=filter_types_initials %}
+      </div>
       {% endif %}
       {% if filter_beneficiaires and filter_beneficiaires|length > 1 %}
+      <div class="fr-col fr-col-12 fr-col-md-3">
         {% ui_select_rich_multi label="Filtrer par bénéficiaires" name="filter_beneficiaires" button_text="Bénéficiaires" keep_default_button_label=True options=filter_beneficiaires initials=filter_beneficiaires_initials %}
+      </div>
       {% endif %}
       {% if filter_filieres and filter_filieres|length > 1 %}
+      <div class="fr-col fr-col-12 fr-col-md-3">
         {% ui_select_rich_multi label="Filtrer par filières" name="filter_filieres" button_text="Filières" keep_default_button_label=True options=filter_filieres searchable=True initials=filter_filieres_initials %}
+      </div>
       {% endif %}
       {% if filter_sujets and filter_sujets|length > 1 %}
+      <div class="fr-col fr-col-12 fr-col-md-3">
         {% ui_select_rich_multi label="Filtrer par besoins" name="filter_sujets" button_text="Besoins" keep_default_button_label=True options=filter_sujets searchable=True initials=filter_sujets_initials %}
+      </div>
       {% endif %}
     </form>
 
