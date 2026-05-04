@@ -117,6 +117,12 @@ DATABASES = {
         "PASSWORD": environ.get("DB_PASSWORD", "root"),
         "HOST": environ.get("DB_HOST", "localhost"),
         "PORT": environ.get("DB_PORT", "5432"),
+        "CONN_MAX_AGE": environ.get("DB_CONN_MAX_AGE", 0)
+        if APPLICATION == "WEB"
+        else 0,
+        "CONN_HEALTH_CHECKS": environ.get("DB_CONN_MAX_AGE", 0) != 0
+        if APPLICATION == "WEB"
+        else 0,
     }
 }
 
