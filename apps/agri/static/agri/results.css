@@ -3,7 +3,6 @@
 }
 
 .fr-card--horizontal-fifteen-percent .fr-card__header {
-	flex: 0 0 15%;
 	width: 50%;
 	padding-left: 32px;
 }
@@ -87,13 +86,21 @@
 
 @media (min-width: 576px) {
 	.fr-card--horizontal-fifteen-percent .fr-card__header {
+		width: 30%;
+	}
+}
+
+@media (min-width: 48em) {
+	.fr-card--horizontal-fifteen-percent .fr-card__header {
+		flex: 0 0 15%;
 		padding-left: 0;
 	}
 }
 
 @media print {
   #actions,
-  #filters,
+	#toc,
+	#filters-actions,
   #footer,
   .fr-breadcrumb,
   .fr-alert,
