@@ -202,7 +202,7 @@ document.addEventListener("htmx:load", evt => {
             {% dsfr_sidemenu sidemenu_data button_label="Sommaire" %}
           </div>
           <div class="fr-col fr-col-12 fr-col-md-9 fr-container">
-            <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-grid-row fr-grid-row--gutters" id="filters-actions">
               <div class="fr-col fr-col-12 fr-col-md-6 fr-select-group">
                 <label class="fr-label" for="select-tri">Trier les résultats</label>
                 <select form="filters" class="fr-select" id="select-tri" name="tri">
