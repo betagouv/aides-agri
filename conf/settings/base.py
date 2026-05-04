@@ -22,6 +22,7 @@ APPS_DIR = f"{str(BASE_DIR)}/apps"
 sys.path.append(APPS_DIR)
 
 
+APPLICATION = environ.get("APPLICATION")
 ENVIRONMENT = environ.get("ENVIRONMENT")
 SECRET_KEY = environ.get("SECRET_KEY")
 
@@ -116,6 +117,12 @@ DATABASES = {
         "PASSWORD": environ.get("DB_PASSWORD", "root"),
         "HOST": environ.get("DB_HOST", "localhost"),
         "PORT": environ.get("DB_PORT", "5432"),
+        "CONN_MAX_AGE": environ.get("DB_CONN_MAX_AGE", 0)
+        if APPLICATION == "WEB"
+        else 0,
+        "CONN_HEALTH_CHECKS": environ.get("DB_CONN_MAX_AGE", 0) != 0
+        if APPLICATION == "WEB"
+        else 0,
     }
 }
 

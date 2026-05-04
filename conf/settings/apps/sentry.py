@@ -2,10 +2,10 @@ import os
 
 import sentry_sdk
 
-from ..base import ENVIRONMENT
+from ..base import ENVIRONMENT, APPLICATION
 
 
-SENTRY_DSN = os.getenv("SENTRY_DSN", "")
+SENTRY_DSN = os.getenv(f"SENTRY_DSN_{APPLICATION}", "")
 SENTRY_PERFORMANCE_SAMPLE_RATE = os.getenv("SENTRY_PERFORMANCE_SAMPLE_RATE", 0.1)
 if SENTRY_DSN:  # pragma: no cover
     sentry_sdk.init(
