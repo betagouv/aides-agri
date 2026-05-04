@@ -22,6 +22,7 @@ APPS_DIR = f"{str(BASE_DIR)}/apps"
 sys.path.append(APPS_DIR)
 
 
+APPLICATION = environ.get("APPLICATION")
 ENVIRONMENT = environ.get("ENVIRONMENT")
 SECRET_KEY = environ.get("SECRET_KEY")
 
