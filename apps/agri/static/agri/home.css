@@ -49,9 +49,17 @@ h1 {
   color: var(--text-title-grey);
 }
 
+:root {
+  --homepage-recherche-bgcolor: rgba(255, 255, 255, .95);
+}
+
+:root[data-fr-theme="dark"] {
+  --homepage-recherche-bgcolor: rgba(0, 0, 0, .95);
+}
+
 #recherche {
   border-radius: 8px;
-  background-color: rgba(255, 255, 255, .95);
+  background-color: var(--homepage-recherche-bgcolor) !important;
   filter: drop-shadow(var(--raised-shadow));
   position: relative;
 }

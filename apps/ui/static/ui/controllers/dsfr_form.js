@@ -38,12 +38,19 @@ export class DsfrForm extends Controller {
   }
 
   connect() {
+    this.element.querySelectorAll("input,select").forEach(elt => {
+      const errorP = document.createElement("p")
+      errorP.classList.add("fr-error-text", "fr-hidden")
+      elt.parentElement.appendChild(errorP)
+    })
     this.element.querySelectorAll("[type=submit]").forEach(elt => elt.addEventListener("click", evt => {
       let isValid = true
       this.element.querySelectorAll("input,select").forEach(inputElt => {
         if (!inputElt.checkValidity()) {
           isValid = false
-          inputElt.reportValidity()
+          const errorP = inputElt.parentElement.querySelector(".fr-error-text")
+          errorP.textContent = inputElt.validationMessage
+          errorP.classList.remove("fr-hidden")
         }
       })
       if (!this.validateCustomFields()) {
