@@ -13,7 +13,19 @@ export class SelectRich extends Controller {
     showValuesOnButtonLabel: Boolean,
     requiredErrorMessage: String
   }
-  static targets = ["button", "entries", "search", "searchButton", "option", "helper", "messages", "tags", "addButton"]
+  static targets = [
+    "button",
+    "entries",
+    "search",
+    "selectAllButton",
+    "unselectAllButton",
+    "searchButton",
+    "option",
+    "helper",
+    "messages",
+    "tags",
+    "addButton",
+  ]
   static classExpanded = "fr-collapse--expanded"
 
   connect() {
@@ -256,6 +268,22 @@ export class SelectRich extends Controller {
     } else {
       return true
     }
+  }
+
+  selectAll() {
+    this.entriesTarget.querySelectorAll("input[type=checkbox]").forEach(elt => {
+      elt.checked = true
+    })
+    this.selectAllButtonTarget.classList.add("fr-hidden")
+    this.unselectAllButtonTarget.classList.remove("fr-hidden")
+  }
+
+  unselectAll() {
+    this.entriesTarget.querySelectorAll("input[type=checkbox]").forEach(elt => {
+      elt.checked = false
+    })
+    this.selectAllButtonTarget.classList.remove("fr-hidden")
+    this.unselectAllButtonTarget.classList.add("fr-hidden")
   }
 
   noop() {}

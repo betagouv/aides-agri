@@ -39,6 +39,7 @@ def ui_select_rich_multi(*args, **kwargs) -> dict:
         "helper",
         "required",
         "required_error_message",
+        "with_select_all_button",
         "searchable",
         "search_url",
         "search_field_name",
