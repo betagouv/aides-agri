@@ -74,7 +74,7 @@ window.onload = (evt) => {
                     {% dsfr_form_field form.departement %}
                   </div>
                   <div class="fr-col fr-col-12 fr-col-md-6">
-                    {% ui_select_rich_multi label="Vos filières :" name="filieres" required=True options=filieres_options show_values_on_button_label=True %}
+                    {% ui_select_rich_multi label="Vos filières :" name="filieres" required=True options=filieres_options show_values_on_button_label=True with_select_all_button=True %}
                   </div>
                 </div>
                 <div class="fr-grid-row fr-mt-3w">
