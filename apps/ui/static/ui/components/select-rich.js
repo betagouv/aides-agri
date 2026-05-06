@@ -10,9 +10,10 @@ export class SelectRich extends Controller {
     multi: Boolean,
     required: Boolean,
     keepDefaultButtonLabel: Boolean,
-    showValuesOnButtonLabel: Boolean
+    showValuesOnButtonLabel: Boolean,
+    requiredErrorMessage: String
   }
-  static targets = ["button", "entries", "search", "searchButton", "option", "helper", "error", "tags", "addButton"]
+  static targets = ["button", "entries", "search", "searchButton", "option", "helper", "messages", "tags", "addButton"]
   static classExpanded = "fr-collapse--expanded"
 
   connect() {
@@ -235,21 +236,24 @@ export class SelectRich extends Controller {
       this.helperTarget.classList.add("fr-hidden")
     }
 
-    this.errorTarget.classList.remove("fr-hidden")
+    const errorP = document.createElement("p")
+    errorP.classList.add("fr-message", "fr-message--error")
+    errorP.textContent = this.requiredErrorMessageValue
+    this.messagesTarget.appendChild(errorP)
     this.element.classList.add("fr-select-group--error")
   }
 
   _unsetErrorState() {
-    this.errorTarget.classList.add("fr-hidden")
+    this.messagesTarget.innerHTML = ""
     this.element.classList.remove("fr-select-group--error")
   }
 
   validate() {
+    this._unsetErrorState()
     if (this.requiredValue && !this.entriesTarget.querySelector("input:checked") && !this.element.closest("form").querySelector(`input[type=hidden][name=${this.nameValue}][value]`)) {
       this._setErrorState()
       return false
     } else {
-      this._unsetErrorState()
       return true
     }
   }

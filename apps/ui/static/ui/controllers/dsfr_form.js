@@ -9,9 +9,6 @@ export class DsfrForm extends Controller {
       return
     }
     inputGroup.classList.add(`${groupClass}--error`)
-    inputGroup.querySelector(".fr-info-text")?.classList.add("fr-hidden")
-    inputGroup.querySelector(".fr-error-text")?.classList.remove("fr-hidden")
-    inputElement.setCustomValidity("")
   }
 
   _markInputGroupAsValid(inputElement, groupClass) {
@@ -20,7 +17,7 @@ export class DsfrForm extends Controller {
       return
     }
     inputGroup.classList.remove(`${groupClass}--error`)
-    inputGroup.querySelector(".fr-error-text")?.classList.add("fr-hidden")
+    inputGroup.querySelector(".fr-messages-group").innerHTML = ""
   }
 
   validateCustomFields() {
@@ -39,18 +36,25 @@ export class DsfrForm extends Controller {
 
   connect() {
     this.element.querySelectorAll("input,select").forEach(elt => {
-      const errorP = document.createElement("p")
-      errorP.classList.add("fr-error-text", "fr-hidden")
-      elt.parentElement.appendChild(errorP)
+      const messagesDiv = document.createElement("div")
+      const idMessages = elt.id + "-messages"
+      messagesDiv.setAttribute("id", idMessages)
+      messagesDiv.classList.add("fr-messages-group")
+      messagesDiv.setAttribute("aria-live", "polite")
+      elt.parentElement.appendChild(messagesDiv)
+      elt.setAttribute("aria-describedby", idMessages)
     })
     this.element.querySelectorAll("[type=submit]").forEach(elt => elt.addEventListener("click", evt => {
       let isValid = true
       this.element.querySelectorAll("input,select").forEach(inputElt => {
+        const messages = inputElt.parentElement.querySelector(".fr-messages-group")
+        messages.innerHTML = ""
         if (!inputElt.checkValidity()) {
           isValid = false
-          const errorP = inputElt.parentElement.querySelector(".fr-error-text")
+          const errorP = document.createElement("p")
+          errorP.classList.add("fr-message", "fr-message--error")
           errorP.textContent = inputElt.validationMessage
-          errorP.classList.remove("fr-hidden")
+          messages.appendChild(errorP)
         }
       })
       if (!this.validateCustomFields()) {
