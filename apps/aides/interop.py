@@ -166,9 +166,10 @@ class AideToInternalSchema(
         12: "sujets",
         18: "etat",
         19: "est_publiee",
-        20: "url_site",
-        21: "url_bureau_valideur",
-        22: "url_bo",
+        20: "raison_desactivation",
+        21: "url_site",
+        22: "url_bureau_valideur",
+        23: "url_bo",
     },
 ):
     @cached_property
@@ -190,11 +191,16 @@ class AideToInternalSchema(
     def _prepare_est_publiee(self):
         return "OUI" if self.aide.is_published else "NON"
 
+    def _prepare_raison_desactivation(self):
+        return self.aide.get_raison_desactivation_display()
+
     def _prepare_url_site(self):
         return self.base_url + self.aide.get_absolute_url()
 
     def _prepare_url_bureau_valideur(self):
-        return self.base_url + reverse("aides:aide-sneak-peek", args=[self.aide.pk, self.aide.sneak_peek_token])
+        return self.base_url + reverse(
+            "aides:aide-sneak-peek", args=[self.aide.pk, self.aide.sneak_peek_token]
+        )
 
     def _prepare_url_bo(self):
         return self.base_url + reverse("admin:aides_aide_change", args=[self.aide.pk])
