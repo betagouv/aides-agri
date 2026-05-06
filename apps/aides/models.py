@@ -342,11 +342,18 @@ class Filiere(models.Model):
         return self.nom
 
 
+class BeneficiairesQuerySet(models.QuerySet):
+    def groupements(self):
+        return self.filter(is_groupement=True)
+
+
 class Beneficiaires(models.Model):
     class Meta:
         verbose_name = "Type de bénéficiaires"
         verbose_name_plural = "Types de bénéficiaires"
         ordering = ("nom",)
+
+    objects = BeneficiairesQuerySet.as_manager()
 
     nom = models.CharField(max_length=100, verbose_name="Nom court")
     libelle = models.CharField(
