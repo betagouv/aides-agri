@@ -228,6 +228,7 @@ class ResultsMixin:
                 "children",
                 "sujets",
                 "sujets__themes",
+                "eligibilite_beneficiaires",
             )
             .order_by(*order_by)
             .defer("organisme__illustration")
@@ -354,6 +355,16 @@ class ResultsView(ResultsMixin, ListView):
                                     "extra_classes": "fr-tag--sm fr-badge fr-badge--no-icon fr-badge--success",
                                 },
                             ]
+                        )
+                        + (
+                            [
+                                {
+                                    "label": "Uniquement structures collectives",
+                                    "extra_classes": "fr-tag--sm fr-badge fr-badge--no-icon fr-badge--purple-glycine",
+                                }
+                            ]
+                            if aide.is_for_groupements_only
+                            else []
                         )
                         + [
                             {
