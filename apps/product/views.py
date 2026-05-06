@@ -29,6 +29,7 @@ class StatistiquesPageView(TemplateView):
                         ("Janvier 2026", "88"),
                         ("Février 2026", "99"),
                         ("Mars 2026", "110"),
+                        ("Avril 2026", "135"),
                     ],
                 },
                 {
@@ -38,6 +39,7 @@ class StatistiquesPageView(TemplateView):
                         ("Janvier 2026", "45 %"),
                         ("Février 2026", "57 %"),
                         ("Mars 2026", "62 %"),
+                        ("Avril 2026", "45 %"),
                     ],
                 },
                 {
@@ -47,6 +49,7 @@ class StatistiquesPageView(TemplateView):
                         ("Janvier 2026", "47 %"),
                         ("Février 2026", "48 %"),
                         ("Mars 2026", "64 %"),
+                        ("Avril 2026", "67 %"),
                     ],
                 },
             ],
@@ -58,6 +61,7 @@ class StatistiquesPageView(TemplateView):
                         ("Janvier 2026", "1 700"),
                         ("Février 2026", "1 542"),
                         ("Mars 2026", "1 336"),
+                        ("Avril 2026", "1 135"),
                     ],
                 },
                 {
@@ -67,6 +71,7 @@ class StatistiquesPageView(TemplateView):
                         ("Janvier 2026", "2 min 35s"),
                         ("Février 2026", "1 min 50s"),
                         ("Mars 2026", "1 min 59s"),
+                        ("Avril 2026", "1 min 36s"),
                     ],
                 },
             ],
@@ -78,6 +83,7 @@ class StatistiquesPageView(TemplateView):
                         ("Janvier 2026", "160"),
                         ("Février 2026", "142"),
                         ("Mars 2026", "252"),
+                        ("Avril 2026", "143"),
                     ],
                 },
                 {
@@ -86,6 +92,7 @@ class StatistiquesPageView(TemplateView):
                         ("Janvier 2026", "1,7"),
                         ("Février 2026", "2,02"),
                         ("Mars 2026", "3,75"),
+                        ("Avril 2026", "n/a (pas de notes enregistrées)"),
                     ],
                 },
                 {
@@ -94,6 +101,7 @@ class StatistiquesPageView(TemplateView):
                         ("Janvier 2026", "2,95"),
                         ("Février 2026", "3,35"),
                         ("Mars 2026", "3,125"),
+                        ("Avril 2026", "n/a (pas de notes enregistrées)"),
                     ],
                 },
             ],
