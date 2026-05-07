@@ -16,4 +16,4 @@ fi
 cd webroot && ln -s "$robots" robots.txt && cd - || exit
 
 # Start Gunicorn
-gunicorn conf.wsgi --log-file -
+gunicorn conf.wsgi --max-requests 200 --max-requests-jitter 20 --log-file -
