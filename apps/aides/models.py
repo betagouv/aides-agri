@@ -830,6 +830,17 @@ class Aide(models.Model):
     def is_closed(self):
         return self.date_fin and self.date_fin < date.today()
 
+    @property
+    def is_for_groupements_only(self) -> bool:
+        return (
+            all(
+                beneficiaires.is_groupement
+                for beneficiaires in self.eligibilite_beneficiaires.all()
+            )
+            if self.eligibilite_beneficiaires.exists()
+            else False
+        )
+
     def compute_priority(self):
         priority = 0
         priority += self.importance * 20
