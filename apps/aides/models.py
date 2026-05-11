@@ -342,11 +342,18 @@ class Filiere(models.Model):
         return self.nom
 
 
+class BeneficiairesQuerySet(models.QuerySet):
+    def groupements(self):
+        return self.filter(is_groupement=True)
+
+
 class Beneficiaires(models.Model):
     class Meta:
         verbose_name = "Type de bénéficiaires"
         verbose_name_plural = "Types de bénéficiaires"
         ordering = ("nom",)
+
+    objects = BeneficiairesQuerySet.as_manager()
 
     nom = models.CharField(max_length=100, verbose_name="Nom court")
     libelle = models.CharField(
@@ -822,6 +829,17 @@ class Aide(models.Model):
     @property
     def is_closed(self):
         return self.date_fin and self.date_fin < date.today()
+
+    @property
+    def is_for_groupements_only(self) -> bool:
+        return (
+            all(
+                beneficiaires.is_groupement
+                for beneficiaires in self.eligibilite_beneficiaires.all()
+            )
+            if self.eligibilite_beneficiaires.exists()
+            else False
+        )
 
     def compute_priority(self):
         priority = 0

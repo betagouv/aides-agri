@@ -76,6 +76,13 @@
 	--color: var(--text-label-green-tilleul-verveine);
 }
 
+.fr-tag.fr-badge--purple-glycine {
+	--hover: var(--background-contrast-purple-glycine);
+	--active: var(--background-contrast-purple-glycine);
+	--background: var(--background-contrast-purple-glycine);
+	--color: var(--text-label-purple-glycine);
+}
+
 .load-more {
   text-align: center;
 }
