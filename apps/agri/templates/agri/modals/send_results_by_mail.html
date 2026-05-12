@@ -6,9 +6,8 @@
     <div class="fr-grid-row fr-grid-row--center">
       <div class="fr-col-12 fr-col-md-8 fr-col-lg-7">
         <div class="fr-modal__body">
-          <form method="post"
-                action="{% url 'agri:send-results-by-mail' %}{% querystring %}"
-                hx-boost="true"
+          <form hx-trigger="submit"
+                hx-post="{% url 'agri:send-results-by-mail' %}{% querystring %}"
                 hx-target="#alert-placeholder"
                 hx-swap="innerHTML show:none"
                 hx-push-url="false"
