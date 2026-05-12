@@ -259,14 +259,20 @@ document.onreadystatechange = evt => {
         </div>
         {% endif %}
 
-        {% if object.bases_juridiques.exists %}
+        {% if object.has_bases_juridiques %}
         <h2 id="bases-juridiques"
             class="fr-h4 fr-text-action-high--blue-france fr-icon-book-2-fill fr-icon--md fr-mt-2w fr-text-default--grey"
         >Bases juridiques</h2>
         <ul class="fr-text--sm">
           {% for base_juridique in object.bases_juridiques.all %}
             <li>
-              <a class="fr-link" href="{{ base_juridique.url }}" target="_blank">{{ base_juridique.libelle }}</a>
+              <a class="fr-link"
+                 href="{{ base_juridique.url }}"
+                 target="_blank"
+                 title="{{ base_juridique.libelle }} – nouvelle fenêtre"
+              >
+                {{ base_juridique.libelle }}
+              </a>
             </li>
           {% endfor %}
         </ul>

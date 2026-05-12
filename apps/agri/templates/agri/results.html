@@ -58,7 +58,7 @@ document.addEventListener("htmx:load", evt => {
 </script>
 {% endblock extra_head_js %}
 
-{% block title %}Vos résultats{% endblock title %}
+{% block title %}{{ title }}{% endblock title %}
 
 {% block body %}
   {% dsfr_skiplinks skiplinks %}
@@ -108,7 +108,7 @@ document.addEventListener("htmx:load", evt => {
         <div class="fr-container">
           <div class="fr-grid-row">
             <div class="fr-col fr-col-12 fr-col-md-6">
-              <h1 class="fr-text-label--green-emeraude fr-mb-1w">Vos résultats</h1>
+              <h1 class="fr-text-label--green-emeraude fr-mb-1w">{{ title }}</h1>
             </div>
             <div id="actions" class="fr-col fr-col-12 fr-col-md-6 fr-col--bottom fr-mb-3w fr-btns-group fr-btns-group--icon-left fr-btns-group--inline fr-btns-group--right fr-btns-group fr-btns-group--icon-left">
               <button type="button"

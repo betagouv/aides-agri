@@ -92,7 +92,7 @@ class AideDetailView(DetailView):
             sidemenu_items.append({"link": "#deposer", "label": "Déposer mon dossier"})
         if self.object.contact:
             sidemenu_items.append({"link": "#contact", "label": "Contact"})
-        if self.object.bases_juridiques.exists():
+        if self.object.has_bases_juridiques:
             sidemenu_items.append(
                 {"link": "#bases-juridiques", "label": "Bases juridiques"}
             )

@@ -203,6 +203,15 @@ class ResultsMixin:
         )
         self.only_closed = request.GET.get("voir_fermees", "off").lower() == "on"
         self.order_by = request.GET.get("tri", "cloture")
+        if (
+            not self.departement
+            and not self.filieres
+            and not self.sujets
+            and not self.themes
+        ):
+            self.page_title = "Catalogue de dispositifs"
+        else:
+            self.page_title = "Vos résultats"
 
     def get_results(self):
         qs = Aide.objects.published()
@@ -278,12 +287,14 @@ class ResultsView(ResultsMixin, ListView):
         breadcrumb_querydict = self.request.GET.copy()
         if "more" in breadcrumb_querydict.keys():
             del breadcrumb_querydict["more"]
+        breadcrumb_entry_point_url = self.request.path
+        if breadcrumb_querydict:
+            breadcrumb_entry_point_url += f"?{breadcrumb_querydict.urlencode()}"
         links_querydict = QueryDict.fromkeys(
-            ["breadcrumb_entry_point_title"], value="Vos résultats", mutable=True
+            ["breadcrumb_entry_point_title"], value=self.page_title, mutable=True
         )
         links_querydict.setdefault(
-            "breadcrumb_entry_point_url",
-            f"{self.request.path}?{breadcrumb_querydict.urlencode()}",
+            "breadcrumb_entry_point_url", breadcrumb_entry_point_url
         )
 
         # Cache all published Theme/Sujet data, it's light and it will be needed
@@ -394,14 +405,15 @@ class ResultsView(ResultsMixin, ListView):
         else:
             context_data.update(
                 {
+                    "title": self.page_title,
                     "skiplinks": [
                         {
                             "link": "#content",
-                            "label": "Vos résultats",
+                            "label": self.page_title,
                         },
                     ],
                     "breadcrumb_data": {
-                        "current": "Vos résultats",
+                        "current": self.page_title,
                     },
                     "sidemenu_data": {
                         "title": "Menu par types d’aides",
