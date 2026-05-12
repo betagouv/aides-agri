@@ -2,6 +2,7 @@ from collections import defaultdict
 
 from django import forms
 from django.conf import settings
+from django.http.request import QueryDict
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils.text import slugify
@@ -274,10 +275,15 @@ class ResultsView(ResultsMixin, ListView):
 
         total_count = sum(len(aides) for aides in aides_by_type.values())
 
-        links_querydict = self.request.GET.copy()
-        links_querydict["breadcrumb_entry_point_title"] = "Vos résultats"
-        links_querydict["breadcrumb_entry_point_url"] = (
-            f"{self.request.path}?{self.request.GET.urlencode()}"
+        breadcrumb_querydict = self.request.GET.copy()
+        if "more" in breadcrumb_querydict.keys():
+            del breadcrumb_querydict["more"]
+        links_querydict = QueryDict.fromkeys(
+            ["breadcrumb_entry_point_title"], value="Vos résultats", mutable=True
+        )
+        links_querydict.setdefault(
+            "breadcrumb_entry_point_url",
+            f"{self.request.path}?{breadcrumb_querydict.urlencode()}",
         )
 
         # Cache all published Theme/Sujet data, it's light and it will be needed
@@ -380,8 +386,8 @@ class ResultsView(ResultsMixin, ListView):
             for type_aides, aides in aides_by_type.items()
         }
 
-        if type_id := self.request.GET.get("more", None):
-            type_aides = Type.objects.get(pk=type_id)
+        if self.request.htmx and "more" in self.request.GET:
+            type_aides = Type.objects.get(pk=self.request.GET.get("more"))
             context_data.update(
                 {"type_aides": type_aides, "aide_list": aides_data_by_type[type_aides]}
             )
