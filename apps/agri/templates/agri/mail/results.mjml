@@ -8,12 +8,13 @@
      </mj-preview>
    </mj-head>
   <mj-body>
-    <mj-section padding="5px 0">
+    <mj-section padding="5px 0" text-align="">
       <mj-group>
         <mj-column width="50%">
-          <mj-image width="300px" src="{{ base_url }}{% static 'ui/logos/mail/masa.png' %}" />
+          <mj-image align="left" width="180px" src="{{ base_url }}{% static 'ui/logos/mail/maasa.png' %}" />
         </mj-column>
-        <mj-column width="50%">
+        <mj-column width="50%" direction="rtl">
+          <mj-image align="right" width="100px" src="{{ base_url }}{% static 'ui/logos/mail/aides-agri.png' %}" />
         </mj-column>
       </mj-group>
     </mj-section>
