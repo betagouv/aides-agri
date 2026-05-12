@@ -6,6 +6,7 @@ from django.contrib.postgres import fields as postgres_fields
 from django.db import models
 from django.templatetags.static import static
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.text import slugify
 from django.utils.timezone import now
 
@@ -831,6 +832,14 @@ class Aide(models.Model):
         return self.date_fin and self.date_fin < date.today()
 
     @property
+    def is_ongoing(self) -> bool:
+        return self.date_fin is None or self.date_fin > date.today()
+
+    @cached_property
+    def has_bases_juridiques(self):
+        return self.bases_juridiques.exists()
+
+    @property
     def is_for_groupements_only(self) -> bool:
         return (
             all(
@@ -897,10 +906,6 @@ class Aide(models.Model):
             )
         else:
             return reverse("aides:aide", kwargs={"pk": self.pk, "slug": self.slug})
-
-    @property
-    def is_ongoing(self) -> bool:
-        return self.date_fin is None or self.date_fin > date.today()
 
 
 class BaseJuridique(models.Model):
