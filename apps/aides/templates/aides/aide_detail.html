@@ -266,7 +266,13 @@ document.onreadystatechange = evt => {
         <ul class="fr-text--sm">
           {% for base_juridique in object.bases_juridiques.all %}
             <li>
-              <a class="fr-link" href="{{ base_juridique.url }}" target="_blank">{{ base_juridique.libelle }}</a>
+              <a class="fr-link"
+                 href="{{ base_juridique.url }}"
+                 target="_blank"
+                 title="{{ base_juridique.libelle }} – nouvelle fenêtre"
+              >
+                {{ base_juridique.libelle }}
+              </a>
             </li>
           {% endfor %}
         </ul>
