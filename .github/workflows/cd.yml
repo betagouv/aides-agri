@@ -1,0 +1,32 @@
+name: CD
+
+on:
+  release:
+    types: [published]
+
+concurrency:
+  group: ${{ github.head_ref || github.ref }}
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  deploy:
+    name: Déploiement en production
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Git push vers Scalingo aides-agri-prod
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          sudo chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ssh.osc-fr1.scalingo.com > ~/.ssh/known_hosts
+          git push git@ssh.osc-fr1.scalingo.com:aides-agri-prod.git ${GITHUB_SHA}:main
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+          SSH_KEY_PATH: ${{ github.workspace }}/../private.key
