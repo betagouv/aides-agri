@@ -32,7 +32,7 @@ class Command(BaseCommand):
         no_url_descriptif = set()
         unpublished = set()
         to_be_verified = set()
-        for aide in Aide.objects.published():
+        for aide in Aide.objects.published_validated():
             if not aide.url_descriptif:
                 no_url_descriptif.add(aide)
             status_code = self._do_request(aide.url_descriptif)
