@@ -1,7 +1,9 @@
 import logging
 
 import requests
+import reversion
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.management.base import BaseCommand
 from django.core.mail import send_mail
@@ -32,7 +34,8 @@ class Command(BaseCommand):
         no_url_descriptif = set()
         unpublished = set()
         to_be_verified = set()
-        for aide in Aide.objects.published():
+        superuser = get_user_model().objects.filter(is_superuser=True).first()
+        for aide in Aide.objects.published_validated():
             if not aide.url_descriptif:
                 no_url_descriptif.add(aide)
             status_code = self._do_request(aide.url_descriptif)
@@ -40,10 +43,15 @@ class Command(BaseCommand):
             if status_code == 200:
                 continue
             elif status_code == 404:
-                aide.status = Aide.Status.ARCHIVED
-                aide.is_published = False
-                aide.internal_comments += f"\n\n{localtime().strftime('%d/%M/%Y %Hh%i')} : dépublication pour cause d’erreur 404"
-                aide.save()
+                with reversion.create_revision():
+                    aide.status = Aide.Status.ARCHIVED
+                    aide.is_published = False
+                    aide.internal_comments += f"\n\n{localtime().strftime('%d/%m/%Y %Hh%M')} : dépublication pour cause d’erreur 404"
+                    aide.save()
+                    reversion.set_user(superuser)
+                    reversion.set_comment(
+                        "Dépublication, archivage, et ajout d’une précision dans les commentaires internes."
+                    )
                 unpublished.add(aide)
             else:
                 to_be_verified.add((aide, status_code))
