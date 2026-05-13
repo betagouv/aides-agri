@@ -25,7 +25,7 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           sudo chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ssh.osc-fr1.scalingo.com > ~/.ssh/known_hosts
-          git push git@ssh.osc-fr1.scalingo.com:aides-agri-prod.git {{ github.ref }}:main
+          git push git@ssh.osc-fr1.scalingo.com:aides-agri-prod.git ${{ github.ref }}:main
         shell: bash
         env:
           SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
