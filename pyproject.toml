@@ -21,7 +21,7 @@ dependencies = [
   "mjml-python~=1.4",
   "psycopg[binary]~=3.3",
   "qrcode ~=7.4",
-  "requests ~=2.32",
+  "requests~=2.34",
   "sentry-sdk[django]~=2.59",
   "whitenoise ~=6.8",
 ]
