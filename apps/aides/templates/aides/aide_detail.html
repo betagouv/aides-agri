@@ -273,6 +273,11 @@ document.onreadystatechange = evt => {
               >
                 {{ base_juridique.libelle }}
               </a>
+              {% if base_juridique.commentaire %}
+                <p class="fr-text--sm fr-text-mention--grey fr-mb-1w">
+                  {{ base_juridique.commentaire }}
+                </p>
+              {% endif %}
             </li>
           {% endfor %}
         </ul>
