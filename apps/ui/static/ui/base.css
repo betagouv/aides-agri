@@ -45,6 +45,11 @@ body > .fr-notice.fr-notice--info {
   mask-image: url(icons/percent-fill.svg)
 }
 
+.fr-icon-user-shared-fill:after, .fr-icon-user-shared-fill:before {
+  -webkit-mask-image: url(icons/user-shared-fill.svg);
+  mask-image: url(icons/user-shared-fill.svg)
+}
+
 @media (hover: hover) and (pointer: fine) {
   .fr-enlarge-link:hover {
     background-color: var(--hover) !important;
