@@ -40,7 +40,11 @@ class Command(BaseCommand):
             version__content_type=content_type,
             date_created__gt=now() - timedelta(days=1),
         ):
-            aide: Aide = revision.version_set.first().object
+            aide: Aide = (
+                revision.version_set.filter(content_type=content_type).first().object
+            )
+            if not aide:
+                continue
             revisions_by_aide[aide.pk].append(revision)
             aides_assigned_to_users[aide.assigned_to_id].add(aide)
             for cc in aide.cc_to.all():
