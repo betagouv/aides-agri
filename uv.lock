@@ -48,7 +48,7 @@ dev = [
 requires-dist = [
     { name = "dj-importmap", specifier = "~=1.0" },
     { name = "django", specifier = "~=5.2" },
-    { name = "django-admin-extra-buttons", specifier = "~=2.1,<2.2" },
+    { name = "django-admin-extra-buttons", specifier = "~=2.2" },
     { name = "django-anymail", extras = ["brevo"], specifier = "~=15.0" },
     { name = "django-axes", specifier = "~=8.3" },
     { name = "django-csp", specifier = "~=4.0" },
@@ -281,14 +281,14 @@ wheels = [
 
 [[package]]
 name = "django-admin-extra-buttons"
-version = "2.1.2"
+version = "2.2.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django-stubs" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ad/dd/81a2f884728b83679f014d09b0b82a445aaed200ca5530d4e7bc06c4fdac/django_admin_extra_buttons-2.1.2.tar.gz", hash = "sha256:52e77691165019542d7cabc7bf7c26bdc957401c372ef80d3d2cd97c4221cf2f", size = 13351, upload-time = "2025-11-10T19:53:05.522Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/77/ce/043deafe7570553fd3531e616662bf74352395a4c64b1e04401c2fab5986/django_admin_extra_buttons-2.2.1.tar.gz", hash = "sha256:44302941b39b9bf7ce60dc1430efef86ff2955dbf85a505b0b519a4b96234811", size = 13354, upload-time = "2026-05-19T07:19:12.636Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/47/d9/01a949c7a6e41a0bc08dc3017a9ef86942fa86fee7590eb94d2b247a0338/django_admin_extra_buttons-2.1.2-py3-none-any.whl", hash = "sha256:4975ba0b8d52427ea1e0b760f426cee8521ec14c300e1f8394023e727056750b", size = 22205, upload-time = "2025-11-10T19:53:04.385Z" },
+    { url = "https://files.pythonhosted.org/packages/e4/46/d8cae5891df2600e28487f2cc384403c45ee71c561c77f955145ed1a7a04/django_admin_extra_buttons-2.2.1-py3-none-any.whl", hash = "sha256:343890744d29c6fe92a70fb1ab3c75c2cc8c5fcf67e7e0863bdd447680bd2944", size = 22181, upload-time = "2026-05-19T07:19:11.043Z" },
 ]
 
 [[package]]
