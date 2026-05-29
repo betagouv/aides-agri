@@ -24,3 +24,9 @@ def test_declaration_accessibilite(client):
 def test_cgu(client):
     res = client.get(reverse("product:cgu"))
     assert res.status_code == 200
+
+
+@pytest.mark.django_db
+def test_stats(client):
+    res = client.get(reverse("product:statistiques"))
+    assert res.status_code == 200
