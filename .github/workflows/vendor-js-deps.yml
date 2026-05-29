@@ -35,5 +35,5 @@ jobs:
           echo 'export * as Sentry from "@sentry/browser"' | ./node_modules/.bin/esbuild --bundle --minify --format=esm --outfile=static/vendor/sentry.js
       - uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          file_pattern: 'static/vendor/*.js'
+          file_pattern: 'static/vendor/*.*'
           commit_message: 'chore(deps): vendor dependencies'
