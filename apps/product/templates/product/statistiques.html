@@ -1,6 +1,14 @@
 {% extends "ui/base.html" %}
 
-{% load dsfr_tags %}
+{% load static dsfr_tags stats_tags %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'vendor/DSFRChart.css' %}" />
+{% endblock extra_css %}
+
+{% block extra_head_js %}
+<script type="module" src="{% static 'vendor/DSFRChart.js' %}"></script>
+{% endblock extra_head_js %}
 
 {% block breadcrumb %}{% endblock %}
 
@@ -32,29 +40,56 @@
   </dl>
   <h2>Matrice d’impact</h2>
   <div class="fr-container--fluid">
-    <div class="fr-grid-row fr-grid-row--gutters">
-      {% for category, stats in stats.items %}
-      <div class="fr-col fr-col-12 fr-col-md-6">
-        <div class="fr-card">
-          <div class="fr-card__body">
-            <div class="fr-card__content">
-              <h3 class="fr-card__title">{{ category }}</h3>
-              <ul class="fr-card__desc">
-                {% for stat in stats %}
-                <li>
-                  <strong>{{ stat.label }} : {{ stat.data|last|last }}</strong>
-                  <details>
-                    <summary>Voir l’évolution</summary>
-                    {% dsfr_table header=tables_headers content=stat.data %}
-                  </details>
-                </li>
-                {% endfor %}
-              </ul>
+    {% for category, stats in stats.items %}
+      <section class="fr-my-3w fr-p-1w">
+        <h3>{{ category }}</h3>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          {% for stat in stats %}
+            <div class="fr-col fr-col-12 fr-col-md-6">
+              <data-box id="databox-{{ stat.label|slugify }}"
+                        title="{{ stat.label }}"
+                        source="{{ stat.source }}"
+                        date="{{ date_updated|date:"SHORT_DATE_FORMAT" }}"
+                        tooltip-content="{{ stat.help_text }}"
+              ></data-box>
+              {% if stat.data.y_bar %}
+                <bar-line-chart databox-id="databox-{{ stat.label|slugify }}"
+                                databox-type="chart"
+                                x='{{ stat.data.x|stats_json }}'
+                                y-bar='{{ stat.data.y_bar|stats_json }}'
+                                y-line='{{ stat.data.y_line|stats_json }}'
+                                name-bar='{{ stat.data.name_bar|safe }}'
+                                name-line='{{ stat.data.name_line|safe }}'
+                                {% if stat.unit_bar %}unit-tooltip-bar="{{ stat.unit_bar }}"{% endif %}
+                                {% if stat.unit_line %}unit-tooltip-line="{{ stat.unit_line }}"{% endif %}
+                ></bar-line-chart>
+                <table-chart databox-id="databox-{{ stat.label|slugify }}"
+                             databox-type="table"
+                             x='{{ stat.data.x|stats_json }}'
+                             y='{{ stat.data.y_line|join_list:stat.data.y_bar|stats_json }}'
+                             name='{{ stat.data.name_line|join_list:stat.data.name_bar|stats_json }}'
+                             table-name="Mois"
+                ></table-chart>
+              {% else %}
+                <line-chart databox-id="databox-{{ stat.label|slugify }}"
+                            databox-type="chart"
+                            x='{{ stat.data.x|stats_json }}'
+                            y='{{ stat.data.y|stats_json }}'
+                            name='{{ stat.data.name|stats_json }}'
+                            {% if stat.unit %}unit-tooltip="{{ stat.unit }}"{% endif %}
+                ></line-chart>
+                <table-chart databox-id="databox-{{ stat.label|slugify }}"
+                             databox-type="table"
+                             x='{{ stat.data.x|last|stats_json }}'
+                             y='{{ stat.data.y|stats_json }}'
+                             name='{{ stat.data.name|stats_json }}'
+                             table-name="Mois"
+                ></table-chart>
+              {% endif %}
             </div>
-          </div>
+          {% endfor %}
         </div>
-      </div>
-      {% endfor %}
-    </div>
+      </section>
+    {% endfor %}
   </div>
 {% endblock content %}
