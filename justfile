@@ -21,7 +21,7 @@ install-talisman:
     scalingo --version || (curl -s -O https://cli-dl.scalingo.com/install && bash install)
 
 # Install everything needed
-install: install-python install-js install-talisman install-deployment-scalingo
+install: install-python install-deployment-scalingo
 
 # Run any Django command
 manage command:
