@@ -3,6 +3,6 @@ name = "pdf-to-structured-data"
 version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
-    "docling ~=2.52",
+    "docling~=2.94",
     "markdown-analysis<1",
 ]
