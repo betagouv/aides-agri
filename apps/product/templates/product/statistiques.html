@@ -47,7 +47,7 @@
           {% for stat in stats %}
             <div class="fr-col fr-col-12 fr-col-md-6">
               <data-box id="databox-{{ stat.label|slugify }}"
-                        title="{{ stat.label }}"
+                        name="{{ stat.label }}"
                         source="{{ stat.source }}"
                         date="{{ date_updated|date:"SHORT_DATE_FORMAT" }}"
                         tooltip-content="{{ stat.help_text }}"
