@@ -900,7 +900,7 @@ class Aide(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        if self.children.exists():
+        if self.is_derivable:
             return reverse(
                 "aides:parent-aide", kwargs={"pk": self.pk, "slug": self.slug}
             )

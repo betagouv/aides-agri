@@ -219,6 +219,6 @@ def write_aides_as_csv(f, aides_ids: list[int]):
             "filieres",
             "sujets",
         )
-        .select_related("organisme")
+        .select_related("organisme", "parent")
     ):
         writer.writerow(AideToInternalSchema(aide).build_row())

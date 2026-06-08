@@ -50,7 +50,10 @@ def test_parent_aide_detail_published(client, aide_published_with_parent):
     # THEN get a 200, and get a link to the parent page
     assert res.status_code == 200
     html = res.content.decode("utf-8")
-    assert f'href="{aide.parent.get_absolute_url()}"' in html
+    assert (
+        f'href="{reverse("aides:parent-aide", args=[aide.parent.pk, aide.parent.slug])}"'
+        in html
+    )
     # WHEN calling the parent's public URL
     res = client.get(
         reverse("aides:parent-aide", args=[aide.parent.pk, aide.parent.slug]),
