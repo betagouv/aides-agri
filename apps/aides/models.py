@@ -68,6 +68,18 @@ class Organisme(WithIllustration, models.Model):
         INTERPROFESSIONS = "Interprofessions", "Interprofessions"
         MIXTE = "Mixte", "Mixte"
 
+    class SousFamille(models.TextChoices):
+        REGION = "Région", "Région"
+        DEPARTEMENT = "Département", "Département"
+        OPERATEUR = "Opérateur", "Opérateur"
+        MAASA = "MAASA / DRAAF / DDT", "MAASA / DRAAF / DDT"
+        MTE = "MTE / DREAL", "MTE / DREAL"
+        MAS = "Affaires sociales / DREETS / DEETS", "Affaires sociales / DREETS / DEETS"
+        MT = "Travail / DREETS / DEETS", "Travail / DREETS / DEETS"
+        MF = "Finances", "Finances"
+        AGENCE_EAU = "Agences de l’eau", "Agences de l’eau"
+        AUTRES = "Autres", "Autres"
+
     class Secteur(models.TextChoices):
         ECONOMIE = "Finance, économie", "Finance, économie"
         AGRICULTURE = "Agriculture", "Agriculture"
@@ -81,6 +93,9 @@ class Organisme(WithIllustration, models.Model):
     nom = models.CharField(verbose_name="Nom")
     acronyme = models.CharField(blank=True, verbose_name="Acronyme")
     famille = models.CharField(blank=True, choices=Famille, verbose_name="Famille")
+    sous_famille = models.CharField(
+        blank=True, choices=SousFamille, verbose_name="Sous-famille"
+    )
     secteurs = postgres_fields.ArrayField(
         models.CharField(blank=True, choices=Secteur),
         null=True,
