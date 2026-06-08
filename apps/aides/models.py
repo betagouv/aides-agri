@@ -816,6 +816,15 @@ class Aide(models.Model):
         return self.couverture_geographique == Aide.CouvertureGeographique.DEPARTEMENTAL
 
     @property
+    def is_declinaison_territoriale(self) -> bool:
+        return (
+            (self.is_departemental or self.is_regional)
+            and self.parent is not None
+            and (self.parent.is_departemental or self.parent.is_regional)
+            and not self.parent.zones_geographiques.exists()
+        )
+
+    @property
     def is_local(self):
         return self.couverture_geographique == Aide.CouvertureGeographique.LOCAL
 

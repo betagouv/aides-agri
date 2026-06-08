@@ -164,12 +164,13 @@ class AideToInternalSchema(
         1: "parent",
         11: "filieres",
         12: "sujets",
-        18: "etat",
-        19: "est_publiee",
-        20: "raison_desactivation",
-        21: "url_site",
-        22: "url_bureau_valideur",
-        23: "url_bo",
+        15: "est_une_declinaison_territoriale",
+        19: "etat",
+        20: "est_publiee",
+        21: "raison_desactivation",
+        22: "url_site",
+        23: "url_bureau_valideur",
+        24: "url_bo",
     },
 ):
     @cached_property
@@ -178,6 +179,9 @@ class AideToInternalSchema(
 
     def _prepare_parent(self):
         return self.aide.parent_id
+
+    def _prepare_est_une_declinaison_territoriale(self):
+        return "OUI" if self.aide.is_declinaison_territoriale else "NON"
 
     def _prepare_filieres(self):
         return "|".join([filiere.nom for filiere in self.aide.filieres.all()])
