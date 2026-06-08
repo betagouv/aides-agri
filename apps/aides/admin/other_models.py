@@ -231,9 +231,17 @@ class OrganismeForm(forms.ModelForm):
 
 @admin.register(Organisme)
 class OrganismeAdmin(CsvExportMixin, IllustrationMixin, VersionAdmin):
-    list_display = ("id", "nom", "acronyme", "famille", "secteurs", "aides_count")
+    list_display = (
+        "id",
+        "nom",
+        "acronyme",
+        "famille",
+        "sous_famille",
+        "secteurs",
+        "aides_count",
+    )
     list_display_links = ("id", "nom")
-    list_filter = ("famille",)
+    list_filter = ("famille", "sous_famille")
     search_fields = ("nom", "acronyme")
     autocomplete_fields = ("zones_geographiques",)
     ordering = ("nom",)
@@ -256,6 +264,7 @@ class OrganismeAdmin(CsvExportMixin, IllustrationMixin, VersionAdmin):
             Organisme.nom,
             Organisme.acronyme,
             Organisme.famille,
+            Organisme.sous_famille,
             Organisme.secteurs,
             Organisme.url,
             Organisme.courriel,
@@ -270,6 +279,7 @@ class OrganismeAdmin(CsvExportMixin, IllustrationMixin, VersionAdmin):
                     obj.nom,
                     obj.acronyme,
                     obj.famille,
+                    obj.sous_famille,
                     ", ".join(obj.secteurs),
                     obj.url,
                     obj.courriel,

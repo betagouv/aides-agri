@@ -29,6 +29,7 @@ def test_write_aides_as_csv(aide):
                     "sujets",
                     "eligibilite_geographique",
                     "eligibilite_geographique_exclusions",
+                    "est_une_declinaison_territoriale",
                     "date_ouverture",
                     "date_cloture",
                     "date_mise_a_jour",
@@ -40,7 +41,7 @@ def test_write_aides_as_csv(aide):
                     "url_bo",
                 ]
             elif i == 1:
-                assert len(row) == 24
+                assert len(row) == 25
                 assert row[0] == str(aide.pk)
             else:
                 assert False
