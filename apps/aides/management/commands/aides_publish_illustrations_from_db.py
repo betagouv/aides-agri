@@ -6,7 +6,7 @@ from ...models import WithIllustration
 class Command(BaseCommand):
     def handle(self, *args, **options):
         for model in WithIllustration.__subclasses__():
-            for obj in model.objects.all():
+            for obj in model.objects.all().only("has_illustration", "illustration"):
                 if not obj.illustration:
                     continue
                 with open(f"webroot/{obj.get_illustration_url()}", "wb") as f:
