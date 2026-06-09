@@ -1,4 +1,4 @@
-# Décision 0003 : stocker les illustrations des organismes en base de données
+# Décision 0004 : stocker les illustrations des organismes en base de données
 
 Date : 2025-05-15
 

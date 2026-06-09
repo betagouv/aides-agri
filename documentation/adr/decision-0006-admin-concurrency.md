@@ -1,4 +1,4 @@
-# Décision 0005 : implémenter une solution maison pour la gestion de l’édition concurrente dans l’interface d’administration
+# Décision 0006 : implémenter une solution maison pour la gestion de l’édition concurrente dans l’interface d’administration
 
 Date : 2025-09-04
 
