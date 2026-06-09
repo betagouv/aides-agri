@@ -1,4 +1,4 @@
-# Décision 0004 : utiliser Django comme base de données principale et comme interface d’édition des aides
+# Décision 0005 : utiliser Django comme base de données principale et comme interface d’édition des aides
 
 Date : 2025-07-17
 

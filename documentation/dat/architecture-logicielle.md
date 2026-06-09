@@ -67,6 +67,41 @@ graph TD;
     product-->ui;
 ```
 
+## Architecture de la gestion des tâches d’arrière-plan
+
+Afin de gérer l’exécution de tâches déclenchées via l’interface web, mais dont la durée est inconnue à l’avance (pour cause d’appel réseau externe par exemple), un processus dédié à l'exécution asynchrone est mis en œuvre :
+* Basé sur le plugin [django-tasks](https://pypi.org/project/django-tasks/), et plus précisément son extension utilisant une base de données comme backend de stockage des messages, [django-tasks-db](https://pypi.org/project/django-tasks-db/) ;
+* Cette brique logicielle intégrée dans la base de code Django se comporte comme un système Pub/Sub qui gérerait les deux côtés de la communication (publication de messages et consommation des messages, les messages étant stockés dans la base de données relationnelle) ;
+* La distinction entre publication et consommation se faisant via le déploiement et l'infrastructure (cf [le diagramme d'infrastructure haut niveau](infrastructure-deploiement.md)) :
+  * Les tâches étant déclenchées depuis l'interface web, ce sont les instances `web` de Django qui publient les messages ;
+  * Une instance Django dédiée (séparée des instances `web` pour que les tâches de longue durée n’impactent pas les performances web), nommée `worker`, et unique pour éviter de manière facile les problèmes de consommation concurrente des messages ;
+  * Évidemment, si une tâche de longue durée a elle-même besoin de déléguer l'exécution d'une tâche en arrière-plan, elle peut solliciter le worker selon le même principe.
+
+```mermaid
+flowchart TB
+    subgraph web1
+        django-web1[[django-web]]-- ".enqueue()" -->task-web1[Task]
+    end
+    subgraph web2
+        django-web2[[django-web]]-- ".enqueue()" -->task-web2[Task]
+    end
+    subgraph worker
+        task-worker[Task]
+        django-worker[["django-worker (loop)"]]-->django-worker-check[Recherche de tâches]
+        django-worker-check-->django-worker-found{Tâche trouvée ?}
+        django-worker-found-- Oui -->django-worker-run[Exécution]
+        django-worker-found-- Non -->A{ shape: dbl-circ }
+    end
+    subgraph PostgreSQL
+        db-table[(django_tasks_database_dbtaskresult)]
+    end
+    task-web1-- SQL INSERT -->db-table
+    task-web2-- SQL INSERT -->db-table
+    django-worker-check-- SQL SELECT -->db-table-. SQL results .->django-worker-check
+    django-worker-run-- ".call()" -->task-worker-. result .->django-worker-run
+    django-worker-run-- SQL UPDATE -->db-table
+```
+
 ## Architecture de l’interface web publique (le "front-end")
 
 ### CSS
