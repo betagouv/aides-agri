@@ -8,7 +8,7 @@ Accepté
 
 ## Contexte
 
-Comme décidé dans [la décision 0001](adr-0001-django-templating.md), ce produit verra ses pages web générées côté serveur par des templates Django.
+Comme décidé dans [la décision 0001](decision-0001-django-templating.md), ce produit verra ses pages web générées côté serveur par des templates Django.
 
 L’une des conséquences positives de cette décision est le faible nombre de dépendances Javascript. Mais il y en a quand même, au nombre de 4 _a minima_ :
 * Un mini-framework Javascript pour gérer les interactions purement côté client ;
