@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 
-from .models import Aide
+from .models import Aide, Organisme
 
 
 class AideToSchema:
@@ -162,15 +162,16 @@ class AideToInternalSchema(
     AideToSchema,
     added_fields={
         1: "parent",
-        11: "filieres",
-        12: "sujets",
-        15: "est_une_declinaison_territoriale",
-        19: "etat",
-        20: "est_publiee",
-        21: "raison_desactivation",
-        22: "url_site",
-        23: "url_bureau_valideur",
-        24: "url_bo",
+        8: "porteur_principal_sous_famille",
+        12: "filieres",
+        13: "sujets",
+        16: "est_une_declinaison_territoriale",
+        20: "etat",
+        21: "est_publiee",
+        22: "raison_desactivation",
+        23: "url_site",
+        24: "url_bureau_valideur",
+        25: "url_bo",
     },
 ):
     @cached_property
@@ -179,6 +180,29 @@ class AideToInternalSchema(
 
     def _prepare_parent(self):
         return self.aide.parent_id
+
+    def _prepare_porteur_principal_sous_famille(self):
+        organisme = self.aide.organisme
+        if not organisme:
+            return ""
+        sous_famille = organisme.sous_famille
+        if not sous_famille:
+            if organisme.famille == Organisme.Famille.INTERPROFESSIONS:
+                sous_famille = "Interprofession"
+            elif organisme.famille in (
+                Organisme.Famille.OPERATEUR,
+                Organisme.Famille.CHAMBRE_CONSULAIRE,
+            ):
+                if (
+                    organisme.acronyme == "CDC"
+                    or organisme.nom == "Banque des territoires"
+                ):
+                    sous_famille = "CDC/Banque des Territoires"
+                else:
+                    sous_famille = organisme.acronyme or organisme.nom
+            elif organisme.famille == Organisme.Famille.UE:
+                sous_famille = "UE"
+        return sous_famille
 
     def _prepare_est_une_declinaison_territoriale(self):
         return "OUI" if self.aide.is_declinaison_territoriale else "NON"

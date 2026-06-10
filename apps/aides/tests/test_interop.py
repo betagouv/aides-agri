@@ -22,6 +22,7 @@ def test_write_aides_as_csv(aide):
                     "eligibilite",
                     "types_aides",
                     "porteurs",
+                    "porteur_principal_sous_famille",
                     "programmes_parents",
                     "url_source",
                     "cibles",
@@ -41,7 +42,7 @@ def test_write_aides_as_csv(aide):
                     "url_bo",
                 ]
             elif i == 1:
-                assert len(row) == 25
+                assert len(row) == 26
                 assert row[0] == str(aide.pk)
             else:
                 assert False
