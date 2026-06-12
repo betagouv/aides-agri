@@ -11,15 +11,18 @@ dependencies = [
     { name = "django" },
     { name = "django-admin-extra-buttons" },
     { name = "django-anymail" },
+    { name = "django-auto-admin-fieldsets" },
     { name = "django-axes" },
     { name = "django-csp" },
     { name = "django-dsfr", extra = ["markdown"] },
+    { name = "django-enum" },
     { name = "django-htmx" },
     { name = "django-pgtrigger" },
     { name = "django-reversion" },
     { name = "django-tasks" },
     { name = "django-tasks-db" },
     { name = "django-two-factor-auth", extra = ["phonenumberslite"] },
+    { name = "djangorestframework" },
     { name = "gunicorn" },
     { name = "markdown" },
     { name = "mjml-python" },
@@ -50,15 +53,18 @@ requires-dist = [
     { name = "django", specifier = "~=5.2" },
     { name = "django-admin-extra-buttons", specifier = "~=2.2" },
     { name = "django-anymail", extras = ["brevo"], specifier = "~=15.0" },
+    { name = "django-auto-admin-fieldsets", specifier = "~=0.3" },
     { name = "django-axes", specifier = "~=8.3" },
     { name = "django-csp", specifier = "~=4.0" },
     { name = "django-dsfr", extras = ["markdown"], specifier = "~=3.4" },
+    { name = "django-enum", specifier = "~=2.4" },
     { name = "django-htmx", specifier = "~=1.23" },
     { name = "django-pgtrigger", specifier = "~=4.15" },
     { name = "django-reversion", specifier = "~=6.2" },
     { name = "django-tasks", specifier = "~=0.12" },
     { name = "django-tasks-db", specifier = "~=0.12" },
     { name = "django-two-factor-auth", extras = ["phonenumberslite"], specifier = "~=1.18" },
+    { name = "djangorestframework", specifier = "~=3.17" },
     { name = "gunicorn", specifier = "~=26.0" },
     { name = "markdown", specifier = "~=3.8" },
     { name = "mjml-python", specifier = "~=1.4" },
@@ -307,6 +313,15 @@ wheels = [
 ]
 
 [[package]]
+name = "django-auto-admin-fieldsets"
+version = "0.3.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e2/b8/ccff57e030e2b6684b37b51d52401a330008115c7dd8d17fb3303f851807/django_auto_admin_fieldsets-0.3.0.tar.gz", hash = "sha256:db916626edd233de1eeda876d6aab6f93eac6d0a1c34f87491d3d03543802ca2", size = 4938, upload-time = "2026-02-16T08:20:12.369Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9d/1b/f6bb7972b7580495d3f01e9a45ee021683eea22a787c33873a056462f9ef/django_auto_admin_fieldsets-0.3.0-py3-none-any.whl", hash = "sha256:8e24f4757d6bd056c2392b044ab0cdb21d813f69e33caa981dda26ffe703db91", size = 5562, upload-time = "2026-02-16T08:20:11.419Z" },
+]
+
+[[package]]
 name = "django-axes"
 version = "8.3.1"
 source = { registry = "https://pypi.org/simple" }
@@ -375,6 +390,18 @@ wheels = [
 markdown = [
     { name = "markdown" },
     { name = "pymdown-extensions" },
+]
+
+[[package]]
+name = "django-enum"
+version = "2.4.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/eb/18/0e28863f1f8b88d8a408caf06fe59fa2b9b431dbbcd5194f39a491d97e08/django_enum-2.4.2.tar.gz", hash = "sha256:38cf1a9a117533223810a250e7629c62530a7f82e5331a1a1156e986cdfe5d9d", size = 653980, upload-time = "2026-03-05T19:09:46.231Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1b/5b/b757d8a9cd6ced6af74dbdf5954c3716a048ca5b0b37f48de8ea6569f503/django_enum-2.4.2-py3-none-any.whl", hash = "sha256:4592376d1ac3902706a0f683ca79b9a0d59059916f6b0f99e366ddf2342fa829", size = 39384, upload-time = "2026-03-05T19:09:44.962Z" },
 ]
 
 [[package]]
@@ -538,6 +565,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/01/6d/d1b5a3ae3bccfee96e10315373298cea51e5e0d6853d022181b7b0861a4d/django_widget_tweaks-1.5.1.tar.gz", hash = "sha256:084acc9eeb5a3208f2670522de6284287973e54d54488ce6d402f4b99bc5f452", size = 16233, upload-time = "2026-01-02T12:46:28.907Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/64/6a/ad176284371005426b9a1c424e6cd77a9018ab1b17dc23948bfbeb2f6a21/django_widget_tweaks-1.5.1-py3-none-any.whl", hash = "sha256:3f5080f8365740fc1c14607498c975cbfed896dd0c40e1b563095716ee31e3b5", size = 9634, upload-time = "2026-01-02T12:46:02.18Z" },
+]
+
+[[package]]
+name = "djangorestframework"
+version = "3.17.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ca/d7/c016e69fac19ff8afdc89db9d31d9ae43ae031e4d1993b20aca179b8301a/djangorestframework-3.17.1.tar.gz", hash = "sha256:a6def5f447fe78ff853bff1d47a3c59bf38f5434b031780b351b0c73a62db1a5", size = 905742, upload-time = "2026-03-24T16:58:33.705Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5a/e1/2c516bdc83652b1a60c6119366ac2c0607b479ed05cd6093f916ca8928f8/djangorestframework-3.17.1-py3-none-any.whl", hash = "sha256:c3c74dd3e83a5a3efc37b3c18d92bd6f86a6791c7b7d4dff62bb068500e76457", size = 898844, upload-time = "2026-03-24T16:58:31.845Z" },
 ]
 
 [[package]]

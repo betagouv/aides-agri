@@ -43,13 +43,18 @@ Les apps spécifiques sont rangées dans le répertoire `/apps/`. C’est rendu 
 
 #### Les apps métier
 
-* `aides` : implémente les entités et les logiques métier liées aux dispositifs d’aide publics à l’agriculture
-  * [Documentation spécifique](../../apps/aides/README.md)
-* `agri` : implémente le parcours utilisateur destiné aux exploitantes et exploitants agricoles afin de les aiguiller vers les aides pertinentes pour leur situation et leur besoin
-  * [Documentation spécifique](../../apps/agri/README.md)
-* `aides_feedback` : implémente de quoi permettre à nos utilisatrices et utilisateurs de donner leur avis sur le parcours qui leur est proposé ainsi que sur les contenus qui leur sont présentés
-* `pac` : implémente une représentation en base de données relationnelle du Plan Stratégique National de la PAC 2023-2027 ; c’est un outil à usage interne technique uniquement
-* `product` : implémente les aspects périphériques du site web, comme les pages légales ; cette app Django pourrait être amenée à être extraite de cette base de code pour la rendre réutilisable au sein d’un modèle de base de code Django pour beta.gouv.fr
+* `aides` : implémente les entités et les logiques métier liées aux dispositifs d’aide publics à l’agriculture ;
+  * [Documentation spécifique](../../apps/aides/README.md) ;
+* `agri` : implémente le parcours utilisateur destiné aux exploitantes et exploitants agricoles afin de les aiguiller vers les aides pertinentes pour leur situation et leur besoin ;
+  * [Documentation spécifique](../../apps/agri/README.md) ;
+* `aides_feedback` : implémente de quoi permettre à nos utilisatrices et utilisateurs de donner leur avis sur le parcours qui leur est proposé ainsi que sur les contenus qui leur sont présentés ;
+* `pac` : implémente une représentation en base de données relationnelle du Plan Stratégique National de la PAC 2023-2027 ; c’est un outil à usage interne technique uniquement ;
+* `product` : implémente les aspects périphériques du site web, comme les pages légales ; cette app Django pourrait être amenée à être extraite de cette base de code pour la rendre réutilisable au sein d’un modèle de base de code Django pour beta.gouv.fr ;
+* `referentiel` : implémente un référentiel des démarches agricoles et de leurs données officielles, avec système d’export vers [data.gouv.fr](https://www.data.gouv.fr/datasets) selon [le schéma interministériel des aides publiques](https://schema.data.gouv.fr/etalab/schema-dispositif-aide/) ;
+  * [Documentation spécifique](../../apps/referentiel/README.md) ;
+* `referentiel_integration` : implémente des points d’entrée divers et variés pour intégrer des données venant de toutes sortes de sources vers le référentiel des démarches agricoles ;
+  * [Documentation spécifique](../../apps/referentiel_integration/README.md) ;
+* `workflow` : implémente une interface d’administration de l’intégration et de l’enrichissement des données de leur intégration via `referentiel_integration` à leur publication par `aides` sur le site Aides Agri.
 
 ### Diagramme des dépendances entre les apps Django spécifiques
 
@@ -65,6 +70,11 @@ graph TD;
     aides-->aides_feedback;
     aides-->ui;
     product-->ui;
+    aides-->referentiel;
+    referentiel_integration-->referentiel;
+    workflow-->referentiel_integration;
+    workflow-->referentiel;
+    workflow-->aides;
 ```
 
 ## Architecture de la gestion des tâches d’arrière-plan
