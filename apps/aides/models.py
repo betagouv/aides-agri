@@ -734,9 +734,6 @@ class Aide(models.Model):
     programmes = models.ManyToManyField(
         Programme, related_name="aides", blank=True, verbose_name="Programmes"
     )
-    base_juridique = models.TextField(
-        blank=True, default="", verbose_name="Base juridique"
-    )
     conditions = models.TextField(blank=True, verbose_name="Conditions d’éligibilité")
     montant = models.TextField(blank=True, verbose_name="Montaux ou taux de l’aide")
     participation_agriculteur = models.TextField(
@@ -787,6 +784,9 @@ class Aide(models.Model):
     )
     filieres = models.ManyToManyField(
         Filiere, blank=True, related_name="aides", verbose_name="Filières"
+    )
+    base_juridique = models.ManyToManyField(
+        "BaseJuridique", blank=True, verbose_name="Bases juridiques"
     )
     raw_data = postgres_fields.HStoreField(
         null=True, blank=True, verbose_name="Données brutes issues de l’intégration"
@@ -858,6 +858,10 @@ class Aide(models.Model):
     @property
     def is_ongoing(self) -> bool:
         return self.date_fin is None or self.date_fin > date.today()
+
+    @cached_property
+    def bases_juridiques(self):
+        return self.base_juridique
 
     @cached_property
     def has_bases_juridiques(self):
@@ -937,12 +941,13 @@ class BaseJuridique(models.Model):
         verbose_name = "Base juridique"
         verbose_name_plural = "Bases juridiques"
 
-    aide = models.ForeignKey(
-        Aide, on_delete=models.CASCADE, related_name="bases_juridiques"
-    )
     libelle = models.CharField(verbose_name="Libellé")
     url = models.URLField(
         verbose_name="Adresse",
         help_text="Une URL valide, exemple https://legifrance.gouv.fr/",
+        unique=True,
     )
     commentaire = models.CharField(blank=True, verbose_name="Commentaire")
+
+    def __str__(self):
+        return self.libelle
