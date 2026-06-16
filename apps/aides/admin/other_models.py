@@ -20,6 +20,7 @@ from ..models import (
     ZoneGeographique,
     Filiere,
     Beneficiaires,
+    BaseJuridique,
 )
 from ._common import ArrayFieldCheckboxSelectMultiple
 
@@ -368,3 +369,10 @@ class FiliereAdmin(CsvExportMixin, VersionAdmin):
                 ]
             )
         return content
+
+
+@admin.register(BaseJuridique)
+class BaseJuridiqueAdmin(VersionAdmin):
+    list_display = ("id", "libelle", "url")
+    list_display_links = ("id", "libelle")
+    search_fields = ("libelle", "url")

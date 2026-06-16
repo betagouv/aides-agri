@@ -19,7 +19,7 @@ from reversion.admin import VersionAdmin
 
 from admin_concurrency.admin import ConcurrentModelAdmin
 
-from ..models import ZoneGeographique, Aide, Sujet, BaseJuridique
+from ..models import ZoneGeographique, Aide, Sujet
 from ..interop import write_aides_as_csv
 from ._common import ArrayFieldCheckboxSelectMultiple
 
@@ -43,29 +43,6 @@ class EasyMDEWidget(forms.widgets.Textarea):
 class SujetsMultipleChoiceField(forms.ModelMultipleChoiceField):
     def label_from_instance(self, obj: Sujet):
         return f"{obj.nom_court} ({', '.join([theme.nom_court for theme in obj.themes.all()])})"
-
-
-class BaseJuridiqueAdminInline(admin.StackedInline):
-    model = BaseJuridique
-    extra = 1
-
-    def _are_inheritied_from_parent(self, obj):
-        return obj and obj.parent and obj.parent.bases_juridiques.exists()
-
-    def has_add_permission(self, request, obj):
-        return super().has_add_permission(
-            request, obj
-        ) and not self._are_inheritied_from_parent(obj)
-
-    def has_delete_permission(self, request, obj=None):
-        return super().has_delete_permission(
-            request, obj=obj
-        ) and not self._are_inheritied_from_parent(obj)
-
-    def has_change_permission(self, request, obj=None):
-        return super().has_change_permission(
-            request, obj=obj
-        ) and not self._are_inheritied_from_parent(obj)
 
 
 @admin.register(Aide)
@@ -101,7 +78,12 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         ("assigned_to", admin.RelatedOnlyFieldListFilter),
         ("parent", admin.RelatedOnlyFieldListFilter),
     )
-    autocomplete_fields = ("zones_geographiques", "organisme", "organismes_secondaires")
+    autocomplete_fields = (
+        "zones_geographiques",
+        "organisme",
+        "organismes_secondaires",
+        "base_juridique",
+    )
     readonly_fields = [
         "parent",
         "is_derivable",
@@ -209,11 +191,9 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             {"classes": ["collapse"], "fields": ["raw_data"]},
         ),
     ]
-    change_form_template = "admin/aides/aide/change_form.html"
     formfield_overrides = {
         TextField: {"widget": EasyMDEWidget},
     }
-    inlines = (BaseJuridiqueAdminInline,)
 
     class AideChangeList(ChangeList):
         def get_queryset(self, request, **kwargs):
@@ -359,6 +339,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         filieres = aide.filieres.all()
         types = aide.types.all()
         zones_geographiques = aide.zones_geographiques.all()
+        bases_juridiques = aide.base_juridique.all()
         aide.pk = None
         aide._state.adding = True
         aide.status = Aide.Status.CHOSEN
@@ -374,22 +355,8 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         aide.filieres.set(filieres)
         aide.types.set(types)
         aide.zones_geographiques.set(zones_geographiques)
-        AideAdmin._create_bases_juridiques_from_aide_id_to_aide(aide_id, aide)
+        aide.base_juridique.set(bases_juridiques)
         return aide
-
-    @staticmethod
-    def _create_bases_juridiques_from_aide_id_to_aide(aide_id: int, aide: Aide):
-        to_create = []
-        for base_juridique in BaseJuridique.objects.filter(aide_id=aide_id):
-            to_create.append(
-                BaseJuridique(
-                    aide_id=aide.pk,
-                    libelle=base_juridique.libelle,
-                    url=base_juridique.url,
-                    commentaire=base_juridique.commentaire,
-                )
-            )
-        BaseJuridique.objects.bulk_create(to_create)
 
     @button(
         label="Décliner",
@@ -482,11 +449,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             new_aide.status = Aide.Status.CHOSEN
             new_aide.save()
             for field in request.POST.getlist("fields"):
-                if field == "bases_juridiques":
-                    AideAdmin._create_bases_juridiques_from_aide_id_to_aide(
-                        object_id, new_aide
-                    )
-                elif getattr(Aide, field).field.many_to_many:
+                if getattr(Aide, field).field.many_to_many:
                     getattr(new_aide, field).set(getattr(aide, field).all())
                 else:
                     setattr(new_aide, field, getattr(aide, field))
@@ -534,14 +497,6 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                     },
                 }
             )
-            if aide.bases_juridiques.exists():
-                remote_field = BaseJuridique.aide.field.remote_field
-                remote_field.verbose_name = "Bases juridiques"
-                context["fields"][remote_field] = markdown(
-                    "\n".join(
-                        [f"[{b.libelle}]({b.url})" for b in aide.bases_juridiques.all()]
-                    )
-                )
             return TemplateResponse(request, "admin/aides/aide/duplicate.html", context)
 
     @button(label="Vue Kanban")

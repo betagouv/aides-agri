@@ -13,3 +13,12 @@
 #aide_form {
   --header-bg: #6C9041;
 }
+
+.select2 {
+  width: 60% !important;
+}
+
+.select2-container--admin-autocomplete .select2-selection--multiple .select2-selection__rendered {
+    flex-direction: column;
+    align-items: flex-start;
+}
