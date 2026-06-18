@@ -22,7 +22,7 @@ from reversion.admin import VersionAdmin
 from admin_concurrency.admin import ConcurrentModelAdmin
 
 from ..models import ZoneGeographique, Aide, Sujet
-from ..interop import write_aides_as_csv
+from ..interop import write_aides_as_csv, AideToInternalSchema
 from ._common import ArrayFieldCheckboxSelectMultiple
 
 
@@ -565,6 +565,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
 
         write_aides_as_csv(
             response,
+            AideToInternalSchema,
             list(
                 self.get_changelist_instance(request)
                 .get_queryset(request)
