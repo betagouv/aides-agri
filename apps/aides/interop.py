@@ -12,9 +12,9 @@ from .models import Aide, Organisme
 class AideToSchema:
     """
     This class builds a datarow representing an Aide
-        for schema https://schema.data.gouv.fr/etalab/schema-dispositif-aide/.
+        for schema https://schema.data.gouv.fr/etalab/dispositif-aide-professionnels/.
 
-    Current schema version: 0.1.0
+    Current schema version: 0.2.0
 
     Warnings:
         * The ID is now our internal ID ; neither a UUID as specified in the schema, nor a predictable code as we would like it to be ;
@@ -41,6 +41,17 @@ class AideToSchema:
         "date_ouverture",
         "date_cloture",
         "date_mise_a_jour",
+        "base_juridique",
+        "eligibilite_effectif_minimal",
+        "eligibilite_effectif_maximal",
+        "eligibilite_categorie_taille_entreprise",
+        "eligibilite_annees_existence_minimal",
+        "eligibilite_forme_juridique",
+        "eligibilite_forme_juridique_exclusions",
+        "ciblage_secteur_activite",
+        "ciblage_naf",
+        "ciblage_naf_exclusions",
+        "chainage_paiement",
     ]
 
     def __init_subclass__(cls, added_fields: dict[int, str], **kwargs):
@@ -89,14 +100,6 @@ class AideToSchema:
 
     def _prepare_eligibilite(self):
         eligibilite = self.aide.conditions
-        if self.aide.eligibilite_effectif_min:
-            eligibilite += self._subparagraph(
-                "Effectif salarié minimal", self.aide.eligibilite_effectif_min
-            )
-        if self.aide.eligibilite_effectif_max:
-            eligibilite += self._subparagraph(
-                "Effectif salarié maximal", self.aide.eligibilite_effectif_max
-            )
         if self.aide.type_depense:
             eligibilite += self._subparagraph(
                 "Dépenses éligibles", self.aide.type_depense
@@ -147,6 +150,42 @@ class AideToSchema:
     def _prepare_eligibilite_geographique_exclusions(self):
         return ""
 
+    def _prepare_base_juridique(self):
+        return [
+            {"libelle": base_juridique.libelle, "lien": base_juridique.url}
+            for base_juridique in self.aide.base_juridique.all()
+        ]
+
+    def _prepare_eligibilite_effectif_minimal(self):
+        return self.aide.eligibilite_effectif_min
+
+    def _prepare_eligibilite_effectif_maximal(self):
+        return self.aide.eligibilite_effectif_max
+
+    def _prepare_eligibilite_categorie_taille_entreprise(self):
+        return ""
+
+    def _prepare_eligibilite_annees_existence_minimal(self):
+        return ""
+
+    def _prepare_eligibilite_forme_juridique(self):
+        return ""
+
+    def _prepare_eligibilite_forme_juridique_exclusions(self):
+        return ""
+
+    def _prepare_ciblage_secteur_activite(self):
+        return ""
+
+    def _prepare_ciblage_naf(self):
+        return ""
+
+    def _prepare_ciblage_naf_exclusions(self):
+        return ""
+
+    def _prepare_chainage_paiement(self):
+        return ""
+
     def _prepare_date_ouverture(self):
         return self.aide.date_debut.isoformat() if self.aide.date_debut else ""
 
@@ -160,6 +199,42 @@ class AideToSchema:
         return [getattr(self, f"_prepare_{field}")() for field in self.__class__.fields]
 
 
+class AideToExternalSchema(
+    AideToSchema,
+    added_fields={
+        4: "montant",
+        5: "participation_agriculteur",
+        6: "exemple_projet",
+        7: "etapes",
+        9: "type_depense",
+        10: "cumulable",
+    },
+):
+    def _prepare_description(self):
+        return self.aide.description
+
+    def _prepare_eligibilite(self):
+        return self.aide.conditions
+
+    def _prepare_montant(self):
+        return self.aide.montant
+
+    def _prepare_participation_agriculteur(self):
+        return self.aide.participation_agriculteur
+
+    def _prepare_exemple_projet(self):
+        return self.aide.exemple_projet
+
+    def _prepare_etapes(self):
+        return self.aide.etapes
+
+    def _prepare_type_depense(self):
+        return self.aide.type_depense
+
+    def _prepare_cumulable(self):
+        return self.aide.eligibilite_cumulable
+
+
 class AideToInternalSchema(
     AideToSchema,
     added_fields={
@@ -168,12 +243,12 @@ class AideToInternalSchema(
         12: "filieres",
         13: "sujets",
         16: "est_une_declinaison_territoriale",
-        20: "etat",
-        21: "est_publiee",
-        22: "raison_desactivation",
-        23: "url_site",
-        24: "url_bureau_valideur",
-        25: "url_bo",
+        32: "etat",
+        33: "est_publiee",
+        34: "raison_desactivation",
+        35: "url_site",
+        36: "url_bureau_valideur",
+        37: "url_bo",
     },
 ):
     @cached_property
