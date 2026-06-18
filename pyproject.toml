@@ -3,6 +3,7 @@ requires-python = ">=3.14"
 name = "aides-agri"
 version = "0.1.0"
 dependencies = [
+  "datagouv-client ~=0.5",
   "django ~=5.2",
   "django-admin-extra-buttons~=2.2",
   "django-anymail[brevo]~=15.0",
