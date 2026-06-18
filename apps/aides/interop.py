@@ -1,3 +1,4 @@
+import copy
 import csv
 from functools import cached_property
 
@@ -44,6 +45,7 @@ class AideToSchema:
 
     def __init_subclass__(cls, added_fields: dict[int, str], **kwargs):
         super().__init_subclass__(**kwargs)
+        cls.fields = copy.copy(cls.fields)
         for idx, field in added_fields.items():
             cls.fields.insert(idx, field)
 
@@ -234,9 +236,9 @@ class AideToInternalSchema(
         return self.base_url + reverse("admin:aides_aide_change", args=[self.aide.pk])
 
 
-def write_aides_as_csv(f, aides_ids: list[int]):
+def write_aides_as_csv(f, schema_class: type[AideToSchema], aides_ids: list[int]):
     writer = csv.writer(f)
-    writer.writerow(AideToSchema.fields)
+    writer.writerow(schema_class.fields)
     for aide in (
         Aide.objects.filter(pk__in=aides_ids)
         .prefetch_related(
@@ -249,4 +251,4 @@ def write_aides_as_csv(f, aides_ids: list[int]):
         )
         .select_related("organisme", "parent")
     ):
-        writer.writerow(AideToInternalSchema(aide).build_row())
+        writer.writerow(schema_class(aide).build_row())
