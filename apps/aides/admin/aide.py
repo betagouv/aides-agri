@@ -20,7 +20,7 @@ from reversion.admin import VersionAdmin
 from admin_concurrency.admin import ConcurrentModelAdmin
 
 from ..models import ZoneGeographique, Aide, Sujet
-from ..interop import write_aides_as_csv
+from ..interop import write_aides_as_csv, AideToInternalSchema
 from ._common import ArrayFieldCheckboxSelectMultiple
 
 
@@ -534,7 +534,9 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             headers={"Content-Disposition": f'attachment; filename="{filename}.csv"'},
         )
 
-        write_aides_as_csv(response, Aide.objects.values_list("pk", flat=True))
+        write_aides_as_csv(
+            response, AideToInternalSchema, Aide.objects.values_list("pk", flat=True)
+        )
         return response
 
     def response_post_save_change(self, request, obj):
