@@ -2,6 +2,10 @@ version = 1
 revision = 3
 requires-python = ">=3.13"
 
+[options]
+exclude-newer = "0001-01-01T00:00:00Z" # This has no effect and is included for backwards compatibility when using relative exclude-newer values.
+exclude-newer-span = "P7D"
+
 [[package]]
 name = "aides-agri"
 version = "0.1.0"
@@ -360,15 +364,15 @@ wheels = [
 
 [[package]]
 name = "django-dsfr"
-version = "3.4.2"
+version = "3.5.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
     { name = "django-widget-tweaks" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b3/e5/a79f81ee051917b8f28a6914a9873ee5232f1b437db3b3a1f3e426eed069/django_dsfr-3.4.2.tar.gz", hash = "sha256:d4c997e62e63daec00c6bd84d285fad93d6fa1fdf0f3ba2c98276e4d4c242ade", size = 2747163, upload-time = "2026-04-20T10:17:46.485Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a4/c4/8ff679434fab961fc1920e044b68ffeb381c4d80d794d6b5c09f2bd31147/django_dsfr-3.5.2.tar.gz", hash = "sha256:5c84a0507ccd360fe78a3db77764333ca789c8c2487af000b8e3d8929dd691a6", size = 2749517, upload-time = "2026-06-11T10:24:31.709Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f3/bf/68223da9424172c931bead99f97009c861560a549b8b3ad2f8a47cbda00d/django_dsfr-3.4.2-py3-none-any.whl", hash = "sha256:457f7ba48ae1b154c10dae9bc09777aaba262ea9bc42458b5e8aa0d917854941", size = 3494642, upload-time = "2026-04-20T10:17:47.966Z" },
+    { url = "https://files.pythonhosted.org/packages/74/57/fe17dd6eff3d4b98e006e1049382e6874923cdd3ff35431dda408ccfb08b/django_dsfr-3.5.2-py3-none-any.whl", hash = "sha256:84b97a4024c20f9667a8aae1b2a74074e0b0c83445269576918ecfbac7bc069d", size = 3496604, upload-time = "2026-06-11T10:24:29.909Z" },
 ]
 
 [package.optional-dependencies]
