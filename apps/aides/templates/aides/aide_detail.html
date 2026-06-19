@@ -201,7 +201,11 @@ document.onreadystatechange = evt => {
         >
           {{ sections.etapes }}
         </h2>
-        <div class="fr-pl-4w fr-mb-4w">
+        <div class="fr-pl-4w fr-mb-4w"
+             data-matomo-target="trackableContent"
+             data-matomo-trackable-content-event-page="Aide"
+             data-matomo-trackable-content-event-name="Lien démarche via Étapes"
+        >
           {{ object.etapes|urlize|dsfr_md }}
         </div>
         {% endif %}
