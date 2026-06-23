@@ -336,21 +336,22 @@ class ResultsView(ResultsMixin, ListView):
                             }
                             if aide.is_complete
                             else {
-                                "url": None,
-                                "label": "Consulter la fiche dispositif",
-                                "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right fr-disabled",
+                                "url": aide.url_descriptif,
+                                "label": "Voir le site officiel",
+                                "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right",
+                                "is_external": True,
                             }
                         ]
                         + (
                             [
                                 {
-                                    "url": aide.url_descriptif,
-                                    "label": "Voir le site officiel",
+                                    "url": aide.url_demarche,
+                                    "label": "Déposer mon dossier",
                                     "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right",
                                     "is_external": True,
                                 }
                             ]
-                            if aide.url_descriptif and not aide.is_complete
+                            if aide.url_demarche and aide.is_complete
                             else []
                         )
                     },
