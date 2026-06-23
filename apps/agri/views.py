@@ -347,7 +347,7 @@ class ResultsView(ResultsMixin, ListView):
                                 {
                                     "url": aide.url_demarche,
                                     "label": "Déposer mon dossier",
-                                    "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right",
+                                    "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right demarche",
                                     "is_external": True,
                                 }
                             ]
