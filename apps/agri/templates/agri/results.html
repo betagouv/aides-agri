@@ -22,6 +22,8 @@ document.addEventListener("htmx:load", evt => {
       const href = elt.getAttribute("href")
       document.getElementById("modal-external-link-domain").textContent = href.split("/")[2]
       document.getElementById("modal-external-link-href").setAttribute("href", href)
+      const eventName = elt.classList.contains("demarche") ? "Lien démarche" : "Lien descriptif en mode minimal"
+      document.getElementById("modal-external-link-href").setAttribute("data-event-name", eventName)
       window.dsfr(document.getElementById("modal-external-link")).modal.disclose()
     })
   })
