@@ -65,7 +65,7 @@ class AideToSchema:
 
     @staticmethod
     def _subparagraph(title: str, content) -> str:
-        return f"\n\n### {title}\n\n{content}"
+        return f"\n\n### {title}\n\n{content}" if content else ""
 
     def _prepare_id(self):
         return self.aide.pk
@@ -81,34 +81,30 @@ class AideToSchema:
         if self.aide.parent:
             description += self.aide.parent.description_de_base
         description += self.aide.description
-        if self.aide.montant:
-            description += self._subparagraph(
-                "Montant ou taux de l’aide", self.aide.montant
-            )
-        if self.aide.participation_agriculteur:
-            description += self._subparagraph(
-                "Participation ou coût pour les bénéficiaires",
-                self.aide.participation_agriculteur,
-            )
-        if self.aide.exemple_projet:
-            description += self._subparagraph(
-                "Exemple de projet ou d’application", self.aide.exemple_projet
-            )
-        if self.aide.etapes:
-            description += self._subparagraph("Étapes", self.aide.etapes)
+        description += self._subparagraph(
+            Aide.montant.field.verbose_name, self.aide.montant
+        )
+        description += self._subparagraph(
+            Aide.participation_agriculteur.field.verbose_name,
+            self.aide.participation_agriculteur,
+        )
+        description += self._subparagraph(
+            Aide.exemple_projet.field.verbose_name, self.aide.exemple_projet
+        )
+        description += self._subparagraph(
+            Aide.etapes.field.verbose_name, self.aide.etapes
+        )
         return description
 
     def _prepare_eligibilite(self):
         eligibilite = self.aide.conditions
-        if self.aide.type_depense:
-            eligibilite += self._subparagraph(
-                "Dépenses éligibles", self.aide.type_depense
-            )
-        if self.aide.eligibilite_cumulable:
-            eligibilite += self._subparagraph(
-                "Cette aide est-elle cumulable avec d’autres dispositifs ?",
-                self.aide.eligibilite_cumulable,
-            )
+        eligibilite += self._subparagraph(
+            Aide.type_depense.field.verbose_name, self.aide.type_depense
+        )
+        eligibilite += self._subparagraph(
+            Aide.eligibilite_cumulable.field.verbose_name,
+            self.aide.eligibilite_cumulable,
+        )
         return eligibilite
 
     def _prepare_types_aides(self):
@@ -323,6 +319,8 @@ def write_aides_as_csv(f, schema_class: type[AideToSchema], aides_ids: list[int]
             "zones_geographiques",
             "filieres",
             "sujets",
+            "base_juridique",
+            "parent__zones_geographiques",
         )
         .select_related("organisme", "parent")
     ):
