@@ -1,0 +1,106 @@
+{% extends "ui/base.html" %}
+
+{% load static dsfr_tags %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'agri/about.css' %}">
+{% endblock extra_css %}
+
+{% block title %}À propos d’Aides Agri{% endblock title %}
+
+{% block container %}
+<main id="content" role="main" aria-label="Contenu">
+  <div class="fr-background-alt--green-emeraude fr-mb-2w">
+    <div class="fr-container fr-pt-1w">
+      {% block breadcrumb %}{% dsfr_breadcrumb extra %}{% endblock breadcrumb %}
+      <h1 class="fr-text-action-high--green-emeraude fr-mb-9v">À propos d’Aides Agri</h1>
+      <div id="intro" class="fr-grid-row fr-grid-row--gutters">
+        <div class="fr-col fr-col-12 fr-col-md-6">
+          <p class="fr-h3">Aides Agri est une plateforme pour :</p>
+          <ul class="fr-text--xl">
+            <li class="fr-icon-arrow-right-circle-fill fr-mb-1w">
+              Orienter les agriculteurs vers les dispositifs adaptés à leur profil et leur besoin.
+            </li>
+            <li class="fr-icon-arrow-right-circle-fill fr-mb-2w">
+              Améliorer la connaissance des aides agricoles.
+            </li>
+          </ul>
+          <p class="fr-text--lg">
+            Concrètement, Aides Agri recense les aides des partenaires publics à destination des agriculteurs, les rend visibles et aiguille les agriculteurs ou leurs accompagnants selon leur besoin.
+          </p>
+          <p id="stats" class="fr-border-default--green-emeraude fr-border-width-0-5v fr-text--lg fr-py-2w fr-px-4w">
+            {{ stats_aides_count }} dispositifs nationaux et régionaux recensés,<br><br>
+            issus de {{ stats_organismes_count }} acteurs publics.
+          </p>
+          <div class="fr-btns-group fr-btns-group--right">
+            <a class="fr-link fr-text--sm fr-text--almost-bold" href="{% url 'product:statistiques' %}" target="_blank">Voir nos statistiques</a>
+          </div>
+        </div>
+        <div class="fr-col fr-col-12 fr-col-md-6">
+          {% dsfr_content video_data extra_classes="fr-mt-0" %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="fr-container">
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col fr-col-12 fr-col-md-3">
+        {% dsfr_sidemenu sidemenu_data button_label="Table des matières" %}
+      </div>
+      <article class="fr-col fr-col-12 fr-col-md-9">
+        <section id="demarche" class="fr-mb-5w">
+          <h2 class="fr-h3 fr-text-action-high--blue-france">Notre démarche</h2>
+          <p class="fr-text--lg">
+            Ce service fait partie des solutions mises en œuvre par le Ministère de l’Agriculture, de l'Agro-alimentaire et de la Souveraineté Alimentaire dans le cadre de la simplification numérique.
+            En ligne depuis 2025, Aides Agri est conçu selon la méthode produit, ce qui implique que nous y apportons des améliorations fréquentes et importantes.
+          </p>
+          <div class="fr-background-contrast--grey fr-p-5v">
+            <h3 class="fr-h5 fr-mb-1w">Nous avons besoin de vous pour nous améliorer.</h3>
+            <p class="fr-mb-1w">Dans une démarche d’amélioration en continu, nous sommes constamment en recherche de retours de la part de nos utilisateurs.</p>
+            <p class="fr-text--bold fr-mb-1w">Envie de partager vos impressions sur le site ?</p>
+            <a href="" class="fr-btn fr-btn--secondary">Je donne mon avis</a>
+          </div>
+        </section>
+        <section id="savoir-plus">
+          <h2 class="fr-h3 fr-text-action-high--blue-france fr-mb-2w">
+            Vous voulez en savoir plus ?
+          </h2>
+          <h3 class="fr-h5 fr-mb-1w">Inscrivez-vous à l’un de nos webinaires</h3>
+          <a class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-calendar-2-line" href="">Voir les prochaines dates</a>
+          <h3 class="fr-h5 fr-mt-2w fr-mb-1w">Ou regarder en replay</h3>
+          {% dsfr_content video_data extra_classes="fr-content-media--sm fr-mt-1w" %}
+        </section>
+        <section id="kit-de-com">
+          <h2 class="fr-h3 fr-text-action-high--blue-france fr-mb-2w">
+            Vous souhaitez contribuer à la diffusion d’Aides Agri ?
+          </h2>
+          <h3 class="fr-h5 fr-mb-1w">Téléchargez notre kit de communication</h3>
+          <ul class="fr-links-group fr-grid-row fr-grid-row--gutters fr-pl-7v">
+            <li class="fr-col fr-col-12 fr-col-md-6">
+              <a href="" class="fr-link fr-link--download" download="true">Intitulé du fichier à télécharger</a>
+            </li>
+            <li class="fr-col fr-col-12 fr-col-md-6">
+              <a href="" class="fr-link fr-link--download" download="true">Intitulé du fichier à télécharger</a>
+            </li>
+            <li class="fr-col fr-col-12 fr-col-md-6">
+              <a href="" class="fr-link fr-link--download" download="true">Intitulé du fichier à télécharger</a>
+            </li>
+            <li class="fr-col fr-col-12 fr-col-md-6">
+              <a href="" class="fr-link fr-link--download" download="true">Intitulé du fichier à télécharger</a>
+            </li>
+          </ul>
+        </section>
+        <section id="ils-parlent-de-nous">
+          <h2 class="fr-h3 fr-text-action-high--blue-france fr-mb-2w">Ils parlent de nous</h2>
+          {% dsfr_quote text="« Coucou c'est top! »" author="Gentil agri" extra_classes="fr-ml-1v" %}
+        </section>
+        <section id="donnees-ouvertes" class="fr-my-5w">
+          <h2 class="fr-h3 fr-text-action-high--blue-france fr-mb-2w">Vous êtes un agent public ou êtes chargé d’une mission pour le service public ?</h2>
+          <h3 class="fr-h5 fr-mb-1w">Téléchargez nos données sur data.gouv.fr.</h3>
+          <a href="" class="fr-link" target="_blank">Aller sur data.gouv.fr</a>
+        </section>
+      </article>
+    </div>
+  </div>
+</main>
+{% endblock container %}
