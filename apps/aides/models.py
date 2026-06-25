@@ -735,7 +735,7 @@ class Aide(models.Model):
         Programme, related_name="aides", blank=True, verbose_name="Programmes"
     )
     conditions = models.TextField(blank=True, verbose_name="Conditions d’éligibilité")
-    montant = models.TextField(blank=True, verbose_name="Montaux ou taux de l’aide")
+    montant = models.TextField(blank=True, verbose_name="Montant ou taux de l’aide")
     participation_agriculteur = models.TextField(
         blank=True, verbose_name="Participation ou coût pour les bénéficiaires"
     )
@@ -759,7 +759,8 @@ class Aide(models.Model):
         verbose_name="Éligibilité : étape d’avancement du projet",
     )
     eligibilite_cumulable = models.TextField(
-        blank=True, verbose_name="Éligibilité : dispositif cumulable ?"
+        blank=True,
+        verbose_name="Cette aide est-elle cumulable avec d’autres dispositifs ?",
     )
     type_depense = models.TextField(
         blank=True, verbose_name="Types de dépenses éligibles"
