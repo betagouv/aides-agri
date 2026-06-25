@@ -10,6 +10,7 @@ dependencies = [
     { name = "dj-importmap" },
     { name = "django" },
     { name = "django-admin-extra-buttons" },
+    { name = "django-admin-ordering" },
     { name = "django-anymail" },
     { name = "django-axes" },
     { name = "django-csp" },
@@ -49,6 +50,7 @@ requires-dist = [
     { name = "dj-importmap", specifier = "~=1.0" },
     { name = "django", specifier = "~=5.2" },
     { name = "django-admin-extra-buttons", specifier = "~=2.2" },
+    { name = "django-admin-ordering" },
     { name = "django-anymail", extras = ["brevo"], specifier = "~=15.0" },
     { name = "django-axes", specifier = "~=8.3" },
     { name = "django-csp", specifier = "~=4.0" },
@@ -246,6 +248,18 @@ wheels = [
 ]
 
 [[package]]
+name = "django-admin-ordering"
+version = "0.20.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django-js-asset" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8d/32/bb1b4c7d4b304445dd74d2fa5157cbc62d4749cbe6de540783b7ef709cb5/django_admin_ordering-0.20.0.tar.gz", hash = "sha256:3ee59d053a6acda02c3083d6e6fde1c9d26504f7aaea76eea59e8671d498c2dc", size = 18525, upload-time = "2024-11-26T13:49:20.947Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/21/90/d0df2ffeff72b72236551954d8610056999f4346e750774164ad65715fd6/django_admin_ordering-0.20.0-py3-none-any.whl", hash = "sha256:3de409ac1b672a7b171943cd4a1c0dac5c1bc5347e4ad975d87df3a73b2a365a", size = 22277, upload-time = "2024-11-26T13:49:22.278Z" },
+]
+
+[[package]]
 name = "django-anymail"
 version = "15.0"
 source = { registry = "https://pypi.org/simple" }
@@ -354,6 +368,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/34/f2/8c3e28a5eed8e5226835c762892bfef74eda7e8629c65b49c186098eb303/django_htmx-1.27.0.tar.gz", hash = "sha256:036e5da801bfdf5f1ca815f21592cfb9f004a898f330c842f15e55c70e301a75", size = 65362, upload-time = "2025-11-28T23:18:55.049Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/23/ac/25d28489dc43224e260f4ebee7565f7ef1efe12af0f284a89500c19f75e2/django_htmx-1.27.0-py3-none-any.whl", hash = "sha256:13e1e13b87d39b57f95aae6e4987cb3df056d0b1373a41f4a94504a00298ffd8", size = 62126, upload-time = "2025-11-28T23:18:53.57Z" },
+]
+
+[[package]]
+name = "django-js-asset"
+version = "4.0.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3a/c5/956692dfff12d8d5439034085e24a892938fa176a1526d5664f06d869959/django_js_asset-4.0.1.tar.gz", hash = "sha256:51ad1060115bf741bef88dc1287ca7f70e1d6ea7cf935f52a34f39eca9bd9db1", size = 26827, upload-time = "2026-06-11T16:04:28.379Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d0/6e/ce1446c09994d44b8722c8979025ff90566279f344e4b1d4e20181128048/django_js_asset-4.0.1-py3-none-any.whl", hash = "sha256:967ac7d95ce094d9f65f358278bcd494201e2f9bbee936430150de83eac9f656", size = 13462, upload-time = "2026-06-11T16:04:27.13Z" },
 ]
 
 [[package]]

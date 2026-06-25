@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.sitemaps",
     "django.contrib.staticfiles",
     "admin_extra_buttons",
+    "admin_ordering",
     "anymail",
     "axes",
     "csp",
