@@ -6,6 +6,7 @@ dependencies = [
   "datagouv-client ~=0.5",
   "django ~=5.2",
   "django-admin-extra-buttons~=2.2",
+  "django-admin-ordering",
   "django-anymail[brevo]~=15.1",
   "django-axes ~=8.3",
   "django-csp ~=4.0",
