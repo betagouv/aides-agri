@@ -1,17 +1,17 @@
 from rest_framework import permissions, viewsets
 
-from ..models.schema_dispositif_aide import RawDemarcheSchemaDispositifAide
+from ..models.schema_dispositif_aide import RawDataSchemaDispositifAide
 from ..serializers.schema_dispositif_aide import (
-    RawDemarcheSchemaDispositifAideSerializer,
+    RawDataSchemaDispositifAideSerializer,
 )
 
 
-__all__ = ["RawDemarcheSchemaDispositifAideViewSet"]
+__all__ = ["RawDataSchemaDispositifAideViewSet"]
 
 
-class RawDemarcheSchemaDispositifAideViewSet(viewsets.ModelViewSet):
-    queryset = RawDemarcheSchemaDispositifAide.objects.all()
-    serializer_class = RawDemarcheSchemaDispositifAideSerializer
+class RawDataSchemaDispositifAideViewSet(viewsets.ModelViewSet):
+    queryset = RawDataSchemaDispositifAide.objects.all()
+    serializer_class = RawDataSchemaDispositifAideSerializer
     permission_classes = [
         permissions.IsAuthenticated,
         permissions.DjangoModelPermissions,

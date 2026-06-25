@@ -1,16 +1,16 @@
 import reversion
 from django.db import models
 
-from .base import RawDemarche, RawDemarcheFromExternalSource
+from .base import RawData, RawDataFromExternalSource
 
 COG_PAYS = "PAYS-99100"
 
 
 @reversion.register()
-class RawDemarcheSchemaDispositifAide(RawDemarcheFromExternalSource, RawDemarche):
+class RawDataSchemaDispositifAide(RawDataFromExternalSource, RawData):
     class Meta:
-        verbose_name = "Démarche brute au schéma interministériel des aides"
-        verbose_name_plural = "Démarches brutes au schéma interministériel des aides"
+        verbose_name = "Donnée brute au schéma interministériel des aides"
+        verbose_name_plural = "Donnée brutes au schéma interministériel des aides"
         unique_together = ("source", "id_externe")
 
     # schema cœur

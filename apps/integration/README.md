@@ -1,4 +1,4 @@
-# referentiel_integration
+# integration
 
 ## Dépendances logicielles
 

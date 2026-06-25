@@ -4,7 +4,7 @@ from django.template.response import TemplateResponse
 
 from aides.models import Aide
 from referentiel.models import Demarche
-from referentiel_integration.models.base import RawDemarche
+from integration.models.base import RawData
 
 
 def workflow_view(request: HttpRequest):
@@ -14,7 +14,7 @@ def workflow_view(request: HttpRequest):
 
     context = {
         "title": "Workflow d’intégration/édition des aides",
-        "raw_todo": RawDemarche.objects.to_do(),
+        "raw_todo": RawData.objects.to_do(),
         "demarches_todo": Demarche.objects.to_do(),
         "demarches_done": Demarche.objects.done(),
         "aides_by_status": {

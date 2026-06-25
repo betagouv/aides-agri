@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.postgres import fields as postgres_fields
 from django_enum import EnumField
 
-from .others import Organisme, Programme, Territoire
+from .references import BaseJuridique, Organisme, Programme, Territoire
 
 
 class RepresentableFlag(IntFlag):
@@ -154,6 +154,9 @@ class Demarche(models.Model):
         related_name="demarches_eligibilite_exclusion",
         verbose_name="Couverture géographique de l’aide - exclusions",
     )
+    bases_juridiques = models.ManyToManyField(
+        BaseJuridique, blank=True, verbose_name="Bases juridiques"
+    )
     demande_de_paiement_de = models.OneToOneField(
         "Demarche",
         on_delete=models.CASCADE,
@@ -179,21 +182,6 @@ class Porteur(models.Model):
     demarche = models.ForeignKey(Demarche, on_delete=models.CASCADE)
     organisme = models.ForeignKey(Organisme, on_delete=models.CASCADE)
     roles = EnumField(Role, null=True, blank=True, verbose_name="Rôles")
-
-
-class BaseJuridique(models.Model):
-    class Meta:
-        verbose_name = "Base juridique"
-        verbose_name_plural = "Bases juridiques"
-
-    demarche = models.ForeignKey(
-        Demarche, on_delete=models.CASCADE, related_name="bases_juridiques"
-    )
-    libelle = models.CharField(verbose_name="Libellé")
-    url = models.URLField(
-        verbose_name="Adresse",
-        help_text="Une URL valide, exemple https://legifrance.gouv.fr/",
-    )
 
 
 class ReferentInterne(models.Model):

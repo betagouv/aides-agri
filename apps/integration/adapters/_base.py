@@ -1,8 +1,8 @@
 from typing import Any
 
-from django.db.models import Q, QuerySet
-from django.db import transaction
+from django.db.models import QuerySet, Q
 
+from aides.models import Aide
 from referentiel.models import (
     Demarche,
     Organisme,
@@ -11,19 +11,21 @@ from referentiel.models import (
     Territoire,
     BaseJuridique,
 )
-from ..models.base import RawDemarche
 
-from ..models.schema_dispositif_aide import RawDemarcheSchemaDispositifAide, COG_PAYS
-from ._base import BaseIntegrationAdapter
+from ..models.base import RawData
 
 
-class SchemaDispositifAideIntegrationAdapter(BaseIntegrationAdapter):
-    @staticmethod
-    def _split_by_pipe_and_clean(value: str) -> set[str]:
-        return set([w.strip() for w in value.split("|") if w.strip() != ""])
+class BaseDemarcheAdapter:
+    def __init__(self):
+        self.errors = []
 
-    def _find_programmes(self, raw_programmes: str) -> QuerySet[Programme]:
-        raw_programmes = self._split_by_pipe_and_clean(raw_programmes)
+    def integrate(self, raw_data: RawData) -> Demarche:
+        raise NotImplementedError()
+
+    def update(self, demarche: Demarche, raw_data: RawData):
+        raise NotImplementedError()
+
+    def _find_programmes(self, raw_programmes: set[str]) -> QuerySet[Programme]:
         if not raw_programmes:
             return Programme.objects.none()
         q_lookup = Q()
@@ -39,8 +41,7 @@ class SchemaDispositifAideIntegrationAdapter(BaseIntegrationAdapter):
             )
         return programmes
 
-    def _find_cibles(self, raw_cibles: str) -> Demarche.Cible | int:
-        raw_cibles = self._split_by_pipe_and_clean(raw_cibles)
+    def _find_cibles(self, raw_cibles: set[str]) -> Demarche.Cible | int:
         cibles = 0
         missing = set()
         for raw_cible in raw_cibles:
@@ -56,11 +57,8 @@ class SchemaDispositifAideIntegrationAdapter(BaseIntegrationAdapter):
 
     def _find_categories_entreprise(
         self,
-        raw_categories_entreprise: str,
+        raw_categories_entreprise: set[str],
     ) -> Demarche.CategorieEntreprise | int:
-        raw_categories_entreprise = self._split_by_pipe_and_clean(
-            raw_categories_entreprise
-        )
         categories_entreprise = 0
         missing = set()
         for raw_categorie_entreprise in raw_categories_entreprise:
@@ -76,25 +74,21 @@ class SchemaDispositifAideIntegrationAdapter(BaseIntegrationAdapter):
             )
         return categories_entreprise
 
-    def _find_types_aides(self, raw_types_aides: str) -> Demarche.Type | int:
-        raw_types = self._split_by_pipe_and_clean(raw_types_aides)
+    def _find_types_aides(self, raw_types_aides: set[str]) -> Demarche.Type | int:
         types_aides = 0
         missing = set()
-        for raw_type in raw_types:
+        for raw_type_aides in raw_types_aides:
             try:
-                types_aides |= Demarche.Type[raw_type.upper()]
+                types_aides |= Demarche.Type[raw_type_aides.upper()]
             except ValueError:
-                missing.add(raw_type)
+                missing.add(raw_type_aides)
         if missing:
             self.errors.append(
                 f"Certains types d’aides n’ont pas été trouvés dans le référentiel : {missing}"
             )
         return types_aides
 
-    def _find_territoires(self, raw_territoires: str) -> QuerySet[Territoire]:
-        raw_territoires = self._split_by_pipe_and_clean(raw_territoires).difference(
-            {COG_PAYS}
-        )
+    def _find_territoires(self, raw_territoires: set[str]) -> QuerySet[Territoire]:
         if not raw_territoires:
             return Territoire.objects.none()
         q_lookup = Q()
@@ -150,57 +144,13 @@ class SchemaDispositifAideIntegrationAdapter(BaseIntegrationAdapter):
             self.errors.append("Certaines bases juridiques n’ont pas pu être créées.")
         return base_juridique
 
-    @transaction.atomic
-    def create_demarche(self, raw_d: RawDemarcheSchemaDispositifAide) -> Demarche:
-        d = Demarche()
-        d.code = f"{raw_d.source}-{raw_d.id_externe}"
-        d.titre = raw_d.titre
-        d.promesse = raw_d.promesse
-        d.description = raw_d.description
-        d.eligibilite = raw_d.eligibilite
-        d.types_aides = self._find_types_aides(raw_d.types_aides)
-        d.url_source = raw_d.url_source
-        d.cibles = self._find_cibles(raw_d.cibles)
-        d.date_ouverture = raw_d.date_ouverture
-        d.date_cloture = raw_d.date_cloture
-        d.eligibilite_annees_existence_minimal = (
-            raw_d.eligibilite_annees_existence_minimal
-        )
-        d.eligibilite_effectif_minimal = raw_d.eligibilite_effectif_minimal
-        d.eligibilite_effectif_maximal = raw_d.eligibilite_effectif_maximal
-        d.eligibilite_categorie_taille_entreprise = self._find_categories_entreprise(
-            raw_d.eligibilite_categorie_taille_entreprise
-        )
-        d.ciblage_secteur_activite = list(
-            self._split_by_pipe_and_clean(raw_d.ciblage_secteur_activite)
-        )
-        d.ciblage_naf = list(self._split_by_pipe_and_clean(raw_d.ciblage_naf))
-        d.ciblage_naf_exclusions = list(
-            self._split_by_pipe_and_clean(raw_d.ciblage_naf_exclusions)
-        )
-        d.eligibilite_forme_juridique = list(
-            self._split_by_pipe_and_clean(raw_d.eligibilite_forme_juridique)
-        )
-        d.eligibilite_forme_juridique_exclusions = list(
-            self._split_by_pipe_and_clean(raw_d.eligibilite_forme_juridique_exclusions)
-        )
-        d.save()
-        Porteur.objects.bulk_create(self._build_porteurs(raw_d.porteurs, d))
-        BaseJuridique.objects.bulk_create(
-            self._build_base_juridique(raw_d.base_juridique, d)
-        )
-        d.programmes_parents.set(self._find_programmes(raw_d.programmes_parents))
-        # todo referents_internes
-        d.eligibilite_geographique.set(
-            self._find_territoires(raw_d.eligibilite_geographique)
-        )
-        d.eligibilite_geographique_exclusions.set(
-            self._find_territoires(raw_d.eligibilite_geographique_exclusions)
-        )
-        raw_d.demarche = d
-        raw_d.status = RawDemarcheSchemaDispositifAide.Status.DONE
-        raw_d.save(update_status=False)
-        return d
 
-    def update(self, demarche: Demarche, raw_demarche: RawDemarche):
-        pass
+class BaseAideAdapter:
+    def __init__(self):
+        self.errors = []
+
+    def integrate(self, raw_data: RawData) -> Aide:
+        raise NotImplementedError()
+
+    def update(self, aide: Aide, raw_data: RawData):
+        raise NotImplementedError()

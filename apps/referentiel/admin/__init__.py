@@ -1,4 +1,15 @@
 from .demarche import DemarcheAdmin
-from .others import OrganismeAdmin, ProgrammeAdmin, TerritoireAdmin
+from .references import (
+    BaseJuridiqueAdmin,
+    OrganismeAdmin,
+    ProgrammeAdmin,
+    TerritoireAdmin,
+)
 
-__all__ = ["DemarcheAdmin", "OrganismeAdmin", "ProgrammeAdmin", "TerritoireAdmin"]
+__all__ = [
+    "DemarcheAdmin",
+    "BaseJuridiqueAdmin",
+    "OrganismeAdmin",
+    "ProgrammeAdmin",
+    "TerritoireAdmin",
+]

@@ -5,31 +5,31 @@ from rest_framework import serializers, fields
 
 from referentiel.models import Porteur
 
-from ..models.schema_dispositif_aide import RawDemarcheSchemaDispositifAide
+from ..models.schema_dispositif_aide import RawDataSchemaDispositifAide
 
 
 validate_url = URLValidator()
 
 
-class RawDemarcheSchemaDispositifAideSerializer(serializers.ModelSerializer):
+class RawDataSchemaDispositifAideSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="id_externe")
 
     class Meta:
-        model = RawDemarcheSchemaDispositifAide
+        model = RawDataSchemaDispositifAide
         exclude = ("source", "status", "demarche", "id_externe")
 
     def __init__(self, data=fields.empty, source: str = "", **kwargs):
         super().__init__(data=data, **kwargs)
         assert source != "", (
-            "RawDemarcheSchemaAideSerializer must be instantiated with a source kwarg"
+            "RawDataSchemaAideSerializer must be instantiated with a source kwarg"
         )
         self.source = source
         if data is not fields.empty and self.is_valid():
             try:
-                self.instance = RawDemarcheSchemaDispositifAide.objects.get(
+                self.instance = RawDataSchemaDispositifAide.objects.get(
                     source=source, id_externe=self.validated_data["id_externe"]
                 )
-            except RawDemarcheSchemaDispositifAide.DoesNotExist:
+            except RawDataSchemaDispositifAide.DoesNotExist:
                 pass
 
     def save(self, **kwargs):

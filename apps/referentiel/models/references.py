@@ -67,3 +67,18 @@ class Territoire(models.Model):
 
     def __str__(self):
         return f"{self.code} {self.nom}" if self.is_departement else self.nom
+
+
+class BaseJuridique(models.Model):
+    class Meta:
+        verbose_name = "Base juridique"
+        verbose_name_plural = "Bases juridiques"
+
+    libelle = models.CharField(verbose_name="Libellé")
+    url = models.URLField(
+        verbose_name="Adresse",
+        help_text="Une URL valide, exemple https://legifrance.gouv.fr/",
+    )
+
+    def __str__(self):
+        return self.libelle

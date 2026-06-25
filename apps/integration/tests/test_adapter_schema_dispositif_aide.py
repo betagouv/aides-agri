@@ -2,30 +2,28 @@ import pytest
 
 from referentiel.models import Demarche, Porteur
 
-from referentiel_integration.adapters.schema_dispositif_aide import (
-    SchemaDispositifAideIntegrationAdapter,
+from integration.adapters.schema_dispositif_aide import (
+    SchemaDispositifAideDemarcheAdapter,
 )
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize("raw_data_schema_dispositif_aide__cibles", ["professionnels"])
 @pytest.mark.parametrize(
-    "raw_demarche_schema_dispositif_aide__cibles", ["professionnels"]
+    "raw_data_schema_dispositif_aide__programmes_parents", ["France 2030"]
 )
 @pytest.mark.parametrize(
-    "raw_demarche_schema_dispositif_aide__programmes_parents", ["France 2030"]
+    "raw_data_schema_dispositif_aide__types_aides", ["financement|formation"]
 )
 @pytest.mark.parametrize(
-    "raw_demarche_schema_dispositif_aide__types_aides", ["financement|formation"]
+    "raw_data_schema_dispositif_aide__eligibilite_geographique", ["REG-75|DEP-13"]
 )
 @pytest.mark.parametrize(
-    "raw_demarche_schema_dispositif_aide__eligibilite_geographique", ["REG-75|DEP-13"]
-)
-@pytest.mark.parametrize(
-    "raw_demarche_schema_dispositif_aide__porteurs",
+    "raw_data_schema_dispositif_aide__porteurs",
     [[{"nom": "FranceAgriMer", "siren": "", "roles": ["financeur"]}]],
 )
 @pytest.mark.parametrize(
-    "raw_demarche_schema_dispositif_aide__base_juridique",
+    "raw_data_schema_dispositif_aide__base_juridique",
     [
         [
             {
@@ -35,26 +33,26 @@ from referentiel_integration.adapters.schema_dispositif_aide import (
         ]
     ],
 )
-def test_create_demarche_from_raw_demarche_schema_dispositif_aide(
-    raw_demarche_schema_dispositif_aide,
+def test_create_demarche_from_raw_data_schema_dispositif_aide(
+    raw_data_schema_dispositif_aide,
     organisme_fam,
     programme_france_2030,
     territoire_reg75,
     territoire_dep13,
 ):
-    # GIVEN no Demarche, and a RawDemarcheSchemaDispositifAide
+    # GIVEN no Demarche, and a RawDataSchemaDispositifAide
     assert not Demarche.objects.exists()
 
     # WHEN integrating
-    adapter = SchemaDispositifAideIntegrationAdapter()
-    adapter.create_demarche(raw_demarche_schema_dispositif_aide)
+    adapter = SchemaDispositifAideDemarcheAdapter()
+    adapter.create_demarche(raw_data_schema_dispositif_aide)
 
     # THEN a Demarche has been created
     assert Demarche.objects.count() == 1
     # no error has been raised
     assert not adapter.errors
     demarche = Demarche.objects.first()
-    assert demarche.titre == raw_demarche_schema_dispositif_aide.titre
+    assert demarche.titre == raw_data_schema_dispositif_aide.titre
     # cibles have been properly identified and mapped
     assert demarche.cibles == Demarche.Cible.PROFESSIONNELS
     # programmes have been identified and mapped
@@ -77,9 +75,8 @@ def test_create_demarche_from_raw_demarche_schema_dispositif_aide(
     base_juridique = demarche.bases_juridiques.first()
     assert (
         base_juridique.libelle
-        == raw_demarche_schema_dispositif_aide.base_juridique[0]["libelle"]
+        == raw_data_schema_dispositif_aide.base_juridique[0]["libelle"]
     )
     assert (
-        base_juridique.url
-        == raw_demarche_schema_dispositif_aide.base_juridique[0]["lien"]
+        base_juridique.url == raw_data_schema_dispositif_aide.base_juridique[0]["lien"]
     )

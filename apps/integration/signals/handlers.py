@@ -8,7 +8,7 @@ def ensure_groups_are_created_and_permissions_are_set(*args, **kwargs):
     group, _ = Group.objects.get_or_create(name="Fournisseur de données")
     group.permissions.add(
         *Permission.objects.filter(
-            content_type__app_label="referentiel_integration",
+            content_type__app_label="integration",
             codename__regex=r"^(add|change)_.*",
         )
     )

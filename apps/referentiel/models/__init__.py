@@ -1,5 +1,5 @@
-from .others import Organisme, Programme, Territoire
-from .demarche import Demarche, BaseJuridique, Porteur, ReferentInterne
+from .references import BaseJuridique, Organisme, Programme, Territoire
+from .demarche import Demarche, Porteur, ReferentInterne
 
 __all__ = [
     "Organisme",

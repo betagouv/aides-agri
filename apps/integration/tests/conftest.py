@@ -9,7 +9,7 @@ from referentiel.tests.factories import (
     TerritoireFactory,
 )
 
-from .factories import RawDemarcheSchemaDispositifAideFactory
+from .factories import RawDataSchemaDispositifAideFactory
 
 
 @pytest.fixture
@@ -35,4 +35,4 @@ register(
     code="13",
     nom="Bouches-du-Rhône",
 )
-register(RawDemarcheSchemaDispositifAideFactory)
+register(RawDataSchemaDispositifAideFactory)

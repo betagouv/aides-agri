@@ -53,7 +53,7 @@ Les apps spécifiques sont rangées dans le répertoire `/apps/`. C’est rendu 
 * `referentiel` : implémente un référentiel des démarches agricoles et de leurs données officielles, avec système d’export vers [data.gouv.fr](https://www.data.gouv.fr/datasets) selon [le schéma interministériel des aides publiques](https://schema.data.gouv.fr/etalab/schema-dispositif-aide/) ;
   * [Documentation spécifique](../../apps/referentiel/README.md) ;
 * `referentiel_integration` : implémente des points d’entrée divers et variés pour intégrer des données venant de toutes sortes de sources vers le référentiel des démarches agricoles ;
-  * [Documentation spécifique](../../apps/referentiel_integration/README.md) ;
+  * [Documentation spécifique](../../apps/integration/README.md) ;
 * `workflow` : implémente une interface d’administration de l’intégration et de l’enrichissement des données de leur intégration via `referentiel_integration` à leur publication par `aides` sur le site Aides Agri.
 
 ### Diagramme des dépendances entre les apps Django spécifiques

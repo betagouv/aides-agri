@@ -1,11 +1,11 @@
 import factory
 
-from ..models import RawDemarcheSchemaDispositifAide
+from ..models import RawDataSchemaDispositifAide
 
 
-class RawDemarcheSchemaDispositifAideFactory(factory.django.DjangoModelFactory):
+class RawDataSchemaDispositifAideFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = RawDemarcheSchemaDispositifAide
+        model = RawDataSchemaDispositifAide
 
     titre = factory.Sequence(lambda n: f"Raw Demarche {n}")
     promesse = factory.Sequence(lambda n: f"Promesse {n}")
@@ -37,4 +37,4 @@ class RawDemarcheSchemaDispositifAideFactory(factory.django.DjangoModelFactory):
     chainage_paiement = ""
 
 
-__all__ = [RawDemarcheSchemaDispositifAideFactory]
+__all__ = [RawDataSchemaDispositifAideFactory]

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from ..models import Organisme, Programme, Territoire
+from ..models import BaseJuridique, Organisme, Programme, Territoire
 
 
 @admin.register(Territoire)
@@ -25,6 +25,11 @@ class TerritoireAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+@admin.register(BaseJuridique)
+class BaseJuridiqueAdmin(admin.ModelAdmin):
+    search_fields = ("libelle", "url")
 
 
 @admin.register(Organisme)

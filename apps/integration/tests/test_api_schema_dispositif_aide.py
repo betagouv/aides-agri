@@ -1,14 +1,14 @@
 import pytest
 from django.urls import reverse
 
-from referentiel_integration.models import RawDemarcheSchemaDispositifAide
+from integration.models import RawDataSchemaDispositifAide
 
 
 @pytest.mark.django_db
-class TestRawDemarcheSchemaAide:
+class TestRawDataSchemaAide:
     def test_anonymous_client_rejected(self, client):
         url = reverse(
-            "api-referentiel-integration:rawdemarcheschemadispositifaide-list"
+            "api-referentiel-integration:RawDataschemadispositifaide-list"
         )
         data = {"titre": "Coucou"}
         response = client.post(url, data, format="json")
@@ -16,13 +16,13 @@ class TestRawDemarcheSchemaAide:
 
     def test_create_dispositif(self, client_api):
         client = client_api
-        # GIVEN no RawDemarcheSchemaAide and an authenticated API client
-        assert not RawDemarcheSchemaDispositifAide.objects.exists()
+        # GIVEN no RawDataSchemaAide and an authenticated API client
+        assert not RawDataSchemaDispositifAide.objects.exists()
         assert client.handler._force_user is not None
 
         # WHEN posting one through the API
         url = reverse(
-            "api-referentiel-integration:rawdemarcheschemadispositifaide-list"
+            "api-referentiel-integration:RawDataschemadispositifaide-list"
         )
         data = {
             "id": "some-id-from-external-system",
@@ -39,9 +39,9 @@ class TestRawDemarcheSchemaAide:
         response = client.post(url, data, format="json")
         assert response.status_code == 201
 
-        # THEN a RawDemarcheSchemaAide has been created with request users username as source
-        assert RawDemarcheSchemaDispositifAide.objects.count() == 1
-        dispositif = RawDemarcheSchemaDispositifAide.objects.first()
+        # THEN a RawDataSchemaAide has been created with request users username as source
+        assert RawDataSchemaDispositifAide.objects.count() == 1
+        dispositif = RawDataSchemaDispositifAide.objects.first()
         assert dispositif.source == client.handler._force_user.username.upper()
         assert dispositif.id_externe == data["id"]
         assert dispositif.titre == data["titre"]
@@ -49,13 +49,13 @@ class TestRawDemarcheSchemaAide:
 
     def test_invalid_porteurs_not_a_list(self, client_api):
         client = client_api
-        # GIVEN no RawDemarcheSchemaAide and an authenticated API client
-        assert not RawDemarcheSchemaDispositifAide.objects.exists()
+        # GIVEN no RawDataSchemaAide and an authenticated API client
+        assert not RawDataSchemaDispositifAide.objects.exists()
         assert client.handler._force_user is not None
 
         # WHEN posting one through the API, with invalid JSON for porteurs field
         url = reverse(
-            "api-referentiel-integration:rawdemarcheschemadispositifaide-list"
+            "api-referentiel-integration:RawDataschemadispositifaide-list"
         )
         data = {
             "id": "some-id-from-external-system",
@@ -72,13 +72,13 @@ class TestRawDemarcheSchemaAide:
 
     def test_invalid_porteurs_not_a_list_of_objects(self, client_api):
         client = client_api
-        # GIVEN no RawDemarcheSchemaAide and an authenticated API client
-        assert not RawDemarcheSchemaDispositifAide.objects.exists()
+        # GIVEN no RawDataSchemaAide and an authenticated API client
+        assert not RawDataSchemaDispositifAide.objects.exists()
         assert client.handler._force_user is not None
 
         # WHEN posting one through the API, with invalid JSON for porteurs field
         url = reverse(
-            "api-referentiel-integration:rawdemarcheschemadispositifaide-list"
+            "api-referentiel-integration:RawDataschemadispositifaide-list"
         )
         data = {
             "id": "some-id-from-external-system",
@@ -98,13 +98,13 @@ class TestRawDemarcheSchemaAide:
 
     def test_invalid_porteurs_roles_not_a_list(self, client_api):
         client = client_api
-        # GIVEN no RawDemarcheSchemaAide and an authenticated API client
-        assert not RawDemarcheSchemaDispositifAide.objects.exists()
+        # GIVEN no RawDataSchemaAide and an authenticated API client
+        assert not RawDataSchemaDispositifAide.objects.exists()
         assert client.handler._force_user is not None
 
         # WHEN posting one through the API, with invalid JSON for porteurs field
         url = reverse(
-            "api-referentiel-integration:rawdemarcheschemadispositifaide-list"
+            "api-referentiel-integration:RawDataschemadispositifaide-list"
         )
         data = {
             "id": "some-id-from-external-system",
@@ -126,13 +126,13 @@ class TestRawDemarcheSchemaAide:
 
     def test_invalid_porteurs_roles_empty_nom(self, client_api):
         client = client_api
-        # GIVEN no RawDemarcheSchemaAide and an authenticated API client
-        assert not RawDemarcheSchemaDispositifAide.objects.exists()
+        # GIVEN no RawDataSchemaAide and an authenticated API client
+        assert not RawDataSchemaDispositifAide.objects.exists()
         assert client.handler._force_user is not None
 
         # WHEN posting one through the API, with invalid JSON for porteurs field
         url = reverse(
-            "api-referentiel-integration:rawdemarcheschemadispositifaide-list"
+            "api-referentiel-integration:RawDataschemadispositifaide-list"
         )
         data = {
             "id": "some-id-from-external-system",
@@ -152,13 +152,13 @@ class TestRawDemarcheSchemaAide:
 
     def test_invalid_porteurs_roles_invalid_role(self, client_api):
         client = client_api
-        # GIVEN no RawDemarcheSchemaAide and an authenticated API client
-        assert not RawDemarcheSchemaDispositifAide.objects.exists()
+        # GIVEN no RawDataSchemaAide and an authenticated API client
+        assert not RawDataSchemaDispositifAide.objects.exists()
         assert client.handler._force_user is not None
 
         # WHEN posting one through the API, with invalid JSON for porteurs field
         url = reverse(
-            "api-referentiel-integration:rawdemarcheschemadispositifaide-list"
+            "api-referentiel-integration:RawDataschemadispositifaide-list"
         )
         data = {
             "id": "some-id-from-external-system",
@@ -180,13 +180,13 @@ class TestRawDemarcheSchemaAide:
 
     def test_invalid_referents_internes_not_a_list(self, client_api):
         client = client_api
-        # GIVEN no RawDemarcheSchemaAide and an authenticated API client
-        assert not RawDemarcheSchemaDispositifAide.objects.exists()
+        # GIVEN no RawDataSchemaAide and an authenticated API client
+        assert not RawDataSchemaDispositifAide.objects.exists()
         assert client.handler._force_user is not None
 
         # WHEN posting one through the API, with invalid JSON for referents_internes field
         url = reverse(
-            "api-referentiel-integration:rawdemarcheschemadispositifaide-list"
+            "api-referentiel-integration:RawDataschemadispositifaide-list"
         )
         data = {
             "id": "some-id-from-external-system",
@@ -206,13 +206,13 @@ class TestRawDemarcheSchemaAide:
 
     def test_invalid_referents_internes_invalid_subfields(self, client_api):
         client = client_api
-        # GIVEN no RawDemarcheSchemaAide and an authenticated API client
-        assert not RawDemarcheSchemaDispositifAide.objects.exists()
+        # GIVEN no RawDataSchemaAide and an authenticated API client
+        assert not RawDataSchemaDispositifAide.objects.exists()
         assert client.handler._force_user is not None
 
         # WHEN posting one through the API, with invalid JSON for referents_internes field
         url = reverse(
-            "api-referentiel-integration:rawdemarcheschemadispositifaide-list"
+            "api-referentiel-integration:RawDataschemadispositifaide-list"
         )
         data = {
             "id": "some-id-from-external-system",
@@ -232,13 +232,13 @@ class TestRawDemarcheSchemaAide:
 
     def test_invalid_referents_internes_empty_nom(self, client_api):
         client = client_api
-        # GIVEN no RawDemarcheSchemaAide and an authenticated API client
-        assert not RawDemarcheSchemaDispositifAide.objects.exists()
+        # GIVEN no RawDataSchemaAide and an authenticated API client
+        assert not RawDataSchemaDispositifAide.objects.exists()
         assert client.handler._force_user is not None
 
         # WHEN posting one through the API, with invalid JSON for referents_internes field
         url = reverse(
-            "api-referentiel-integration:rawdemarcheschemadispositifaide-list"
+            "api-referentiel-integration:RawDataschemadispositifaide-list"
         )
         data = {
             "id": "some-id-from-external-system",
@@ -260,13 +260,13 @@ class TestRawDemarcheSchemaAide:
 
     def test_invalid_referents_internes_empty_telephone_and_mail(self, client_api):
         client = client_api
-        # GIVEN no RawDemarcheSchemaAide and an authenticated API client
-        assert not RawDemarcheSchemaDispositifAide.objects.exists()
+        # GIVEN no RawDataSchemaAide and an authenticated API client
+        assert not RawDataSchemaDispositifAide.objects.exists()
         assert client.handler._force_user is not None
 
         # WHEN posting one through the API, with invalid JSON for referents_internes field
         url = reverse(
-            "api-referentiel-integration:rawdemarcheschemadispositifaide-list"
+            "api-referentiel-integration:RawDataschemadispositifaide-list"
         )
         data = {
             "id": "some-id-from-external-system",
@@ -286,13 +286,13 @@ class TestRawDemarcheSchemaAide:
 
     def test_invalid_referents_internes_invalid_mail(self, client_api):
         client = client_api
-        # GIVEN no RawDemarcheSchemaAide and an authenticated API client
-        assert not RawDemarcheSchemaDispositifAide.objects.exists()
+        # GIVEN no RawDataSchemaAide and an authenticated API client
+        assert not RawDataSchemaDispositifAide.objects.exists()
         assert client.handler._force_user is not None
 
         # WHEN posting one through the API, with invalid JSON for referents_internes field
         url = reverse(
-            "api-referentiel-integration:rawdemarcheschemadispositifaide-list"
+            "api-referentiel-integration:RawDataschemadispositifaide-list"
         )
         data = {
             "id": "some-id-from-external-system",
@@ -314,13 +314,13 @@ class TestRawDemarcheSchemaAide:
 
     def test_invalid_base_juridique_not_a_list(self, client_api):
         client = client_api
-        # GIVEN no RawDemarcheSchemaAide and an authenticated API client
-        assert not RawDemarcheSchemaDispositifAide.objects.exists()
+        # GIVEN no RawDataSchemaAide and an authenticated API client
+        assert not RawDataSchemaDispositifAide.objects.exists()
         assert client.handler._force_user is not None
 
         # WHEN posting one through the API, with invalid JSON for porteurs field
         url = reverse(
-            "api-referentiel-integration:rawdemarcheschemadispositifaide-list"
+            "api-referentiel-integration:RawDataschemadispositifaide-list"
         )
         data = {
             "id": "some-id-from-external-system",
@@ -340,13 +340,13 @@ class TestRawDemarcheSchemaAide:
 
     def test_invalid_base_juridique_not_a_list_of_objects(self, client_api):
         client = client_api
-        # GIVEN no RawDemarcheSchemaAide and an authenticated API client
-        assert not RawDemarcheSchemaDispositifAide.objects.exists()
+        # GIVEN no RawDataSchemaAide and an authenticated API client
+        assert not RawDataSchemaDispositifAide.objects.exists()
         assert client.handler._force_user is not None
 
         # WHEN posting one through the API, with invalid JSON for porteurs field
         url = reverse(
-            "api-referentiel-integration:rawdemarcheschemadispositifaide-list"
+            "api-referentiel-integration:RawDataschemadispositifaide-list"
         )
         data = {
             "id": "some-id-from-external-system",
@@ -366,13 +366,13 @@ class TestRawDemarcheSchemaAide:
 
     def test_invalid_base_juridique_no_libelle(self, client_api):
         client = client_api
-        # GIVEN no RawDemarcheSchemaAide and an authenticated API client
-        assert not RawDemarcheSchemaDispositifAide.objects.exists()
+        # GIVEN no RawDataSchemaAide and an authenticated API client
+        assert not RawDataSchemaDispositifAide.objects.exists()
         assert client.handler._force_user is not None
 
         # WHEN posting one through the API, with invalid JSON for porteurs field
         url = reverse(
-            "api-referentiel-integration:rawdemarcheschemadispositifaide-list"
+            "api-referentiel-integration:RawDataschemadispositifaide-list"
         )
         data = {
             "id": "some-id-from-external-system",
@@ -397,13 +397,13 @@ class TestRawDemarcheSchemaAide:
 
     def test_invalid_base_juridique_no_lien(self, client_api):
         client = client_api
-        # GIVEN no RawDemarcheSchemaAide and an authenticated API client
-        assert not RawDemarcheSchemaDispositifAide.objects.exists()
+        # GIVEN no RawDataSchemaAide and an authenticated API client
+        assert not RawDataSchemaDispositifAide.objects.exists()
         assert client.handler._force_user is not None
 
         # WHEN posting one through the API, with invalid JSON for porteurs field
         url = reverse(
-            "api-referentiel-integration:rawdemarcheschemadispositifaide-list"
+            "api-referentiel-integration:RawDataschemadispositifaide-list"
         )
         data = {
             "id": "some-id-from-external-system",
@@ -428,13 +428,13 @@ class TestRawDemarcheSchemaAide:
 
     def test_invalid_base_juridique_invalid_lien(self, client_api):
         client = client_api
-        # GIVEN no RawDemarcheSchemaAide and an authenticated API client
-        assert not RawDemarcheSchemaDispositifAide.objects.exists()
+        # GIVEN no RawDataSchemaAide and an authenticated API client
+        assert not RawDataSchemaDispositifAide.objects.exists()
         assert client.handler._force_user is not None
 
         # WHEN posting one through the API, with invalid JSON for porteurs field
         url = reverse(
-            "api-referentiel-integration:rawdemarcheschemadispositifaide-list"
+            "api-referentiel-integration:RawDataschemadispositifaide-list"
         )
         data = {
             "id": "some-id-from-external-system",

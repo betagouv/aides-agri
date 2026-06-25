@@ -2,18 +2,13 @@ from django_auto_admin_fieldsets.admin import AutoFieldsetsMixin
 from django.contrib import admin
 from django.forms import ModelForm
 
-from ..models import Demarche, BaseJuridique, Porteur, ReferentInterne
+from ..models import Demarche, Porteur, ReferentInterne
 
 
 class PorteurInlineAdmin(admin.TabularInline):
     model = Porteur
     extra = 0
     autocomplete_fields = ("organisme",)
-
-
-class BaseJuridiqueInlineAdmin(admin.TabularInline):
-    model = BaseJuridique
-    extra = 0
 
 
 class ReferentInterneInlineAdmin(admin.TabularInline):
@@ -35,9 +30,10 @@ class DemarcheAdmin(AutoFieldsetsMixin, admin.ModelAdmin):
         "programmes_parents",
         "eligibilite_geographique",
         "eligibilite_geographique_exclusions",
+        "bases_juridiques",
         "demande_de_paiement_de",
     )
-    inlines = [PorteurInlineAdmin, BaseJuridiqueInlineAdmin, ReferentInterneInlineAdmin]
+    inlines = [PorteurInlineAdmin, ReferentInterneInlineAdmin]
     readonly_fields = ("code", "url_source", "document_source")
     search_fields = ("titre", "promesse")
     fieldsets = [
@@ -54,6 +50,7 @@ class DemarcheAdmin(AutoFieldsetsMixin, admin.ModelAdmin):
                     "description",
                     "types_aides",
                     "programmes_parents",
+                    "bases_juridiques",
                 )
             },
         ),

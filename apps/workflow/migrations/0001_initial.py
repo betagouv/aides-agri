@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ("aides", "0066_remove_aide_aap_ami_remove_aide_duree_accompagnement_and_more"),
         ("referentiel", "0001_initial"),
-        ("referentiel_integration", "0001_initial"),
+        ("integration", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -45,11 +45,11 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "raw_demarche",
+                    "raw_data",
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="referentiel_integration.rawdemarche",
+                        to="integration.rawdata",
                     ),
                 ),
                 (
@@ -90,11 +90,11 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "raw_demarche",
+                    "raw_data",
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="referentiel_integration.rawdemarche",
+                        to="integration.rawdata",
                     ),
                 ),
                 (
@@ -106,7 +106,7 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "unique_together": {("user", "raw_demarche", "demarche", "aide")},
+                "unique_together": {("user", "raw_data", "demarche", "aide")},
             },
         ),
     ]

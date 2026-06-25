@@ -7,12 +7,12 @@ from django.urls import reverse
 from reversion.admin import VersionAdmin
 
 
-from ..adapters.schema_dispositif_aide import SchemaDispositifAideIntegrationAdapter
-from ..models.schema_dispositif_aide import RawDemarcheSchemaDispositifAide
+from ..adapters.schema_dispositif_aide import SchemaDispositifAideDemarcheAdapter
+from ..models.schema_dispositif_aide import RawDataSchemaDispositifAide
 
 
-@admin.register(RawDemarcheSchemaDispositifAide)
-class RawDemarcheSchemaDispositifAideAdmin(
+@admin.register(RawDataSchemaDispositifAide)
+class RawDataSchemaDispositifAideAdmin(
     AutoFieldsetsMixin, ExtraButtonsMixin, VersionAdmin
 ):
     list_display = ("__str__", "status")
@@ -46,9 +46,9 @@ class RawDemarcheSchemaDispositifAideAdmin(
         html_attrs={"class": "addlink"},
     )
     def integrate(self, request, object_id):
-        raw_demarche = self.get_object(request, object_id)
-        integration_adapter = SchemaDispositifAideIntegrationAdapter()
-        demarche = integration_adapter.create_demarche(raw_demarche)
+        raw_data = self.get_object(request, object_id)
+        integration_adapter = SchemaDispositifAideDemarcheAdapter()
+        demarche = integration_adapter.create_demarche(raw_data)
         self.message_user(
             request,
             "La démarche a bien été intégrée dans le référentiel, voici sa fiche.",
@@ -68,8 +68,8 @@ class RawDemarcheSchemaDispositifAideAdmin(
         html_attrs={"class": "addlink"},
     )
     def edit(self, request, object_id):
-        raw_demarche = self.get_object(request, object_id)
-        demarche = raw_demarche.demarche
+        raw_data = self.get_object(request, object_id)
+        demarche = raw_data.demarche
         return redirect(
             reverse(
                 f"admin:{demarche._meta.app_label}_{demarche._meta.model_name}_change",
