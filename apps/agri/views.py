@@ -169,6 +169,47 @@ class HomeView(TemplateView):
         return context_data
 
 
+class AboutView(TemplateView):
+    template_name = "agri/about.html"
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data.update(
+            {
+                "breadcrumb_data": {"current": "À propos d’Aides Agri"},
+                "video_data": {
+                    "image_url": "/static/dsfr/img/placeholder.16x9.svg",
+                    "caption": "Description / Source",
+                    "transcription": {"content": "coucou"},
+                },
+                "sidemenu_data": {
+                    "items": [
+                        {"label": "Notre démarche", "link": "#demarche"},
+                        {
+                            "label": "Vous voulez en savoir plus ? Webinaires et replay",
+                            "link": "#en-savoir-plus",
+                        },
+                        {
+                            "label": "Vous souhaitez contribuer à la diffusion d’Aides Agri ?",
+                            "link": "#kit-de-com",
+                        },
+                        {
+                            "label": "Ils parlent de nous",
+                            "link": "#ils-parlent-de-nous",
+                        },
+                        {
+                            "label": "Vous êtes agent public ?",
+                            "link": "#donnees-ouvertes",
+                        },
+                    ]
+                },
+                "stats_aides_count": Aide.objects.official_published_count(),
+                "stats_organismes_count": Aide.objects.official_published_organismes_count(),
+            }
+        )
+        return context_data
+
+
 class ResultsMixin:
     ORDER_BY = {
         "cloture": ("date_fin", "-organisme__is_masa", "organisme__nom"),

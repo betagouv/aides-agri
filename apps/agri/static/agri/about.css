@@ -1,0 +1,25 @@
+h1 {
+  text-align: center;
+}
+
+#intro ul {
+  --ul-start: 0;
+}
+
+#intro li {
+  list-style: none;
+}
+
+#intro li.fr-icon-arrow-right-circle-fill::before {
+  color: var(--text-action-high-green-emeraude);
+  margin-right: 16px;
+}
+
+.fr-content-media {
+  align-items: flex-start;
+}
+
+#stats {
+  border-radius: 8px;
+  text-align: center;
+}

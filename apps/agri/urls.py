@@ -1,12 +1,13 @@
 from django.views.generic import TemplateView
 from django.urls import path
 
-from .views import HomeView, ResultsView, SendResultsByMailView
+from .views import HomeView, AboutView, ResultsView, SendResultsByMailView
 
 
 app_name = "agri"
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
+    path("a-propos", AboutView.as_view(), name="about"),
     path("aides", ResultsView.as_view(), name="results"),
     path(
         "aides-less",
