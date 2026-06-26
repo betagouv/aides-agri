@@ -278,5 +278,7 @@ document.addEventListener("htmx:load", evt => {
     {% include "aides_feedback/blocks/create_feedback_on_aides.html" with form=create_feedback_on_aides_form %}
   </aside>
 
+  {% include "aides/blocks/cta_signalement_aides.html" %}
+
   {% include "ui/blocks/footer.html" %}
 {% endblock body %}
