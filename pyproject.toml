@@ -1,5 +1,5 @@
 [project]
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 name = "aides-agri"
 version = "0.1.0"
 dependencies = [
