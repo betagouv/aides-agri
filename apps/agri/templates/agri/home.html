@@ -161,6 +161,8 @@ window.onload = (evt) => {
     </div>
   </aside>
 
+  {% include "aides/blocks/cta_signalement_aides.html" %}
+
   {% include "ui/blocks/footer.html" %}
   {% dsfr_js nonce=request.csp_nonce %}
 {% endblock body %}
