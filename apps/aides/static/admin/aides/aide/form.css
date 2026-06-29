@@ -14,7 +14,7 @@
   --header-bg: #6C9041;
 }
 
-.select2 {
+#id_base_juridique + .select2 {
   width: 60% !important;
 }
 
