@@ -3,6 +3,8 @@ import datetime
 import uuid
 
 from admin_extra_buttons.api import ExtraButtonsMixin, button
+from admin_extra_buttons.buttons import StandardButton
+from admin_extra_buttons.handlers import ButtonHandler
 from django.contrib import admin
 from django.contrib.admin.utils import flatten_fieldsets
 from django.contrib.admin.views.main import ChangeList
@@ -43,6 +45,25 @@ class EasyMDEWidget(forms.widgets.Textarea):
 class SujetsMultipleChoiceField(forms.ModelMultipleChoiceField):
     def label_from_instance(self, obj: Sujet):
         return f"{obj.nom_court} ({', '.join([theme.nom_court for theme in obj.themes.all()])})"
+
+
+class FilteredButton(StandardButton):
+    def get_url(self, *args) -> str | None:
+        url = super().get_url(*args)
+        split = url.split("?")
+        url = f"{split[0]}?{self.request.GET.urlencode()}"
+        return url
+
+
+class FilteredButtonHandler(ButtonHandler):
+    button_class = FilteredButton
+
+
+def filtered_button(**kwargs):
+    def decorator(func):
+        return FilteredButtonHandler(func=func, **kwargs)
+
+    return decorator
 
 
 @admin.register(Aide)
@@ -526,15 +547,30 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                 context["aides_by_status"][status] = qs.filter(is_published=False)
         return TemplateResponse(request, "admin/aides/aide/dashboard.html", context)
 
-    @button(label="Exporter toutes les aides en CSV")
+    @filtered_button(label="Exporter toutes les aides en CSV")
     def export_csv(self, request):
-        filename = f"{datetime.date.today().isoformat()}-aides-agri-toutes-les-aides"
+        filters_string = (
+            request.GET.urlencode()
+            .replace("&", "-")
+            .replace("=", "_")
+            .replace("__exact", "")
+        )
+        filename = (
+            f"{datetime.date.today().isoformat()}-aides-agri-aides-{filters_string}"
+        )
         response = HttpResponse(
             content_type="text/csv",
             headers={"Content-Disposition": f'attachment; filename="{filename}.csv"'},
         )
 
-        write_aides_as_csv(response, Aide.objects.values_list("pk", flat=True))
+        write_aides_as_csv(
+            response,
+            list(
+                self.get_changelist_instance(request)
+                .get_queryset(request)
+                .values_list("pk", flat=True)
+            ),
+        )
         return response
 
     def response_post_save_change(self, request, obj):
