@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.db import models
+
+from aides.admin.other_models import CsvExportMixin
 
 from .models import FeedbackOnThemesAndSujets, FeedbackOnAides
 
@@ -44,9 +47,10 @@ class FeedbackOnThemesAdmin(FeedbackAdmin):
 
 
 @admin.register(FeedbackOnAides)
-class FeedbackOnSujetsAdmin(FeedbackAdmin):
-    list_display = ("sent_at", "has_aide", "is_spam")
-    list_display_links = ("sent_at", "usefulness")
+class FeedbackOnAidesAdmin(CsvExportMixin, FeedbackAdmin):
+    list_display = ("sent_at", "is_spam", "aide", "usefulness")
+    list_display_links = ("sent_at",)
+    list_filter = FeedbackAdmin.list_filter + ("has_aide",)
     fieldsets = [
         (
             "",
@@ -68,7 +72,29 @@ class FeedbackOnSujetsAdmin(FeedbackAdmin):
             },
         ),
     ]
+    list_select_related = ("aide",)
 
-    @admin.display(description="Concerne une aide", boolean=True)
-    def has_aide(self, obj):
-        return obj.aide is not None
+    def _get_csv_fields(self) -> list[models.Field]:
+        return [
+            FeedbackOnAides.sent_at,
+            FeedbackOnAides.has_aide,
+            FeedbackOnAides.aide,
+            FeedbackOnAides.usefulness,
+            FeedbackOnAides.information_quality,
+            FeedbackOnAides.comments,
+        ]
+
+    def _get_csv_content(self) -> list:
+        content = []
+        for obj in FeedbackOnAides.objects.filter(is_spam=False):
+            content.append(
+                [
+                    obj.sent_at,
+                    obj.has_aide,
+                    str(obj.aide) if obj.has_aide else "n/a",
+                    obj.get_usefulness_display(),
+                    obj.get_information_quality_display(),
+                    obj.comments,
+                ]
+            )
+        return content
