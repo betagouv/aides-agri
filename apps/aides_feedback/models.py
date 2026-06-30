@@ -54,3 +54,13 @@ class FeedbackOnAides(Feedback):
     aide = models.ForeignKey(
         Aide, null=True, on_delete=models.CASCADE, verbose_name="Aide concernée"
     )
+    has_aide = models.GeneratedField(
+        expression=models.Case(
+            models.When(aide_id=None, then=False),
+            default=True,
+            output_field=models.BooleanField(),
+        ),
+        output_field=models.BooleanField(),
+        db_persist=True,
+        verbose_name="Concerne une aide",
+    )

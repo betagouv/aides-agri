@@ -44,9 +44,10 @@ class FeedbackOnThemesAdmin(FeedbackAdmin):
 
 
 @admin.register(FeedbackOnAides)
-class FeedbackOnSujetsAdmin(FeedbackAdmin):
-    list_display = ("sent_at", "has_aide", "is_spam")
-    list_display_links = ("sent_at", "usefulness")
+class FeedbackOnAidesAdmin(FeedbackAdmin):
+    list_display = ("sent_at", "is_spam", "aide", "usefulness")
+    list_display_links = ("sent_at",)
+    list_filter = FeedbackAdmin.list_filter + ("has_aide",)
     fieldsets = [
         (
             "",
@@ -68,7 +69,4 @@ class FeedbackOnSujetsAdmin(FeedbackAdmin):
             },
         ),
     ]
-
-    @admin.display(description="Concerne une aide", boolean=True)
-    def has_aide(self, obj):
-        return obj.aide is not None
+    list_select_related = ("aide",)
