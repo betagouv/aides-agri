@@ -272,7 +272,7 @@ class ResultsView(ResultsMixin, ListView):
 
         aides_by_type = {type_aide: dict() for type_aide in Type.objects.all()}
         aides_ids = set()
-        for aide in self.get_queryset():
+        for aide in self.get_queryset().iterator(chunk_size=500):
             aides_ids.add(aide.pk)
             for type_aides in aide.types.all():
                 aides_by_type[type_aides][aide] = None
