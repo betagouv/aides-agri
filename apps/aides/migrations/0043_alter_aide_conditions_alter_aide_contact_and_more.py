@@ -38,7 +38,8 @@ class Migration(migrations.Migration):
             model_name="aide",
             name="eligibilite_cumulable",
             field=models.TextField(
-                blank=True, verbose_name="Éligibilité\xa0: dispositif cumulable\xa0?"
+                blank=True,
+                verbose_name="Cette aide est-elle cumulable avec d’autres dispositifs\xa0?",
             ),
         ),
         migrations.AlterField(
@@ -57,7 +58,7 @@ class Migration(migrations.Migration):
             model_name="aide",
             name="montant",
             field=models.TextField(
-                blank=True, verbose_name="Montaux ou taux de l’aide"
+                blank=True, verbose_name="Montant ou taux de l’aide"
             ),
         ),
         migrations.AlterField(

@@ -1,0 +1,4 @@
+import os
+
+DATAGOUV_ENVIRONMENT = os.getenv("DATAGOUV_ENVIRONMENT", "demo")
+DATAGOUV_API_TOKEN = os.getenv("DATAGOUV_API_TOKEN", "")

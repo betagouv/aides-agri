@@ -8,6 +8,9 @@
     },
     {
       "command": "0 7 * * * python manage.py aides_send_daily_admin_notifications"
+    },
+    {
+      "command": "5 5 * * * python manage.py aides_export_to_datagouv"
     }
   ]
 }
