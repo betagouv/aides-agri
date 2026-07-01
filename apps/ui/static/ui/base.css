@@ -18,6 +18,10 @@ body > .fr-notice.fr-notice--info {
   margin-bottom: 1rem;
 }
 
+.fr-text--almost-bold {
+  font-weight: 500;
+}
+
 .fr-grid-row.fr-grid-row--space-between {
   justify-content: space-between;
 }
