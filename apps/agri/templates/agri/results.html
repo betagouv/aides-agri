@@ -229,25 +229,23 @@ document.addEventListener("htmx:load", evt => {
                 </div>
               </div>
             </div>
-            {% for type_aide, aide_list in aides.items %}
+            {% for type_aide, aide_data in aides.items %}
               <h2 id="type-aides-{{ type_aide.nom|slugify }}"
                   class="fr-text--xs fr-background-alt--grey fr-p-1w fr-text-label--green-emeraude fr-mb-1w"
               >
                 {{ type_aide.nom|upper }}
-                ({{ aide_list|length }} DISPOSITIF{{ aide_list|length|pluralize|upper }})
+                ({{ aide_data.count }} DISPOSITIF{{ aide_data.count|pluralize|upper }})
                 <span class="fr-text-default--grey fr-text--regular">{{ type_aide.description }}</span>
               </h2>
               <div class="fr-grid-row fr-my-3v">
-                {% for aide in aide_list|slice:":3" %}
+                {% for aide in aide_data.aides %}
                   <div class="fr-col fr-col-12 fr-mb-1w">
                       {% dsfr_card aide %}
                   </div>
-                {% empty %}
-                  {% dsfr_alert type="info" content="Le service Aides Agri est en phase d’expérimentation, ce qui veut dire que le recensement et la mise à jour de notre catalogue est en cours. Dans l’attente, nous vous invitons à consulter les sites de vos interlocuteurs locaux : Région, Département, DDT, Chambre d’agriculture." %}
                 {% endfor %}
-                {% if aide_list|length > 3 %}
+                {% if aide_data.count > 3 %}
                   <div class="fr-col fr-col-12 fr-mb-1w load-more">
-                    <p class="fr-mb-1w">Vous avez vu 3 dispositifs sur {{ aide_list|length }}.</p>
+                    <p class="fr-mb-1w">Vous avez vu 3 dispositifs sur {{ aide_data.count }}.</p>
                     <button class="fr-btn"
                             type="button"
                             hx-get="{% querystring more=type_aide.pk %}"
@@ -267,6 +265,8 @@ document.addEventListener("htmx:load", evt => {
                   <a href="#content" target="_self" class="fr-link fr-icon-arrow-up-fill fr-link--icon-left">Haut de page</a>
                 </div>
               </div>
+            {% empty %}
+              {% dsfr_alert type="info" content="Le service Aides Agri est en phase d’expérimentation, ce qui veut dire que le recensement et la mise à jour de notre catalogue est en cours. Dans l’attente, nous vous invitons à consulter les sites de vos interlocuteurs locaux : Région, Département, DDT, Chambre d’agriculture." %}
             {% endfor %}
           </div>
         </div>
