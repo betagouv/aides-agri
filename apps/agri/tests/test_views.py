@@ -248,8 +248,10 @@ def test_results_no_filter(
     ]
     # number of Aides by Type
     assert [
-        len(aides_by_type) for aides_by_type in response.context_data["aides"].values()
-    ] == [4, 2]
+        len(aides_data_by_type["aides"])
+        for aides_data_by_type in response.context_data["aides"].values()
+    ] == [3, 2]
+    assert response.context_data["aides"][type_aides_1]["count"] == 4
 
 
 @pytest.mark.django_db
@@ -316,7 +318,8 @@ def test_results_filtered(
     ]
     # number of Aides by Type
     assert [
-        len(aides_by_type) for aides_by_type in response.context_data["aides"].values()
+        len(aides_data_by_type["aides"])
+        for aides_data_by_type in response.context_data["aides"].values()
     ] == [2, 1]
 
 

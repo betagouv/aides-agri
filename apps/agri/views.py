@@ -270,19 +270,25 @@ class ResultsView(ResultsMixin, ListView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
-        aides_by_type = {type_aide: dict() for type_aide in Type.objects.all()}
+        more_for_type_id = None
+        if self.request.htmx and "more" in self.request.GET:
+            more_for_type_id = int(self.request.GET.get("more"))
+
+        # fill Types with Aides
+        aides_by_type = {
+            type_aide: {"count": 0, "aides": []} for type_aide in Type.objects.all()
+        }
         aides_ids = set()
-        for aide in self.get_queryset().iterator(chunk_size=500):
+        for aide in self.get_queryset().iterator(chunk_size=50):
             aides_ids.add(aide.pk)
             for type_aides in aide.types.all():
-                aides_by_type[type_aides][aide] = None
-        aides_by_type = {
-            type_aides: aides.keys()
-            for type_aides, aides in aides_by_type.items()
-            if aides
-        }
-
-        total_count = sum(len(aides) for aides in aides_by_type.values())
+                if more_for_type_id and type_aides.pk != more_for_type_id:
+                    continue
+                aides_by_type[type_aides]["count"] += 1
+                # fill with Aide as long as they're less than 3 or we want more
+                if more_for_type_id or len(aides_by_type[type_aides]["aides"]) < 3:
+                    aides_by_type[type_aides]["aides"].append(aide)
+        total_count = self.get_queryset().count()
 
         breadcrumb_querydict = self.request.GET.copy()
         if "more" in breadcrumb_querydict.keys():
@@ -320,88 +326,95 @@ class ResultsView(ResultsMixin, ListView):
                     besoins_by_aide[aide_sujet.aide_id].add((Theme, theme.pk))
 
         aides_data_by_type = {
-            type_aides: [
-                {
-                    "extra_classes": "fr-card--horizontal fr-card--horizontal-fifteen-percent fr-card--no-icon fr-mb-2w fr-pl-2w",
-                    "title": aide.promesse or aide.nom,
-                    "description": aide.nom if aide.promesse else "",
-                    "title_max_length": 180,
-                    "description_max_length": 300,
-                    "call_to_action": {
-                        "links": [
-                            {
-                                "url": f"{aide.get_absolute_url()}?{links_querydict.urlencode()}",
-                                "label": "Consulter la fiche dispositif",
-                                "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right",
-                            }
-                            if aide.is_complete
-                            else {
-                                "url": aide.url_descriptif,
-                                "label": "Voir le site officiel",
-                                "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right",
-                                "is_external": True,
-                            }
-                        ]
-                        + (
-                            [
+            type_aides: {
+                "count": aides_data_for_type["count"],
+                "aides": [
+                    {
+                        "extra_classes": "fr-card--horizontal fr-card--horizontal-fifteen-percent fr-card--no-icon fr-mb-2w fr-pl-2w",
+                        "title": aide.promesse or aide.nom,
+                        "description": aide.nom if aide.promesse else "",
+                        "title_max_length": 180,
+                        "description_max_length": 300,
+                        "call_to_action": {
+                            "links": [
                                 {
-                                    "url": aide.url_demarche,
-                                    "label": "Déposer mon dossier",
-                                    "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right demarche",
+                                    "url": f"{aide.get_absolute_url()}?{links_querydict.urlencode()}",
+                                    "label": "Consulter la fiche dispositif",
+                                    "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right",
+                                }
+                                if aide.is_complete
+                                else {
+                                    "url": aide.url_descriptif,
+                                    "label": "Voir le site officiel",
+                                    "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right",
                                     "is_external": True,
                                 }
                             ]
-                            if aide.url_demarche and aide.is_complete
-                            else []
-                        )
-                    },
-                    "image_url": aide.organisme.get_illustration_url(),
-                    "image_alt": aide.organisme.nom,
-                    "ratio_class": "fr-ratio-1x1",
-                    "top_detail": {
-                        "tags": (
-                            [
+                            + (
+                                [
+                                    {
+                                        "url": aide.url_demarche,
+                                        "label": "Déposer mon dossier",
+                                        "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right demarche",
+                                        "is_external": True,
+                                    }
+                                ]
+                                if aide.url_demarche and aide.is_complete
+                                else []
+                            )
+                        },
+                        "image_url": aide.organisme.get_illustration_url(),
+                        "image_alt": aide.organisme.nom,
+                        "ratio_class": "fr-ratio-1x1",
+                        "top_detail": {
+                            "tags": (
+                                [
+                                    {
+                                        "label": f"Clôture le {aide.date_fin.strftime('%d/%m/%Y')}",
+                                        "extra_classes": f"fr-tag--sm fr-badge fr-badge--no-icon fr-badge--{self.aide_close_date_badge_color(aide)}",
+                                    },
+                                ]
+                                if aide.date_fin
+                                else [
+                                    {
+                                        "label": "En cours",
+                                        "extra_classes": "fr-tag--sm fr-badge fr-badge--no-icon fr-badge--success",
+                                    },
+                                ]
+                            )
+                            + (
+                                [
+                                    {
+                                        "label": "Uniquement structures collectives",
+                                        "extra_classes": "fr-tag--sm fr-badge fr-badge--no-icon fr-badge--purple-glycine",
+                                    }
+                                ]
+                                if aide.is_for_groupements_only
+                                else []
+                            )
+                            + [
                                 {
-                                    "label": f"Clôture le {aide.date_fin.strftime('%d/%m/%Y')}",
-                                    "extra_classes": f"fr-tag--sm fr-badge fr-badge--no-icon fr-badge--{self.aide_close_date_badge_color(aide)}",
-                                },
-                            ]
-                            if aide.date_fin
-                            else [
-                                {
-                                    "label": "En cours",
-                                    "extra_classes": "fr-tag--sm fr-badge fr-badge--no-icon fr-badge--success",
-                                },
-                            ]
-                        )
-                        + (
-                            [
-                                {
-                                    "label": "Uniquement structures collectives",
-                                    "extra_classes": "fr-tag--sm fr-badge fr-badge--no-icon fr-badge--purple-glycine",
+                                    "label": besoins[besoin].nom_court,
+                                    "extra_classes": f"fr-tag--sm fr-tag--icon-left fr-icon-{besoins[besoin].icon_name}",
                                 }
-                            ]
-                            if aide.is_for_groupements_only
-                            else []
-                        )
-                        + [
-                            {
-                                "label": besoins[besoin].nom_court,
-                                "extra_classes": f"fr-tag--sm fr-tag--icon-left fr-icon-{besoins[besoin].icon_name}",
-                            }
-                            for besoin in besoins_by_aide[aide.pk]
-                        ],
-                    },
-                }
-                for aide in aides
-            ]
-            for type_aides, aides in aides_by_type.items()
+                                for besoin in besoins_by_aide[aide.pk]
+                            ],
+                        },
+                    }
+                    for aide in aides_data_for_type["aides"]
+                ],
+            }
+            for type_aides, aides_data_for_type in aides_by_type.items()
+            if aides_data_for_type["count"] > 0
         }
 
-        if self.request.htmx and "more" in self.request.GET:
-            type_aides = Type.objects.get(pk=self.request.GET.get("more"))
+        if more_for_type_id:
+            type_aides = Type.objects.get(pk=more_for_type_id)
             context_data.update(
-                {"type_aides": type_aides, "aide_list": aides_data_by_type[type_aides]}
+                {
+                    "type_aides": type_aides,
+                    "aide_list": aides_data_by_type[type_aides]["aides"],
+                }
             )
         else:
             context_data.update(
