@@ -217,9 +217,9 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     }
 
     class AideChangeList(ChangeList):
-        def get_queryset(self, request, **kwargs):
+        def get_queryset(self, request, only_parents=True, **kwargs):
             qs = super().get_queryset(request, **kwargs)
-            if "parent__id__exact" not in request.GET:
+            if only_parents and "parent__id__exact" not in request.GET:
                 qs = qs.filter(parent_id=None)
             return qs
 
@@ -567,7 +567,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             response,
             list(
                 self.get_changelist_instance(request)
-                .get_queryset(request)
+                .get_queryset(request, only_parents=False)
                 .values_list("pk", flat=True)
             ),
         )
