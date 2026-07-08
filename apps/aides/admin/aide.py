@@ -1,5 +1,4 @@
 import copy
-import datetime
 import uuid
 
 from admin_extra_buttons.api import ExtraButtonsMixin, button
@@ -11,7 +10,7 @@ from django.contrib.admin.views.main import ChangeList
 from django import forms
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.db.models import TextField, Q, Count
-from django.http.response import HttpResponseRedirect, HttpResponse
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -22,7 +21,6 @@ from reversion.admin import VersionAdmin
 from admin_concurrency.admin import ConcurrentModelAdmin
 
 from ..models import ZoneGeographique, Aide, Sujet
-from ..interop import write_aides_as_csv
 from ._common import ArrayFieldCheckboxSelectMultiple
 
 
@@ -549,29 +547,27 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
 
     @filtered_button(label="Exporter toutes les aides en CSV")
     def export_csv(self, request):
-        filters_string = (
-            request.GET.urlencode()
-            .replace("&", "-")
-            .replace("=", "_")
-            .replace("__exact", "")
-        )
-        filename = (
-            f"{datetime.date.today().isoformat()}-aides-agri-aides-{filters_string}"
-        )
-        response = HttpResponse(
-            content_type="text/csv",
-            headers={"Content-Disposition": f'attachment; filename="{filename}.csv"'},
-        )
+        from ..tasks import export_aides_to_csv_and_send_by_mail
 
-        write_aides_as_csv(
-            response,
+        export_aides_to_csv_and_send_by_mail.enqueue(
             list(
                 self.get_changelist_instance(request)
                 .get_queryset(request, only_parents=False)
                 .values_list("pk", flat=True)
+                .iterator(chunk_size=20)
             ),
+            (
+                request.GET.urlencode()
+                .replace("&", "-")
+                .replace("=", "_")
+                .replace("__exact", "")
+            ),
+            request.user.email,
         )
-        return response
+        self.message_user(
+            request,
+            f"L’export a bien été demandé, il sera envoyé par mail à {request.user.email}.",
+        )
 
     def response_post_save_change(self, request, obj):
         if "_save_and_back_to_dashboard" in request.POST:
