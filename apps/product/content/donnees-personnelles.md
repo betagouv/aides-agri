@@ -1,10 +1,10 @@
 # Politique de confidentialité de « Aides Agri »
 
-Date de mise à jour : 03/06/2025
+Création : 03/06/2025 – mise à jour : 08/07/2026.
 
 ## I - Qui est responsable de traitement ?
 
-La plateforme « Aides Agri » est développée au sein de la Ruche numérique du Ministère de l’Agriculture, de l’Agro-alimentaire et de la Souveraineté Alimentaire.
+La plateforme « Aides Agri » est développée au sein de la Ruche numérique du Ministère de l’Agriculture, de l’Agro-alimentaire et de la Souveraineté Alimentaire par la Direction Générale de la Performance Économique et Environnementale des Entreprises (DGPE).
 
 Le responsable de traitement est le Secrétariat Général du Ministère de l’Agriculture, de l’Agro-alimentaire et de la Souveraineté alimentaire représenté par sa secrétaire générale, Madame Cécile BIGOT-DEKEYZER.
 
@@ -13,14 +13,14 @@ Le responsable de traitement est le Secrétariat Général du Ministère de l’
 Aides Agri traite des données à caractère personnel pour les raisons suivantes :
 
 - Proposer un parcours afin d’orienter les utilisateurs vers des dispositifs d’aides adaptés à leurs besoins et problématiques ;
-- Contacter les utilisateurs.
+- Contacter les utilisateurs ;
+- Faciliter les recherches d’aides des Utilisateurs et les informer des nouvelles aides correspondant à leurs critères, par un système d’alertes par courrier électronique.
 
 ## III - Quelles sont les données que nous traitons ?
 
 Aides Agri traite les données à caractère personnel suivantes :
-
-- Données relatives à l’exploitation agricole : effectifs, filières agricoles, localisation géographique, SIRET
-- Données de contact : adresse électronique, uniquement pour les personnes qui souhaitent recevoir la recommandation d'Aides Agri par courriel
+- Données relatives à l’exploitation agricole : effectifs, filières agricoles, localisation géographique, SIRET ;
+- Données de contact : nom, prénom, adresse électronique.
 
 ## IV - Qu’est-ce qui nous autorise à traiter ces données ?
 
@@ -32,8 +32,8 @@ Cette mission d’intérêt public se traduit par le décret n° 2025-30 du 8 ja
 
 | Type de données                                                                  | 	Durée de la conservation                                      |
 |----------------------------------------------------------------------------------|----------------------------------------------------------------|
-| Données relatives à l’exploitation agricole                                      | 1 an un compter de la date d’enregistrement dans la plateforme |
-| Données de contact                                                               | 1 an un compter de la date d’enregistrement dans la plateforme |
+| Données relatives à l’exploitation agricole                                      | 1 an un compter de la date d’enregistrement dans la plateforme, ou le cas échéant en cas d’opposition ou de suppression |
+| Données de contact                                                               | 1 an un compter de la date d’enregistrement dans la plateforme, ou le cas échéant en cas d’opposition ou de suppression |
 
 ## VI - Quels droits avez-vous ?
 
@@ -55,7 +55,7 @@ Nous nous engageons à vous répondre dans un délai raisonnable qui ne saurait 
 ## VII - Qui va avoir accès à ces données ?
 
 Les accès aux données sont strictement encadrés et juridiquement justifiés. Les personnes suivantes vont avoir accès aux données :
-- Les personnes habilitées de l’équipe d’Aides Agri
+- Les personnes habilitées de l’équipe d’Aides Agri.
 
 ## VIII - Qui nous aide à traiter les données ?
 

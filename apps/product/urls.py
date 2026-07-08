@@ -29,6 +29,14 @@ urlpatterns = [
         name="cgu",
     ),
     path(
+        "pages/cgu_20250603",
+        StaticPageView.as_view(
+            title="Conditions Générales d’Utilisation, version du 06/03/2025",
+            content_filename="cgu_20250603",
+        ),
+        name="cgu_20250603",
+    ),
+    path(
         "pages/donnees-personnelles",
         StaticPageView.as_view(
             title="Données personnelles",
