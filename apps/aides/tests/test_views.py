@@ -113,3 +113,76 @@ def test_sneak_peek_view_returns_404_for_published_aide(client, aide_published):
 
     # THEN get a 404
     assert res.status_code == 404
+
+
+@pytest.mark.django_db
+def test_aide_detail_dynamic_breadcrumb(client, aide_published):
+    # GIVEN a published Aide and an anonymous client
+    aide = aide_published
+    assert aide.is_published
+    # WHEN calling its public URL with legitimate querystring for dynamic breadcrumb
+    res = client.get(
+        reverse(
+            "aides:aide",
+            args=[aide.pk, aide.slug],
+            query={
+                "breadcrumb_entry_point_title": "Vos résultats",
+                "breadcrumb_entry_point_url": "/example_results_page",
+                "breadcrumb_first_aide_title": "La première aide consultée",
+                "breadcrumb_first_aide_url": "/aide/example_aide",
+            },
+        )
+    )
+    # THEN get a 200
+    # and the dynamic breadcrumb DOES NOT display malicious link
+    assert res.status_code == 200
+    assert 'href="/example_results_page"' in res.content.decode("utf-8")
+    assert 'href="/aide/example_aide"' in res.content.decode("utf-8")
+
+
+@pytest.mark.django_db
+def test_aide_detail_avoid_dynamic_breadcrumb_vulnerability_entry_point_url(
+    client, aide_published
+):
+    # GIVEN a published Aide and an anonymous client
+    aide = aide_published
+    assert aide.is_published
+    # WHEN calling its public URL with malicious querystring for dynamic breadcrumb
+    res = client.get(
+        reverse(
+            "aides:aide",
+            args=[aide.pk, aide.slug],
+            query={
+                "breadcrumb_entry_point_title": "Super promo",
+                "breadcrumb_entry_point_url": "http://malicious.com",
+            },
+        )
+    )
+    # THEN get a 200
+    # and the dynamic breadcrumb DOES NOT display malicious link
+    assert res.status_code == 200
+    assert 'href="http://malicious.com"' not in res.content.decode("utf-8")
+
+
+@pytest.mark.django_db
+def test_aide_detail_avoid_dynamic_breadcrumb_vulnerability_first_aide_url(
+    client, aide_published
+):
+    # GIVEN a published Aide and an anonymous client
+    aide = aide_published
+    assert aide.is_published
+    # WHEN calling its public URL with malicious querystring for dynamic breadcrumb
+    res = client.get(
+        reverse(
+            "aides:aide",
+            args=[aide.pk, aide.slug],
+            query={
+                "breadcrumb_first_aide_title": "Super promo",
+                "breadcrumb_first_aide_url": "http://malicious.com",
+            },
+        )
+    )
+    # THEN get a 200
+    # and the dynamic breadcrumb DOES NOT display malicious link
+    assert res.status_code == 200
+    assert 'href="http://malicious.com"' not in res.content.decode("utf-8")

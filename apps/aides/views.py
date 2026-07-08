@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 from django.db.models import Q, Count
 from django.http.response import HttpResponsePermanentRedirect, Http404
 from django.urls import resolve
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import DetailView
 
 from aides_feedback.forms import CreateFeedbackOnAidesForm
@@ -29,20 +30,24 @@ class AideDetailView(DetailView):
 
         breadcrumb_links = []
         if "breadcrumb_entry_point_url" in self.request.GET:
-            breadcrumb_links.append(
-                {
-                    "url": self.request.GET["breadcrumb_entry_point_url"],
-                    "title": self.request.GET["breadcrumb_entry_point_title"],
-                }
-            )
+            url = self.request.GET.get("breadcrumb_entry_point_url")
+            if url_has_allowed_host_and_scheme(url, allowed_hosts=None):
+                breadcrumb_links.append(
+                    {
+                        "url": url,
+                        "title": self.request.GET.get("breadcrumb_entry_point_title"),
+                    }
+                )
 
         if "breadcrumb_first_aide_url" in self.request.GET:
-            breadcrumb_links.append(
-                {
-                    "url": self.request.GET["breadcrumb_first_aide_url"],
-                    "title": self.request.GET["breadcrumb_first_aide_title"],
-                }
-            )
+            url = self.request.GET.get("breadcrumb_first_aide_url")
+            if url_has_allowed_host_and_scheme(url, allowed_hosts=None):
+                breadcrumb_links.append(
+                    {
+                        "url": url,
+                        "title": self.request.GET.get("breadcrumb_first_aide_title"),
+                    }
+                )
 
         if "HTTP_REFERER" in self.request.META:
             referrer = urlparse(self.request.META["HTTP_REFERER"])
