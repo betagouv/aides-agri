@@ -30,7 +30,7 @@ Sujet --* Thème: +
 Notes :
 
 * L’entité `Aide` est centrale, toutes les autres entités gérées par ce module sont finalement des référentiels qui servent à qualifier des `Aides` ;
-* Il y a une structure arborescente concernant les dispositifs d’aides ; elle sert à représenter des dispositifs-chapeaux qui factorisent des informations reprises par des dispositifs concrets (exemples : les Programmes Opérationnels de la PAC, ou des dispositifs nationaux définis par le Ministère mais portés au niveau départemental par les DDT(M)) ;
+* Il y a une structure arborescente concernant les dispositifs d’aides ; elle sert à représenter des dispositifs-chapeaux qui factorisent des informations reprises par des dispositifs concrets (exemples : les Programmes Opérationnels de la PAC, ou des dispositifs nationaux définis par le Ministère mais portés au niveau départemental par les DDT(M)) ;
 * L’entité `Aide` contient, en plus des champs nécessaires à sa publication sur le site Aides Agri, un champ dynamique (de type `HStore` de PostgreSQL) qui permet de garder une trace des données brutes présentes lors de l’insertion du dispositif en base, au cas où celle-ci aurait été faite de manière automatisée ;
 * L’entité `ZoneGeographique` contient le découpage administratif du territoire français jusqu’au niveau des communes (donc régions/collectivités d’outre-mer/départements/EPCIs/communes) ; cette base est peuplée automatiquement grâce à la commande Django [aides_load_zones_geographiques](management/commands/aides_load_zones_geographiques.py) qui charge les données depuis https://geo.api.gouv.fr/.
 
@@ -39,7 +39,7 @@ Notes :
 États possibles pour l’objet `Aide` :
 
 * `0. Backlog - À prioriser` : on sait que le dispositif existe, il est entré dans notre système sous une forme minimaliste (souvent juste un nom, un organisme porteur) ;
-* `1. Priorisée - Scope à vérif` : on a saisi quelques informations permettant de prioriser son intégration (son potentiel en matière de volume financier et de proportion des exploitations agricoles impactées, son impact politique, son degré d’urgence, etc.) ; reste à savoir s’il est pertinent pour notre produit (ce n’est pas forcément la même personne qui est décideur sur ce sujet) ;
+* `1. Priorisée - Scope à vérif` : on a saisi quelques informations permettant de prioriser son intégration (son potentiel en matière de volume financier et de proportion des exploitations agricoles impactées, son impact politique, son degré d’urgence, etc.) ; reste à savoir s’il est pertinent pour notre produit (ce n’est pas forcément la même personne qui est décideur sur ce sujet) ;
 * `1.1 Bloquée` : pas pertinente pour le moment, mais pourrait le devenir ;
 * `2. Ok scope - À éditer` : ce dispositif doit être enrichi éditorialement en vue de sa publication sur le site Aides Agri ;
 * `3. Ok édito - À valider` : le dispositif a été enrichi, aussi bien sur ses caractéristiques que de manière éditoriale ; il nécessite une validation avant publication ;
@@ -54,7 +54,7 @@ Le statut de publication n’est pas un état du flux de travail ; en effet, Ai
 
 Pour ce faire, le statut de publication est implémenté par un champ booléen `is_published` qui répond aux contraintes suivantes :
 
-* Les dispositifs dont l'état est compris dans la liste suivante **ne peuvent pas être publiés** (méthode `Aide.can_be_published()`) :
+* Les dispositifs dont l’état est compris dans la liste suivante **ne peuvent pas être publiés** (méthode `Aide.can_be_published()`) :
   * `0. Backlog - À prioriser`
   * `1. Priorisée - Scope à vérif`
   * `1.1 Bloquée`
@@ -83,3 +83,16 @@ Au 17/10/2025, les critères et leurs pondérations sont les suivants :
 | Bonus filière sous-représentée sur Aides Agri | `Aide.filiere_sous_representee` | Booléen | n/a | 10 | 1 |
 | Bonus aide méconnue | `Aide.is_meconnue` | Booléen | n/a | 10 | 1 |
 
+## Logos des organismes
+
+### Architecture logicielle
+
+Les logos des organismes sont gérés selon l’architecture décrite dans [le paragraphe "Gestion des illustrations des contenus" du Dossier d’Architecture Technique](../../documentation/dat/architecture-logicielle.md#gestion-des-illustrations-des-contenus) et mise en place suite à [la décision d’architecture 0004](../../documentation/adr/decision-0004-illustrations-en-base-de-donnees.md).
+
+### Opérations associées
+
+* Une tâche quotidienne (commande `aides_alert_organismes_without_logo`) cherche dans la base de données aides publiées dont l’organisme n’a pas de logo, et, si nécessaire, informe par courriel l’équipe Aides Agri en listant les organismes concernés ;
+* L’équipe tech peut alors :
+  1. Chercher le logo des organismes concernés (format webp, PNG, etc.) ;
+  2. L’uploader dans la base de données en utilisant la commande `just scalingo-set-organisme-logo {environment} {organisme_id} {file}` ;
+  3. Lancer un déploiement manuel du service.
