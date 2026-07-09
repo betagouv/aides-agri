@@ -585,12 +585,23 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         else:
             return super().save_form(request, form, change)
 
+    def _apply_field_changes_to_children(self, aide: Aide):
+        for child in aide.children.all():
+            for field in aide.derivable_fields:
+                setattr(child, field.name, getattr(aide, field.name))
+            child.save()
+            self._apply_field_changes_to_children(child)
+
+    def _apply_m2m_changes_to_children(self, aide: Aide):
+        for child in aide.children.all():
+            for field in aide.derivable_m2m_relationships:
+                getattr(child, field.name).set(getattr(aide, field.name).all())
+            child.save()
+            self._apply_m2m_changes_to_children(child)
+
     def save_model(self, request, obj: Aide, *args) -> None:
         super().save_model(request, obj, *args)
-        for child in obj.children.all():
-            for field in obj.derivable_fields:
-                setattr(child, field.name, getattr(obj, field.name))
-            child.save()
+        self._apply_field_changes_to_children(obj)
 
     def save_related(
         self, request, form: forms.BaseModelForm, formsets, change
@@ -599,7 +610,4 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             return
         super().save_related(request, form, formsets, change)
         obj: Aide = form.instance
-        for child in obj.children.all():
-            for field in obj.derivable_m2m_relationships:
-                getattr(child, field.name).set(getattr(obj, field.name).all())
-            child.save()
+        self._apply_m2m_changes_to_children(obj)

@@ -135,19 +135,19 @@ def test_derive_aide_departementale(
 def test_change_parent_aide_applies_changes_to_children(
     monkeypatch,
     admin_client,
-    aide_published_with_parent,
+    aide_published_with_parent_and_grandparent,
     zone_geographique_departement_13,
 ):
     # we don't care about 2FA here, let's skip it
     monkeypatch.setattr(django_otp_middleware, "is_verified", lambda u: True)
 
-    aide = aide_published_with_parent
+    aide = aide_published_with_parent_and_grandparent
 
     # GIVEN a derived Aide
     assert aide.parent.url_descriptif != aide.url_descriptif
 
     # WHEN POSTing to change the parent Aide
-    url = reverse("admin:aides_aide_change", args=[aide.parent.pk])
+    url = reverse("admin:aides_aide_change", args=[aide.parent.parent_id])
     res = admin_client.post(
         url,
         headers={"host": "localhost"},
@@ -168,21 +168,31 @@ def test_change_parent_aide_applies_changes_to_children(
     # THEN the child Aide has been changed as well, but not everything
     assert res.status_code == 302
     aide.refresh_from_db()
-    # have changed on both parent and child
-    assert aide.parent.url_descriptif == "https://aides-agri.beta.gouv.fr"
+    # have changed on both parent, child and grandchild
+    assert aide.parent.parent.url_descriptif == "https://aides-agri.beta.gouv.fr"
+    assert aide.parent.url_descriptif == aide.parent.parent.url_descriptif
     assert aide.url_descriptif == aide.parent.url_descriptif
     assert (
-        aide.parent.couverture_geographique == Aide.CouvertureGeographique.DEPARTEMENTAL
+        aide.parent.parent.couverture_geographique
+        == Aide.CouvertureGeographique.DEPARTEMENTAL
+    )
+    assert (
+        aide.parent.couverture_geographique
+        == aide.parent.parent.couverture_geographique
     )
     assert aide.couverture_geographique == aide.parent.couverture_geographique
-    assert set(aide.parent.zones_geographiques.all()) == {
+    assert set(aide.parent.parent.zones_geographiques.all()) == {
         zone_geographique_departement_13
     }
+    assert set(aide.parent.zones_geographiques.all()) == set(
+        aide.parent.parent.zones_geographiques.all()
+    )
     assert set(aide.zones_geographiques.all()) == set(
         aide.parent.zones_geographiques.all()
     )
     # have changed on parent only
     assert aide.nom != aide.parent.nom
+    assert aide.nom != aide.parent.parent.nom
 
 
 @pytest.mark.parametrize("aide__organisme", [LazyFixture("organisme")])
