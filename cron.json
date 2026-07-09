@@ -8,6 +8,9 @@
     },
     {
       "command": "0 7 * * * python manage.py aides_send_daily_admin_notifications"
+    },
+    {
+      "command": "10 7 * * * python manage.py aides_alert_organismes_without_logo"
     }
   ]
 }
