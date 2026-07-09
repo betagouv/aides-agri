@@ -32,3 +32,11 @@ register(
     is_published=True,
     with_parent=True,
 )
+register(
+    factories.AideFactory,
+    "aide_published_with_parent_and_grandparent",
+    organisme=LazyFixture("organisme"),
+    status=Aide.Status.VALIDATED,
+    is_published=True,
+    with_parent=LazyFixture("aide_published_with_parent"),
+)

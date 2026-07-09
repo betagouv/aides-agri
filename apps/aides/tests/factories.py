@@ -124,12 +124,15 @@ class AideFactory(factory.django.DjangoModelFactory):
     def with_parent(obj, create, value, **kwargs):
         if not value or not create:
             return
-        obj.parent = AideFactory.create(
-            nom=f"Parent of {obj.nom}",
-            organisme=obj.organisme,
-            status=models.Aide.Status.VALIDATED,
-            is_published=True,
-        )
+        if value is True:
+            obj.parent = AideFactory.create(
+                nom=f"Parent of {obj.nom}",
+                organisme=obj.organisme,
+                status=models.Aide.Status.VALIDATED,
+                is_published=True,
+            )
+        else:
+            obj.parent = value
         obj.save()
 
     @factory.post_generation
