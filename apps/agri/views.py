@@ -23,6 +23,7 @@ from aides_feedback.forms import (
     FeedbackOnThemesAndSujetsForm,
 )
 
+from .models import AboutPageQuote
 from .tasks import send_results_by_mail
 
 
@@ -165,6 +166,53 @@ class HomeView(TemplateView):
                         for filiere in Filiere.objects.published()
                     ],
                 }
+            )
+        return context_data
+
+
+class AboutView(TemplateView):
+    template_name = "agri/about.html"
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data.update(
+            {
+                "breadcrumb_data": {"current": "À propos d’Aides Agri"},
+                "sidemenu_data": {
+                    "items": [
+                        {"label": "Notre démarche", "link": "#demarche"},
+                        {
+                            "label": "Vous voulez en savoir plus ? Webinaires et replay",
+                            "link": "#en-savoir-plus",
+                        },
+                        {
+                            "label": "Vous êtes agent public ?",
+                            "link": "#donnees-ouvertes",
+                        },
+                    ]
+                },
+                "stats_aides_count": Aide.objects.official_published_count(),
+                "stats_organismes_count": Aide.objects.official_published_organismes_count(),
+            }
+        )
+        quotes = AboutPageQuote.objects.all()
+        if quotes.count() > 2:
+            context_data.update(
+                {
+                    "quotes": [
+                        {
+                            "text": quote.quote_french,
+                            "author": quote.author,
+                            "details": [
+                                {"text": quote.source_label, "link": quote.source_url}
+                            ],
+                        }
+                        for quote in quotes
+                    ]
+                }
+            )
+            context_data["sidemenu_data"]["items"].insert(
+                2, {"label": "Ils parlent de nous", "link": "#ils-parlent-de-nous"}
             )
         return context_data
 
