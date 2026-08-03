@@ -16,7 +16,7 @@ document.addEventListener("htmx:load", evt => {
   document.getElementById("button-print").onclick = () => window.print()
 
   // catch external links to open a confirmation modal
-  document.querySelectorAll("a[href][target=_blank]").forEach(elt => {
+  document.querySelectorAll("#content a[href][target=_blank]").forEach(elt => {
     elt.addEventListener("click", evt => {
       evt.preventDefault()
       const href = elt.getAttribute("href")
