@@ -30,11 +30,12 @@ class StatistiquesPageView(TemplateView):
             datetime.date(2026, 4, 1),
             datetime.date(2026, 5, 1),
             datetime.date(2026, 6, 1),
+            datetime.date(2026, 7, 1),
         ]
         all_months_codes = [month_date.strftime("%m/%Y") for month_date in all_dates]
         context_data.update(
             {
-                "date_updated": datetime.date(2026, 5, 29),
+                "date_updated": datetime.date(2026, 8, 3),
                 "stats": {
                     "Le produit Aides Agri est-il utilisable ?": [
                         {
@@ -46,7 +47,7 @@ class StatistiquesPageView(TemplateView):
                             "latest_month": all_dates[-1],
                             "data": {
                                 "x": [all_months_codes],
-                                "y": [[62, 88, 99, 110, 135, 195, 290]],
+                                "y": [[62, 88, 99, 110, 135, 195, 290, 333]],
                                 "name": ["Nombre", "Mois"],
                             },
                         },
@@ -59,7 +60,7 @@ class StatistiquesPageView(TemplateView):
                             "latest_month": all_dates[-1],
                             "data": {
                                 "x": [all_months_codes],
-                                "y": [[49, 45, 57, 62, 45, 41, 34]],
+                                "y": [[49, 45, 57, 62, 45, 41, 34, 35]],
                                 "name": ["Pourcentage", "Mois"],
                             },
                             "unit": "%",
@@ -75,7 +76,9 @@ class StatistiquesPageView(TemplateView):
                             "latest_month": all_dates[-1],
                             "data": {
                                 "x": [all_months_codes],
-                                "y": [[1010, 1700, 1542, 1336, 1135, 6226, 8451]],
+                                "y": [
+                                    [1010, 1700, 1542, 1336, 1135, 6226, 8451, 11_723]
+                                ],
                                 "name": ["Nombre", "Mois"],
                             },
                         },
@@ -88,7 +91,7 @@ class StatistiquesPageView(TemplateView):
                             "latest_month": all_dates[-1],
                             "data": {
                                 "x": [all_months_codes],
-                                "y": [[130, 155, 110, 119, 96, 168, 183]],
+                                "y": [[130, 155, 110, 119, 96, 168, 183, 166]],
                                 "name": ["Secondes", "Mois"],
                             },
                             "unit": "secondes",
@@ -103,7 +106,7 @@ class StatistiquesPageView(TemplateView):
                             "latest_month": all_dates[-1],
                             "data": {
                                 "x": [all_months_codes],
-                                "y": [[108, 160, 142, 252, 143, 6374, 8119]],
+                                "y": [[108, 160, 142, 252, 143, 6374, 8119, 12_793]],
                                 "name": ["Nombre", "Mois"],
                             },
                         },
@@ -116,8 +119,8 @@ class StatistiquesPageView(TemplateView):
                             "latest_month": all_dates[-1],
                             "data": {
                                 "x": all_months_codes[1:],
-                                "y_bar": [1.7, 2.02, 3.75, 0, 2.54, 2.1],
-                                "y_line": [25, 12, 3, 0, 27, 25],
+                                "y_bar": [1.7, 2.02, 3.75, 0, 2.54, 2.1, 2.4],
+                                "y_line": [25, 12, 3, 0, 27, 25, 13],
                                 "name_bar": "Note moyenne (sur 5)",
                                 "name_line": "Nombre de notes",
                             },
@@ -132,8 +135,8 @@ class StatistiquesPageView(TemplateView):
                             "latest_month": all_dates[-1],
                             "data": {
                                 "x": all_months_codes[1:],
-                                "y_bar": [2.95, 3.35, 3.125, 0, 2.87, 1.99],
-                                "y_line": [13, 13, 10, 2, 47, 54],
+                                "y_bar": [2.95, 3.35, 3.125, 0, 2.87, 1.99, 2.54],
+                                "y_line": [13, 13, 10, 2, 47, 54, 28],
                                 "name_bar": "Note moyenne (sur 5)",
                                 "name_line": "Nombre de notes",
                             },
