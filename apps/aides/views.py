@@ -127,7 +127,7 @@ class AideDetailSeakPeekView(AideDetailView):
     extra_context = {"sneak_peek": True}
 
     def get_queryset(self):
-        return Aide.objects.filter(is_published=False, status=Aide.Status.REVIEW_EXPERT)
+        return Aide.objects.filter(status=Aide.Status.REVIEW_EXPERT)
 
     def get(self, *args, **kwargs):
         self.object = self.get_object()
