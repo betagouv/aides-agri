@@ -833,8 +833,8 @@ class Aide(models.Model):
         return self.status == Aide.Status.TO_BE_DERIVED
 
     @property
-    def is_to_be_validated_externally(self):
-        return not self.is_published and self.status == Aide.Status.REVIEW_EXPERT
+    def is_to_be_reviewed_by_expert(self):
+        return self.status == Aide.Status.REVIEW_EXPERT
 
     @property
     def is_complete(self):
