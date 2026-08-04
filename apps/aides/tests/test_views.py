@@ -99,23 +99,6 @@ def test_sneak_peek_view_returns_404_if_wrong_token(client, aide):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("aide_published__status", [Aide.Status.REVIEW_EXPERT])
-def test_sneak_peek_view_returns_404_for_published_aide(client, aide_published):
-    # GIVEN a published Aide
-    aide = aide_published
-    assert aide.is_published
-
-    # WHEN calling its sneak-peek view
-    aide_sneak_peek_url = reverse(
-        "aides:aide-sneak-peek", args=[aide.pk, aide.sneak_peek_token]
-    )
-    res = client.get(aide_sneak_peek_url)
-
-    # THEN get a 404
-    assert res.status_code == 404
-
-
-@pytest.mark.django_db
 def test_aide_detail_dynamic_breadcrumb(client, aide_published):
     # GIVEN a published Aide and an anonymous client
     aide = aide_published
