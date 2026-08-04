@@ -34,12 +34,12 @@ jobs:
           - 5432:5432
 
     steps:
-      - uses: actions/checkout@v6
-      - uses: astral-sh/setup-uv@v7
+      - uses: actions/checkout@v7.0.1
+      - uses: astral-sh/setup-uv@v9.0.0
         with:
           enable-cache: true
           save-cache: false
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7.0.0
         with:
           python-version-file: "pyproject.toml"
       - name: Install Python dependencies
@@ -62,10 +62,17 @@ jobs:
           DJANGO_SETTINGS_MODULE: conf.settings.testing
           SECRET_KEY: notsecret
       - name: Codecov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7.0.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+      - uses: dorny/paths-filter@7b450fff21473bca461d4b92ce414b9d0420d706  # v4
+        id: didSomeHTMLChange
+        with:
+          filters: |
+            src:
+              - '**/*.html'
       - name: Load fixtures for E2E testing
+        if: steps.didSomeHTMLChange.outputs.src == 'true'
         run: |
           uv run --no-sync manage.py migrate
           uv run --no-sync manage.py loaddata conf/fixtures/dsfr_config.json aides.json
@@ -73,21 +80,26 @@ jobs:
           DJANGO_SETTINGS_MODULE: conf.settings.testing
           SECRET_KEY: notsecret
       - name: Run website for E2E tests
+        if: steps.didSomeHTMLChange.outputs.src == 'true'
         run: |
           uv run --no-sync manage.py runserver --noreload --insecure --settings conf.settings.testing &
         env:
           DJANGO_SETTINGS_MODULE: conf.settings.testing
           SECRET_KEY: notsecret
       - name: Setup Javascript runtime
-        uses: actions/setup-node@v6
+        if: steps.didSomeHTMLChange.outputs.src == 'true'
+        uses: actions/setup-node@v7.0.0
         with:
           node-version: 24
           cache: npm
       - name: Install JS dependencies for E2E testing
+        if: steps.didSomeHTMLChange.outputs.src == 'true'
         run: npm ci --ignore-scripts
       - name: Run Lighthouse
+        if: steps.didSomeHTMLChange.outputs.src == 'true'
         run: npx lhci autorun
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
       - name: Run Cypress E2E tests
-        uses: cypress-io/github-action@v7
+        if: steps.didSomeHTMLChange.outputs.src == 'true'
+        uses: cypress-io/github-action@v7.4.1
