@@ -65,7 +65,14 @@ jobs:
         uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+      - uses: dorny/paths-filter@v4
+        id: didSomeHTMLChange
+        with:
+          filters: |
+            src:
+              - '**/*.html'
       - name: Load fixtures for E2E testing
+        if: steps.didSomeHTMLChange.outputs.src == 'true'
         run: |
           uv run --no-sync manage.py migrate
           uv run --no-sync manage.py loaddata conf/fixtures/dsfr_config.json aides.json
@@ -73,21 +80,26 @@ jobs:
           DJANGO_SETTINGS_MODULE: conf.settings.testing
           SECRET_KEY: notsecret
       - name: Run website for E2E tests
+        if: steps.didSomeHTMLChange.outputs.src == 'true'
         run: |
           uv run --no-sync manage.py runserver --noreload --insecure --settings conf.settings.testing &
         env:
           DJANGO_SETTINGS_MODULE: conf.settings.testing
           SECRET_KEY: notsecret
       - name: Setup Javascript runtime
+        if: steps.didSomeHTMLChange.outputs.src == 'true'
         uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: npm
       - name: Install JS dependencies for E2E testing
+        if: steps.didSomeHTMLChange.outputs.src == 'true'
         run: npm ci --ignore-scripts
       - name: Run Lighthouse
+        if: steps.didSomeHTMLChange.outputs.src == 'true'
         run: npx lhci autorun
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
       - name: Run Cypress E2E tests
+        if: steps.didSomeHTMLChange.outputs.src == 'true'
         uses: cypress-io/github-action@v7
