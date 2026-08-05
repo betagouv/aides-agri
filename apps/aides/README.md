@@ -10,7 +10,8 @@ Aucune notable.
 
 ## Dépendances externes
 
-* Le référentiel du découpage administratif : ce service public numérique (https://geo.api.gouv.fr/decoupage-administratif) expose des jeux de données complets concernant les régions, collectivités d’outre-mer, départements, EPCIs, et communes.
+* Le référentiel du découpage administratif : ce service public numérique (https://geo.api.gouv.fr/decoupage-administratif) expose des jeux de données complets concernant les régions, collectivités d’outre-mer, départements, EPCIs, et communes ;
+* L’export vers data.gouv.fr est réalisé via la bibliothèque [datagouv_client](https://pypi.org/project/datagouv_client/), développée par la DINUM, et qui permet d’abstraire les appels à l’API de data.gouv.fr.
 
 ## Modèle de données
 
@@ -96,3 +97,11 @@ Les logos des organismes sont gérés selon l’architecture décrite dans [le p
   1. Chercher le logo des organismes concernés (format webp, PNG, etc.) ;
   2. L’uploader dans la base de données en utilisant la commande `just scalingo-set-organisme-logo {environment} {organisme_id} {file}` ;
   3. Lancer un déploiement manuel du service.
+
+## Export en open data vers data.gouv.fr
+
+La commande Django `aides_export_to_datagouv` permet d’exporter les aides publiées vers un jeu de données data.gouv.fr sous deux formats :
+- L’un (destiné à la circulation de la donnée au sein de l’État) se conforme au [schéma interministériel des aides aux entreprises](https://schema.data.gouv.fr/etalab/dispositif-aide-professionnels/), c’est-à-dire que certains champs du site Aides Agri sont agrégés au sein de champs de ce schéma ;
+- L’autre (destiné aux réutilisations externes) étend ce schéma pour y présenter tous les champs du site Aides Agri.
+
+Cet export est programmé toutes les nuits via [le scheduler Scalingo](https://doc.scalingo.com/platform/app/task-scheduling/scalingo-scheduler).
