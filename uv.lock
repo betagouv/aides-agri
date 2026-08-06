@@ -2,6 +2,10 @@ version = 1
 revision = 3
 requires-python = ">=3.14"
 
+[options]
+exclude-newer = "0001-01-01T00:00:00Z" # This has no effect and is included for backwards compatibility when using relative exclude-newer values.
+exclude-newer-span = "P7D"
+
 [[package]]
 name = "aides-agri"
 version = "0.1.0"
@@ -1036,11 +1040,11 @@ wheels = [
 
 [[package]]
 name = "wassima"
-version = "2.1.1"
+version = "2.1.3"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/b8/34/68ab01470c1cef170e8370a8a05e598d621d3657bf925b62bc9a18b4509a/wassima-2.1.1.tar.gz", hash = "sha256:9c6ad4aa3cfbe91fd75f9eae315ba563bbc7d9d2479aef0c288fa7f1ca3b0c53", size = 140395, upload-time = "2026-06-08T02:44:41.424Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/53/a1/714674b53d3a57013730187e027e291c652a25db053e02236798bec49d61/wassima-2.1.3.tar.gz", hash = "sha256:fcd6c38be0f909c393da35cb2a993101fcdcff673b8fa8d5da228f73b630d0d0", size = 140075, upload-time = "2026-07-24T18:36:21.235Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/54/9e/472991fc66d940d3ba3268fc8c2866a44b6870a9711ab74fcf1f29e817e1/wassima-2.1.1-py3-none-any.whl", hash = "sha256:ab0f12c091ff697f111eea5f925aafd83736909a1c9c764a8bbf874b2e4d4a42", size = 131435, upload-time = "2026-06-08T02:44:39.92Z" },
+    { url = "https://files.pythonhosted.org/packages/af/a2/4c8cd0dddfe40a779739afab2f09e84286bea37cdb73c7b1c12b4990ff12/wassima-2.1.3-py3-none-any.whl", hash = "sha256:f8251c23720dd092117a554b3012756caee3feed6d0122c2458a2aca5d7d92c5", size = 131416, upload-time = "2026-07-24T18:36:19.36Z" },
 ]
 
 [[package]]
