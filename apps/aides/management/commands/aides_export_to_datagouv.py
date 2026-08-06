@@ -86,17 +86,13 @@ class Command(BaseCommand):
             self.stdout.write(
                 f"No DATASET_ID found, creating a Dataset for Organization {settings.AIDES_DATAGOUV_ORGANIZATION_ID}..."
             )
-            dataset_id = (
-                self.client.dataset()
-                .create(
-                    {
-                        "title": "Aides publiées sur Aides Agri",
-                        "description": "Différents exports des aides publiées sur Aides Agri : selon le schéma interministériel des aides aux entreprises, selon un schéma étendu, etc.",
-                        "organization": settings.AIDES_DATAGOUV_ORGANIZATION_ID,
-                    }
-                )
-                .id
-            )
+            dataset_id = self.client.create_dataset(
+                {
+                    "title": "Aides publiées sur Aides Agri",
+                    "description": "Différents exports des aides publiées sur Aides Agri : selon le schéma interministériel des aides aux entreprises, selon un schéma étendu, etc.",
+                    "organization": settings.AIDES_DATAGOUV_ORGANIZATION_ID,
+                }
+            ).id
             self.stdout.write(f"Dataset {dataset_id} created!")
         else:
             dataset_id = settings.AIDES_DATAGOUV_DATASET_ID
