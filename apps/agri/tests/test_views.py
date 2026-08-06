@@ -4,6 +4,7 @@ from django.test.utils import override_settings
 from django.urls import reverse
 from django_tasks import default_task_backend
 
+from agri.models import AboutPageQuote
 from aides.models import Aide, Theme
 
 
@@ -377,3 +378,18 @@ def test_send_results_by_mail_no_filter(
     # 1 task enqueued
     assert len(default_task_backend.results) == 1
     assert default_task_backend.results[0].task.name == "send_results_by_mail"
+
+
+@pytest.mark.django_db
+def test_about(client, quote, quote_2, quote_3):
+    # GIVEN 3 quotes
+    assert AboutPageQuote.objects.count() == 3
+
+    # WHEN requesting home page
+    url = reverse("agri:about")
+    response = client.get(url)
+
+    # THEN:
+    # it's a 200
+    assert response.status_code == 200
+    assert response.text.count("«") == 3
