@@ -9,6 +9,7 @@ from django.contrib.admin.utils import flatten_fieldsets
 from django.contrib.admin.views.main import ChangeList
 from django import forms
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
+from django.db import transaction
 from django.db.models import TextField, Q, Count
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect
@@ -20,7 +21,7 @@ from reversion.admin import VersionAdmin
 
 from admin_concurrency.admin import ConcurrentModelAdmin
 
-from ..models import ZoneGeographique, Aide, Sujet
+from ..models import ZoneGeographique, Aide, AideQuerySet, Sujet
 from ._common import ArrayFieldCheckboxSelectMultiple
 
 
@@ -64,6 +65,28 @@ def filtered_button(**kwargs):
     return decorator
 
 
+class IsOngoingListFilter(admin.SimpleListFilter):
+    title = "En cours"
+
+    parameter_name = "is_ongoing"
+    VALUE_TRUE = "1"
+    VALUE_FALSE = "0"
+
+    def lookups(self, request, model_admin) -> list[tuple[str, str]]:
+        return [
+            (self.__class__.VALUE_TRUE, "Oui"),
+            (self.__class__.VALUE_FALSE, "Non"),
+        ]
+
+    def queryset(self, request, queryset: AideQuerySet) -> AideQuerySet:
+        if self.value() == self.__class__.VALUE_TRUE:
+            return queryset.only_open()
+        elif self.value() == self.__class__.VALUE_FALSE:
+            return queryset.only_closed()
+        else:
+            return queryset
+
+
 @admin.register(Aide)
 class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     class Media:
@@ -76,6 +99,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         "nom",
         "organisme",
         "is_published",
+        "is_ongoing",
         "priority",
         "ancestors",
         "derivatives",
@@ -85,6 +109,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     ordering = ("-priority", "nom", "id")
     list_filter = (
         "is_published",
+        IsOngoingListFilter,
         "status",
         "sujets",
         "sujets__themes",
@@ -223,6 +248,12 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
 
     def get_changelist(self, request, **kwargs):
         return AideAdmin.AideChangeList
+
+    def is_ongoing(self, obj):
+        return obj.is_ongoing
+
+    is_ongoing.short_description = "En cours"
+    is_ongoing.boolean = True
 
     @admin.display(description="Ancêtres")
     def ancestors(self, obj):
@@ -428,6 +459,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             )
 
     @admin.action(description="Créer une fiche mère à partir de ces aides")
+    @transaction.atomic
     def make_parent_aide_from_existing_aides(self, request, queryset):
         parent = Aide.objects.create(
             nom="Fiche mère (nom temporaire à modifier)",
@@ -455,7 +487,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             request, f"L’aide parent {parent.nom} a bien été créée, la voici."
         )
         return HttpResponseRedirect(
-            reverse("admin:aides_aide_changelist", query={"id__iexact": parent.pk})
+            reverse("admin:aides_aide_change", args=[parent.pk])
         )
 
     @button(label="Dupliquer", html_attrs={"class": "addlink"})
@@ -545,7 +577,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                 context["aides_by_status"][status] = qs.filter(is_published=False)
         return TemplateResponse(request, "admin/aides/aide/dashboard.html", context)
 
-    @filtered_button(label="Exporter toutes les aides en CSV")
+    @filtered_button(label="Exporter en CSV")
     def export_csv(self, request):
         from ..tasks import export_aides_to_csv_and_send_by_mail
 
