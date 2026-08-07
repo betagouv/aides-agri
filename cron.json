@@ -13,7 +13,7 @@
       "command": "10 7 * * * python manage.py aides_alert_organismes_without_logo"
     },
     {
-      "command": "5 5 * * * python manage.py aides_export_to_datagouv"
+      "command": "5 5 * * 1 python manage.py aides_export_to_datagouv"
     }
   ]
 }
