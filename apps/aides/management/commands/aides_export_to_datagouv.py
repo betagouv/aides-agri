@@ -1,5 +1,6 @@
 import copy
 import datetime
+import sys
 
 from datagouv import Client
 from django.conf import settings
@@ -59,10 +60,13 @@ class Command(BaseCommand):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.client = Client(
-            environment=settings.DATAGOUV_ENVIRONMENT,
-            api_key=settings.DATAGOUV_API_TOKEN,
-        )
+        if settings.DATAGOUV_API_TOKEN:
+            self.client = Client(
+                environment=settings.DATAGOUV_ENVIRONMENT,
+                api_key=settings.DATAGOUV_API_TOKEN,
+            )
+        else:
+            self.client = None
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -79,6 +83,10 @@ class Command(BaseCommand):
 
         if not write:
             self.stdout.write("DRY RUN MODE")
+
+        if write and not self.client:
+            self.stdout.write("No data.gouv.fr API token. Exiting.")
+            sys.exit()
 
         # ensure dataset exists
         if write and not settings.AIDES_DATAGOUV_DATASET_ID:
