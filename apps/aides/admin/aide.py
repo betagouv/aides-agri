@@ -20,7 +20,7 @@ from reversion.admin import VersionAdmin
 
 from admin_concurrency.admin import ConcurrentModelAdmin
 
-from ..models import ZoneGeographique, Aide, Sujet
+from ..models import ZoneGeographique, Aide, AideQuerySet, Sujet
 from ._common import ArrayFieldCheckboxSelectMultiple
 
 
@@ -64,6 +64,28 @@ def filtered_button(**kwargs):
     return decorator
 
 
+class IsOngoingListFilter(admin.SimpleListFilter):
+    title = "En cours"
+
+    parameter_name = "is_ongoing"
+    VALUE_TRUE = "1"
+    VALUE_FALSE = "0"
+
+    def lookups(self, request, model_admin) -> list[tuple[str, str]]:
+        return [
+            (self.__class__.VALUE_TRUE, "Oui"),
+            (self.__class__.VALUE_FALSE, "Non"),
+        ]
+
+    def queryset(self, request, queryset: AideQuerySet) -> AideQuerySet:
+        if self.value() == self.__class__.VALUE_TRUE:
+            return queryset.only_open()
+        elif self.value() == self.__class__.VALUE_FALSE:
+            return queryset.only_closed()
+        else:
+            return queryset
+
+
 @admin.register(Aide)
 class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     class Media:
@@ -76,6 +98,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         "nom",
         "organisme",
         "is_published",
+        "is_ongoing",
         "priority",
         "ancestors",
         "derivatives",
@@ -85,6 +108,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     ordering = ("-priority", "nom", "id")
     list_filter = (
         "is_published",
+        IsOngoingListFilter,
         "status",
         "sujets",
         "sujets__themes",
@@ -223,6 +247,12 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
 
     def get_changelist(self, request, **kwargs):
         return AideAdmin.AideChangeList
+
+    def is_ongoing(self, obj):
+        return obj.is_ongoing
+
+    is_ongoing.short_description = "En cours"
+    is_ongoing.boolean = True
 
     @admin.display(description="Ancêtres")
     def ancestors(self, obj):
