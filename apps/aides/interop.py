@@ -1,5 +1,6 @@
 import copy
 import csv
+from datetime import datetime
 from functools import cached_property
 
 from django.conf import settings
@@ -171,7 +172,7 @@ class AideToSchema:
         return ""
 
     def _prepare_ciblage_secteur_activite(self):
-        return ""
+        return "agriculture"
 
     def _prepare_ciblage_naf(self):
         return ""
@@ -183,10 +184,18 @@ class AideToSchema:
         return ""
 
     def _prepare_date_ouverture(self):
-        return self.aide.date_debut.isoformat() if self.aide.date_debut else ""
+        return (
+            datetime.fromisoformat(self.aide.date_debut.isoformat()).isoformat()
+            if self.aide.date_debut
+            else ""
+        )
 
     def _prepare_date_cloture(self):
-        return self.aide.date_fin.isoformat() if self.aide.date_fin else ""
+        return (
+            datetime.fromisoformat(self.aide.date_fin.isoformat()).isoformat()
+            if self.aide.date_fin
+            else ""
+        )
 
     def _prepare_date_mise_a_jour(self):
         return self.aide.date_modified.strftime("%Y-%m-%d %H:%M:%S")
