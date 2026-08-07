@@ -9,6 +9,7 @@ from django.contrib.admin.utils import flatten_fieldsets
 from django.contrib.admin.views.main import ChangeList
 from django import forms
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
+from django.db import transaction
 from django.db.models import TextField, Q, Count
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect
@@ -458,6 +459,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             )
 
     @admin.action(description="Créer une fiche mère à partir de ces aides")
+    @transaction.atomic
     def make_parent_aide_from_existing_aides(self, request, queryset):
         parent = Aide.objects.create(
             nom="Fiche mère (nom temporaire à modifier)",
@@ -485,7 +487,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             request, f"L’aide parent {parent.nom} a bien été créée, la voici."
         )
         return HttpResponseRedirect(
-            reverse("admin:aides_aide_changelist", query={"id__iexact": parent.pk})
+            reverse("admin:aides_aide_change", args=[parent.pk])
         )
 
     @button(label="Dupliquer", html_attrs={"class": "addlink"})
