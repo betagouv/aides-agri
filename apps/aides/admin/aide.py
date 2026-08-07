@@ -575,7 +575,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                 context["aides_by_status"][status] = qs.filter(is_published=False)
         return TemplateResponse(request, "admin/aides/aide/dashboard.html", context)
 
-    @filtered_button(label="Exporter toutes les aides en CSV")
+    @filtered_button(label="Exporter en CSV")
     def export_csv(self, request):
         from ..tasks import export_aides_to_csv_and_send_by_mail
 
