@@ -25,6 +25,7 @@ CONTENT_SECURITY_POLICY = {
             "stats.beta.gouv.fr",  # Matomo
             "sentry.incubateur.net",  # Sentry
         ],
+        "frame-src": ["https://tube.numerique.gouv.fr"],  # DINUM Peertube instance
         "frame-ancestors": [SELF],
         "form-action": [SELF],
     },
