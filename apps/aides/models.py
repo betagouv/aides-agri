@@ -728,9 +728,18 @@ class Aide(models.Model):
     organisme = models.ForeignKey(
         Organisme,
         null=True,
+        blank=True,
         related_name="aides",
         on_delete=models.CASCADE,
         verbose_name="Organisme porteur",
+    )
+    organisme_instructeur = models.ForeignKey(
+        Organisme,
+        null=True,
+        blank=True,
+        related_name="aides_instruites",
+        on_delete=models.CASCADE,
+        verbose_name="Organisme instructeur",
     )
     organismes_secondaires = models.ManyToManyField(
         Organisme,
@@ -924,8 +933,17 @@ class Aide(models.Model):
             Aide.Status.BLOCKED,
         )
 
+    def _compute_slug(self):
+        if self.organisme_instructeur:
+            organisme = slugify(self.organisme_instructeur.nom)
+        elif self.organisme:
+            organisme = slugify(self.organisme.nom)
+        else:
+            organisme = "organisme-inconnu"
+        self.slug = f"{organisme}-{slugify(self.nom)}"
+
     def save(self, *args, **kwargs):
-        self.slug = f"{slugify(self.organisme.nom) if self.organisme_id else 'organisme-inconnu'}-{slugify(self.nom)}"
+        self._compute_slug()
         if self.is_published:
             if not self.can_be_published():
                 raise ValueError("This Aide cannot be published")
