@@ -51,7 +51,8 @@ class WithAidesCounterQuerySet(models.QuerySet):
 
 
 class OrganismeQuerySet(WithAidesCounterQuerySet, WithIllustrationQuerySet):
-    pass
+    def with_children_count(self):
+        return self.annotate(children_count=models.Count("children", distinct=True))
 
 
 class Organisme(WithIllustration, models.Model):
@@ -91,6 +92,14 @@ class Organisme(WithIllustration, models.Model):
 
     objects = OrganismeQuerySet.as_manager()
 
+    parent = models.ForeignKey(
+        "Organisme",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="children",
+        verbose_name="Organisme parent",
+    )
     nom = models.CharField(verbose_name="Nom")
     acronyme = models.CharField(blank=True, verbose_name="Acronyme")
     famille = models.CharField(blank=True, choices=Famille, verbose_name="Famille")
@@ -122,6 +131,12 @@ class Organisme(WithIllustration, models.Model):
     @property
     def nom_court(self):
         return self.acronyme or self.nom
+
+    def has_child_for_departement(self, departement: "ZoneGeographique"):
+        return self.children.filter(zones_geographiques=departement).exists()
+
+    def get_child_for_departement(self, departement: "ZoneGeographique"):
+        return self.children.filter(zones_geographiques=departement).first()
 
 
 class ThemeQuerySet(WithIllustrationQuerySet, models.QuerySet):

@@ -239,26 +239,35 @@ class OrganismeAdmin(CsvExportMixin, IllustrationMixin, VersionAdmin):
         "famille",
         "sous_famille",
         "secteurs",
+        "children_count",
         "aides_count",
     )
     list_display_links = ("id", "nom")
     list_filter = ("famille", "sous_famille")
     search_fields = ("nom", "acronyme")
-    autocomplete_fields = ("zones_geographiques",)
+    autocomplete_fields = (
+        "parent",
+        "zones_geographiques",
+    )
     ordering = ("nom",)
     change_form_template = "admin/aides/organisme/change_form.html"
 
     form = OrganismeForm
 
+    @admin.display(description="Nombre d’aides")
     def aides_count(self, obj):
         return mark_safe(
             f'<a href="{reverse("admin:aides_aide_changelist")}?organisme__id__exact={obj.pk}">{obj.aides_count}</a>'
         )
 
-    aides_count.short_description = "Nombre d’aides"
+    @admin.display(description="Enfants")
+    def children_count(self, obj):
+        return mark_safe(
+            f'<a href="{reverse("admin:aides_organisme_changelist")}?parent__id__exact={obj.pk}">{obj.children_count}</a>'
+        )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).with_aides_count()
+        return super().get_queryset(request).with_aides_count().with_children_count()
 
     def _get_csv_fields(self) -> list[str]:
         return [
