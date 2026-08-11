@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.text import slugify
 from django.utils.timezone import now
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class WithIllustrationQuerySet(models.QuerySet):
@@ -107,6 +108,12 @@ class Organisme(WithIllustration, models.Model):
     )
     url = models.URLField(blank=True, verbose_name="Lien")
     courriel = models.EmailField(blank=True, verbose_name="Adresse courriel")
+    telephone = PhoneNumberField(
+        blank=True,
+        verbose_name="Numéro de téléphone",
+        help_text="Au format français (01 23 45 67 89), ou sans les espaces (0123456789), ou avec des points (01.23.45.67.89), ou avec des slashs (01/23/45/67/89), ou au format international (+33 1 23 45 67 89), ou sans espaces (+33123456789)...",
+    )
+    adresse = models.TextField(blank=True, verbose_name="Adresse physique")
     is_masa = models.BooleanField(default=False, verbose_name="Made in MASA")
 
     def __str__(self):
