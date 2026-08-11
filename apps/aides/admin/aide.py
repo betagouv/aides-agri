@@ -22,7 +22,7 @@ from reversion.admin import VersionAdmin
 
 from admin_concurrency.admin import ConcurrentModelAdmin
 
-from ..models import ZoneGeographique, Aide, AideQuerySet, Sujet
+from ..models import Aide, AideQuerySet, Sujet
 from ._common import ArrayFieldCheckboxSelectMultiple
 
 
@@ -450,48 +450,6 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     )
     def derive(self, request, object_id):
         return redirect(f"../../add?parent={object_id}")
-
-    @button(
-        label="Décliner dans chaque département",
-        visible=lambda widget: (
-            widget.context["original"].is_departemental
-            and not widget.context["original"].zones_geographiques.exists()
-            and widget.context["original"].is_to_be_derived
-        ),
-        html_attrs={"class": "addlink"},
-    )
-    def derive_for_departements(self, request, object_id):
-        aide = Aide.objects.get(pk=object_id)
-        context = self.get_common_context(request)
-        if request.method == "POST":
-            departements = ZoneGeographique.objects.departements()
-            for departement in departements:
-                new_aide = self._derive_aide(
-                    object_id, f"{aide.nom} ({departement.nom})", False
-                )
-                new_aide.zones_geographiques.add(departement)
-            self.message_user(
-                request,
-                mark_safe(
-                    f'L’aide <a href="{aide.pk}">{aide.nom} portée par {aide.organisme.nom}</a> a bien été déclinée pour {departements.count()} départements.'
-                ),
-            )
-            return redirect(
-                reverse(
-                    admin_urlname(context["opts"], "changelist"),
-                    query={"parent__id__exact": object_id},
-                )
-            )
-        else:
-            context.update(
-                {
-                    "title": "Décliner une aide pour tous les départements",
-                    "original": aide,
-                }
-            )
-            return TemplateResponse(
-                request, "admin/aides/aide/derive_for_departements.html", context
-            )
 
     @admin.action(description="Créer une fiche mère à partir de ces aides")
     @transaction.atomic
