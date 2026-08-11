@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "django_otp.plugins.otp_totp",
     "django_tasks_db",
     "pgtrigger",
+    "phonenumber_field",
     "reversion",
     "importmap",
     "two_factor",

@@ -269,6 +269,8 @@ class OrganismeAdmin(CsvExportMixin, IllustrationMixin, VersionAdmin):
             Organisme.secteurs,
             Organisme.url,
             Organisme.courriel,
+            Organisme.telephone,
+            Organisme.adresse,
             Organisme.is_masa,
         ]
 
@@ -284,6 +286,8 @@ class OrganismeAdmin(CsvExportMixin, IllustrationMixin, VersionAdmin):
                     ", ".join(obj.secteurs),
                     obj.url,
                     obj.courriel,
+                    obj.telephone.as_national if obj.telephone else "",
+                    obj.adresse,
                     self._bool_to_csv_str(obj.is_masa),
                 ]
             )
