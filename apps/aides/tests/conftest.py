@@ -18,6 +18,11 @@ register(
     type=ZoneGeographique.Type.DEPARTEMENT,
     code="13",
 )
+register(
+    factories.OrganismeFactory,
+    "organisme_with_departement",
+    with_zone_geographique=LazyFixture("zone_geographique_departement_13"),
+)
 register(factories.AideFactory)
 register(
     factories.AideFactory,

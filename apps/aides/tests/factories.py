@@ -7,8 +7,23 @@ class OrganismeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Organisme
 
+    parent = None
     nom = factory.Sequence(lambda n: f"Organisme {n}")
     is_masa = False
+
+    @factory.post_generation
+    def with_illustration(obj, create, value, **kwargs):
+        if not create or not value:
+            return
+        obj.illustration = b"dfgdfgdfg"
+        obj.save()
+        obj.refresh_from_db()
+
+    @factory.post_generation
+    def with_zone_geographique(obj, create, value, **kwargs):
+        if not create or not value:
+            return
+        obj.zones_geographiques.set({value})
 
 
 class ThemeFactory(factory.django.DjangoModelFactory):

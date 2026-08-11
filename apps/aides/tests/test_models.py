@@ -1,7 +1,47 @@
 import pytest
 from pytest_factoryboy import LazyFixture
 
-from aides.models import Aide
+from aides.models import Aide, Organisme
+
+
+@pytest.mark.django_db
+class TestOrganisme:
+    @pytest.mark.parametrize("organisme_2__parent", [LazyFixture("organisme")])
+    def test_get_child_for_departement_negative(
+        self, organisme_2, zone_geographique_departement_13
+    ):
+        # GIVEN two Organisme object (parent and child)
+        assert Organisme.objects.count() == 2
+        assert (
+            Organisme.objects.filter(parent__isnull=False).first().parent
+            == Organisme.objects.filter(parent=None).first()
+        )
+        parent = organisme_2.parent
+
+        # WHEN searching the child for a given departement, none is found
+        assert (
+            parent.get_child_for_departement(zone_geographique_departement_13) is None
+        )
+
+    @pytest.mark.parametrize(
+        "organisme_with_departement__parent", [LazyFixture("organisme")]
+    )
+    def test_get_child_for_departement_positive(
+        self, organisme_with_departement, zone_geographique_departement_13
+    ):
+        # GIVEN two Organisme object (parent and child)
+        assert Organisme.objects.count() == 2
+        assert (
+            Organisme.objects.filter(parent__isnull=False).first().parent
+            == Organisme.objects.filter(parent=None).first()
+        )
+        parent = organisme_with_departement.parent
+
+        # WHEN searching the child for a given departement, none is found
+        assert (
+            parent.get_child_for_departement(zone_geographique_departement_13)
+            == organisme_with_departement
+        )
 
 
 @pytest.mark.django_db
