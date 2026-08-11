@@ -92,6 +92,7 @@ class AideFactory(factory.django.DjangoModelFactory):
 
     nom = factory.Sequence(lambda n: f"Aide {n}")
     organisme = None
+    organisme_instructeur = None
     status = models.Aide.Status.TODO
     is_published = False
     date_target_publication = None

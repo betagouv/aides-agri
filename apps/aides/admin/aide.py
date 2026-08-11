@@ -9,6 +9,7 @@ from django.contrib.admin.utils import flatten_fieldsets
 from django.contrib.admin.views.main import ChangeList
 from django import forms
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import TextField, Q, Count
 from django.http.response import HttpResponseRedirect
@@ -87,6 +88,21 @@ class IsOngoingListFilter(admin.SimpleListFilter):
             return queryset
 
 
+class AideForm(forms.ModelForm):
+    def clean(self):
+        cleaned_data = super().clean()
+        if (
+            "organisme" in cleaned_data
+            and "organisme_instructeur" in cleaned_data
+            and not cleaned_data["organisme"]
+            and not cleaned_data["organisme_instructeur"]
+        ):
+            raise ValidationError(
+                "Au moins un organisme doit être sélectionné (porteur ou instructeur)"
+            )
+        return cleaned_data
+
+
 @admin.register(Aide)
 class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     class Media:
@@ -98,6 +114,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         "id",
         "nom",
         "organisme",
+        "organisme_instructeur",
         "is_published",
         "is_ongoing",
         "priority",
@@ -105,7 +122,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         "derivatives",
     )
     list_display_links = ("id", "nom")
-    list_select_related = ("organisme",)
+    list_select_related = ("organisme", "organisme_instructeur")
     ordering = ("-priority", "nom", "id")
     list_filter = (
         "is_published",
@@ -122,9 +139,11 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         ("assigned_to", admin.RelatedOnlyFieldListFilter),
         ("parent", admin.RelatedOnlyFieldListFilter),
     )
+    form = AideForm
     autocomplete_fields = (
         "zones_geographiques",
         "organisme",
+        "organisme_instructeur",
         "organismes_secondaires",
         "base_juridique",
     )
@@ -145,7 +164,13 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         (
             "Infos de base",
             {
-                "fields": ["nom", "organisme", "slug", "is_derivable"],
+                "fields": [
+                    "nom",
+                    "organisme",
+                    "organisme_instructeur",
+                    "slug",
+                    "is_derivable",
+                ],
             },
         ),
         (
@@ -319,7 +344,15 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             return [
                 (
                     "Infos de base",
-                    {"fields": ["nom", "organisme", "url_descriptif", "is_derivable"]},
+                    {
+                        "fields": [
+                            "nom",
+                            "organisme",
+                            "organisme_instructeur",
+                            "url_descriptif",
+                            "is_derivable",
+                        ]
+                    },
                 ),
                 self.fieldsets[1],
                 self.fieldsets[2],
