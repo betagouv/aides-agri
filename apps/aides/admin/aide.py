@@ -266,7 +266,11 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
 
     class AideChangeList(ChangeList):
         def get_queryset(self, request, only_parents=True, **kwargs):
-            qs = super().get_queryset(request, **kwargs)
+            qs = (
+                super()
+                .get_queryset(request, **kwargs)
+                .annotate(children_count=Count("children"))
+            )
             if only_parents and "parent__id__exact" not in request.GET:
                 qs = qs.filter(parent_id=None)
             return qs
@@ -294,7 +298,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
 
     @admin.display(description="Déclinaisons")
     def derivatives(self, obj):
-        variants_count = Aide.objects.filter(parent_id=obj.pk).count()
+        variants_count = obj.children_count
         if variants_count:
             return mark_safe(
                 f'<a href="?parent__id__exact={obj.pk}">Voir les {variants_count}</a>'
