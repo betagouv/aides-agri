@@ -5,6 +5,7 @@ from aides.tests import factories  # noqa
 
 
 register(factories.OrganismeFactory)
+register(factories.OrganismeFactory, "organisme_2")
 register(factories.ThemeFactory)
 register(factories.ThemeFactory, "theme_2")
 register(factories.SujetFactory)

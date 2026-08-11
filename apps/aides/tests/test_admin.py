@@ -48,6 +48,35 @@ def test_add_aide(admin_client, monkeypatch, organisme):
     assert aide.status == Aide.Status.TODO
 
 
+def test_add_aide_ensure_one_of_organisme_fields(admin_client, monkeypatch):
+    # we don't care about 2FA here, let's skip it
+    monkeypatch.setattr(django_otp_middleware, "is_verified", lambda u: True)
+
+    # GIVEN no Aide
+    assert not Aide.objects.exists()
+
+    # WHEN POSTing to add Aide with neither organisme nor organisme_instructeur selected
+    url = reverse("admin:aides_aide_add")
+    res = admin_client.post(
+        url,
+        data={
+            "nom": "Aide de test",
+            "is_derivable": False,
+            "importance": Aide.Importance.BASE,
+            "urgence": Aide.Urgence.LOW,
+            "status": "00",
+        },
+        headers={"host": "localhost"},
+    )
+
+    # THEN no Aide has been created, and the form is displayed again
+    assert not Aide.objects.exists()
+    assert res.status_code == 200
+    assert res.context_data["errors"] == [
+        ["Au moins un organisme doit être sélectionné (porteur ou instructeur)"]
+    ]
+
+
 @pytest.mark.parametrize("aide__is_derivable", [True])
 @pytest.mark.parametrize("aide__status", [Aide.Status.TO_BE_DERIVED])
 @pytest.mark.parametrize("aide__organisme", [LazyFixture("organisme")])
