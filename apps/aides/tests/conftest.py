@@ -21,12 +21,14 @@ register(
 register(
     factories.OrganismeFactory,
     "organisme_with_departement",
+    with_illustration=True,
     with_zone_geographique=LazyFixture("zone_geographique_departement_13"),
 )
 register(factories.AideFactory)
 register(
     factories.AideFactory,
     "aide_published",
+    organisme=LazyFixture("organisme"),
     status=Aide.Status.VALIDATED,
     is_published=True,
 )

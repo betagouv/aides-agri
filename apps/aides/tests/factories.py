@@ -9,6 +9,7 @@ class OrganismeFactory(factory.django.DjangoModelFactory):
 
     parent = None
     nom = factory.Sequence(lambda n: f"Organisme {n}")
+    illustration = b""
     is_masa = False
 
     @factory.post_generation

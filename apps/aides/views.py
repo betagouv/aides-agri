@@ -102,6 +102,15 @@ class AideDetailView(DetailView):
                 {"link": "#bases-juridiques", "label": "Bases juridiques"}
             )
 
+        if "departement" in self.request.GET:
+            departement = (
+                ZoneGeographique.objects.departements()
+                .filter(code=self.request.GET["departement"])
+                .first()
+            )
+        else:
+            departement = None
+
         context_data.update(
             {
                 "skiplinks": [
@@ -115,6 +124,13 @@ class AideDetailView(DetailView):
                     "links": breadcrumb_links,
                     "current": self.object.nom,
                 },
+                "departement": departement,
+                "organisme_for_departement": self.object.get_organisme_for_departement(
+                    departement
+                ),
+                "illustration_url": self.object.get_organisme_illustration_for_departement(
+                    departement
+                ),
                 "sections": sections,
                 "sidemenu_data": {"items": sidemenu_items},
             }

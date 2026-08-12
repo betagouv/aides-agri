@@ -1,5 +1,6 @@
 import pytest
 from django.urls import reverse
+from pytest_factoryboy import LazyFixture
 
 from aides.models import Aide
 
@@ -34,6 +35,63 @@ def test_aide_detail_published(client, aide_published):
     res = client.get(reverse("aides:aide", args=[aide.pk, aide.slug]))
     # THEN get a 200
     assert res.status_code == 200
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "organisme_with_departement__parent", [LazyFixture("organisme")]
+)
+def test_aide_detail_published_with_no_chosen_departement(
+    client, aide_published, organisme_with_departement
+):
+    # GIVEN:
+    # - A published Aide and an anonymous client
+    # - An Organisme having a departemental child
+    aide = aide_published
+    assert aide.is_published
+    assert aide.organisme == organisme_with_departement.parent
+
+    # WHEN calling the Aides public URL without setting a departement in querystring
+    res = client.get(reverse("aides:aide", args=[aide.pk, aide.slug]))
+
+    # THEN get a 200 and the related Organisme illustration
+    assert res.status_code == 200
+    assert res.context["illustration_url"] == aide.organisme.get_illustration_url()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "organisme_with_departement__parent", [LazyFixture("organisme")]
+)
+def test_aide_detail_published_with_chosen_departement(
+    client, aide_published, organisme_with_departement
+):
+    # GIVEN:
+    # - A published Aide and an anonymous client
+    # - An Organisme having a departemental child
+    aide = aide_published
+    assert aide.is_published
+    assert aide.organisme == organisme_with_departement.parent
+    departement = organisme_with_departement.zones_geographiques.first()
+
+    # WHEN calling the Aides public URL without setting a departement in querystring
+    res = client.get(
+        reverse(
+            "aides:aide",
+            args=[aide.pk, aide.slug],
+            query={"departement": departement.code},
+        )
+    )
+
+    # THEN get a 200 and:
+    # - NOT the related Organisme illustration
+    # - BUT the related Organisme departemental child's illustration
+    assert res.status_code == 200
+    assert res.context["illustration_url"] != aide.organisme.get_illustration_url()
+    assert (
+        res.context["illustration_url"]
+        == organisme_with_departement.get_illustration_url()
+    )
 
 
 @pytest.mark.django_db
