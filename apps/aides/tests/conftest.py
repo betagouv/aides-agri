@@ -22,6 +22,7 @@ register(factories.AideFactory)
 register(
     factories.AideFactory,
     "aide_published",
+    organisme=LazyFixture("organisme"),
     status=Aide.Status.VALIDATED,
     is_published=True,
 )

@@ -21,6 +21,8 @@ class WithIllustration(models.Model):
     class Meta:
         abstract = True
 
+    PLACEHOLDER_URL = static("aides/images/placeholder.1x1.svg")
+
     illustration = models.BinaryField(blank=True)
     has_illustration = models.GeneratedField(
         expression=models.Case(
@@ -36,7 +38,7 @@ class WithIllustration(models.Model):
         if self.has_illustration:
             return f"/aides/illustrations-{self._meta.model_name}/{self.pk}.png"
         else:
-            return static("aides/images/placeholder.1x1.svg")
+            return self.__class__.PLACEHOLDER_URL
 
 
 class WithAidesCounterQuerySet(models.QuerySet):
@@ -975,6 +977,28 @@ class Aide(models.Model):
             )
         else:
             return reverse("aides:aide", kwargs={"pk": self.pk, "slug": self.slug})
+
+    def get_organisme_principal(self):
+        return self.organisme_instructeur or self.organisme
+
+    def get_organisme_for_departement(
+        self, departement: ZoneGeographique | None
+    ) -> Organisme | None:
+        if departement:
+            organisme = self.get_organisme_principal()
+            return organisme.get_child_for_departement(departement)
+        else:
+            return None
+
+    def get_organisme_illustration_for_departement(
+        self, departement: ZoneGeographique | None
+    ):
+        organisme = self.get_organisme_for_departement(departement)
+        if not organisme:
+            organisme = self.get_organisme_principal()
+        return (
+            organisme.get_illustration_url() if organisme else Organisme.PLACEHOLDER_URL
+        )
 
 
 class BaseJuridique(models.Model):

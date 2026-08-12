@@ -8,7 +8,16 @@ class OrganismeFactory(factory.django.DjangoModelFactory):
         model = models.Organisme
 
     nom = factory.Sequence(lambda n: f"Organisme {n}")
+    illustration = b""
     is_masa = False
+
+    @factory.post_generation
+    def with_illustration(obj, create, value, **kwargs):
+        if not create or not value:
+            return
+        obj.illustration = b"dfgdfgdfg"
+        obj.save()
+        obj.refresh_from_db()
 
 
 class ThemeFactory(factory.django.DjangoModelFactory):

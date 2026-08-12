@@ -124,3 +124,41 @@ class TestAide:
         aide.save()
         # THEN its priority is computed and saved to the expected value
         assert aide.priority == expected
+
+    @pytest.mark.parametrize(
+        "aide_published__organisme_instructeur,organisme__with_illustration,organisme_2__with_illustration",
+        [[LazyFixture("organisme_2"), True, True]],
+    )
+    def test_get_organisme_instructeur_illustration_for_departement(
+        self,
+        aide_published,
+        zone_geographique_departement_13,
+        organisme,
+        organisme_2,
+    ):
+        aide = aide_published
+        assert (
+            aide.get_organisme_illustration_for_departement(
+                zone_geographique_departement_13
+            )
+            == f"/aides/illustrations-organisme/{organisme_2.pk}.png"
+        )
+
+    @pytest.mark.parametrize(
+        "aide_published__organisme_instructeur,organisme__with_illustration,organisme_2__with_illustration",
+        [[None, True, True]],
+    )
+    def test_get_organisme_illustration_for_departement(
+        self,
+        aide_published,
+        zone_geographique_departement_13,
+        organisme,
+        organisme_2,
+    ):
+        aide = aide_published
+        assert (
+            aide.get_organisme_illustration_for_departement(
+                zone_geographique_departement_13
+            )
+            == f"/aides/illustrations-organisme/{organisme.pk}.png"
+        )
