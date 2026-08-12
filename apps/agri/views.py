@@ -231,7 +231,7 @@ class ResultsMixin:
 
         return (
             qs.distinct()
-            .select_related("organisme")
+            .select_related("organisme", "organisme_instructeur")
             .prefetch_related(
                 "zones_geographiques",
                 "types",
@@ -241,7 +241,7 @@ class ResultsMixin:
                 "eligibilite_beneficiaires",
             )
             .order_by(*order_by)
-            .defer("organisme__illustration")
+            .defer("organisme__illustration", "organisme_instructeur__illustration")
         )
 
 
@@ -302,6 +302,8 @@ class ResultsView(ResultsMixin, ListView):
         links_querydict.setdefault(
             "breadcrumb_entry_point_url", breadcrumb_entry_point_url
         )
+        if self.departement:
+            links_querydict.setdefault("departement", self.departement.code)
 
         # Cache all published Theme/Sujet data, it's light and it will be needed
         # in a place where we can't properly prefetch_related
@@ -363,7 +365,9 @@ class ResultsView(ResultsMixin, ListView):
                                 else []
                             )
                         },
-                        "image_url": aide.organisme.get_illustration_url(),
+                        "image_url": aide.get_organisme_illustration_for_departement(
+                            self.departement
+                        ),
                         "image_alt": aide.organisme.nom,
                         "ratio_class": "fr-ratio-1x1",
                         "top_detail": {
