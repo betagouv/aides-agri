@@ -2,6 +2,10 @@ version = 1
 revision = 3
 requires-python = ">=3.14"
 
+[options]
+exclude-newer = "0001-01-01T00:00:00Z" # This has no effect and is included for backwards compatibility when using relative exclude-newer values.
+exclude-newer-span = "P7D"
+
 [[package]]
 name = "aides-agri"
 version = "0.1.0"
@@ -322,15 +326,15 @@ wheels = [
 
 [[package]]
 name = "django-dsfr"
-version = "3.6.0"
+version = "3.5.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
     { name = "django-widget-tweaks" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e5/de/986bd8af0004fd2d8b571f14efae51c874c2d61b44bf5d5a3d259205cc99/django_dsfr-3.6.0.tar.gz", hash = "sha256:0922df74a6980a9d7f459469b804f3475535442ff48c128e507bbd8c9af946f5", size = 2750412, upload-time = "2026-08-10T15:00:12.381Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a4/c4/8ff679434fab961fc1920e044b68ffeb381c4d80d794d6b5c09f2bd31147/django_dsfr-3.5.2.tar.gz", hash = "sha256:5c84a0507ccd360fe78a3db77764333ca789c8c2487af000b8e3d8929dd691a6", size = 2749517, upload-time = "2026-06-11T10:24:31.709Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7f/bf/54be0978a75ace27c0ff416414dcea55fb4144d35c645fd4a0dd9d85d918/django_dsfr-3.6.0-py3-none-any.whl", hash = "sha256:310024a3ab70970ed7b209ce6e6a8885431e62de65c324778c41e325960ba768", size = 3497529, upload-time = "2026-08-10T15:00:10.585Z" },
+    { url = "https://files.pythonhosted.org/packages/74/57/fe17dd6eff3d4b98e006e1049382e6874923cdd3ff35431dda408ccfb08b/django_dsfr-3.5.2-py3-none-any.whl", hash = "sha256:84b97a4024c20f9667a8aae1b2a74074e0b0c83445269576918ecfbac7bc069d", size = 3496604, upload-time = "2026-06-11T10:24:29.909Z" },
 ]
 
 [package.optional-dependencies]
@@ -353,15 +357,15 @@ wheels = [
 
 [[package]]
 name = "django-htmx"
-version = "1.28.0"
+version = "1.29.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asgiref" },
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/47/d9/b31339fae8ede6a7cb0b9facaefe2ee4fc01d9f37a31a3dc03759765a2c3/django_htmx-1.28.0.tar.gz", hash = "sha256:699e229de0bbf19b3ee1a5d419702f5c154fa956e6921fec89faa7401b99e536", size = 100946, upload-time = "2026-07-12T22:19:19.589Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/66/cc/b0619004ed73a4a2bfa50d14b00a8228407b01994df73613584523ab3056/django_htmx-1.29.0.tar.gz", hash = "sha256:337dfa35b8da13fd68bf968f2b9cc9a4144a4e71f06c204d7ff10f7343988102", size = 204340, upload-time = "2026-08-05T23:42:09.457Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/20/d5/71b3a206f7a2135e2ab4a789be143a00222b52d22729c84f480915049e94/django_htmx-1.28.0-py3-none-any.whl", hash = "sha256:e6911acccf3e7905d511c4fd6ab86fe06572205e80a0f32ca7aa94a115ae0619", size = 98588, upload-time = "2026-07-12T22:19:18.225Z" },
+    { url = "https://files.pythonhosted.org/packages/ec/72/1f5f35d719b355e5c051378ae4859586f59c9db08708f02fea358376c130/django_htmx-1.29.0-py3-none-any.whl", hash = "sha256:0ec5be1645ed71e6787bd75e0250624f00274ac3bb1730f07b6629a95688929b", size = 224954, upload-time = "2026-08-05T23:42:08.142Z" },
 ]
 
 [[package]]
@@ -724,15 +728,15 @@ wheels = [
 
 [[package]]
 name = "pymdown-extensions"
-version = "11.0.1"
+version = "10.21.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "markdown" },
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/21/a9/5f0c535ba3b08fe09270c16808e053a968868242ecbd5676d4e3a488bf28/pymdown_extensions-11.0.1.tar.gz", hash = "sha256:dd2905ae6fc5b75582fafb139a1266ffc754705efa902aa50067fa7ff4f94ec0", size = 857113, upload-time = "2026-07-02T17:59:22.955Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9e/26/d1015444da4d952a1ca487a236b522eb979766f0295a0bd0c5fc089989a9/pymdown_extensions-10.21.3.tar.gz", hash = "sha256:72cfcf55f07aea0d4af2c4f11dd4e52466ddfb1bb819673146398e0bd3a77354", size = 854140, upload-time = "2026-05-13T12:57:32.267Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d6/54/da572c98c0b77626a91b5d3b89f0231d8bff5125c225420908632f8b342d/pymdown_extensions-11.0.1-py3-none-any.whl", hash = "sha256:db3943a62bab7e03af1364f0c4083e64b91fb097675a4b6cceccfbe9a77e5eb2", size = 269455, upload-time = "2026-07-02T17:59:21.271Z" },
+    { url = "https://files.pythonhosted.org/packages/7e/85/545a951eecc270fcd688288c600017e2050a1aacb56c711d208586d3e470/pymdown_extensions-10.21.3-py3-none-any.whl", hash = "sha256:d7a5d08014fc571e80ca21dd6f854e31f94c489800350564d55d15b3c41e76b6", size = 269002, upload-time = "2026-05-13T12:57:30.296Z" },
 ]
 
 [[package]]
