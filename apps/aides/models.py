@@ -102,6 +102,8 @@ class Organisme(WithIllustration, models.Model):
         related_name="children",
         verbose_name="Organisme parent",
     )
+    siren = models.CharField(blank=True, verbose_name="Numéro SIREN")
+    id_annuaire_service_public = models.CharField(blank=True, editable=False)
     nom = models.CharField(verbose_name="Nom")
     acronyme = models.CharField(blank=True, verbose_name="Acronyme")
     famille = models.CharField(blank=True, choices=Famille, verbose_name="Famille")
@@ -125,6 +127,7 @@ class Organisme(WithIllustration, models.Model):
         help_text="Au format français (01 23 45 67 89), ou sans les espaces (0123456789), ou avec des points (01.23.45.67.89), ou avec des slashs (01/23/45/67/89), ou au format international (+33 1 23 45 67 89), ou sans espaces (+33123456789)...",
     )
     adresse = models.TextField(blank=True, verbose_name="Adresse physique")
+    horaires = models.TextField(blank=True, verbose_name="Horaires")
     is_masa = models.BooleanField(default=False, verbose_name="Made in MASA")
 
     def __str__(self):
