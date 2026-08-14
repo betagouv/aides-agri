@@ -1,0 +1,31 @@
+{% if not alerte.departement and not alerte.filieres.exists and not alerte.themes.exists and not alerte.sujets.exists %}
+<strong>toutes les aides publiées sur Aides Agri</strong>.
+{% else %}
+<ul>
+  {% if alerte.departement %}
+  <li>
+    <strong>Département</strong> :
+    {{ alerte.departement.code }} – {{ alerte.departement.nom }}
+  </li>
+  {% endif %}
+  {% if alerte.filieres.exists %}
+  <li>
+    <strong>Filières</strong> :
+    {% for filiere in alerte.filieres.all %}
+      {{ filiere.nom }}{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  </li>
+  {% endif %}
+  {% if alerte.themes.exists or alerte.sujets.exists %}
+  <li>
+    <strong>Besoins</strong> :
+    {% for theme in alerte.themes.all %}
+      {{ theme.nom_court }}{% if not forloop.last or sujets %},{% endif %}
+    {% endfor %}
+    {% for sujet in alerte.sujets.all %}
+      {{ sujet.nom_court }}{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  </li>
+  {% endif %}
+</ul>
+{% endif %}
