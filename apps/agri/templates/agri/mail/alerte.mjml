@@ -1,0 +1,33 @@
+{% load static %}
+<mjml>
+   <mj-head>
+     <mj-font name="Marianne" href="{{ base_url }}{% static 'dsfr/dist/core/style/typography/standalone/font-face.css' %}" />
+     <mj-preview>
+       {{ aides.count }} nouvelle{{ aides.count|pluralize }} aide{{ aides.count|pluralize }}
+       pour votre alerte {{ alerte.libelle }}.
+     </mj-preview>
+   </mj-head>
+  <mj-body>
+    {% include "agri/blocks/mail/header.mjml" %}
+    <mj-section padding="5px 0">
+      <mj-column>
+        <mj-text font-family="Marianne, Arial">Bonjour,</mj-text>
+        <mj-text font-family="Marianne, Arial" line-height="1.5">
+          Ce courriel fait suite à une alerte que vous avez configurée sur Aides Agri, qui concernant :
+          {% include 'agri/blocks/mail/selection.mjml' %}
+        </mj-text>
+        <mj-text font-family="Marianne, Arial" line-height="1.5">
+          Voici les nouvelles aides qui correspondent à votre recherche :
+          <ul>
+            {% for aide in aides %}
+              <li><a href="{{ base_url }}{{ aide.get_public_url }}?utm_source=mail_alerte">{{ aide.nom }}</a></li>
+            {% endfor %}
+          </ul>
+        </mj-text>
+        <mj-text font-family="Marianne, Arial">Retrouvez votre recherche en suivant <strong><a href="{{ link }}">ce lien</a></strong>.</mj-text>
+        <mj-text font-family="Marianne, Arial">Vous pouvez à tout moment consulter et désactiver vos alertes Aides Agri en suivant <a href="{{ url_alertes }}">ce lien</a>.</mj-text>
+        {% include 'agri/blocks/mail/footer.mjml' %}
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
