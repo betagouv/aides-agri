@@ -1,7 +1,13 @@
 from django.views.generic import TemplateView
 from django.urls import path
 
-from .views import HomeView, ResultsView, SendResultsByMailView
+from .views import (
+    HomeView,
+    ResultsView,
+    SendResultsByMailView,
+    CreateAlerteView,
+    ListAlertesView,
+)
 
 
 app_name = "agri"
@@ -17,5 +23,9 @@ urlpatterns = [
         "envoyer-les-resultats-par-courriel",
         SendResultsByMailView.as_view(),
         name="send-results-by-mail",
+    ),
+    path("creer-une-alerte", CreateAlerteView.as_view(), name="alerte-create"),
+    path(
+        "gerer-mes-alertes/<str:token>", ListAlertesView.as_view(), name="alerte-list"
     ),
 ]

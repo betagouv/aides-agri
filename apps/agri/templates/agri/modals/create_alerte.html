@@ -1,0 +1,69 @@
+{% load dsfr_tags %}
+
+<dialog class="fr-modal"
+        id="modal-create-alerte"
+        aria-labelledby="modal-create-alerte-title"
+        aria-modal="true"
+>
+  <div class="fr-container fr-container--fluid fr-container-md">
+    <div class="fr-grid-row fr-grid-row--center">
+      <div class="fr-col-12 fr-col-md-8 fr-col-lg-7">
+        <div class="fr-modal__body">
+          <form method="post"
+                action=""
+                hx-post="{% url 'agri:alerte-create' %}{% querystring %}"
+                hx-boost="true"
+                hx-target="find .fr-modal__content"
+                hx-push-url="false"
+                hx-disabled-elt="find button[type=submit]"
+                data-controller="dsfr-form"
+          >
+            {% csrf_token %}
+            <div class="fr-modal__header">
+              <button type="button" class="fr-btn--close fr-btn" aria-controls="modal-create-alerte">Fermer</button>
+            </div>
+            <div class="fr-modal__content">
+              <h1 id="modal-create-alerte-title" class="fr-modal__title">
+                <span class="fr-icon-arrow-right-line fr-icon--lg"></span>
+                Soyez au courant des nouveaux dispositifs et des mises à jour pour votre recherche.
+              </h1>
+              <div class="fr-tags-group">
+                {% if departement_nom %}
+                  {% dsfr_tag label=departement_nom %}
+                {% endif %}
+                {% for filiere in filieres_noms %}
+                  {% dsfr_tag label=filiere %}
+                {% endfor %}
+                {% for besoin in besoins_initials %}
+                  {% dsfr_tag label=besoin.label %}
+                {% endfor %}
+              </div>
+              <div class="fr-input-group">
+                <label for="create-alerte-email" class="fr-label">
+                  Partagez-nous votre adresse e-mail pour recevoir des notifications.
+                  <span class="fr-hint-text">Format attendu : nom@domaine.fr</span>
+                </label>
+                <input type="email"
+                       name="email"
+                       id="create-alerte-email"
+                       class="fr-input"
+                       required
+                >
+              </div>
+              <label class="fr-sr-only">
+                Ce champ est un piège à robots. Merci de le laisser vide.
+                <input type="text" name="complements" tabindex="-1" autocomplete="off">
+              </label>
+            </div>
+            <div class="fr-modal__footer" id="modal-create-alerte-footer">
+              <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
+                <button type="submit" class="fr-btn">Enregistrer l’alerte</button>
+                <button type="button" class="fr-btn fr-btn--secondary" aria-controls="modal-create-alerte">Annuler</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
