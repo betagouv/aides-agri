@@ -4,6 +4,8 @@ from pytest_factoryboy import register, LazyFixture
 
 from aides.tests import factories  # noqa
 
+from .factories import AboutPageQuoteFactory
+
 
 register(
     factories.ThemeFactory, "theme_published_urgence", urgence=True, published=True
@@ -149,3 +151,7 @@ register(
     with_given_zone_geographique=LazyFixture("zone_geographique_region_na"),
     organisme=LazyFixture("organisme_2"),
 )
+
+register(AboutPageQuoteFactory, "quote")
+register(AboutPageQuoteFactory, "quote_2")
+register(AboutPageQuoteFactory, "quote_3")

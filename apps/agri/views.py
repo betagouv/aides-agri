@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+import requests
 from django import forms
 from django.conf import settings
 from django.http.request import QueryDict
@@ -23,6 +24,7 @@ from aides_feedback.forms import (
     FeedbackOnThemesAndSujetsForm,
 )
 
+from .models import AboutPageQuote
 from .tasks import send_results_by_mail
 
 
@@ -165,6 +167,77 @@ class HomeView(TemplateView):
                         for filiere in Filiere.objects.published()
                     ],
                 }
+            )
+        return context_data
+
+
+class AboutView(TemplateView):
+    template_name = "agri/about.html"
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        r_video_caption = requests.get(
+            "https://tube.numerique.gouv.fr/lazy-static/video-captions/eb4edf8e-3d81-4080-b148-69e3849c5dba-fr.vtt",
+            timeout=5,
+        )
+        video_caption = ""
+        if r_video_caption.status_code == 200:
+            video_caption = r_video_caption.text
+        context_data.update(
+            {
+                "breadcrumb_data": {"current": "À propos d’Aides Agri"},
+                "video_data": {
+                    "iframe": {
+                        "title": "La Grande interview - Sylviane Bourguet, directrice de l’immobilier de l’État",
+                        "url": "https://tube.numerique.gouv.fr/videos/embed/hqpQvBWyR91d1TRytGKd2a",
+                        "width": "560",
+                        "height": "315",
+                        "sandbox": "allow-same-origin allow-scripts allow-popups allow-forms",
+                        "allow": "fullscreen",
+                    },
+                    "transcription": {
+                        "content": video_caption.replace("WEBVTT\n\n", "").replace(
+                            "\n", "<br>"
+                        )
+                    }
+                    if video_caption
+                    else None,
+                },
+                "sidemenu_data": {
+                    "items": [
+                        {"label": "Notre démarche", "link": "#demarche"},
+                        {
+                            "label": "Vous voulez en savoir plus ? Webinaires et replay",
+                            "link": "#en-savoir-plus",
+                        },
+                        {
+                            "label": "Vous êtes agent public ?",
+                            "link": "#donnees-ouvertes",
+                        },
+                    ]
+                },
+                "stats_aides_count": Aide.objects.official_published_count(),
+                "stats_organismes_count": Aide.objects.official_published_organismes_count(),
+            }
+        )
+        quotes = AboutPageQuote.objects.all()
+        if quotes.count() > 2:
+            context_data.update(
+                {
+                    "quotes": [
+                        {
+                            "text": quote.quote_french,
+                            "author": quote.author,
+                            "details": [
+                                {"text": quote.source_label, "link": quote.source_url}
+                            ],
+                        }
+                        for quote in quotes
+                    ]
+                }
+            )
+            context_data["sidemenu_data"]["items"].insert(
+                2, {"label": "Ils parlent de nous", "link": "#ils-parlent-de-nous"}
             )
         return context_data
 
