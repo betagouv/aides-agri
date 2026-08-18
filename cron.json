@@ -1,16 +1,7 @@
 {
   "jobs": [
     {
-      "command": "0 4 * * * python manage.py aides_unpublish_aides_having_invalid_link"
-    },
-    {
-      "command": "0 6 * * * python manage.py aides_feedback_reporting"
-    },
-    {
-      "command": "0 7 * * * python manage.py aides_send_daily_admin_notifications"
-    },
-    {
-      "command": "10 7 * * * python manage.py aides_alert_organismes_without_logo"
+      "command": "0 6 * * * sh deployment/scalingo/bin/aides_daily_tasks.sh"
     },
     {
       "command": "5 5 * * 1 python manage.py aides_export_to_datagouv"
