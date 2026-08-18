@@ -54,7 +54,7 @@ requires-dist = [
     { name = "django-anymail", extras = ["brevo"], specifier = "~=15.1" },
     { name = "django-axes", specifier = "~=8.3" },
     { name = "django-csp", specifier = "~=4.0" },
-    { name = "django-dsfr", extras = ["markdown"], specifier = "~=3.5" },
+    { name = "django-dsfr", extras = ["markdown"], specifier = "~=3.6" },
     { name = "django-htmx", specifier = "~=1.29" },
     { name = "django-pgtrigger", specifier = "~=4.15" },
     { name = "django-reversion", specifier = "~=6.2" },
