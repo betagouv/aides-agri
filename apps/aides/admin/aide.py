@@ -9,6 +9,7 @@ from django.contrib.admin.utils import flatten_fieldsets
 from django.contrib.admin.views.main import ChangeList
 from django import forms
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import TextField, Q, Count
 from django.http.response import HttpResponseRedirect
@@ -21,7 +22,7 @@ from reversion.admin import VersionAdmin
 
 from admin_concurrency.admin import ConcurrentModelAdmin
 
-from ..models import ZoneGeographique, Aide, AideQuerySet, Sujet
+from ..models import Aide, AideQuerySet, Sujet
 from ._common import ArrayFieldCheckboxSelectMultiple
 
 
@@ -87,6 +88,21 @@ class IsOngoingListFilter(admin.SimpleListFilter):
             return queryset
 
 
+class AideForm(forms.ModelForm):
+    def clean(self):
+        cleaned_data = super().clean()
+        if (
+            "organisme" in cleaned_data
+            and "organisme_instructeur" in cleaned_data
+            and not cleaned_data["organisme"]
+            and not cleaned_data["organisme_instructeur"]
+        ):
+            raise ValidationError(
+                "Au moins un organisme doit être sélectionné (porteur ou instructeur)"
+            )
+        return cleaned_data
+
+
 @admin.register(Aide)
 class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     class Media:
@@ -98,6 +114,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         "id",
         "nom",
         "organisme",
+        "organisme_instructeur",
         "is_published",
         "is_ongoing",
         "priority",
@@ -105,7 +122,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         "derivatives",
     )
     list_display_links = ("id", "nom")
-    list_select_related = ("organisme",)
+    list_select_related = ("organisme", "organisme_instructeur")
     ordering = ("-priority", "nom", "id")
     list_filter = (
         "is_published",
@@ -122,9 +139,11 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         ("assigned_to", admin.RelatedOnlyFieldListFilter),
         ("parent", admin.RelatedOnlyFieldListFilter),
     )
+    form = AideForm
     autocomplete_fields = (
         "zones_geographiques",
         "organisme",
+        "organisme_instructeur",
         "organismes_secondaires",
         "base_juridique",
     )
@@ -145,7 +164,13 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         (
             "Infos de base",
             {
-                "fields": ["nom", "organisme", "slug", "is_derivable"],
+                "fields": [
+                    "nom",
+                    "organisme",
+                    "organisme_instructeur",
+                    "slug",
+                    "is_derivable",
+                ],
             },
         ),
         (
@@ -241,7 +266,11 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
 
     class AideChangeList(ChangeList):
         def get_queryset(self, request, only_parents=True, **kwargs):
-            qs = super().get_queryset(request, **kwargs)
+            qs = (
+                super()
+                .get_queryset(request, **kwargs)
+                .annotate(children_count=Count("children"))
+            )
             if only_parents and "parent__id__exact" not in request.GET:
                 qs = qs.filter(parent_id=None)
             return qs
@@ -269,7 +298,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
 
     @admin.display(description="Déclinaisons")
     def derivatives(self, obj):
-        variants_count = Aide.objects.filter(parent_id=obj.pk).count()
+        variants_count = obj.children_count
         if variants_count:
             return mark_safe(
                 f'<a href="?parent__id__exact={obj.pk}">Voir les {variants_count}</a>'
@@ -319,7 +348,15 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             return [
                 (
                     "Infos de base",
-                    {"fields": ["nom", "organisme", "url_descriptif", "is_derivable"]},
+                    {
+                        "fields": [
+                            "nom",
+                            "organisme",
+                            "organisme_instructeur",
+                            "url_descriptif",
+                            "is_derivable",
+                        ]
+                    },
                 ),
                 self.fieldsets[1],
                 self.fieldsets[2],
@@ -413,48 +450,6 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
     )
     def derive(self, request, object_id):
         return redirect(f"../../add?parent={object_id}")
-
-    @button(
-        label="Décliner dans chaque département",
-        visible=lambda widget: (
-            widget.context["original"].is_departemental
-            and not widget.context["original"].zones_geographiques.exists()
-            and widget.context["original"].is_to_be_derived
-        ),
-        html_attrs={"class": "addlink"},
-    )
-    def derive_for_departements(self, request, object_id):
-        aide = Aide.objects.get(pk=object_id)
-        context = self.get_common_context(request)
-        if request.method == "POST":
-            departements = ZoneGeographique.objects.departements()
-            for departement in departements:
-                new_aide = self._derive_aide(
-                    object_id, f"{aide.nom} ({departement.nom})", False
-                )
-                new_aide.zones_geographiques.add(departement)
-            self.message_user(
-                request,
-                mark_safe(
-                    f'L’aide <a href="{aide.pk}">{aide.nom} portée par {aide.organisme.nom}</a> a bien été déclinée pour {departements.count()} départements.'
-                ),
-            )
-            return redirect(
-                reverse(
-                    admin_urlname(context["opts"], "changelist"),
-                    query={"parent__id__exact": object_id},
-                )
-            )
-        else:
-            context.update(
-                {
-                    "title": "Décliner une aide pour tous les départements",
-                    "original": aide,
-                }
-            )
-            return TemplateResponse(
-                request, "admin/aides/aide/derive_for_departements.html", context
-            )
 
     @admin.action(description="Créer une fiche mère à partir de ces aides")
     @transaction.atomic
