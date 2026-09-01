@@ -36,7 +36,7 @@ class StatistiquesPageView(TemplateView):
         all_months_codes = [month_date.strftime("%m/%Y") for month_date in all_dates]
         context_data.update(
             {
-                "date_updated": datetime.date(2026, 8, 3),
+                "date_updated": datetime.date(2026, 9, 1),
                 "stats": {
                     "Le produit Aides Agri est-il utilisable ?": [
                         {
