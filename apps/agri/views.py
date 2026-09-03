@@ -2,6 +2,8 @@ from collections import defaultdict
 
 from django import forms
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.http.request import QueryDict
 from django.shortcuts import render
 from django.urls import reverse
@@ -511,13 +513,24 @@ class ResultsView(ResultsMixin, ListView):
 
 class SendResultsByMailView(ResultsMixin, View):
     def post(self, request, *args, **kwargs):
-        send_results_by_mail.enqueue(
-            email=self.request.POST.get("email"),
-            base_url=f"{self.request.scheme}://{self.request.headers['host']}",
-            departement_code=self.departement_code,
-            themes_ids=self.themes_ids,
-            sujets_ids=self.sujets_ids,
-            filieres_ids=self.filieres_ids,
-            aides_ids=[a.pk for a in self.get_results()],
-        )
-        return render(request, "agri/_partials/send-results-by-mail-ok.html")
+        email = self.request.POST.get("email")
+        try:
+            validate_email(email)
+            send_results_by_mail.enqueue(
+                email=email,
+                base_url=f"{self.request.scheme}://{self.request.headers['host']}",
+                departement_code=self.departement_code,
+                themes_ids=self.themes_ids,
+                sujets_ids=self.sujets_ids,
+                filieres_ids=self.filieres_ids,
+                aides_ids=[a.pk for a in self.get_results()],
+            )
+            return render(request, "agri/_partials/send-results-by-mail-ok.html")
+        except ValidationError:
+            response = render(
+                request,
+                "agri/modals/send_results_by_mail.html",
+                context={"invalid_email": True},
+            )
+            response.setdefault("Hx-Reselect", "form")
+            return response

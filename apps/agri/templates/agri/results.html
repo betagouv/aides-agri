@@ -82,8 +82,6 @@ document.addEventListener("htmx:load", evt => {
   </div>
 
   <main id="content" role="main" aria-label="Contenu">
-    <div id="alert-placeholder"></div>
-
     <form id="filters"
           class="fr-container-fluid"
           action=""
@@ -92,6 +90,7 @@ document.addEventListener("htmx:load", evt => {
           hx-select="#content"
           hx-target="#content"
           hx-swap="outerHTML"
+          hx-select-oob="modal-send-by-mail"
           hx-disinherit="*"
     >
       <input type="hidden" name="profil" value="{{ profil }}">
