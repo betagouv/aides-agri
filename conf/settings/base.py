@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.humanize",
     "django.contrib.messages",
     "django.contrib.postgres",
+    "django.contrib.redirects",
     "django.contrib.sites",
     "django.contrib.sitemaps",
     "django.contrib.staticfiles",
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     "django_otp.plugins.otp_totp",
     "django_tasks_db",
     "pgtrigger",
+    "phonenumber_field",
     "reversion",
     "importmap",
     "two_factor",
@@ -80,6 +82,7 @@ MIDDLEWARE = [
     "django_otp.middleware.OTPMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
     "csp.middleware.CSPMiddleware",
+    "django.contrib.redirects.middleware.RedirectFallbackMiddleware",
     "axes.middleware.AxesMiddleware",
 ]
 

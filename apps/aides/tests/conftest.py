@@ -5,6 +5,7 @@ from aides.tests import factories  # noqa
 
 
 register(factories.OrganismeFactory)
+register(factories.OrganismeFactory, "organisme_2")
 register(factories.ThemeFactory)
 register(factories.ThemeFactory, "theme_2")
 register(factories.SujetFactory)
@@ -21,6 +22,7 @@ register(factories.AideFactory)
 register(
     factories.AideFactory,
     "aide_published",
+    organisme=LazyFixture("organisme"),
     status=Aide.Status.VALIDATED,
     is_published=True,
 )
