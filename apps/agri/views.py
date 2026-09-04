@@ -100,9 +100,9 @@ class HomeView(TemplateView):
                     "stats_organismes_count": Aide.objects.official_published_organismes_count(),
                     "besoins": besoins,
                     "besoins_data": besoins_data,
-                    "regions_integrees": ZoneGeographique.objects.regions().filter(
-                        code__in=settings.AIDES_REGIONS_INTEGREES
-                    ),
+                    "regions_integrees": ZoneGeographique.objects.regions()
+                    .filter(code__in=settings.AIDES_REGIONS_INTEGREES)
+                    .order_by("nom"),
                 }
             )
 
