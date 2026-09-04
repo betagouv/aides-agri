@@ -100,6 +100,9 @@ class HomeView(TemplateView):
                     "stats_organismes_count": Aide.objects.official_published_organismes_count(),
                     "besoins": besoins,
                     "besoins_data": besoins_data,
+                    "regions_integrees": ZoneGeographique.objects.regions().filter(
+                        code__in=settings.AIDES_REGIONS_INTEGREES
+                    ),
                 }
             )
 
@@ -184,6 +187,7 @@ class ResultsMixin:
         self.departement = (
             ZoneGeographique.objects.departements()
             .filter(code__iexact=self.departement_code)
+            .select_related("parent")
             .first()
             if self.departement_code
             else None
@@ -444,7 +448,9 @@ class ResultsView(ResultsMixin, ListView):
                     "aides": aides_data_by_type,
                     "aides_count": total_count,
                     "national_aides_only_disclaimer": f"Pour {self.departement.full_name_with_determinant}, seuls les dispositifs nationaux sont disponibles pour le moment."
-                    if not self.get_queryset().has_local_only_aides()
+                    if self.departement
+                    and self.departement.parent.code
+                    not in settings.AIDES_REGIONS_INTEGREES
                     else "",
                     "departement_options": [
                         {"value": dept.code, "text": f"{dept.code} {dept.nom}"}
