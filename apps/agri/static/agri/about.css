@@ -1,0 +1,33 @@
+h1 {
+  text-align: center;
+}
+
+#intro ul {
+  --ul-start: 0;
+}
+
+#intro li {
+  list-style: none;
+}
+
+#intro li.fr-icon-arrow-right-circle-fill::before {
+  color: var(--text-action-high-green-emeraude);
+  margin-right: 16px;
+}
+
+#intro .fr-content-media {
+  margin-top: 0;
+  align-items: flex-start;
+}
+
+#stats {
+  background: linear-gradient(to bottom, transparent 20%, var(--artwork-minor-green-emeraude) 20% 80%, transparent 80%);
+}
+
+#stats__content {
+  background-color: var(--background-default-grey);
+  border-radius: 8px;
+  margin: auto;
+  max-width: 78%;
+  text-align: center;
+}
