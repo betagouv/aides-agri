@@ -377,3 +377,25 @@ def test_send_results_by_mail_no_filter(
     # 1 task enqueued
     assert len(default_task_backend.results) == 1
     assert default_task_backend.results[0].task.name == "send_results_by_mail"
+
+
+@pytest.mark.django_db
+@override_settings(
+    TASKS={"default": {"BACKEND": "django_tasks.backends.dummy.DummyBackend"}}
+)
+def test_send_results_by_mail_invalid_mail(client):
+    # GIVEN
+    # no task enqueued
+    assert len(default_task_backend.results) == 0
+
+    # WHEN requesting the "send by e-mail" feature with an invalid e-mail address
+    url = reverse("agri:send-results-by-mail")
+    response = client.post(
+        url, data={"email": "invalid_email"}, headers={"host": "localhost"}
+    )
+
+    # THEN the task is not enqueued and the form is displayed again with
+    assert len(default_task_backend.results) == 0
+    assert response.status_code == 200
+    assert response.context["invalid_email"] is True
+    assert response.context.template.name == "agri/modals/send_results_by_mail.html"

@@ -5,24 +5,24 @@
   <div class="fr-container fr-container--fluid fr-container-md">
     <div class="fr-grid-row fr-grid-row--center">
       <div class="fr-col-12 fr-col-md-8 fr-col-lg-7">
-        <div class="fr-modal__body">
+        <div class="fr-modal__body" aria-live="polite">
+          <div class="fr-modal__header">
+            <button type="button" class="fr-btn--close fr-btn" aria-controls="modal-send-by-mail">Fermer</button>
+          </div>
           <form hx-trigger="submit"
                 hx-post="{% url 'agri:send-results-by-mail' %}{% querystring %}"
-                hx-target="#alert-placeholder"
-                hx-swap="innerHTML show:none"
+                hx-target="this"
+                hx-swap="outerHTML show:none"
                 hx-push-url="false"
           >
             {% csrf_token %}
-            <div class="fr-modal__header">
-              <button type="button" class="fr-btn--close fr-btn" aria-controls="modal-send-by-mail">Fermer</button>
-            </div>
-            <div class="fr-modal__content" id="modal-send-by-mail-content">
+            <div class="fr-modal__content">
               <h1 id="modal-send-by-mail-title" class="fr-modal__title">
                 <span class="fr-icon-arrow-right-line fr-icon--lg"></span>
                 S’envoyer les résultats de la recherche par e-mail.
               </h1>
               <p>Partagez-nous votre adresse e-mail pour recevoir vos résultats dans votre boite e-mail. Nous utiliserons votre adresse e-mail seulement à cet effet.</p>
-                <div class="fr-input-group">
+                <div class="fr-input-group {% if invalid_email %}fr-input-group--error{% endif %}">
                   <label for="send-by-mail-field-email" class="fr-label">
                     Adresse de courrier électronique
                     <span class="fr-hint-text">Format attendu : nom@domaine.fr</span>
@@ -32,14 +32,19 @@
                          id="send-by-mail-field-email"
                          class="fr-input"
                          required
+                         {% if invalid_email %}aria-describedby="send-by-mail-field-email-messages"{% endif %}
                   >
+                  {% if invalid_email %}
+                    <div class="fr-messages-group" id="send-by-mail-field-email-messages" aria-live="polite">
+                      <p class="fr-message fr-message--error">Veuillez saisir une adresse e-mail valide.</p>
+                    </div>
+                  {% endif %}
                 </div>
             </div>
             <div class="fr-modal__footer" id="modal-send-results-by-mail-footer">
               <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
                 <button type="submit"
                         class="fr-btn fr-icon-checkbox-circle-line fr-btn--icon-left"
-                        aria-controls="modal-send-by-mail"
                 >
                   Envoyer par e-mail
                 </button>
