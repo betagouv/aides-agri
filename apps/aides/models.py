@@ -46,7 +46,7 @@ class WithAidesCounterQuerySet(models.QuerySet):
         return self.annotate(
             aides_count=models.Count(
                 "aides",
-                filter=Aide.objects.get_related_q_official_published("aides"),
+                filter=models.Q(aides__is_published=True),
                 distinct=True,
             )
         )
@@ -155,7 +155,7 @@ class ThemeQuerySet(WithIllustrationQuerySet, models.QuerySet):
         return self.annotate(
             aides_count=models.Count(
                 "sujets__aides",
-                filter=Aide.objects.get_related_q_official_published("sujets__aides"),
+                filter=models.Q(sujets__aides__is_published=True),
                 distinct=True,
             )
         )
@@ -420,52 +420,13 @@ class AideQuerySet(models.QuerySet):
     def without_parents(self):
         return self.filter(children=None)
 
-    def without_non_departemental_parents(self):
-        return self.filter(
-            models.Q(children=None)
-            | models.Q(
-                couverture_geographique=Aide.CouvertureGeographique.DEPARTEMENTAL,
-                zones_geographiques=None,
-            )
-        )
-
-    def without_departemental_derivatives(self):
-        return self.exclude(models.Q(**self.q_official_published_dicts[1]))
-
-    q_official_published_dicts = (
-        {"is_published": True},
-        {
-            "zones_geographiques__isnull": False,
-            "parent__isnull": False,
-            "parent__couverture_geographique": "05 Départemental",  # FIXME hard-coded
-        },
-    )
-
-    @property
-    def q_official_published(self) -> models.Q:
-        return models.Q(**self.q_official_published_dicts[0]) & ~models.Q(
-            **self.q_official_published_dicts[1]
-        )
-
-    def get_related_q_official_published(self, related_name: str) -> models.Q:
-        return models.Q(
-            **{
-                f"{related_name}__{k}": v
-                for k, v in self.q_official_published_dicts[0].items()
-            }
-        ) & ~models.Q(
-            **{
-                f"{related_name}__{k}": v
-                for k, v in self.q_official_published_dicts[1].items()
-            }
-        )
-
     def official_published_count(self):
-        return self.filter(self.q_official_published).count()
+        return self.published().without_parents().count()
 
     def official_published_organismes_count(self):
         return (
-            self.filter(self.q_official_published)
+            self.published()
+            .without_parents()
             .order_by("organisme_id")
             .distinct("organisme_id")
             .count()
