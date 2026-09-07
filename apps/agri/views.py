@@ -245,7 +245,24 @@ class ResultsMixin:
                 "eligibilite_beneficiaires",
             )
             .order_by(*order_by)
-            .defer("organisme__illustration", "organisme_instructeur__illustration")
+            .only(
+                "status",
+                "is_derivable",
+                "slug",
+                "nom",
+                "promesse",
+                "date_fin",
+                "url_descriptif",
+                "url_demarche",
+                "organisme__id",
+                "organisme__nom",
+                "organisme__has_illustration",
+                "organisme_instructeur__id",
+                "organisme_instructeur__nom",
+                "organisme_instructeur__has_illustration",
+                "sujets__nom_court",
+                "sujets__themes__nom_court",
+            )
         )
 
 
@@ -283,7 +300,7 @@ class ResultsView(ResultsMixin, ListView):
             type_aide: {"count": 0, "aides": []} for type_aide in Type.objects.all()
         }
         aides_ids = set()
-        for aide in self.get_queryset().iterator(chunk_size=50):
+        for aide in self.get_queryset().iterator(chunk_size=500):
             aides_ids.add(aide.pk)
             for type_aides in aide.types.all():
                 if more_for_type_id and type_aides.pk != more_for_type_id:
