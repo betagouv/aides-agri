@@ -220,16 +220,14 @@ class ResultsMixin:
             self.page_title = "Vos résultats"
 
     def get_results(self):
-        qs = Aide.objects.published()
+        qs = Aide.objects.published().without_parents()
         if self.only_closed:
             qs = qs.only_closed()
         else:
             qs = qs.only_open()
         order_by = self.__class__.ORDER_BY[self.order_by]
         if self.departement:
-            qs = qs.by_departements([self.departement]).without_parents()
-        else:
-            qs = qs.without_departemental_derivatives().without_non_departemental_parents()
+            qs = qs.by_departements([self.departement])
         if self.filieres:
             qs = qs.by_filieres(self.filieres)
         if self.themes or self.sujets:
