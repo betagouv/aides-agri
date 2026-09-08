@@ -21,8 +21,6 @@ class WithIllustration(models.Model):
     class Meta:
         abstract = True
 
-    PLACEHOLDER_URL = static("aides/images/placeholder.1x1.svg")
-
     illustration = models.BinaryField(blank=True)
     has_illustration = models.GeneratedField(
         expression=models.Case(
@@ -34,11 +32,15 @@ class WithIllustration(models.Model):
         db_persist=True,
     )
 
+    @staticmethod
+    def get_illustration_placeholder_url() -> str:
+        return static("aides/images/placeholder.1x1.svg")
+
     def get_illustration_url(self):
         if self.has_illustration:
             return f"/aides/illustrations-{self._meta.model_name}/{self.pk}.png"
         else:
-            return self.__class__.PLACEHOLDER_URL
+            return self.__class__.get_illustration_placeholder_url()
 
 
 class WithAidesCounterQuerySet(models.QuerySet):
@@ -952,7 +954,7 @@ class Aide(models.Model):
         if not organisme:
             organisme = self.organisme_principal
         return (
-            organisme.get_illustration_url() if organisme else Organisme.PLACEHOLDER_URL
+            organisme.get_illustration_url() if organisme else Organisme.get_illustration_placeholder_url()
         )
 
 
