@@ -1,5 +1,6 @@
 import copy
 import csv
+import json
 from datetime import datetime
 from functools import cached_property
 
@@ -115,13 +116,17 @@ class AideToSchema:
         porteurs = []
         if self.aide.organisme:
             porteurs.append({"nom": self.aide.organisme.nom, "role": "diffuseur"})
+        if self.aide.organisme_instructeur:
+            porteurs.append(
+                {"nom": self.aide.organisme_instructeur.nom, "role": "instructeur"}
+            )
         porteurs.extend(
             [
                 {"nom": organisme.nom, "role": "autre"}
                 for organisme in self.aide.organismes_secondaires.all()
             ]
         )
-        return porteurs
+        return json.dumps(porteurs)
 
     def _prepare_programmes_parents(self):
         return "|".join([programme.nom for programme in self.aide.programmes.all()])
@@ -148,10 +153,12 @@ class AideToSchema:
         return ""
 
     def _prepare_base_juridique(self):
-        return [
-            {"libelle": base_juridique.libelle, "lien": base_juridique.url}
-            for base_juridique in self.aide.base_juridique.all()
-        ]
+        return json.dumps(
+            [
+                {"libelle": base_juridique.libelle, "lien": base_juridique.url}
+                for base_juridique in self.aide.base_juridique.all()
+            ]
+        )
 
     def _prepare_eligibilite_effectif_minimal(self):
         return self.aide.eligibilite_effectif_min
@@ -327,6 +334,6 @@ def write_aides_as_csv(f, schema_class: type[AideToSchema], aides_ids: list[int]
             "base_juridique",
             "parent__zones_geographiques",
         )
-        .select_related("organisme", "parent")
+        .select_related("organisme", "organisme_instructeur", "parent")
     ):
         writer.writerow(schema_class(aide).build_row())

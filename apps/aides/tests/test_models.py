@@ -1,7 +1,47 @@
 import pytest
 from pytest_factoryboy import LazyFixture
 
-from aides.models import Aide
+from aides.models import Aide, Organisme
+
+
+@pytest.mark.django_db
+class TestOrganisme:
+    @pytest.mark.parametrize("organisme_2__parent", [LazyFixture("organisme")])
+    def test_get_child_for_departement_negative(
+        self, organisme_2, zone_geographique_departement_13
+    ):
+        # GIVEN two Organisme object (parent and child)
+        assert Organisme.objects.count() == 2
+        assert (
+            Organisme.objects.filter(parent__isnull=False).first().parent
+            == Organisme.objects.filter(parent=None).first()
+        )
+        parent = organisme_2.parent
+
+        # WHEN searching the child for a given departement, none is found
+        assert (
+            parent.get_child_for_departement(zone_geographique_departement_13) is None
+        )
+
+    @pytest.mark.parametrize(
+        "organisme_with_departement__parent", [LazyFixture("organisme")]
+    )
+    def test_get_child_for_departement_positive(
+        self, organisme_with_departement, zone_geographique_departement_13
+    ):
+        # GIVEN two Organisme object (parent and child)
+        assert Organisme.objects.count() == 2
+        assert (
+            Organisme.objects.filter(parent__isnull=False).first().parent
+            == Organisme.objects.filter(parent=None).first()
+        )
+        parent = organisme_with_departement.parent
+
+        # WHEN searching the child for a given departement, none is found
+        assert (
+            parent.get_child_for_departement(zone_geographique_departement_13)
+            == organisme_with_departement
+        )
 
 
 @pytest.mark.django_db
@@ -16,6 +56,80 @@ class TestAide:
 
         # WHEN changing the nom and saving
         aide.nom = "Nouveau nom"
+        aide.save()
+
+        # THEN the slug has been changed
+        assert aide.slug == "organisme-de-test-nouveau-nom"
+
+    @pytest.mark.parametrize(
+        "organisme__nom,aide__nom,aide__organisme,aide__organisme_instructeur",
+        [
+            [
+                "Organisme instructeur de test",
+                "Super aide de test",
+                None,
+                LazyFixture("organisme"),
+            ]
+        ],
+    )
+    def test_compute_slug_on_save_with_organisme_instructeur(self, organisme, aide):
+        # GIVEN an Aide with a given name that results in a predictable slug
+        assert aide.slug == "organisme-instructeur-de-test-super-aide-de-test"
+
+        # WHEN changing the nom and saving
+        aide.nom = "Nouveau nom"
+        aide.save()
+
+        # THEN the slug has been changed
+        assert aide.slug == "organisme-instructeur-de-test-nouveau-nom"
+
+    @pytest.mark.parametrize(
+        "organisme__nom,organisme_2__nom,aide__nom,aide__organisme,aide__organisme_instructeur",
+        [
+            [
+                "Organisme de test",
+                "Organisme instructeur de test",
+                "Super aide de test",
+                LazyFixture("organisme"),
+                None,
+            ]
+        ],
+    )
+    def test_compute_slug_on_save_with_both_organismes(
+        self, organisme, organisme_2, aide
+    ):
+        # GIVEN an Aide with a given name that results in a predictable slug
+        assert aide.slug == "organisme-de-test-super-aide-de-test"
+
+        # WHEN changing the nom and saving
+        aide.nom = "Nouveau nom"
+        aide.organisme_instructeur = organisme_2
+        aide.save()
+
+        # THEN the slug has been changed
+        assert aide.slug == "organisme-instructeur-de-test-nouveau-nom"
+
+    @pytest.mark.parametrize(
+        "organisme__nom,organisme_2__nom,aide__nom,aide__organisme,aide__organisme_instructeur",
+        [
+            [
+                "Organisme de test",
+                "Organisme instructeur de test",
+                "Super aide de test",
+                LazyFixture("organisme"),
+                LazyFixture("organisme_2"),
+            ]
+        ],
+    )
+    def test_compute_slug_on_save_with_both_organismes_but_instructeur_removed(
+        self, organisme, organisme_2, aide
+    ):
+        # GIVEN an Aide with a given name that results in a predictable slug
+        assert aide.slug == "organisme-instructeur-de-test-super-aide-de-test"
+
+        # WHEN changing the nom and saving
+        aide.nom = "Nouveau nom"
+        aide.organisme_instructeur = None
         aide.save()
 
         # THEN the slug has been changed
@@ -50,3 +164,41 @@ class TestAide:
         aide.save()
         # THEN its priority is computed and saved to the expected value
         assert aide.priority == expected
+
+    @pytest.mark.parametrize(
+        "aide_published__organisme_instructeur,organisme__with_illustration,organisme_2__with_illustration",
+        [[LazyFixture("organisme_2"), True, True]],
+    )
+    def test_get_organisme_instructeur_illustration_for_departement(
+        self,
+        aide_published,
+        zone_geographique_departement_13,
+        organisme,
+        organisme_2,
+    ):
+        aide = aide_published
+        assert (
+            aide.get_organisme_illustration_for_departement(
+                zone_geographique_departement_13
+            )
+            == f"/aides/illustrations-organisme/{organisme_2.pk}.png"
+        )
+
+    @pytest.mark.parametrize(
+        "aide_published__organisme_instructeur,organisme__with_illustration,organisme_2__with_illustration",
+        [[None, True, True]],
+    )
+    def test_get_organisme_illustration_for_departement(
+        self,
+        aide_published,
+        zone_geographique_departement_13,
+        organisme,
+        organisme_2,
+    ):
+        aide = aide_published
+        assert (
+            aide.get_organisme_illustration_for_departement(
+                zone_geographique_departement_13
+            )
+            == f"/aides/illustrations-organisme/{organisme.pk}.png"
+        )

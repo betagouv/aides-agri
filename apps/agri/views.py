@@ -220,16 +220,14 @@ class ResultsMixin:
             self.page_title = "Vos résultats"
 
     def get_results(self):
-        qs = Aide.objects.published()
+        qs = Aide.objects.published().without_parents()
         if self.only_closed:
             qs = qs.only_closed()
         else:
             qs = qs.only_open()
         order_by = self.__class__.ORDER_BY[self.order_by]
         if self.departement:
-            qs = qs.by_departements([self.departement]).without_parents()
-        else:
-            qs = qs.without_departemental_derivatives().without_non_departemental_parents()
+            qs = qs.by_departements([self.departement])
         if self.filieres:
             qs = qs.by_filieres(self.filieres)
         if self.themes or self.sujets:
@@ -237,7 +235,7 @@ class ResultsMixin:
 
         return (
             qs.distinct()
-            .select_related("organisme")
+            .select_related("organisme", "organisme_instructeur")
             .prefetch_related(
                 "zones_geographiques",
                 "types",
@@ -247,7 +245,24 @@ class ResultsMixin:
                 "eligibilite_beneficiaires",
             )
             .order_by(*order_by)
-            .defer("organisme__illustration")
+            .only(
+                "status",
+                "is_derivable",
+                "slug",
+                "nom",
+                "promesse",
+                "date_fin",
+                "url_descriptif",
+                "url_demarche",
+                "organisme__id",
+                "organisme__nom",
+                "organisme__has_illustration",
+                "organisme_instructeur__id",
+                "organisme_instructeur__nom",
+                "organisme_instructeur__has_illustration",
+                "sujets__nom_court",
+                "sujets__themes__nom_court",
+            )
         )
 
 
@@ -285,7 +300,7 @@ class ResultsView(ResultsMixin, ListView):
             type_aide: {"count": 0, "aides": []} for type_aide in Type.objects.all()
         }
         aides_ids = set()
-        for aide in self.get_queryset().iterator(chunk_size=50):
+        for aide in self.get_queryset().iterator(chunk_size=500):
             aides_ids.add(aide.pk)
             for type_aides in aide.types.all():
                 if more_for_type_id and type_aides.pk != more_for_type_id:
@@ -308,6 +323,8 @@ class ResultsView(ResultsMixin, ListView):
         links_querydict.setdefault(
             "breadcrumb_entry_point_url", breadcrumb_entry_point_url
         )
+        if self.departement:
+            links_querydict.setdefault("departement", self.departement.code)
 
         # Cache all published Theme/Sujet data, it's light and it will be needed
         # in a place where we can't properly prefetch_related
@@ -369,7 +386,9 @@ class ResultsView(ResultsMixin, ListView):
                                 else []
                             )
                         },
-                        "image_url": aide.organisme.get_illustration_url(),
+                        "image_url": aide.get_organisme_illustration_for_departement(
+                            self.departement
+                        ),
                         "image_alt": aide.organisme.nom,
                         "ratio_class": "fr-ratio-1x1",
                         "top_detail": {

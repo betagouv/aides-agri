@@ -5,6 +5,7 @@ from aides.tests import factories  # noqa
 
 
 register(factories.OrganismeFactory)
+register(factories.OrganismeFactory, "organisme_2")
 register(factories.ThemeFactory)
 register(factories.ThemeFactory, "theme_2")
 register(factories.SujetFactory)
@@ -17,10 +18,17 @@ register(
     type=ZoneGeographique.Type.DEPARTEMENT,
     code="13",
 )
+register(
+    factories.OrganismeFactory,
+    "organisme_with_departement",
+    with_illustration=True,
+    with_zone_geographique=LazyFixture("zone_geographique_departement_13"),
+)
 register(factories.AideFactory)
 register(
     factories.AideFactory,
     "aide_published",
+    organisme=LazyFixture("organisme"),
     status=Aide.Status.VALIDATED,
     is_published=True,
 )

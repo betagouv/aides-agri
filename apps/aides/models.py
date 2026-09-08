@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.text import slugify
 from django.utils.timezone import now
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class WithIllustrationQuerySet(models.QuerySet):
@@ -31,11 +32,15 @@ class WithIllustration(models.Model):
         db_persist=True,
     )
 
+    @staticmethod
+    def get_illustration_placeholder_url() -> str:
+        return static("aides/images/placeholder.1x1.svg")
+
     def get_illustration_url(self):
         if self.has_illustration:
             return f"/aides/illustrations-{self._meta.model_name}/{self.pk}.png"
         else:
-            return static("aides/images/placeholder.1x1.svg")
+            return self.__class__.get_illustration_placeholder_url()
 
 
 class WithAidesCounterQuerySet(models.QuerySet):
@@ -43,14 +48,15 @@ class WithAidesCounterQuerySet(models.QuerySet):
         return self.annotate(
             aides_count=models.Count(
                 "aides",
-                filter=Aide.objects.get_related_q_official_published("aides"),
+                filter=models.Q(aides__is_published=True),
                 distinct=True,
             )
         )
 
 
 class OrganismeQuerySet(WithAidesCounterQuerySet, WithIllustrationQuerySet):
-    pass
+    def with_children_count(self):
+        return self.annotate(children_count=models.Count("children", distinct=True))
 
 
 class Organisme(WithIllustration, models.Model):
@@ -90,6 +96,16 @@ class Organisme(WithIllustration, models.Model):
 
     objects = OrganismeQuerySet.as_manager()
 
+    parent = models.ForeignKey(
+        "Organisme",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="children",
+        verbose_name="Organisme parent",
+    )
+    siren = models.CharField(blank=True, verbose_name="Numéro SIREN")
+    id_annuaire_service_public = models.CharField(blank=True, editable=False)
     nom = models.CharField(verbose_name="Nom")
     acronyme = models.CharField(blank=True, verbose_name="Acronyme")
     famille = models.CharField(blank=True, choices=Famille, verbose_name="Famille")
@@ -107,6 +123,13 @@ class Organisme(WithIllustration, models.Model):
     )
     url = models.URLField(blank=True, verbose_name="Lien")
     courriel = models.EmailField(blank=True, verbose_name="Adresse courriel")
+    telephone = PhoneNumberField(
+        blank=True,
+        verbose_name="Numéro de téléphone",
+        help_text="Au format français (01 23 45 67 89), ou sans les espaces (0123456789), ou avec des points (01.23.45.67.89), ou avec des slashs (01/23/45/67/89), ou au format international (+33 1 23 45 67 89), ou sans espaces (+33123456789)...",
+    )
+    adresse = models.TextField(blank=True, verbose_name="Adresse physique")
+    horaires = models.TextField(blank=True, verbose_name="Horaires")
     is_masa = models.BooleanField(default=False, verbose_name="Made in MASA")
 
     def __str__(self):
@@ -115,6 +138,9 @@ class Organisme(WithIllustration, models.Model):
     @property
     def nom_court(self):
         return self.acronyme or self.nom
+
+    def get_child_for_departement(self, departement: "ZoneGeographique"):
+        return self.children.filter(zones_geographiques=departement).first()
 
 
 class ThemeQuerySet(WithIllustrationQuerySet, models.QuerySet):
@@ -131,7 +157,7 @@ class ThemeQuerySet(WithIllustrationQuerySet, models.QuerySet):
         return self.annotate(
             aides_count=models.Count(
                 "sujets__aides",
-                filter=Aide.objects.get_related_q_official_published("sujets__aides"),
+                filter=models.Q(sujets__aides__is_published=True),
                 distinct=True,
             )
         )
@@ -396,52 +422,13 @@ class AideQuerySet(models.QuerySet):
     def without_parents(self):
         return self.filter(children=None)
 
-    def without_non_departemental_parents(self):
-        return self.filter(
-            models.Q(children=None)
-            | models.Q(
-                couverture_geographique=Aide.CouvertureGeographique.DEPARTEMENTAL,
-                zones_geographiques=None,
-            )
-        )
-
-    def without_departemental_derivatives(self):
-        return self.exclude(models.Q(**self.q_official_published_dicts[1]))
-
-    q_official_published_dicts = (
-        {"is_published": True},
-        {
-            "zones_geographiques__isnull": False,
-            "parent__isnull": False,
-            "parent__couverture_geographique": "05 Départemental",  # FIXME hard-coded
-        },
-    )
-
-    @property
-    def q_official_published(self) -> models.Q:
-        return models.Q(**self.q_official_published_dicts[0]) & ~models.Q(
-            **self.q_official_published_dicts[1]
-        )
-
-    def get_related_q_official_published(self, related_name: str) -> models.Q:
-        return models.Q(
-            **{
-                f"{related_name}__{k}": v
-                for k, v in self.q_official_published_dicts[0].items()
-            }
-        ) & ~models.Q(
-            **{
-                f"{related_name}__{k}": v
-                for k, v in self.q_official_published_dicts[1].items()
-            }
-        )
-
     def official_published_count(self):
-        return self.filter(self.q_official_published).count()
+        return self.published().without_parents().count()
 
     def official_published_organismes_count(self):
         return (
-            self.filter(self.q_official_published)
+            self.published()
+            .without_parents()
             .order_by("organisme_id")
             .distinct("organisme_id")
             .count()
@@ -714,9 +701,18 @@ class Aide(models.Model):
     organisme = models.ForeignKey(
         Organisme,
         null=True,
+        blank=True,
         related_name="aides",
         on_delete=models.CASCADE,
         verbose_name="Organisme porteur",
+    )
+    organisme_instructeur = models.ForeignKey(
+        Organisme,
+        null=True,
+        blank=True,
+        related_name="aides_instruites",
+        on_delete=models.CASCADE,
+        verbose_name="Organisme instructeur",
     )
     organismes_secondaires = models.ManyToManyField(
         Organisme,
@@ -910,8 +906,17 @@ class Aide(models.Model):
             Aide.Status.BLOCKED,
         )
 
+    def _compute_slug(self):
+        if self.organisme_instructeur:
+            organisme = slugify(self.organisme_instructeur.nom)
+        elif self.organisme:
+            organisme = slugify(self.organisme.nom)
+        else:
+            organisme = "organisme-inconnu"
+        self.slug = f"{organisme}-{slugify(self.nom)}"
+
     def save(self, *args, **kwargs):
-        self.slug = f"{slugify(self.organisme.nom) if self.organisme_id else 'organisme-inconnu'}-{slugify(self.nom)}"
+        self._compute_slug()
         if self.is_published:
             if not self.can_be_published():
                 raise ValueError("This Aide cannot be published")
@@ -928,6 +933,29 @@ class Aide(models.Model):
             )
         else:
             return reverse("aides:aide", kwargs={"pk": self.pk, "slug": self.slug})
+
+    @cached_property
+    def organisme_principal(self):
+        return self.organisme_instructeur or self.organisme
+
+    def get_organisme_for_departement(
+        self, departement: ZoneGeographique | None
+    ) -> Organisme | None:
+        if departement:
+            organisme = self.organisme_principal
+            return organisme.get_child_for_departement(departement)
+        else:
+            return None
+
+    def get_organisme_illustration_for_departement(
+        self, departement: ZoneGeographique | None
+    ):
+        organisme = self.get_organisme_for_departement(departement)
+        if not organisme:
+            organisme = self.organisme_principal
+        return (
+            organisme.get_illustration_url() if organisme else Organisme.get_illustration_placeholder_url()
+        )
 
 
 class BaseJuridique(models.Model):
