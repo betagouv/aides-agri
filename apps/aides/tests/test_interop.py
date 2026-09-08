@@ -1,12 +1,19 @@
 import csv
 import io
+import json
+
 import pytest
+from pytest_factoryboy import LazyFixture
 
 from aides.interop import write_aides_as_csv, AideToSchema, AideToExternalSchema
 
 
 @pytest.mark.django_db
-def test_write_aides_as_csv(aide):
+@pytest.mark.parametrize(
+    "aide__organisme,aide__organisme_instructeur",
+    [[LazyFixture("organisme"), LazyFixture("organisme_2")]],
+)
+def test_write_aides_as_csv(aide, organisme, organisme_2):
     with io.StringIO("") as f:
         write_aides_as_csv(f, AideToSchema, [aide.pk])
         f.flush()
@@ -44,6 +51,10 @@ def test_write_aides_as_csv(aide):
             elif i == 1:
                 assert len(row) == 26
                 assert row[0] == str(aide.pk)
+                assert json.loads(row[6]) == [
+                    {"nom": organisme.nom, "role": "diffuseur"},
+                    {"nom": organisme_2.nom, "role": "instructeur"},
+                ]
             else:
                 assert False
 
