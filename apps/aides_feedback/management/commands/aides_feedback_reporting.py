@@ -31,5 +31,5 @@ class Command(BaseCommand):
 - Nombre de nouveaux retours sur les aides : {feedback_on_aides_count} (voir : {url_admin_feedback_on_aides})
 """,
                 settings.DEFAULT_FROM_EMAIL,
-                settings.AIDES_MANAGERS,
+                settings.MANAGERS,
             )

@@ -22,5 +22,5 @@ class Command(BaseCommand):
                 "Les organismes suivants ont au moins une aide publiée mais pas de logo :\n\n"
                 + messages,
                 settings.DEFAULT_FROM_EMAIL,
-                settings.AIDES_MANAGERS,
+                settings.ADMINS,
             )
