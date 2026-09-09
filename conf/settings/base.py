@@ -83,7 +83,7 @@ MIDDLEWARE = [
     "django_otp.middleware.OTPMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
     "csp.middleware.CSPMiddleware",
-    "django.contrib.redirects.middleware.RedirectFallbackMiddleware",
+    "ui.middlewares.RedirectMiddleware",
     "axes.middleware.AxesMiddleware",
 ]
 
