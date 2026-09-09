@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
-import os
 import sys
 from os import environ
 from pathlib import Path
@@ -214,8 +213,6 @@ LOGGING = {
 
 # Email
 DEFAULT_FROM_EMAIL = "aides-agri@beta.gouv.fr"
-ADMINS = os.getenv("DJANGO_ADMINS", "aides-agri@beta.gouv.fr").split(",")
-MANAGERS = os.getenv("DJANGO_MANAGERS", "aides-agri@beta.gouv.fr").split(",")
 
 # Forms
 FORMS_URLFIELD_ASSUME_HTTPS = True

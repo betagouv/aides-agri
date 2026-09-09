@@ -1,5 +1,8 @@
 import os
 
+AIDES_ADMINS = os.getenv("AIDES_ADMINS", "aides-agri@beta.gouv.fr").split(",")
+AIDES_MANAGERS = os.getenv("AIDES_MANAGERS", "aides-agri@beta.gouv.fr").split(",")
+
 AIDES_DATAGOUV_ORGANIZATION_ID = os.getenv("AIDES_DATAGOUV_ORGANIZATION_ID", "")
 AIDES_DATAGOUV_DATASET_ID = os.getenv("AIDES_DATAGOUV_DATASET_ID", "")
 AIDES_DATAGOUV_RESOURCE_ID_FOR_SCHEMA = os.getenv(
