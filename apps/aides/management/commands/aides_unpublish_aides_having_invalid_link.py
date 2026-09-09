@@ -87,5 +87,5 @@ class Command(BaseCommand):
                 "Du ménage dans les aides",
                 messages,
                 settings.DEFAULT_FROM_EMAIL,
-                settings.MANAGERS,
+                settings.AIDES_MANAGERS,
             )
