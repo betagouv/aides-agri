@@ -940,21 +940,21 @@ class Aide(models.Model):
 
     def get_organisme_for_departement(
         self, departement: ZoneGeographique | None
-    ) -> Organisme | None:
+    ) -> Organisme:
+        organisme = self.organisme_principal
         if departement:
-            organisme = self.organisme_principal
-            return organisme.get_child_for_departement(departement)
+            return organisme.get_child_for_departement(departement) or organisme
         else:
-            return None
+            return organisme
 
     def get_organisme_illustration_for_departement(
         self, departement: ZoneGeographique | None
     ):
         organisme = self.get_organisme_for_departement(departement)
-        if not organisme:
-            organisme = self.organisme_principal
         return (
-            organisme.get_illustration_url() if organisme else Organisme.get_illustration_placeholder_url()
+            organisme.get_illustration_url()
+            if organisme
+            else Organisme.get_illustration_placeholder_url()
         )
 
 
