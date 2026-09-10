@@ -26,7 +26,7 @@
           Voici les nouvelles aides qui correspondent à votre recherche :
           <ul>
             {% for aide in aides %}
-              <li><a href="{{ base_url }}{{ aide.get_absolute_url }}?utm_source=mail_alerte">{{ aide.nom }}</a></li>
+              <li><a href="{{ base_url }}{{ aide.get_public_url }}?utm_source=mail_alerte">{{ aide.nom }}</a></li>
             {% endfor %}
           </ul>
         </mj-text>
