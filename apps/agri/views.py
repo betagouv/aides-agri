@@ -186,7 +186,7 @@ class AboutView(TemplateView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         r_video_caption = requests.get(
-            "https://tube.numerique.gouv.fr/lazy-static/video-captions/ec2f64f1-f5ec-4448-a8b2-589388216182-fr.vtt",
+            "https://tube.numerique.gouv.fr/lazy-static/video-captions/738c2795-bea9-4cab-8145-e42e752d4f8e-fr.vtt",
             timeout=5,
         )
         video_caption = ""
