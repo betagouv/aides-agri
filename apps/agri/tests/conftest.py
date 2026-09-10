@@ -2,88 +2,92 @@ import datetime
 
 from pytest_factoryboy import register, LazyFixture
 
-from aides.tests import factories  # noqa
+from aides.tests import factories as aides_factories  # noqa
+from . import factories as agri_factories  # noqa
 
 
 register(
-    factories.ThemeFactory, "theme_published_urgence", urgence=True, published=True
+    aides_factories.ThemeFactory,
+    "theme_published_urgence",
+    urgence=True,
+    published=True,
 )
-register(factories.ThemeFactory, "theme_published", published=True)
-register(factories.ThemeFactory, "theme_unpublished")
+register(aides_factories.ThemeFactory, "theme_published", published=True)
+register(aides_factories.ThemeFactory, "theme_unpublished")
 
 register(
-    factories.SujetFactory,
+    aides_factories.SujetFactory,
     "sujet_urgence_published",
     with_given_theme=LazyFixture("theme_published_urgence"),
     published=True,
 )
 register(
-    factories.SujetFactory,
+    aides_factories.SujetFactory,
     "sujet_urgence_unpublished",
     with_given_theme=LazyFixture("theme_published_urgence"),
 )
 register(
-    factories.SujetFactory,
+    aides_factories.SujetFactory,
     "sujet_published",
     with_given_theme=LazyFixture("theme_published"),
     published=True,
 )
 register(
-    factories.SujetFactory,
+    aides_factories.SujetFactory,
     "sujet_unpublished",
     with_given_theme=LazyFixture("theme_published"),
 )
 
-register(factories.TypeFactory, "type_aides_1")
-register(factories.TypeFactory, "type_aides_2")
-register(factories.TypeFactory, "type_aides_3")
+register(aides_factories.TypeFactory, "type_aides_1")
+register(aides_factories.TypeFactory, "type_aides_2")
+register(aides_factories.TypeFactory, "type_aides_3")
 
-register(factories.FiliereFactory, "filiere_ok_1", published=True)
-register(factories.FiliereFactory, "filiere_ok_2", published=True)
-register(factories.FiliereFactory, "filiere_published_no_aides", published=True)
-register(factories.FiliereFactory, "filiere_unpublished")
+register(aides_factories.FiliereFactory, "filiere_ok_1", published=True)
+register(aides_factories.FiliereFactory, "filiere_ok_2", published=True)
+register(aides_factories.FiliereFactory, "filiere_published_no_aides", published=True)
+register(aides_factories.FiliereFactory, "filiere_unpublished")
 
-register(factories.OrganismeFactory, "organisme_1")
-register(factories.OrganismeFactory, "organisme_2")
+register(aides_factories.OrganismeFactory, "organisme_1")
+register(aides_factories.OrganismeFactory, "organisme_2")
 
 register(
-    factories.ZoneGeographiqueFactory,
+    aides_factories.ZoneGeographiqueFactory,
     "zone_geographique_region_paca",
-    type=factories.models.ZoneGeographique.Type.REGION,
+    type=aides_factories.models.ZoneGeographique.Type.REGION,
     nom="PACA",
 )
 register(
-    factories.ZoneGeographiqueFactory,
+    aides_factories.ZoneGeographiqueFactory,
     "zone_geographique_departement_13",
-    type=factories.models.ZoneGeographique.Type.DEPARTEMENT,
+    type=aides_factories.models.ZoneGeographique.Type.DEPARTEMENT,
     parent=LazyFixture("zone_geographique_region_paca"),
     code="13",
     nom="Bouches-du-Rhône",
 )
 register(
-    factories.ZoneGeographiqueFactory,
+    aides_factories.ZoneGeographiqueFactory,
     "zone_geographique_region_na",
-    type=factories.models.ZoneGeographique.Type.REGION,
+    type=aides_factories.models.ZoneGeographique.Type.REGION,
     nom="Nouvelle Aquitaine",
 )
 register(
-    factories.ZoneGeographiqueFactory,
+    aides_factories.ZoneGeographiqueFactory,
     "zone_geographique_departement_40",
-    type=factories.models.ZoneGeographique.Type.DEPARTEMENT,
+    type=aides_factories.models.ZoneGeographique.Type.DEPARTEMENT,
     parent=LazyFixture("zone_geographique_region_na"),
     code="40",
     nom="Landes",
 )
 
-register(factories.BeneficiairesFactory)
+register(aides_factories.BeneficiairesFactory)
 
 date_past = datetime.date.today() + datetime.timedelta(days=-10)
 date_soon = datetime.date.today() + datetime.timedelta(days=10)
 date_later = datetime.date.today() + datetime.timedelta(days=100)
 
-register(factories.AideFactory)
+register(aides_factories.AideFactory)
 register(
-    factories.PublishedAideFactory,
+    aides_factories.PublishedAideFactory,
     "aide_published_nationale_type_1_sujet_non_urgence_no_filiere_ended",
     with_given_type=LazyFixture("type_aides_1"),
     with_given_sujet=LazyFixture("sujet_published"),
@@ -91,7 +95,7 @@ register(
     date_fin=date_past,
 )
 register(
-    factories.PublishedAideFactory,
+    aides_factories.PublishedAideFactory,
     "aide_published_nationale_type_1_sujet_non_urgence_filiere_1_ending_soon",
     with_given_type=LazyFixture("type_aides_1"),
     with_given_filiere=LazyFixture("filiere_ok_1"),
@@ -100,7 +104,7 @@ register(
     date_fin=date_soon,
 )
 register(
-    factories.PublishedAideFactory,
+    aides_factories.PublishedAideFactory,
     "aide_published_nationale_type_1_sujet_non_urgence_no_filiere_ending_later",
     with_given_type=LazyFixture("type_aides_1"),
     with_given_sujet=LazyFixture("sujet_published"),
@@ -108,14 +112,14 @@ register(
     date_fin=date_later,
 )
 register(
-    factories.PublishedAideFactory,
+    aides_factories.PublishedAideFactory,
     "aide_published_nationale_type_1_sujet_non_urgence_no_filiere",
     with_given_type=LazyFixture("type_aides_1"),
     with_given_sujet=LazyFixture("sujet_published"),
     organisme=LazyFixture("organisme_1"),
 )
 register(
-    factories.AideFactory,
+    aides_factories.AideFactory,
     "aide_unpublished_dept_13_type_1_sujet_urgence_filiere_1",
     with_given_type=LazyFixture("type_aides_1"),
     with_given_sujet=LazyFixture("sujet_urgence_published"),
@@ -124,7 +128,7 @@ register(
     organisme=LazyFixture("organisme_1"),
 )
 register(
-    factories.PublishedAideFactory,
+    aides_factories.PublishedAideFactory,
     "aide_published_dept_13_type_1_sujet_urgence_filiere_1",
     with_given_type=LazyFixture("type_aides_1"),
     with_given_sujet=LazyFixture("sujet_urgence_published"),
@@ -133,7 +137,7 @@ register(
     organisme=LazyFixture("organisme_1"),
 )
 register(
-    factories.PublishedAideFactory,
+    aides_factories.PublishedAideFactory,
     "aide_published_region_paca_type_2_sujet_non_urgence_filiere_2",
     with_given_type=LazyFixture("type_aides_2"),
     with_given_sujet=LazyFixture("sujet_published"),
@@ -142,10 +146,13 @@ register(
     organisme=LazyFixture("organisme_2"),
 )
 register(
-    factories.PublishedAideFactory,
+    aides_factories.PublishedAideFactory,
     "aide_published_region_na_type_2_sujet_non_urgence_no_filiere",
     with_given_type=LazyFixture("type_aides_2"),
     with_given_sujet=LazyFixture("sujet_published"),
     with_given_zone_geographique=LazyFixture("zone_geographique_region_na"),
     organisme=LazyFixture("organisme_2"),
 )
+
+register(agri_factories.AlerteFactory)
+register(agri_factories.AlerteFactory, "alerte_2")

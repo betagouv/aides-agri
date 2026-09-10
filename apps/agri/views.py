@@ -2,10 +2,13 @@ from collections import defaultdict
 
 from django import forms
 from django.conf import settings
+from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.db import transaction
 from django.http.request import QueryDict
-from django.shortcuts import render
+from django.http.response import HttpResponseBadRequest
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.text import slugify
 from django.views.generic import TemplateView, ListView, View
@@ -24,6 +27,7 @@ from aides_feedback.forms import (
     CreateFeedbackOnAidesForm,
     FeedbackOnThemesAndSujetsForm,
 )
+from .models import Alerte
 
 from .tasks import send_results_by_mail
 
@@ -476,6 +480,7 @@ class ResultsView(ResultsMixin, ListView):
                         for dept in ZoneGeographique.objects.departements()
                     ],
                     "departement": self.departement.code if self.departement else None,
+                    "departement_nom": self.departement.nom if self.departement else "",
                     "departement_default": {
                         "text": "Sélectionnez un département",
                         "disabled": True,
@@ -485,6 +490,7 @@ class ResultsView(ResultsMixin, ListView):
                         for filiere in Filiere.objects.published()
                     ],
                     "filieres_initials": [filiere.pk for filiere in self.filieres],
+                    "filieres_noms": [filiere.nom for filiere in self.filieres],
                     "profil": self.profil,
                     "besoins_options": [
                         {
@@ -559,3 +565,89 @@ class SendResultsByMailView(ResultsMixin, View):
             )
             response.setdefault("Hx-Reselect", "form")
             return response
+
+
+class CreateAlerteView(ResultsMixin, View):
+    def post(self, request, *args, **kwargs):
+        if request.POST.get("complements", ""):
+            return HttpResponseBadRequest("Bot detected")
+        email = self.request.POST.get("email")
+        try:
+            validate_email(email)
+            with transaction.atomic():
+                alerte = Alerte.objects.create(
+                    email=email,
+                    departement=self.departement,
+                )
+                alerte.filieres.set(self.filieres)
+                alerte.sujets.set(self.sujets)
+                alerte.themes.set(self.themes)
+            return render(
+                request,
+                "agri/_partials/create_alerte_ok.html",
+                context={"alerte": alerte},
+            )
+        except ValidationError:
+            response = render(
+                request,
+                "agri/modals/create_alerte.html",
+                context={"invalid_email": True},
+            )
+            response.setdefault("Hx-Reselect", "form")
+            return response
+
+
+class ListAlertesView(ListView):
+    model = Alerte
+
+    extra_context = {"breadcrumb_data": {"current": "Gestion de vos alertes"}}
+
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .by_token(self.kwargs.get("token"))
+            .select_related("departement")
+            .prefetch_related("filieres", "sujets", "themes")
+        )
+
+    def get_context_data(self, *args, **kwargs):
+        d = super().get_context_data(*args, **kwargs)
+        return d
+
+    def post(self, request, *args, **kwargs):
+        to_delete = [int(pk) for pk in self.request.POST.getlist("to_delete")]
+
+        if not to_delete:
+            messages.error(
+                request, "Vous n’avez sélectionné aucune alerte à supprimer."
+            )
+            return redirect(reverse("agri:alerte-list", kwargs=self.kwargs))
+
+        # check if all Alerte have the same token and that it's the provided token
+        if not all(
+            (
+                alerte_token == self.kwargs.get("token")
+                for alerte_token in Alerte.objects.filter(pk__in=to_delete).values_list(
+                    "token", flat=True
+                )
+            )
+        ):
+            messages.error(
+                request,
+                "Vous essayez de supprimer des alertes qui ne vous appartiennent pas.",
+            )
+            return redirect(reverse("agri:alerte-list", kwargs=self.kwargs))
+
+        _, num_deleted_by_model = Alerte.objects.filter(pk__in=to_delete).delete()
+        num_deleted = num_deleted_by_model[
+            f"{Alerte._meta.app_label}.{Alerte._meta.object_name}"
+        ]
+        if num_deleted == 1:
+            message = "Votre alerte a bien été désactivée."
+        else:
+            message = (
+                f"Vos {num_deleted} alertes sélectionnées ont bien été désactivées."
+            )
+        messages.add_message(self.request, messages.SUCCESS, message)
+        return redirect(reverse("agri:alerte-list", kwargs=self.kwargs))
