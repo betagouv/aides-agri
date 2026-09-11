@@ -382,14 +382,14 @@ wheels = [
 
 [[package]]
 name = "django-admin-ordering"
-version = "0.20.0"
+version = "0.21.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django-js-asset" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8d/32/bb1b4c7d4b304445dd74d2fa5157cbc62d4749cbe6de540783b7ef709cb5/django_admin_ordering-0.20.0.tar.gz", hash = "sha256:3ee59d053a6acda02c3083d6e6fde1c9d26504f7aaea76eea59e8671d498c2dc", size = 18525, upload-time = "2024-11-26T13:49:20.947Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3f/5d/758fff2e69e3af15fd67007a0061bbea8ff19452e832f9394f5d7467a45c/django_admin_ordering-0.21.0.tar.gz", hash = "sha256:f4474117fc8dcba55975a9a80682bd0a4baefa5c45be0f0e8ceb62daa95cf8f8", size = 18469, upload-time = "2026-08-27T12:02:24.333Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/21/90/d0df2ffeff72b72236551954d8610056999f4346e750774164ad65715fd6/django_admin_ordering-0.20.0-py3-none-any.whl", hash = "sha256:3de409ac1b672a7b171943cd4a1c0dac5c1bc5347e4ad975d87df3a73b2a365a", size = 22277, upload-time = "2024-11-26T13:49:22.278Z" },
+    { url = "https://files.pythonhosted.org/packages/54/ca/de07105e282ce0393f8a7f85cc45456626a773defea18792745d96d5f561/django_admin_ordering-0.21.0-py3-none-any.whl", hash = "sha256:4976c1f0f756c5bad42fa1c915c3b8e9efd5d0d1294a794c4a72691c4f56b5df", size = 22325, upload-time = "2026-08-27T12:02:23.064Z" },
 ]
 
 [[package]]
