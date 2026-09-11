@@ -99,10 +99,6 @@ h1 {
   gap: 8px;
 }
 
-#besoins .fr-text--almost-bold {
-  font-weight: 500;
-}
-
 #besoins .fr-tag {
 	--idle: transparent;
 	--hover: var(--background-action-low-blue-france-hover);
