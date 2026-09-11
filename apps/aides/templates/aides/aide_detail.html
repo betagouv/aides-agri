@@ -101,8 +101,7 @@ document.onreadystatechange = evt => {
 
       <div class="fr-grid-row fr-my-1w">
         <div class="fr-col fr-col--middle fr-text--sm fr-mb-0">
-          Fiche vérifiée le 
-          <time datetime="{{ object.last_published_at.date|date:"c" }}">{{ object.last_published_at|date:"SHORT_DATE_FORMAT" }}</time>
+          Fiche vérifiée le <time datetime="{{ object.last_published_at.date|date:"c" }}">{{ object.last_published_at|date:"SHORT_DATE_FORMAT" }}</time>
         </div>
         <div class="fr-col fr-grid-row fr-grid-row--gutters fr-grid-row--right">
           {% block content_header_actions %}
@@ -265,30 +264,36 @@ document.onreadystatechange = evt => {
           <p class="fr-text--sm">
             {{ object.contact|urlize|dsfr_md }}
           </p>
-          {% if organisme_for_departement %}
+          {% if organisme_for_departement.zones_geographiques.exists %}
             <section class="fr-mt-4w">
               <h3 class="fr-text--md fr-text--bold">Coordonnées de {{ organisme_for_departement.nom }}</h3>
               {% if organisme_for_departement.adresse %}
                 <p class="fr-icon-building-line">
-                  Adresse :
+                  <strong>Adresse :</strong>
                   {{ organisme_for_departement.adresse }}
+                </p>
+              {% endif %}
+              {% if organisme_for_departement.horaires %}
+                <p class="fr-icon-time-line">
+                  <strong>Horaires :</strong>
+                  {{ organisme_for_departement.horaires }}
                 </p>
               {% endif %}
               {% if organisme_for_departement.telephone %}
                 <p class="fr-icon-phone-line">
-                  Téléphone :
+                  <strong>Téléphone :</strong>
                   <a href="tel:{{ organisme_for_departement.telephone.as_e164 }}">{{ organisme_for_departement.telephone }}</a>
                 </p>
               {% endif %}
               {% if organisme_for_departement.url %}
                 <p class="fr-icon-global-line">
-                  Site internet :
+                  <strong>Site internet :</strong>
                   <a href="{{ organisme_for_departement.url }}">{{ organisme_for_departement.url }}</a>
                 </p>
               {% endif %}
               {% if organisme_for_departement.courriel %}
                 <p class="fr-icon-mail-line">
-                  Courriel :
+                  <strong>Courriel :</strong>
                   <a href="mailto:{{ organisme_for_departement.courriel }}">{{ organisme_for_departement.courriel }}</a>
                 </p>
               {% endif %}
