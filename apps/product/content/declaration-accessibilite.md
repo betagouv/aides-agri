@@ -18,6 +18,13 @@ Si vous n’arrivez pas à accéder à un contenu ou à un service, vous pouvez 
 - E-mail : [aides-agri@beta.gouv.fr](mailto:aides-agri@beta.gouv.fr)
 - Adresse : Ministère de l’Agriculture, de l’Agro-alimentaire et de la Souveraineté Alimentaire, 78 rue de Varenne, Paris
 
+### Engagement d’amélioration
+
+**Aides Agri** s’engage à rendre ses services numériques accessibles, conformément à l’article 47 de la loi n° 2005-102 du 11 février 2005.
+À cette fin, **Aides Agri** s’engage à :
+- Mettre en œuvre la stratégie décrite dans [le Schéma pluriannuel 2024-2027 du programme beta.gouv.fr](https://beta.gouv.fr/accessibilite/schema-pluriannuel) ;
+- Programmer un audit de conformité RGAA dans l’année 2027. 
+
 ## Voie de recours
 
 Cette procédure est à utiliser dans le cas suivant : vous avez signalé au responsable du site internet un défaut d’accessibilité qui vous empêche d’accéder à un contenu ou à un des services du portail et vous n’avez pas obtenu de réponse satisfaisante.
