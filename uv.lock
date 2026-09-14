@@ -60,7 +60,7 @@ requires-dist = [
     { name = "django", specifier = "~=5.2" },
     { name = "django-admin-extra-buttons", specifier = "~=2.2" },
     { name = "django-admin-ordering" },
-    { name = "django-anymail", extras = ["brevo"], specifier = "~=15.1" },
+    { name = "django-anymail", extras = ["brevo"], specifier = "~=15.2" },
     { name = "django-axes", specifier = "~=8.3" },
     { name = "django-csp", specifier = "~=4.0" },
     { name = "django-dsfr", extras = ["markdown"], specifier = "~=3.6" },
