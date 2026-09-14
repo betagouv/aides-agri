@@ -145,7 +145,7 @@ document.addEventListener("htmx:load", evt => {
               {% dsfr_select id="departement" label="Votre département" options=departement_options default=departement_default selected=departement %}
             </div>
             <div class="fr-col fr-col-12 fr-col-sm-6">
-              {% ui_select_rich_multi name="filieres" label="Vos filières" searchable=True options=filieres_options initials=filieres_initials show_values_on_button_label=True %}
+              {% ui_select_rich_multi name="filieres" label="Vos filières" searchable=True options=filieres_options initials=filieres_initials show_values_on_button_label=True with_select_all_button=True %}
             </div>
             <div class="fr-col fr-col-12">
               <div class="fr-tags-group">
