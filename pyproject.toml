@@ -7,7 +7,7 @@ dependencies = [
   "django ~=5.2",
   "django-admin-extra-buttons~=2.2",
   "django-admin-ordering",
-  "django-anymail[brevo]~=15.1",
+  "django-anymail[brevo]~=15.2",
   "django-axes ~=8.3",
   "django-csp ~=4.0",
   "django-dsfr[markdown]~=3.6",
