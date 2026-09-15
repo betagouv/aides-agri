@@ -29,10 +29,12 @@ class Command(BaseCommand):
         "title": "Aides publiées sur Aides Agri, selon un schéma détaillé et exhaustif",
     }
 
-    def _generate_file(self, schema: type[AideToSchema], filename: str):
+    def _generate_file(
+        self, schema: type[AideToSchema], filename: str, encoding=None, delimiter=","
+    ):
         qs = Aide.objects.published_validated().values_list("pk", flat=True)
-        with open(filename, "w") as f:
-            write_aides_as_csv(f, schema, qs)
+        with open(filename, "w", encoding=encoding) as f:
+            write_aides_as_csv(f, schema, qs, delimiter=delimiter)
 
     def _create_or_update_resource(
         self,
