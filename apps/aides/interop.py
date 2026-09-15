@@ -319,8 +319,12 @@ class AideToInternalSchema(
         return self.base_url + reverse("admin:aides_aide_change", args=[self.aide.pk])
 
 
-def write_aides_as_csv(f, schema_class: type[AideToSchema], aides_ids: list[int]):
-    writer = csv.writer(f)
+def write_aides_as_csv(
+    f, schema_class: type[AideToSchema], aides_ids: list[int], delimiter=","
+):
+    needs_encoding = f.encoding.lower() != "utf-8"
+
+    writer = csv.writer(f, delimiter=delimiter)
     writer.writerow(schema_class.fields)
     for aide in (
         Aide.objects.filter(pk__in=aides_ids)
@@ -336,4 +340,31 @@ def write_aides_as_csv(f, schema_class: type[AideToSchema], aides_ids: list[int]
         )
         .select_related("organisme", "organisme_instructeur", "parent")
     ):
-        writer.writerow(schema_class(aide).build_row())
+        row = schema_class(aide).build_row()
+        if needs_encoding:
+            writer.writerow(
+                [
+                    data.translate(
+                        str.maketrans(
+                            {
+                                "’": "'",
+                                "≥": ">=",
+                                "≤": "<=",
+                                "…": "...",
+                                "→": "->",
+                                "‒": "-",
+                                "–": "-",
+                                "ᵉ": "e",
+                                "ʳ": "r",
+                            }
+                        )
+                    )
+                    .encode(f.encoding, errors="backslashreplace")
+                    .decode(f.encoding)
+                    if isinstance(data, str)
+                    else data
+                    for data in row
+                ]
+            )
+        else:
+            writer.writerow(row)
