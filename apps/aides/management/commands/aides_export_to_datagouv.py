@@ -8,7 +8,12 @@ from django.core.management.base import BaseCommand
 from django.utils.formats import date_format
 
 from ...models import Aide
-from ...interop import AideToSchema, write_aides_as_csv, AideToExternalSchema
+from ...interop import (
+    AideToSchema,
+    write_aides_as_csv,
+    AideToExternalSchema,
+    AideToExternalSchemaForHumans,
+)
 
 
 class Command(BaseCommand):
@@ -27,6 +32,9 @@ class Command(BaseCommand):
     }
     RESOURCE_FOR_CUSTOM_PAYLOAD = {
         "title": "Aides publiées sur Aides Agri, selon un schéma détaillé et exhaustif",
+    }
+    RESOURCE_FOR_EXCEL_PAYLOAD = {
+        "title": "Aides publiées sur Aides Agri, dans un format peut-être optimisé pour la lecture via Microsoft Excel",
     }
 
     def _generate_file(
@@ -131,6 +139,24 @@ class Command(BaseCommand):
             self._create_or_update_resource(
                 dataset_id,
                 "AIDES_DATAGOUV_RESOURCE_ID_FOR_CUSTOM",
+                payload,
+                filename,
+            )
+
+        filename = f"/tmp/aides-agri-excel-{today_iso}.csv"
+        self._generate_file(
+            AideToExternalSchemaForHumans,
+            filename,
+            encoding="iso8859_15",
+            delimiter=";",
+        )
+        self.stdout.write(f"File {filename} created!")
+        if write:
+            payload = copy.copy(self.__class__.RESOURCE_FOR_EXCEL_PAYLOAD)
+            payload["title"] += f", au {today_formatted}"
+            self._create_or_update_resource(
+                dataset_id,
+                "AIDES_DATAGOUV_RESOURCE_ID_FOR_EXCEL",
                 payload,
                 filename,
             )
