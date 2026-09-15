@@ -243,6 +243,38 @@ class AideToExternalSchema(
         return self.aide.type_depense
 
 
+class AideToExternalSchemaForHumans(AideToExternalSchema, added_fields={}):
+    def _prepare_eligibilite_geographique(self):
+        return (
+            "Nationale"
+            if self.aide.is_national
+            else "|".join(
+                [
+                    zone_geographique.nom
+                    for zone_geographique in self.aide.zones_geographiques.all()
+                ]
+            )
+        )
+
+    def _prepare_porteurs(self):
+        porteurs = []
+        if self.aide.organisme:
+            porteurs.append(f"{self.aide.organisme.nom} (diffuseur)")
+        if self.aide.organisme_instructeur:
+            porteurs.append(f"{self.aide.organisme_instructeur.nom} (instructeur)")
+        for organisme in self.aide.organismes_secondaires.all():
+            porteurs.append(f"{organisme.nom} (autre)")
+        return "\n".join(porteurs)
+
+    def _prepare_base_juridique(self):
+        return "\n".join(
+            [
+                f"{base.libelle} : {base.url}"
+                for base in self.aide.bases_juridiques.all()
+            ]
+        )
+
+
 class AideToInternalSchema(
     AideToSchema,
     added_fields={
