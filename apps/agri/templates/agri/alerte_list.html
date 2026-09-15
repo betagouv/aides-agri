@@ -1,0 +1,33 @@
+{% extends 'ui/base.html' %}
+
+{% load dsfr_tags %}
+
+{% block title %}Gestion de vos alertes{% endblock title %}
+
+{% block content %}
+  <h1>Gestion de vos alertes</h1>
+  {% dsfr_django_messages data_dict %}
+  {% if not object_list %}
+    Vous n’avez actuellement aucune alerte Aides Agri configurée.
+  {% else %}
+  <form method="post" action="{% querystring %}">
+    {% csrf_token %}
+    <fieldset class="fr-fieldset">
+      <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
+        Sélectionnez les alertes que vous souhaitez désactiver :
+      </legend>
+      {% for alerte in object_list %}
+      <div class="fr-fieldset__element">
+        <div class="fr-checkbox-group">
+          <input name="to_delete" value="{{ alerte.pk }}" id="alerte-{{ alerte.pk }}" type="checkbox">
+          <label class="fr-label" for="alerte-{{ alerte.pk }}">{{ alerte.libelle }}</label>
+        </div>
+      </div>
+      {% endfor %}
+    </fieldset>
+    <div class="fr-btns-group fr-btns-group--inline fr-btns-group--right">
+      <button type="submit" class="fr-btn">Désactiver ces alertes</button>
+    </div>
+  </form>
+  {% endif %}
+{% endblock content %}
