@@ -8,16 +8,7 @@
      </mj-preview>
    </mj-head>
   <mj-body>
-    <mj-section padding="5px 0" text-align="">
-      <mj-group>
-        <mj-column width="50%">
-          <mj-image align="left" width="180px" src="{{ base_url }}{% static 'ui/logos/mail/maasa.png' %}" />
-        </mj-column>
-        <mj-column width="50%" direction="rtl">
-          <mj-image align="right" width="100px" src="{{ base_url }}{% static 'ui/logos/mail/aides-agri.png' %}" />
-        </mj-column>
-      </mj-group>
-    </mj-section>
+    {% include "agri/blocks/mail/header.mjml" %}
     <mj-section padding="5px 0">
       <mj-column>
         <mj-text font-family="Marianne, Arial">Bonjour,</mj-text>
@@ -26,7 +17,7 @@
           Voici les aides que nous avions sélectionnées pour vous :
           <ul>
             {% for aide in aides %}
-              <li><a href="{{ base_url }}{{ aide.get_absolute_url }}?utm_source=mail">{{ aide.nom }}</a></li>
+              <li><a href="{{ base_url }}{{ aide.get_public_url }}?utm_source=mail">{{ aide.nom }}</a></li>
             {% endfor %}
           </ul>
         </mj-text>
@@ -60,17 +51,7 @@
             {% endif %}
           </ul>
         </mj-text>
-        <mj-text font-family="Marianne, Arial">
-          Nous nous efforçons de recenser et mettre à jour notre catalogue en construction. Il se peut que certaines aides ne soient pas encore recensées par notre équipe.
-          Vous pouvez toujours nous contacter à l’adresse suivante : <a href="mailto:aides-agri@beta.gouv.fr">aides-agri@beta.gouv.fr</a>
-        </mj-text>
-        <mj-text font-family="Marianne, Arial">Bonne journée,</mj-text>
-        <mj-text font-family="Marianne, Arial">L’équipe Aides Agri</mj-text>
-      </mj-column>
-    </mj-section>
-    <mj-section padding="5px 0">
-      <mj-column>
-        <mj-text font-family="Marianne, Arial">Si cet e-mail ne s’affiche pas correctement, vous pouvez le lire dans votre navigateur en suivant <a href="#">ce lien</a>.</mj-text>
+        {% include "agri/blocks/mail/footer.mjml" %}
       </mj-column>
     </mj-section>
   </mj-body>
