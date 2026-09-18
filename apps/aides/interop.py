@@ -243,6 +243,38 @@ class AideToExternalSchema(
         return self.aide.type_depense
 
 
+class AideToExternalSchemaForHumans(AideToExternalSchema, added_fields={}):
+    def _prepare_eligibilite_geographique(self):
+        return (
+            "Nationale"
+            if self.aide.is_national
+            else "|".join(
+                [
+                    zone_geographique.nom
+                    for zone_geographique in self.aide.zones_geographiques.all()
+                ]
+            )
+        )
+
+    def _prepare_porteurs(self):
+        porteurs = []
+        if self.aide.organisme:
+            porteurs.append(f"{self.aide.organisme.nom} (diffuseur)")
+        if self.aide.organisme_instructeur:
+            porteurs.append(f"{self.aide.organisme_instructeur.nom} (instructeur)")
+        for organisme in self.aide.organismes_secondaires.all():
+            porteurs.append(f"{organisme.nom} (autre)")
+        return "\n".join(porteurs)
+
+    def _prepare_base_juridique(self):
+        return "\n".join(
+            [
+                f"{base.libelle} : {base.url}"
+                for base in self.aide.bases_juridiques.all()
+            ]
+        )
+
+
 class AideToInternalSchema(
     AideToSchema,
     added_fields={
@@ -319,8 +351,12 @@ class AideToInternalSchema(
         return self.base_url + reverse("admin:aides_aide_change", args=[self.aide.pk])
 
 
-def write_aides_as_csv(f, schema_class: type[AideToSchema], aides_ids: list[int]):
-    writer = csv.writer(f)
+def write_aides_as_csv(
+    f, schema_class: type[AideToSchema], aides_ids: list[int], delimiter=","
+):
+    needs_encoding = f.encoding.lower() != "utf-8" if f.encoding else False
+
+    writer = csv.writer(f, delimiter=delimiter)
     writer.writerow(schema_class.fields)
     for aide in (
         Aide.objects.filter(pk__in=aides_ids)
@@ -336,4 +372,31 @@ def write_aides_as_csv(f, schema_class: type[AideToSchema], aides_ids: list[int]
         )
         .select_related("organisme", "organisme_instructeur", "parent")
     ):
-        writer.writerow(schema_class(aide).build_row())
+        row = schema_class(aide).build_row()
+        if needs_encoding:
+            writer.writerow(
+                [
+                    data.translate(
+                        str.maketrans(
+                            {
+                                "’": "'",
+                                "≥": ">=",
+                                "≤": "<=",
+                                "…": "...",
+                                "→": "->",
+                                "‒": "-",
+                                "–": "-",
+                                "ᵉ": "e",
+                                "ʳ": "r",
+                            }
+                        )
+                    )
+                    .encode(f.encoding, errors="backslashreplace")
+                    .decode(f.encoding)
+                    if isinstance(data, str)
+                    else data
+                    for data in row
+                ]
+            )
+        else:
+            writer.writerow(row)
