@@ -107,6 +107,7 @@ class AideFactory(factory.django.DjangoModelFactory):
         )
 
     nom = factory.Sequence(lambda n: f"Aide {n}")
+    description = ""
     organisme = None
     organisme_instructeur = None
     status = models.Aide.Status.TODO
