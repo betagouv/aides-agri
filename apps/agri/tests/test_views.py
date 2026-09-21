@@ -1,11 +1,15 @@
 import pytest
 
+from django.contrib.messages import get_messages
+from django.contrib.messages.constants import SUCCESS, ERROR
 from django.test.utils import override_settings
 from django.urls import reverse
 from django_tasks import default_task_backend
 
 from agri.models import AboutPageQuote
 from aides.models import Aide, Theme
+
+from agri.models import Alerte
 
 
 @pytest.mark.django_db
@@ -415,3 +419,166 @@ def test_about(client, quote, quote_2, quote_3):
     # it's a 200
     assert response.status_code == 200
     assert response.text.count("«") == 3
+
+
+@pytest.mark.django_db
+def test_create_alerte_view(
+    client, filiere_ok_1, sujet_published, zone_geographique_departement_13
+):
+    # GIVEN no Alerte in DB
+    assert not Alerte.objects.exists()
+
+    # WHEN POSTing to create one
+    url = reverse(
+        "agri:alerte-create",
+        query={
+            "departement": "13",
+            "filieres": [filiere_ok_1.pk],
+            "sujets": [sujet_published.pk],
+        },
+    )
+    response = client.post(
+        url, data={"email": "name@domain.tld"}, headers={"host": "localhost"}
+    )
+
+    # THEN
+    # it's a 200
+    # and an Alerte has been created in DB
+    assert response.status_code == 200
+    assert 'class="fr-alert fr-alert--success"' in response.text
+    assert Alerte.objects.count() == 1
+    alerte = Alerte.objects.first()
+    assert alerte.email == "name@domain.tld"
+    assert alerte.departement == zone_geographique_departement_13
+    assert set(alerte.sujets.all()) == {sujet_published}
+    assert set(alerte.filieres.all()) == {filiere_ok_1}
+
+
+@pytest.mark.django_db
+def test_create_alerte_honeypot(client):
+    # GIVEN no Alerte in DB
+    assert not Alerte.objects.exists()
+
+    # WHEN requesting the "create an Alerte" feature with the honeypot field filled-in
+    url = reverse("agri:alerte-create")
+    response = client.post(
+        url,
+        data={"email": "name@domain.tld", "complements": "coucou"},
+        headers={"host": "localhost"},
+    )
+
+    # THEN still no Alerte in DB, and the form is displayed again with
+    assert not Alerte.objects.exists()
+    assert response.status_code == 400
+
+
+@pytest.mark.django_db
+def test_create_alerte_invalid_mail(client):
+    # GIVEN no Alerte in DB
+    assert not Alerte.objects.exists()
+
+    # WHEN requesting the "create an Alerte" feature with an invalid e-mail address
+    url = reverse("agri:alerte-create")
+    response = client.post(
+        url, data={"email": "invalid_email"}, headers={"host": "localhost"}
+    )
+
+    # THEN still no Alerte in DB, and the form is displayed again with
+    assert not Alerte.objects.exists()
+    assert response.status_code == 200
+    assert response.context["invalid_email"] is True
+    assert response.context.template.name == "agri/modals/create_alerte.html"
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("alerte__email", ["name@domain.tld"])
+def test_list_alertes_view_wrong_token(client, alerte):
+    # GIVEN an Alerte
+    assert Alerte.objects.count() == 1
+
+    # WHEN listing Alertes for a different token
+    url = reverse("agri:alerte-list", args=["tokenimpossible"])
+    response = client.get(url)
+
+    # THEN nothing shows
+    assert response.status_code == 200
+    assert not response.context["object_list"]
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "alerte__email,alerte_2__email", [["name@domain.tld", "name@domain.tld"]]
+)
+def test_list_alertes_view(client, alerte, alerte_2):
+    # GIVEN 2 Alerte objects for the same e-mail address, with the same token
+    assert Alerte.objects.count() == 2
+    assert Alerte.objects.first().token == Alerte.objects.last().token
+
+    # WHEN listing Alertes for the correct token
+    url = reverse("agri:alerte-list", args=[Alerte.objects.first().token])
+    response = client.get(url)
+
+    # THEN the two shows
+    assert response.status_code == 200
+    assert set(response.context["object_list"]) == {alerte, alerte_2}
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "alerte__email,alerte_2__email", [["name@domain.tld", "name@domain.tld"]]
+)
+def test_delete_alerte_view(client, alerte, alerte_2):
+    # GIVEN 2 Alerte objects for the same e-mail address, with the same token
+    assert Alerte.objects.count() == 2
+    assert Alerte.objects.first().token == Alerte.objects.last().token
+
+    # WHEN POSTing to delete one of them
+    url = reverse("agri:alerte-list", args=[Alerte.objects.first().token])
+    response = client.post(url, data={"to_delete": [alerte.pk]})
+
+    # THEN a redirection is done, and only one Alerte still exists
+    assert Alerte.objects.count() == 1
+    assert Alerte.objects.first() == alerte_2
+    assert response.status_code == 302
+    messages = get_messages(response.wsgi_request)
+    assert len(messages) == 1
+    assert [m.level == SUCCESS for m in messages]
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("alerte__email", [["name@domain.tld"]])
+def test_delete_alerte_view_delete_nothing(client, alerte):
+    # GIVEN an Alerte object
+    assert Alerte.objects.count() == 1
+
+    # WHEN POSTing to delete none of them
+    url = reverse("agri:alerte-list", args=[Alerte.objects.first().token])
+    response = client.post(url)
+
+    # THEN a redirection is done, no Alerte has been deleted, an error message is displayed
+    assert Alerte.objects.count() == 1
+    assert response.status_code == 302
+    messages = get_messages(response.wsgi_request)
+    assert len(messages) == 1
+    assert [m.level == ERROR for m in messages]
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "alerte__email,alerte_2__email", [["name@domain.tld", "anothername@domain.tld"]]
+)
+def test_delete_alerte_view_cant_delete_someone_else_alerte(client, alerte, alerte_2):
+    # GIVEN 2 Alerte objects having distinct e-mail addresses, thus distinct tokens
+    assert Alerte.objects.count() == 2
+    assert Alerte.objects.first().token != Alerte.objects.last().token
+
+    # WHEN POSTing to delete one of them coming from the wrong token
+    url = reverse("agri:alerte-list", args=[alerte.token])
+    response = client.post(url, data={"to_delete": [alerte_2.pk]})
+
+    # THEN a redirection is done, and only one Alerte still exists
+    assert Alerte.objects.count() == 2
+    assert response.status_code == 302
+    messages = get_messages(response.wsgi_request)
+    assert len(messages) == 1
+    assert [m.level == ERROR for m in messages]

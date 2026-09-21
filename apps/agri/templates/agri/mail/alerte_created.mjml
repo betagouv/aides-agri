@@ -1,0 +1,24 @@
+{% load static %}
+<mjml>
+   <mj-head>
+     <mj-font name="Marianne" href="{{ base_url }}{% static 'dsfr/dist/core/style/typography/standalone/font-face.css' %}" />
+     <mj-preview>{{ alerte.libelle }}</mj-preview>
+   </mj-head>
+  <mj-body>
+    {% include "agri/blocks/mail/header.mjml" %}
+    <mj-section padding="5px 0">
+      <mj-column>
+        <mj-text font-family="Marianne, Arial">Bonjour,</mj-text>
+        <mj-text font-family="Marianne, Arial">
+          Nous vous confirmons que votre alerte a bien été enregistrée.
+        </mj-text>
+        <mj-text font-family="Marianne, Arial" line-height="1.5">
+          Cette alerte vous informera, <strong>maximum une fois par jour</strong>, des nouvelles aides publiées sur Aides Agri concernant votre sélection :
+          {% include 'agri/blocks/mail/selection.mjml' %}
+        </mj-text>
+        <mj-text font-family="Marianne, Arial" line-height="1.5">Vous pouvez à tout moment consulter et désactiver vos alertes Aides Agri en suivant <a href="{{ url_alertes }}">ce lien</a>. Ce lien sera également présent dans le pied de chaque courriel que vous recevrez de la part d'Aides Agri.</mj-text>
+        {% include "agri/blocks/mail/footer.mjml" %}
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
