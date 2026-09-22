@@ -582,3 +582,35 @@ def test_delete_alerte_view_cant_delete_someone_else_alerte(client, alerte, aler
     messages = get_messages(response.wsgi_request)
     assert len(messages) == 1
     assert [m.level == ERROR for m in messages]
+
+
+@pytest.mark.django_db
+def test_results_view_open_besoins_chooser(client, theme_published, filiere_ok_1):
+    # GIVEN a Theme and a Filiere
+    # WHEN viewing results page with no querystring
+    url = reverse("agri:results")
+    response = client.get(url)
+
+    # THEN the open_besoins_chooser context data is OFF
+    assert not response.context["open_besoins_chooser"]
+
+    # WHEN viewing results page with themes added to the querystring, AND the no-querystring URL as referer
+    url_with_besoins_querystring = reverse(
+        "agri:results", query={"themes": [theme_published.pk]}
+    )
+    response = client.get(url_with_besoins_querystring, headers={"Referer": url})
+
+    # THEN the open_besoins_chooser context data is ON
+    assert response.context["open_besoins_chooser"]
+
+    # WHEN viewing results page with filieres added to the querystring, AND the themes-in-querystring URL as referer
+    url_with_filieres_querystring = reverse(
+        "agri:results",
+        query={"themes": [theme_published.pk], "filieres": [filiere_ok_1.pk]},
+    )
+    response = client.get(
+        url_with_filieres_querystring, headers={"Referer": url_with_besoins_querystring}
+    )
+
+    # THEN the open_besoins_chooser context data is OFF
+    assert not response.context["open_besoins_chooser"]

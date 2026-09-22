@@ -46,6 +46,21 @@ document.addEventListener("htmx:load", evt => {
       evt.preventDefault()
     })
   })
+
+  // work around https://github.com/bigskysoftware/htmx/issues/3340
+  htmx.defineExtension("atomic-swap", {
+    isInlineSwap: function (swapStyle) {
+      return swapStyle === 'outerHTMLAtomic';
+    },
+    handleSwap: function (swapStyle, target, fragment) {
+      if (swapStyle === 'outerHTMLAtomic') {
+        const div = document.createElement("div");
+        div.appendChild(fragment);
+        target.outerHTML = div.innerHTML;
+        return [target];
+      }
+    },
+  });
 })
 </script>
 <script type="module" nonce="{{ request.csp_nonce }}">
@@ -82,7 +97,7 @@ document.addEventListener("htmx:load", evt => {
     {% dsfr_breadcrumb %}
   </div>
 
-  <main id="content" role="main" aria-label="Contenu">
+  <main id="content" role="main" aria-label="Contenu" aria-live="polite">
     <form id="filters"
           class="fr-container-fluid"
           action=""
@@ -90,9 +105,10 @@ document.addEventListener("htmx:load", evt => {
           hx-trigger="change"
           hx-select="#content"
           hx-target="#content"
-          hx-swap="outerHTML"
+          hx-swap="outerHTMLAtomic show:none"
           hx-select-oob="#modal-send-by-mail,#modal-create-alerte"
           hx-disinherit="*"
+          hx-disabled-elt="button, input, select"
     >
       <input type="hidden" name="profil" value="{{ profil }}">
 
@@ -148,11 +164,15 @@ document.addEventListener("htmx:load", evt => {
                     {{ besoin.label }}
                   </button>
                 {% endfor %}
-                <button type="button" class="fr-btn fr-btn--secondary fr-btn--sm fr-mb-1w fr-ml-1w" aria-controls="more-besoins" aria-expanded="false">
+                <button type="button"
+                        class="fr-btn fr-btn--secondary fr-btn--sm fr-mb-1w fr-ml-1w"
+                        aria-controls="more-besoins"
+                        aria-expanded="{% if open_besoins_chooser %}true{% else %}false{% endif %}"
+                >
                   Voir tous les thèmes
                 </button>
               </div>
-              <div class="fr-tags-group fr-collapse fr-pt-1w" id="more-besoins">
+              <div class="fr-tags-group fr-collapse {% if open_besoins_chooser %}fr-collapse--expanded {% endif %} fr-pt-1w" id="more-besoins">
                 {% for besoin in besoins_options %}
                   <input type="checkbox"
                          id="besoin-{{ besoin.type }}-{{ besoin.id }}"

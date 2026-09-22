@@ -403,6 +403,23 @@ class ResultsView(ResultsMixin, ListView):
         if self.departement:
             links_querydict.setdefault("departement", self.departement.code)
 
+        # determine if Sujets/Themes chooser must be opened or closed
+        if "HTTP_REFERER" in self.request.META:
+            request_besoins = (
+                self.request.GET.get("themes", []),
+                self.request.GET.get("sujets", []),
+            )
+            referer_querydict = QueryDict(
+                self.request.META["HTTP_REFERER"].split("?")[-1]
+            )
+            referer_besoins = (
+                referer_querydict.get("themes", []),
+                referer_querydict.get("sujets", []),
+            )
+            open_besoins_chooser = request_besoins != referer_besoins
+        else:
+            open_besoins_chooser = False
+
         # Cache all published Theme/Sujet data, it's light and it will be needed
         # in a place where we can't properly prefetch_related
         besoins = {(Theme, t.pk): t for t in Theme.objects.published()}
@@ -607,6 +624,7 @@ class ResultsView(ResultsMixin, ListView):
                     ],
                     "only_closed": self.only_closed,
                     "order_by": self.order_by,
+                    "open_besoins_chooser": open_besoins_chooser,
                     "create_feedback_on_aides_form": CreateFeedbackOnAidesForm(),
                     "feedback_themes_sujets_form": FeedbackOnThemesAndSujetsForm(),
                 }
