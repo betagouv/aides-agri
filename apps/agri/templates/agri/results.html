@@ -93,6 +93,7 @@ document.addEventListener("htmx:load", evt => {
           hx-swap="outerHTML"
           hx-select-oob="#modal-send-by-mail,#modal-create-alerte"
           hx-disinherit="*"
+          hx-disabled-elt="button, input, select"
     >
       <input type="hidden" name="profil" value="{{ profil }}">
 

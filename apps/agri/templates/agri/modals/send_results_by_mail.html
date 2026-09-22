@@ -14,6 +14,7 @@
                 hx-target="this"
                 hx-swap="outerHTML show:none"
                 hx-push-url="false"
+                hx-disabled-elt="find button[type=submit]"
           >
             {% csrf_token %}
             <div class="fr-modal__content">
