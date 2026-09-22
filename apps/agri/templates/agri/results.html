@@ -148,11 +148,15 @@ document.addEventListener("htmx:load", evt => {
                     {{ besoin.label }}
                   </button>
                 {% endfor %}
-                <button type="button" class="fr-btn fr-btn--secondary fr-btn--sm fr-mb-1w fr-ml-1w" aria-controls="more-besoins" aria-expanded="false">
+                <button type="button"
+                        class="fr-btn fr-btn--secondary fr-btn--sm fr-mb-1w fr-ml-1w"
+                        aria-controls="more-besoins"
+                        aria-expanded="{% if open_besoins_chooser %}true{% else %}false{% endif %}"
+                >
                   Voir tous les thèmes
                 </button>
               </div>
-              <div class="fr-tags-group fr-collapse fr-pt-1w" id="more-besoins">
+              <div class="fr-tags-group fr-collapse {% if open_besoins_chooser %}fr-collapse--expanded {% endif %} fr-pt-1w" id="more-besoins">
                 {% for besoin in besoins_options %}
                   <input type="checkbox"
                          id="besoin-{{ besoin.type }}-{{ besoin.id }}"
