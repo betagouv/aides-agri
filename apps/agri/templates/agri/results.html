@@ -46,6 +46,21 @@ document.addEventListener("htmx:load", evt => {
       evt.preventDefault()
     })
   })
+
+  // work around https://github.com/bigskysoftware/htmx/issues/3340
+  htmx.defineExtension("atomic-swap", {
+    isInlineSwap: function (swapStyle) {
+      return swapStyle === 'outerHTMLAtomic';
+    },
+    handleSwap: function (swapStyle, target, fragment) {
+      if (swapStyle === 'outerHTMLAtomic') {
+        const div = document.createElement("div");
+        div.appendChild(fragment);
+        target.outerHTML = div.innerHTML;
+        return [target];
+      }
+    },
+  });
 })
 </script>
 <script type="module" nonce="{{ request.csp_nonce }}">
@@ -90,7 +105,7 @@ document.addEventListener("htmx:load", evt => {
           hx-trigger="change"
           hx-select="#content"
           hx-target="#content"
-          hx-swap="outerHTML"
+          hx-swap="outerHTMLAtomic show:none"
           hx-select-oob="#modal-send-by-mail,#modal-create-alerte"
           hx-disinherit="*"
           hx-disabled-elt="button, input, select"
