@@ -276,6 +276,7 @@ export class SelectRich extends Controller {
     })
     this.selectAllButtonTarget.classList.add("fr-hidden")
     this.unselectAllButtonTarget.classList.remove("fr-hidden")
+    this.hasChanged = true
   }
 
   unselectAll() {
@@ -284,6 +285,7 @@ export class SelectRich extends Controller {
     })
     this.selectAllButtonTarget.classList.remove("fr-hidden")
     this.unselectAllButtonTarget.classList.add("fr-hidden")
+    this.hasChanged = true
   }
 
   noop() {}
