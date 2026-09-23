@@ -36,6 +36,16 @@ p:has(> strong) + p {
   top: 90%;
 }
 
+@media screen and (max-width: 576px) {
+  /*
+  in case of large <table>, avoid the whole content to get off the screen
+  by limiting its width to the screen less the containers padding
+  */
+  article p, article ul {
+    max-width: calc(100vw - 2rem);
+  }
+}
+
 @media print {
   #footer,
   .fr-breadcrumb,
