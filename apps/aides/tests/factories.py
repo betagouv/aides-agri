@@ -181,3 +181,13 @@ class AideFactory(factory.django.DjangoModelFactory):
 
 class PublishedAideFactory(AideFactory):
     published = True
+
+
+class SpecificiteLocaleFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.SpecificiteLocale
+        skip_postgeneration_save = True
+
+    aide = None
+    organisme = None
+    specificites = factory.Faker("sentence")

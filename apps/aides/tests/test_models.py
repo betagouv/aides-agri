@@ -202,3 +202,25 @@ class TestAide:
             )
             == f"/aides/illustrations-organisme/{organisme.pk}.png"
         )
+
+
+@pytest.mark.django_db
+class TestSpecificiteLocale:
+    @pytest.mark.parametrize(
+        "specificite_locale__aide,specificite_locale__organisme,expected_is_departemental,expected_is_regional",
+        [
+            [
+                LazyFixture("aide"),
+                LazyFixture("organisme_with_departement"),
+                True,
+                False,
+            ],
+            [LazyFixture("aide"), LazyFixture("organisme_with_region"), False, True],
+            [LazyFixture("aide"), LazyFixture("organisme"), False, False],
+        ],
+    )
+    def test_is_departemental_is_regional(
+        self, specificite_locale, expected_is_departemental, expected_is_regional
+    ):
+        assert specificite_locale.is_departemental == expected_is_departemental
+        assert specificite_locale.is_regional == expected_is_regional
