@@ -935,7 +935,11 @@ class Aide(models.Model):
             return reverse("aides:aide", kwargs={"pk": self.pk, "slug": self.slug})
 
     def get_public_url(self):
-        return self.get_absolute_url() if self.is_complete else self.url_descriptif or self.url_demarche
+        return (
+            self.get_absolute_url()
+            if self.is_complete
+            else self.url_descriptif or self.url_demarche
+        )
 
     @cached_property
     def organisme_principal(self):
