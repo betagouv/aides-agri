@@ -333,7 +333,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             return ""
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
-        if db_field.name == "sujets":
+        if db_field.name == Aide.sujets.field.name:
             kwargs["form_class"] = SujetsMultipleChoiceField
             kwargs["queryset"] = (
                 Sujet.objects.all().order_by("nom_court").prefetch_related("themes")
