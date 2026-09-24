@@ -19,10 +19,22 @@ register(
     code="13",
 )
 register(
+    factories.ZoneGeographiqueFactory,
+    "zone_geographique_region_paca",
+    type=ZoneGeographique.Type.REGION,
+    code="93",
+)
+register(
     factories.OrganismeFactory,
     "organisme_with_departement",
     with_illustration=True,
     with_zone_geographique=LazyFixture("zone_geographique_departement_13"),
+)
+register(
+    factories.OrganismeFactory,
+    "organisme_with_region",
+    with_illustration=True,
+    with_zone_geographique=LazyFixture("zone_geographique_region_paca"),
 )
 register(factories.AideFactory)
 register(
@@ -47,4 +59,9 @@ register(
     status=Aide.Status.VALIDATED,
     is_published=True,
     with_parent=LazyFixture("aide_published_with_parent"),
+)
+register(
+    factories.SpecificiteLocaleFactory,
+    "specificite_locale",
+    organisme=LazyFixture("organisme_with_departement"),
 )

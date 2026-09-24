@@ -6,7 +6,7 @@ from django.urls import reverse
 from django_otp import middleware as django_otp_middleware
 from pytest_factoryboy import LazyFixture
 
-from aides.models import Aide, Theme
+from aides.models import Aide, Theme, SpecificiteLocale
 
 
 def test_aide_admin(admin_client, aide, monkeypatch):
@@ -302,6 +302,34 @@ def test_duplicate_aide(admin_client, monkeypatch, aide_published, sujet):
     assert new_aide.organisme == aide.organisme
     assert set(new_aide.sujets.all()) == set(aide.sujets.all())
     assert new_aide.couverture_geographique != aide.couverture_geographique
+
+
+@pytest.mark.parametrize(
+    "organisme_with_departement__parent", [LazyFixture("organisme")]
+)
+def test_aide_admin_shows_children_departements_for_specificite_locale(
+    admin_client, aide_published, organisme_with_departement, monkeypatch
+):
+    aide = aide_published
+    # we don't care about 2FA here, let's skip it
+    monkeypatch.setattr(django_otp_middleware, "is_verified", lambda u: True)
+
+    # GIVEN an Aide eligible to specificites_locales
+    assert aide.organisme.children.exists()
+
+    # WHEN opening its change form
+    url = reverse("admin:aides_aide_change", args=[aide.pk])
+    res = admin_client.get(url)
+
+    # THEN an inline admin for SpecificiteLocale appears
+    # AND the choices when it comes to Organisme is limited to the Aides' organismes' children
+    assert res.status_code == 200
+    assert len(res.context_data["inline_admin_formsets"]) == 1
+    formset = res.context_data["inline_admin_formsets"][0]
+    assert formset.formset.form.Meta.model == SpecificiteLocale
+    choices = list(formset.formset.form.base_fields["organisme"].choices)
+    assert len(choices) == 2
+    assert choices[1][0] == organisme_with_departement.pk
 
 
 def test_themes_csv_export(admin_client, monkeypatch, theme):

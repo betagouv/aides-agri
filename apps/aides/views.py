@@ -63,6 +63,29 @@ class AideDetailView(DetailView):
 
         sections = {"presentation": "Présentation du dispositif"}
 
+        if "departement" in self.request.GET:
+            departement = (
+                ZoneGeographique.objects.departements()
+                .filter(code=self.request.GET["departement"])
+                .first()
+            )
+        else:
+            departement = None
+
+        organisme_for_departement = self.object.get_organisme_for_departement(
+            departement
+        )
+        specificites_locales = self.object.specificites_locales.filter(
+            organisme=organisme_for_departement
+        ).first()
+        if specificites_locales:
+            if specificites_locales.is_departemental:
+                sections["specificites_locales"] = "Dans votre département"
+            elif specificites_locales.is_regional:
+                sections["specificites_locales"] = "Dans votre région"
+            else:
+                sections["specificites_locales"] = "Spécificités locales"
+
         if self.object.montant:
             sections["montant"] = "Montant ou taux de l’aide"
         if self.object.participation_agriculteur:
@@ -102,15 +125,6 @@ class AideDetailView(DetailView):
                 {"link": "#bases-juridiques", "label": "Bases juridiques"}
             )
 
-        if "departement" in self.request.GET:
-            departement = (
-                ZoneGeographique.objects.departements()
-                .filter(code=self.request.GET["departement"])
-                .first()
-            )
-        else:
-            departement = None
-
         context_data.update(
             {
                 "skiplinks": [
@@ -125,9 +139,8 @@ class AideDetailView(DetailView):
                     "current": self.object.nom,
                 },
                 "departement": departement,
-                "organisme_for_departement": self.object.get_organisme_for_departement(
-                    departement
-                ),
+                "organisme_for_departement": organisme_for_departement,
+                "specificites_locales": specificites_locales,
                 "illustration_url": self.object.get_organisme_illustration_for_departement(
                     departement
                 ),

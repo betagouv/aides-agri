@@ -1,0 +1,11 @@
+{% extends "admin_extra_buttons/change_form.html" %}
+
+{% block extrahead %}{{ block.super }}
+<script nonce="{{ request.csp_nonce }}">
+window.onload = (evt) => {
+  const inline_group = document.getElementById("specificites_locales-group")
+  document.querySelector("fieldset:nth-of-type(5) details").appendChild(inline_group)
+  inline_group.style.paddingBlock = "10px !important"
+}
+</script>
+{% endblock extrahead %}

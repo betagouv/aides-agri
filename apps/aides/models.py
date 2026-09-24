@@ -139,6 +139,10 @@ class Organisme(WithIllustration, models.Model):
     def nom_court(self):
         return self.acronyme or self.nom
 
+    @cached_property
+    def has_children(self) -> bool:
+        return self.children.exists()
+
     def get_child_for_departement(self, departement: "ZoneGeographique"):
         return self.children.filter(zones_geographiques=departement).first()
 
@@ -980,3 +984,33 @@ class BaseJuridique(models.Model):
 
     def __str__(self):
         return self.libelle
+
+
+class SpecificiteLocale(models.Model):
+    class Meta:
+        verbose_name = "Spécificité locale"
+        verbose_name_plural = "Spécificités locales"
+
+    aide = models.ForeignKey(
+        Aide, on_delete=models.CASCADE, related_name="specificites_locales"
+    )
+    organisme = models.ForeignKey(
+        Organisme,
+        on_delete=models.CASCADE,
+        related_name="specificites_locales_des_aides",
+    )
+    specificites = models.TextField(verbose_name="Spécificités", blank=True)
+
+    @property
+    def is_departemental(self):
+        try:
+            return self.organisme.zones_geographiques.first().is_departement
+        except AttributeError:
+            return False
+
+    @property
+    def is_regional(self):
+        try:
+            return self.organisme.zones_geographiques.first().is_region
+        except AttributeError:
+            return False

@@ -177,6 +177,17 @@ document.onreadystatechange = evt => {
           {% endif %}
         </div>
 
+        {% if specificites_locales %}
+          <h2 id="specificites_locales"
+              class="fr-h4 fr-text-action-high--blue-france fr-icon-map-pin-2-fill fr-icon--md fr-mb-2w"
+          >
+            {{ sections.specificites_locales }}
+          </h2>
+          <div class="fr-pl-md-4w fr-mb-4w">
+            {{ specificites_locales.specificites|ui_md }}
+          </div>
+        {% endif %}
+
         {% if object.montant %}
         <h2 id="montant"
             class="fr-h4 fr-text-action-high--blue-france fr-icon-money-euro-circle-fill fr-icon--md fr-mb-2w"

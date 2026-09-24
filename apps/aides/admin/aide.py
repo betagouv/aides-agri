@@ -22,7 +22,7 @@ from reversion.admin import VersionAdmin
 
 from admin_concurrency.admin import ConcurrentModelAdmin
 
-from ..models import Aide, AideQuerySet, Sujet
+from ..models import Aide, AideQuerySet, Sujet, SpecificiteLocale, Organisme
 from ._common import ArrayFieldCheckboxSelectMultiple
 
 
@@ -86,6 +86,31 @@ class IsOngoingListFilter(admin.SimpleListFilter):
             return queryset.only_closed()
         else:
             return queryset
+
+
+class SpecificiteLocaleInlineAdmin(admin.TabularInline):
+    model = SpecificiteLocale
+    fields = ("organisme", "specificites")
+    extra = 0
+    formfield_overrides = {
+        TextField: {"widget": EasyMDEWidget},
+    }
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (
+            db_field.name == SpecificiteLocale.organisme.field.name
+            and "object_id" in request.resolver_match.kwargs
+        ):
+            aide = Aide.objects.get(pk=int(request.resolver_match.kwargs["object_id"]))
+            if aide.organisme and aide.organisme.has_children:
+                kwargs["queryset"] = Organisme.objects.filter(
+                    parent__aides=(aide)
+                ).order_by("acronyme", "nom")
+            elif aide.organisme_instructeur and aide.organisme_instructeur.has_children:
+                kwargs["queryset"] = Organisme.objects.filter(
+                    parent__aides_instruites=(aide)
+                ).order_by("acronyme", "nom")
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class AideForm(forms.ModelForm):
@@ -260,6 +285,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
             {"classes": ["collapse"], "fields": ["raw_data"]},
         ),
     ]
+    change_form_template = "admin/aides/aide/change_form.html"
     formfield_overrides = {
         TextField: {"widget": EasyMDEWidget},
     }
@@ -362,9 +388,14 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
                 self.fieldsets[2],
             ]
 
-    def get_inlines(self, request, obj):
-        if obj:
-            return super().get_inlines(request, obj)
+    def get_inlines(self, request, obj: Aide | None):
+        if obj and (
+            obj.organisme
+            and obj.organisme.has_children
+            or obj.organisme_instructeur
+            and obj.organisme_instructeur.has_children
+        ):
+            return [SpecificiteLocaleInlineAdmin]
         else:
             return []
 
