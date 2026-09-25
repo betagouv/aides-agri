@@ -41,7 +41,7 @@ p:has(> strong) + p {
   in case of large <table>, avoid the whole content to get off the screen
   by limiting its width to the screen less the containers padding
   */
-  article p, article ul {
+  article p, article ul, article > div {
     max-width: calc(100vw - 2rem);
   }
 }

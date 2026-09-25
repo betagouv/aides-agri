@@ -75,16 +75,31 @@ class AideDetailView(DetailView):
         organisme_for_departement = self.object.get_organisme_for_departement(
             departement
         )
-        specificites_locales = self.object.specificites_locales.filter(
-            organisme=organisme_for_departement
-        ).first()
-        if specificites_locales:
-            if specificites_locales.is_departemental:
-                sections["specificites_locales"] = "Dans votre département"
-            elif specificites_locales.is_regional:
-                sections["specificites_locales"] = "Dans votre région"
-            else:
-                sections["specificites_locales"] = "Spécificités locales"
+        specificites_locales_departements = set()
+        specificite_locale = None
+        departements_options = None
+        if departement:
+            specificite_locale = self.object.specificites_locales.filter(
+                organisme=organisme_for_departement
+            ).first()
+        else:
+            for specificite in self.object.specificites_locales.all().prefetch_related(
+                "organisme__zones_geographiques"
+            ):
+                for zone_geo in specificite.organisme.zones_geographiques.all():
+                    if zone_geo.is_departement:
+                        specificites_locales_departements.add(zone_geo)
+                    elif zone_geo.is_region:
+                        specificites_locales_departements.add(*zone_geo.children.all())
+            departements_options = [
+                {"text": f"{dept.code} {dept.nom}", "value": dept.code}
+                for dept in specificites_locales_departements
+            ]
+            departements_options.sort(key=lambda x: x["value"])
+            if departements_options:
+                departements_options.insert(
+                    0, {"text": "Sélectionnez un département", "value": 0}
+                )
 
         if self.object.montant:
             sections["montant"] = "Montant ou taux de l’aide"
@@ -140,7 +155,9 @@ class AideDetailView(DetailView):
                 },
                 "departement": departement,
                 "organisme_for_departement": organisme_for_departement,
-                "specificites_locales": specificites_locales,
+                "has_specificites_locales": specificite_locale or departements_options,
+                "specificites_locales": specificite_locale,
+                "specificites_locales_departements": departements_options,
                 "illustration_url": self.object.get_organisme_illustration_for_departement(
                     departement
                 ),
