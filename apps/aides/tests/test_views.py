@@ -59,10 +59,11 @@ def test_aide_detail_published_with_no_chosen_departement(
     res = client.get(reverse("aides:aide", args=[aide.pk, aide.slug]))
 
     # THEN get a 200 and the related Organisme illustration
+    # AND a form is displayed to choose among available specificites_locales
     assert res.status_code == 200
     assert res.context["illustration_url"] == aide.organisme.get_illustration_url()
-    assert "specificites_locales" not in res.context["sections"]
     assert not res.context["specificites_locales"]
+    assert res.context["specificites_locales_departements"]
 
 
 @pytest.mark.django_db
@@ -96,14 +97,13 @@ def test_aide_detail_published_with_chosen_departement(
     # THEN get a 200 and:
     # - NOT the related Organisme illustration
     # - BUT the related Organisme departemental child's illustration
+    # - AND the specificite_locale is displayed
     assert res.status_code == 200
     assert res.context["illustration_url"] != aide.organisme.get_illustration_url()
     assert (
         res.context["illustration_url"]
         == organisme_with_departement.get_illustration_url()
     )
-    assert "specificites_locales" in res.context["sections"]
-    assert res.context["sections"]["specificites_locales"] == "Dans votre département"
     assert res.context["specificites_locales"] == specificite_locale
 
 
