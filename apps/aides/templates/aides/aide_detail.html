@@ -134,10 +134,10 @@ document.onreadystatechange = evt => {
   {% block content_body %}
   <div class="fr-container fr-py-4w">
     <div class="fr-grid-row fr-grid-row--gutters">
-      <div class="fr-col fr-col-md-3" id="toc">
+      <div class="fr-col fr-col-12 fr-col-md-3" id="toc">
         {% dsfr_sidemenu sidemenu_data button_label="Sommaire" %}
       </div>
-      <article class="fr-col fr-col-md-9">
+      <article class="fr-col fr-col-12 fr-col-md-9">
 
         {% if has_specificites_locales %}
           <div id="specificites_locales" class="fr-background-alt--grey fr-p-3w fr-mb-2w" aria-live="polite">
