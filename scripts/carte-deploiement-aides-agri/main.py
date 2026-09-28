@@ -61,13 +61,13 @@ with open("data/carte.html", "w", encoding="utf-8") as f:
             <dt style="background-color: #dbdaff"><span class="fr-sr-only">Couleur #dbdaff, valeur 0</span></dt>
             <dd>Déploiement non commencé</dd>
             <dt style="background-color: #a4a4d7"><span class="fr-sr-only">Couleur #a4a4d7, valeur 1</span></dt>
-            <dd>Contacts pris en DRAAF pour solliciter les SEA des DDT</dd>
+            <dd>Contacts pris en DRAAF</dd>
             <dt style="background-color: #6e6daf"><span class="fr-sr-only">Couleur #6e6daf, valeur 2</span></dt>
             <dd>Contacts pris avec les SEA des DDT</dd>
             <dt style="background-color: #373787"><span class="fr-sr-only">Couleur #373787, valeur 3</span></dt>
-            <dd>Réponse des SEA</dd>
+            <dd>Actions de déploiement lancées par les SD</dd>
             <dt style="background-color: #00005f"><span class="fr-sr-only">Couleur #00005f, valeur 4</span></dt>
-            <dd>Déploiement étendu au-delà des DDT, comme les CA et d’autres acteurs</dd>
+            <dd>Premières actions de déploiement niveau 3</dd>
           </dl>
         </aside>
       </div>
