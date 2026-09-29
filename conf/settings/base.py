@@ -102,6 +102,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "dsfr.context_processors.site_config",
                 "ui.context_processors.ui_tools_tokens",
+                "ui.context_processors.ui_dsfr_parameters",
             ],
         },
     },
