@@ -30,3 +30,7 @@ def ui_tools_tokens(request):
             }
         )
     return context_data
+
+
+def ui_dsfr_parameters(request):
+    return {"ui_dsfr_alert_collapsible_attrs": {"data-action": "click->alert#close"}}
