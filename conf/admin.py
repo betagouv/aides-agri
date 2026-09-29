@@ -8,10 +8,15 @@ from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 from two_factor.admin import AdminSiteOTPRequiredMixin
 
+from agri.stats import get_alertes_stats
+from aides.stats import get_published_aides_stats
+from aides_feedback.stats import get_feedback_on_aides_stats
+
 
 class AidesAgriAdminSite(AdminSiteOTPRequiredMixin, admin.AdminSite):
     site_title = "Aides Agri"
     site_header = "Administration Aides Agri"
+    index_template = "admin/index_custom.html"
 
     def login(self, request, extra_context=None):
         redirect_to = request.POST.get(
@@ -32,3 +37,13 @@ class AidesAgriAdminSite(AdminSiteOTPRequiredMixin, admin.AdminSite):
             redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
 
         return redirect_to_login(redirect_to)
+
+    def index(self, request, extra_context=None):
+        if extra_context is None:
+            extra_context = dict()
+
+        extra_context.update(**get_published_aides_stats())
+        extra_context.update(**get_alertes_stats())
+        extra_context.update(**get_feedback_on_aides_stats())
+
+        return super().index(request, extra_context=extra_context)

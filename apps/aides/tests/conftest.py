@@ -46,6 +46,13 @@ register(
 )
 register(
     factories.AideFactory,
+    "aide_published_minimal",
+    organisme=LazyFixture("organisme"),
+    status=Aide.Status.CHOSEN,
+    is_published=True,
+)
+register(
+    factories.AideFactory,
     "aide_published_with_parent",
     organisme=LazyFixture("organisme"),
     status=Aide.Status.VALIDATED,
