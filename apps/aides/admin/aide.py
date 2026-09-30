@@ -140,7 +140,9 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         "nom",
         "organisme",
         "organisme_instructeur",
+        "status",
         "is_published",
+        "publication_mode",
         "is_ongoing",
         "priority",
         "ancestors",
@@ -309,6 +311,14 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
 
     is_ongoing.short_description = "En cours"
     is_ongoing.boolean = True
+
+    def publication_mode(self, obj):
+        if obj.is_published:
+            return "Édito" if obj.is_complete else "Minimal"
+        else:
+            return "n/a"
+
+    publication_mode.short_description = "Mode de publication"
 
     @admin.display(description="Ancêtres")
     def ancestors(self, obj):
