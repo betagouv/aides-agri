@@ -203,6 +203,60 @@ class TestAide:
             == f"/aides/illustrations-organisme/{organisme.pk}.png"
         )
 
+    @pytest.mark.parametrize("aide__status", [Aide.Status.CANDIDATE])
+    def test_aide_candidate_can_not_be_published(self, aide):
+        # GIVEN an unpublished but validated Aide
+        assert not aide.is_published
+        assert not aide.is_complete
+        assert aide.status == Aide.Status.CANDIDATE
+
+        # THEN its parent can be published
+        assert not aide.can_be_published()
+
+    @pytest.mark.parametrize("aide__status", [Aide.Status.REVIEW_EXPERT])
+    def test_aide_draft_can_be_published(self, aide):
+        # GIVEN an unpublished but validated Aide
+        assert not aide.is_published
+        assert not aide.is_complete
+        assert aide.status == Aide.Status.REVIEW_EXPERT
+
+        # THEN its parent can be published
+        assert aide.can_be_published()
+
+    @pytest.mark.parametrize("aide__status", [Aide.Status.VALIDATED])
+    def test_aide_validated_can_be_published(self, aide):
+        # GIVEN an unpublished but validated Aide
+        assert not aide.is_published
+        assert aide.is_complete
+
+        # THEN its parent can be published
+        assert aide.can_be_published()
+
+    def test_aide_published_with_parent_can_be_published(
+        self, aide_published_with_parent
+    ):
+        # GIVEN a published Aide with a parent that has no other child
+        assert aide_published_with_parent.is_published
+        assert aide_published_with_parent.is_complete
+        assert aide_published_with_parent.parent is not None
+        assert aide_published_with_parent.parent.children.count() == 1
+
+        # THEN its parent can be published
+        assert aide_published_with_parent.parent.can_be_published()
+
+    @pytest.mark.parametrize("aide_published_minimal__parent", [LazyFixture("aide")])
+    def test_aide_published_minimal_with_parent_can_not_be_published(
+        self, aide_published_minimal
+    ):
+        # GIVEN a published Aide with a parent that has no other child
+        assert aide_published_minimal.is_published
+        assert not aide_published_minimal.is_complete
+        assert aide_published_minimal.parent is not None
+        assert aide_published_minimal.parent.children.count() == 1
+
+        # THEN its parent can be published
+        assert not aide_published_minimal.parent.can_be_published()
+
 
 @pytest.mark.django_db
 class TestSpecificiteLocale:
