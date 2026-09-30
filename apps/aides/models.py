@@ -911,12 +911,18 @@ class Aide(models.Model):
         self.priority = priority
 
     def can_be_published(self):
+        """
+        An Aide cannot be published if:
+        - Its status is before CHOSEN
+        - Or it's been ARCHIVED
+        - Or it's supposed to be a parent but it doesn't have any is_published/VALIDATED child
+        """
         return self.status not in (
             Aide.Status.ARCHIVED,
             Aide.Status.TODO,
             Aide.Status.CANDIDATE,
             Aide.Status.BLOCKED,
-        )
+        ) and (not self.is_derivable or self.children.published_validated().exists())
 
     def _compute_slug(self):
         if self.organisme_instructeur:
