@@ -262,7 +262,9 @@ class ParentAideDetailView(DetailView):
             pk__in=self.request.GET.getlist("filter_sujets", [])
         )
 
-        children = self.object.children.published().prefetch_related("sujets", "types")
+        children = self.object.children.published_validated().prefetch_related(
+            "sujets", "types"
+        )
         q_children = Q()
         if filtered_departements:
             q_children &= Q(zones_geographiques__in=filtered_departements)
