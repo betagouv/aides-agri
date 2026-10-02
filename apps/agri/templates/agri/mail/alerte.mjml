@@ -20,7 +20,13 @@
           Voici les nouvelles aides qui correspondent à votre recherche :
           <ul>
             {% for aide in aides %}
-              <li><a href="{{ base_url }}{{ aide.get_public_url }}?utm_source=mail_alerte">{{ aide.nom }}</a></li>
+              <li>
+                {% if aide.is_complete %}
+                  <a href="{{ base_url }}{{ aide.get_absolute_url }}{% querystring base_querydict utm_source='mail_alerte' %}">{{ aide.nom }}</a>
+                {% else %}
+                  <a href="{{ aide.get_public_url }}{% querystring base_querydict utm_source='aides-agri' utm_medium='mail_alerte' %}">{{ aide.nom }}</a>
+                {% endif %}
+              </li>
             {% endfor %}
           </ul>
         </mj-text>

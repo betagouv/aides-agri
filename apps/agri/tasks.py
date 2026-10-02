@@ -152,6 +152,7 @@ def maybe_send_daily_alerte(alerte_id: int, timedelta_seconds: int, base_url: st
                     "themes": themes,
                     "sujets": sujets,
                     "aides": aides,
+                    "base_querydict": QueryDict(),
                 },
             )
         ),
