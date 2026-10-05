@@ -72,6 +72,6 @@
 
   <div class="fr-grid-row fr-grid-row--right fr-btns-group fr-btns-group--icon-left fr-btns-group--inline">
     <button class="fr-btn fr-btn--icon-left fr-icon-eye-line" type="submit">Voir les dispositifs</button>
-    <button class="fr-btn fr-btn--icon-left fr-icon-arrow-go-forward-line fr-btn--secondary" type="submit">Passer cette étape</button>
+    <a href="{% url 'agri:results' %}{% querystring %}" class="fr-btn fr-btn--icon-left fr-icon-arrow-go-forward-line fr-btn--secondary">Passer cette étape</a>
   </div>
 </form>
