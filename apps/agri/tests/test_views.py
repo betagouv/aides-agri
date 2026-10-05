@@ -600,6 +600,22 @@ def test_results_view_open_besoins_chooser(client, theme_published, filiere_ok_1
     )
     response = client.get(url_with_besoins_querystring, headers={"Referer": url})
 
+    # THEN the open_besoins_chooser context data is OFF
+    assert not response.context["open_besoins_chooser"]
+
+    # WHEN viewing results page through HTMX, AND with themes added to the querystring, AND the no-querystring URL as referer
+    url_with_besoins_querystring = reverse(
+        "agri:results", query={"themes": [theme_published.pk]}
+    )
+    response = client.get(
+        url_with_besoins_querystring,
+        headers={
+            "Referer": url,
+            "Hx-Request": "true",
+            "Hx-Boosted": "true",
+        },
+    )
+
     # THEN the open_besoins_chooser context data is ON
     assert response.context["open_besoins_chooser"]
 

@@ -404,7 +404,7 @@ class ResultsView(ResultsMixin, ListView):
             links_querydict.setdefault("departement", self.departement.code)
 
         # determine if Sujets/Themes chooser must be opened or closed
-        if "HTTP_REFERER" in self.request.META:
+        if self.request.htmx and "HTTP_REFERER" in self.request.META:
             request_besoins = (
                 self.request.GET.get("themes", []),
                 self.request.GET.get("sujets", []),
