@@ -2,7 +2,7 @@
 
 {% for aide in aide_list|slice:"3:" %}
   <div class="fr-col fr-col-12 fr-mb-1w loaded-lazily">
-      {% dsfr_card aide %}
+      {% include 'agri/blocks/results/aide.html' with aide=aide only %}
   </div>
 {% endfor %}
 <div class="fr-col fr-col-12 fr-mb-1w load-more">

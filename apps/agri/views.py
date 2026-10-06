@@ -447,44 +447,19 @@ class ResultsView(ResultsMixin, ListView):
                 "count": aides_data_for_type["count"],
                 "aides": [
                     {
-                        "extra_classes": "fr-card--horizontal fr-card--horizontal-fifteen-percent fr-card--no-icon fr-mb-2w fr-pl-2w",
                         "title": aide.promesse or aide.nom,
                         "description": aide.nom if aide.promesse else "",
-                        "title_max_length": 180,
-                        "description_max_length": 300,
-                        "call_to_action": {
-                            "links": [
-                                {
-                                    "url": f"{aide.get_absolute_url()}?{links_querydict.urlencode()}",
-                                    "label": "Consulter la fiche dispositif",
-                                    "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right",
-                                }
-                                if aide.is_complete
-                                else {
-                                    "url": aide.url_descriptif,
-                                    "label": "Voir le site officiel",
-                                    "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right",
-                                    "is_external": True,
-                                }
-                            ]
-                            + (
-                                [
-                                    {
-                                        "url": aide.url_demarche,
-                                        "label": "Déposer mon dossier",
-                                        "extra_classes": "fr-link--sm fr-icon-arrow-right-line fr-link--icon-right demarche",
-                                        "is_external": True,
-                                    }
-                                ]
-                                if aide.url_demarche and aide.is_complete
-                                else []
-                            )
-                        },
+                        "url_aide": f"{aide.get_absolute_url()}?{links_querydict.urlencode()}"
+                        if aide.is_complete
+                        else "",
+                        "url_descriptif": aide.url_descriptif
+                        if not aide.is_complete
+                        else "",
+                        "url_demarche": aide.url_demarche if aide.is_complete else "",
                         "image_url": aide.get_organisme_illustration_for_departement(
                             self.departement
                         ),
                         "image_alt": aide.organisme.nom,
-                        "ratio_class": "fr-ratio-1x1",
                         "top_detail": {
                             "tags": (
                                 [

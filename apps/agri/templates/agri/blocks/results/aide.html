@@ -1,0 +1,70 @@
+{% load dsfr_tags i18n %}
+
+<div class="fr-card fr-card--horizontal fr-card--horizontal-fifteen-percent fr-card--no-icon fr-mb-2w fr-pl-2w">
+  <div class="fr-card__body">
+    <div class="fr-card__content">
+      <p class="fr-card__title">
+        {{ aide.title |truncatechars:180 }}
+      </p>
+      <p class="fr-card__desc">
+        {{ aide.description |truncatechars:300 }}
+      </p>
+      <div class="fr-card__start">
+        <ul class="fr-tags-group">
+          {% for tag in aide.top_detail.tags %}
+            <li>
+              {% dsfr_tag tag %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <div class="fr-card__footer">
+      <ul class="fr-links-group fr-links-group--inline">
+        {% if aide.url_aide %}
+          <li>
+            {% dsfr_link url=aide.url_aide label="Consulter la fiche dispositif" extra_classes="fr-link--sm fr-icon-arrow-right-line fr-link--icon-right" %}
+          </li>
+          {% if aide.url_demarche %}
+            <li>
+              <button type="button"
+                      href="" {# hack to get DSFR link underline #}
+                      class="fr-link fr-link--sm fr-link--icon-right fr-icon-external-link-line"
+                      data-external-link-href="{{ aide.url_demarche }}"
+                      data-external-link-tracking-page="Résultats"
+                      data-external-link-tracking-event="Lien démarche"
+                      data-action="click->matomo#trackEvent"
+                      data-event-page="Résultats"
+                      data-event-name="Modale lien démarche"
+              >
+                Déposer mon dossier
+              </button>
+            </li>
+          {% endif %}
+        {% elif aide.url_descriptif %}
+          <li>
+            <button type="button"
+                    href="" {# hack to get DSFR link underline #}
+                    class="fr-link fr-link--sm fr-link--icon-right fr-icon-external-link-line"
+                    data-external-link-href="{{ aide.url_descriptif }}"
+                    data-external-link-tracking-page="Résultats"
+                    data-external-link-tracking-event="Lien descriptif mode minimal"
+                    data-action="click->matomo#trackEvent"
+                    data-event-page="Résultats"
+                    data-event-name="Modale lien descriptif mode minimal"
+            >
+              Voir le site officiel
+            </button>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+  <div class="fr-card__header">
+    <div class="fr-card__img">
+      <img class="fr-responsive-img fr-ratio-1x1"
+           src="{{ aide.image_url }}"
+           alt="{{ aide.image_alt }}" />
+    </div>
+  </div>
+</div>
