@@ -13,6 +13,14 @@ document.onreadystatechange = evt => {
   document.getElementById("button-print").onclick = () => window.print()
 }
 </script>
+<script type="module" nonce="{{ request.csp_nonce }}">
+  import { Application } from "stimulus"
+  import { ExternalLinks } from "external-links"
+
+  window.Stimulus ??= Application.start()
+
+  Stimulus.register("external-links", ExternalLinks)
+</script>
 {% endblock extra_head_js %}
 
 {% block extra_head %}
@@ -21,6 +29,10 @@ document.onreadystatechange = evt => {
 {% endblock extra_head %}
 
 {% block title %}{{ object.nom }}{% endblock title %}
+
+{% block modals %}
+  {% include "ui/modals/external_link_information.html" %}
+{% endblock modals %}
 
 {% block other_notices %}
   {% if not object.is_published or not object.is_complete %}
@@ -33,7 +45,7 @@ document.onreadystatechange = evt => {
 {% endblock other_notices %}
 
 {% block container %}
-<main id="content" role="main" aria-label="Contenu">
+<main id="content" role="main" aria-label="Contenu" data-controller="external-links">
   <div class="fr-background-alt--{% block content_header_bgcolor %}blue-france{% endblock %} fr-mt-n2w fr-py-2w">
     <div class="fr-container">
       {% block breadcrumb %}{% dsfr_breadcrumb %}{% endblock breadcrumb %}
@@ -106,15 +118,18 @@ document.onreadystatechange = evt => {
         <div class="fr-col fr-grid-row fr-grid-row--gutters fr-grid-row--right">
           {% block content_header_actions %}
             {% if object.url_demarche %}
-              <a class="fr-btn fr-btn--sm fr-btn--primary fr-mx-1w fr-my-2w"
-                 target="_blank"
-                 href="{{ object.url_demarche }}"
-                 data-action="click->matomo#trackEvent"
-                 data-event-page="Aide"
-                 data-event-name="Lien démarche"
+              <button type="button"
+                      class="fr-btn fr-btn--sm fr-btn--primary fr-mx-1w fr-my-2w fr-btn--icon-right fr-icon-external-link-line"
+                      href="" {# hack to get DSFR link underline #}
+                      data-external-link-href="{{ object.url_demarche }}"
+                      data-external-link-tracking-page="Aide"
+                      data-external-link-tracking-event="Lien démarche"
+                      data-action="click->matomo#trackEvent"
+                      data-event-page="Aide"
+                      data-event-name="Modale lien démarche"
               >
                 Déposer mon dossier
-              </a>
+              </button>
             {% endif %}
             <button type="button"
                     class="fr-btn fr-btn--sm fr-btn--secondary fr-mx-1w fr-my-2w"
@@ -191,15 +206,18 @@ document.onreadystatechange = evt => {
             <div class="fr-container">
                 <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--right">
                     <div class="fr-col fr-col-8 fr-col-md-3">
-                      <a class="fr-btn fr-btn--secondary fr-btn--sm"
-                         target="_blank"
-                         href="{{ object.url_descriptif }}"
-                         data-action="click->matomo#trackEvent"
-                         data-event-page="Aide"
-                         data-event-name="Lien descriptif"
+                      <button type="button"
+                              class="fr-btn fr-btn--secondary fr-btn--sm fr-btn--icon-right fr-icon-external-link-line"
+                              href="" {# hack to get DSFR link underline #}
+                              data-external-link-href="{{ object.url_descriptif }}"
+                              data-external-link-tracking-page="Aide"
+                              data-external-link-tracking-event="Lien descriptif"
+                              data-action="click->matomo#trackEvent"
+                              data-event-page="Aide"
+                              data-event-name="Modale lien descriptif"
                       >
                         Voir plus de détail
-                      </a>
+                      </button>
                     </div>
                 </div>
             </div>
@@ -274,15 +292,18 @@ document.onreadystatechange = evt => {
         {% if object.url_demarche %}
         <div class="fr-container--fluid fr-mb-4w" id="deposer">
           <div class="fr-grid-row">
-              <a class="fr-btn fr-btn--sm fr-btn--primary fr-mx-auto"
-                 target="_blank"
-                 href="{{ object.url_demarche }}"
-                 data-action="click->matomo#trackEvent"
-                 data-event-page="Aide"
-                 data-event-name="Lien démarche"
-              >
-                Déposer mon dossier
-              </a>
+            <button type="button"
+                    class="fr-btn fr-btn--sm fr-btn--primary fr-mx-auto fr-btn--icon-right fr-icon-external-link-line"
+                    href="" {# hack to get DSFR link underline #}
+                    data-external-link-href="{{ object.url_demarche }}"
+                    data-external-link-tracking-page="Aide"
+                    data-external-link-tracking-event="Lien démarche"
+                    data-action="click->matomo#trackEvent"
+                    data-event-page="Aide"
+                    data-event-name="Modale lien démarche"
+            >
+              Déposer mon dossier
+            </button>
           </div>
         </div>
         {% endif %}
