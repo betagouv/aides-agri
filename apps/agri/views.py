@@ -151,8 +151,9 @@ class HomeView(TemplateView):
                     ],
                 )
                 profil = forms.ChoiceField(
-                    label="Vous êtes ?",
-                    required=False,
+                    label="Quel est votre profil ?",
+                    required=True,
+                    help_text="Cette information nous aide à mieux comprendre nos visiteurs.",
                     choices=[
                         ("agri", "Agriculteur, agricultrice"),
                         (
