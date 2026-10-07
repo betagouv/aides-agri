@@ -9,4 +9,5 @@ importmaps = {
     "external-links": static("ui/controllers/external_links.js"),
     "matomo": static("ui/controllers/matomo.js"),
     "select-rich": static("ui/components/select-rich.js"),
+    "userdata-to-matomo": static("ui/controllers/userdata-to-matomo.js"),
 }
