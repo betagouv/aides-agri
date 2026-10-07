@@ -66,8 +66,11 @@ window.onload = (evt) => {
                     hx-target="this"
                     hx-swap="outerHTML"
                     hx-push-url="true"
-                    data-controller="dsfr-form"
+                    data-controller="dsfr-form userdata-to-matomo"
                     data-dsfr-form-select-rich-outlet="[data-controller=select-rich]"
+                    data-userdata-to-matomo-page-value="Accueil"
+                    data-userdata-to-matomo-fields-value='["departement","profil"]'
+                    data-action="formdata->userdata-to-matomo#go"
               >
                 <div class="fr-grid-row fr-grid-row--gutters">
                   <div class="fr-col fr-col-12 fr-col-md-6">
