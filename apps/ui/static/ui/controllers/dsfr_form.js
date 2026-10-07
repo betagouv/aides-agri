@@ -1,31 +1,29 @@
 import { Controller } from "stimulus"
 
 export class DsfrForm extends Controller {
-  static outlets = ["checkbox-group-field", "select-rich"]
+  static outlets = ["select-rich"]
 
-  _markInputGroupAsInvalid(inputElement, groupClass) {
-    const inputGroup = inputElement.closest(`.${groupClass}`)
-    if (inputGroup === null) {
+  _markInputGroupAsInvalid(inputElement) {
+    const groupClass = this._getInputElementGroupClass(inputElement)
+    const groupElement = this._getInputElementGroupElement(inputElement)
+    if (groupElement === null) {
       return
     }
-    inputGroup.classList.add(`${groupClass}--error`)
+    groupElement.classList.add(`${groupClass}--error`)
   }
 
-  _markInputGroupAsValid(inputElement, groupClass) {
-    const inputGroup = inputElement.closest(`.${groupClass}`)
-    if (inputGroup === null) {
+  _markInputGroupAsValid(inputElement) {
+    const groupClass = this._getInputElementGroupClass(inputElement)
+    const groupElement = this._getInputElementGroupElement(inputElement)
+    if (groupElement === null) {
       return
     }
-    inputGroup.classList.remove(`${groupClass}--error`)
-    inputGroup.querySelector(".fr-messages-group").innerHTML = ""
+    groupElement.classList.remove(`${groupClass}--error`)
+    groupElement.querySelector(".fr-messages-group").innerHTML = ""
   }
 
   validateCustomFields() {
     let isValid = true
-
-    this.checkboxGroupFieldOutlets.forEach(outlet => {
-      isValid &= outlet.validate()
-    })
 
     this.selectRichOutlets.forEach(outlet => {
       isValid &= outlet.validate()
@@ -34,29 +32,63 @@ export class DsfrForm extends Controller {
     return isValid
   }
 
+  _getInputElementGroupClass(inputElement) {
+    let groupClass
+    if (inputElement.tagName === "SELECT") {
+      groupClass = "fr-select-group"
+    } else if (inputElement.getAttribute("type") === "radio") {
+      groupClass = "fr-fieldset"
+    } else {
+      groupClass = "fr-input-group"
+    }
+    return groupClass
+  }
+
+  _getInputElementGroupElement(inputElement) {
+    const groupClass = this._getInputElementGroupClass(inputElement)
+    return inputElement.closest(`.${groupClass}`)
+  }
+
   connect() {
-    this.element.querySelectorAll("input,select").forEach(elt => {
+    // insert messages placeholder on every field or field group
+    for (let elt of this.element.elements) {
+      const groupElement = this._getInputElementGroupElement(elt)
+      if (groupElement === null) {
+        continue
+      }
+      const idMessages = elt.name + "-messages"
+      if (document.getElementById(idMessages)) {
+        continue
+      }
       const messagesDiv = document.createElement("div")
-      const idMessages = elt.id + "-messages"
       messagesDiv.setAttribute("id", idMessages)
       messagesDiv.classList.add("fr-messages-group")
       messagesDiv.setAttribute("aria-live", "polite")
-      elt.parentElement.appendChild(messagesDiv)
-      elt.setAttribute("aria-describedby", idMessages)
-    })
+      groupElement.appendChild(messagesDiv)
+      groupElement.setAttribute(
+        "aria-labelledby",
+        groupElement.getAttribute("aria-labelledby") + " " + idMessages
+      )
+    }
+
+    // validate every relevant field before form is submitted
     this.element.querySelectorAll("[type=submit]").forEach(elt => elt.addEventListener("click", evt => {
       let isValid = true
-      this.element.querySelectorAll("input,select").forEach(inputElt => {
-        const messages = inputElt.parentElement.querySelector(".fr-messages-group")
-        messages.innerHTML = ""
+      for (let inputElt of this.element.elements) {
+        const groupElement = this._getInputElementGroupElement(inputElt)
+        if (groupElement === null) {
+          continue
+        }
+        const messagesElement = groupElement.querySelector(".fr-messages-group")
+        messagesElement.innerHTML = ""
         if (!inputElt.checkValidity()) {
           isValid = false
           const errorP = document.createElement("p")
           errorP.classList.add("fr-message", "fr-message--error")
           errorP.textContent = inputElt.validationMessage
-          messages.appendChild(errorP)
+          messagesElement.appendChild(errorP)
         }
-      })
+      }
       if (!this.validateCustomFields()) {
         isValid = false
       }
@@ -65,22 +97,19 @@ export class DsfrForm extends Controller {
       }
     }))
 
-    for (let i = 0; i < this.element.elements.length; i++) {
-      const inputElement = this.element.elements[i]
-      const groupClass = (inputElement.tagName === "SELECT") ? "fr-select-group" : "fr-input-group"
-
-      inputElement.addEventListener("invalid", evt => {
-        this._markInputGroupAsInvalid(inputElement, groupClass)
+    for (let inputElt of this.element.elements) {
+      inputElt.addEventListener("invalid", evt => {
+        this._markInputGroupAsInvalid(inputElt)
         this.validateCustomFields()
       })
 
-      inputElement.addEventListener("valid", evt => {
-        this._markInputGroupAsValid(inputElement, groupClass)
+      inputElt.addEventListener("valid", evt => {
+        this._markInputGroupAsValid(inputElt)
       })
 
-      inputElement.addEventListener("input", evt => {
+      inputElt.addEventListener("input", evt => {
         if (evt.target.checkValidity()) {
-          this._markInputGroupAsValid(inputElement, groupClass)
+          this._markInputGroupAsValid(inputElt)
         }
       })
     }
