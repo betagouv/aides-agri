@@ -13,10 +13,10 @@ with open("data/carte.html", "w", encoding="utf-8") as f:
 <head>
   <meta charset="utf-8" />
   <title>Carte du déploiement de Aides Agri</title>
-  <link rel="stylesheet" href="../../../.venv/lib/python3.14/site-packages/dsfr/static/dsfr/dist/dsfr.min.css">
-  <link rel="stylesheet" href="../../../static/vendor/DSFRChart.css">
-  <script type="module" src="../../../.venv/lib/python3.14/site-packages/dsfr/static/dsfr/dist/dsfr.module.min.js"></script>
-  <script type="module" src="../../../static/vendor/DSFRChart.js"></script>
+  <link rel="stylesheet" href="../../../../.venv/lib/python3.14/site-packages/dsfr/static/dsfr/dist/dsfr.min.css">
+  <link rel="stylesheet" href="../../../../static/vendor/DSFRChart.css">
+  <script type="module" src="../../../../.venv/lib/python3.14/site-packages/dsfr/static/dsfr/dist/dsfr.module.min.js"></script>
+  <script type="module" src="../../../../static/vendor/DSFRChart.js"></script>
   <style>
     dl {{
       display: flex;
@@ -46,7 +46,7 @@ with open("data/carte.html", "w", encoding="utf-8") as f:
 </head>
 <body>
   <div class="fr-container fr-py-6w">
-    <h1>Carte du déploiement Aides Agri</h1>
+    <h1>Progression du déploiement Aides Agri</h1>
     <div class="fr-grid-row">
       <div class="fr-col fr-col-9">
         <map-chart
@@ -59,15 +59,15 @@ with open("data/carte.html", "w", encoding="utf-8") as f:
           <h2 class="fr-h5">Légende</h2>
           <dl class="fr-text--sm">
             <dt style="background-color: #dbdaff"><span class="fr-sr-only">Couleur #dbdaff, valeur 0</span></dt>
-            <dd>Déploiement non commencé</dd>
+            <dd>Non commencé</dd>
             <dt style="background-color: #a4a4d7"><span class="fr-sr-only">Couleur #a4a4d7, valeur 1</span></dt>
-            <dd>Contacts pris en DRAAF</dd>
+            <dd>Organisation à l’échelle régionale (DRAAF)</dd>
             <dt style="background-color: #6e6daf"><span class="fr-sr-only">Couleur #6e6daf, valeur 2</span></dt>
-            <dd>Contacts pris avec les SEA des DDT</dd>
+            <dd>Organisation à l’échelle départementale (DDT(M))</dd>
             <dt style="background-color: #373787"><span class="fr-sr-only">Couleur #373787, valeur 3</span></dt>
-            <dd>Actions de déploiement lancées par les SD</dd>
+            <dd>Mise en œuvre à l’échelle départementale (DDT(M))</dd>
             <dt style="background-color: #00005f"><span class="fr-sr-only">Couleur #00005f, valeur 4</span></dt>
-            <dd>Premières actions de déploiement niveau 3</dd>
+            <dd>Mise en œuvre au-delà des DDT, auprès des Chambres d’Agriculture et d’autres acteurs</dd>
           </dl>
         </aside>
       </div>
