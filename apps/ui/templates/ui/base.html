@@ -28,10 +28,12 @@
     <script type="module" nonce="{{ request.csp_nonce }}">
     import { Application } from "stimulus"
     import { Matomo } from "matomo"
+    import { UserDataToMatomo } from "userdata-to-matomo"
 
     window.Stimulus = Application.start()
 
     Stimulus.register("matomo", Matomo)
+    Stimulus.register("userdata-to-matomo", UserDataToMatomo)
     </script>
 
     {% block extra_head_js %}{% endblock extra_head_js %}
