@@ -28,9 +28,10 @@ from aides_feedback.forms import (
     CreateFeedbackOnAidesForm,
     FeedbackOnThemesAndSujetsForm,
 )
-from .models import Alerte
+from ui.widgets import SelectWithDisabledEmptyOption
 
-from .models import AboutPageQuote
+from .models import AboutPageQuote, Alerte
+
 from .tasks import send_results_by_mail, send_create_alerte_confirmation_mail
 
 
@@ -129,16 +130,6 @@ class HomeView(TemplateView):
                 }
             )
         else:
-
-            class SelectWithDisabledEmptyOption(forms.Select):
-                def create_option(self, name, value, *args, attrs=None, **kwargs):
-                    option_dict = super().create_option(
-                        name, value, *args, attrs=attrs, **kwargs
-                    )
-                    if value == "":
-                        option_dict["attrs"].update({"disabled": True})
-                    return option_dict
-
             class HomePageForm(DsfrBaseForm):
                 departement = forms.ChoiceField(
                     label="Votre département :",
