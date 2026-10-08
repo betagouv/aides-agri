@@ -102,10 +102,14 @@ def maybe_send_daily_alerte(alerte_id: int, timedelta_seconds: int, base_url: st
     themes = alerte.themes.all()
     sujets = alerte.sujets.all()
     filieres = alerte.filieres.all()
-    aides = Aide.objects.published().filter(
-        first_published_at__gte=(
-            datetime.datetime.now(datetime.UTC)
-            - datetime.timedelta(seconds=timedelta_seconds)
+    aides = (
+        Aide.objects.published()
+        .without_parents()
+        .filter(
+            first_published_at__gte=(
+                datetime.datetime.now(datetime.UTC)
+                - datetime.timedelta(seconds=timedelta_seconds)
+            )
         )
     )
     if departement:
@@ -148,6 +152,7 @@ def maybe_send_daily_alerte(alerte_id: int, timedelta_seconds: int, base_url: st
                     "themes": themes,
                     "sujets": sujets,
                     "aides": aides,
+                    "base_querydict": QueryDict(),
                 },
             )
         ),

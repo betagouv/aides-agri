@@ -59,6 +59,11 @@
           {% endif %}
           {% if aide.is_published %}
             <span class="badge published">Publiée</span>
+            {% if aide.is_complete %}
+              <span class="badge published">Édito</span>
+            {% else %}
+              <span class="badge published">Minimale</span>
+            {% endif %}
           {% endif %}
           {% if aide.assigned_to %}
             <span class="badge">{{ aide.assigned_to.first_name }}</span>

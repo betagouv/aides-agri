@@ -426,13 +426,21 @@ class AideQuerySet(models.QuerySet):
     def without_parents(self):
         return self.filter(children=None)
 
+    def official_published(self):
+        return self.published().without_parents()
+
+    def official_published_validated(self):
+        return self.published().without_parents().validated()
+
     def official_published_count(self):
-        return self.published().without_parents().count()
+        return self.official_published().count()
+
+    def official_published_validated_count(self):
+        return self.official_published_validated().count()
 
     def official_published_organismes_count(self):
         return (
-            self.published()
-            .without_parents()
+            self.official_published()
             .order_by("organisme_id")
             .distinct("organisme_id")
             .count()
@@ -903,12 +911,18 @@ class Aide(models.Model):
         self.priority = priority
 
     def can_be_published(self):
+        """
+        An Aide cannot be published if:
+        - Its status is before CHOSEN
+        - Or it's been ARCHIVED
+        - Or it's supposed to be a parent but it doesn't have any is_published/VALIDATED child
+        """
         return self.status not in (
             Aide.Status.ARCHIVED,
             Aide.Status.TODO,
             Aide.Status.CANDIDATE,
             Aide.Status.BLOCKED,
-        )
+        ) and (not self.is_derivable or self.children.published_validated().exists())
 
     def _compute_slug(self):
         if self.organisme_instructeur:
