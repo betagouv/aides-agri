@@ -1,12 +1,16 @@
 from urllib.parse import urlparse
 
+from django import forms
 from django.db.models import Q, Count
 from django.http.response import HttpResponsePermanentRedirect, Http404
 from django.urls import resolve
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import DetailView
+from dsfr.forms import DsfrBaseForm
+from dsfr.widgets import InlineRadioSelect
 
 from aides_feedback.forms import CreateFeedbackOnAidesForm
+from ui.widgets import SelectWithDisabledEmptyOption
 
 from .models import Aide, ZoneGeographique, Type, Filiere, Beneficiaires, Sujet
 
@@ -140,6 +144,46 @@ class AideDetailView(DetailView):
                 {"link": "#bases-juridiques", "label": "Bases juridiques"}
             )
 
+        # decide whether we want to show the collect-user-data modal
+        collect_user_data_form = None
+        if (
+            departement is None
+            and "HTTP_REFERER" in self.request.META
+            and not self.request.META["HTTP_REFERER"].startswith(
+                f"{self.request.scheme}://{self.request.get_host()}"
+            )
+        ):
+
+            class CollectUserDataForm(DsfrBaseForm):
+                profil = forms.ChoiceField(
+                    label="Vous êtes ?",
+                    required=True,
+                    choices=[
+                        ("agri", "Agriculteur, agricultrice"),
+                        (
+                            "acteur",
+                            "Acteur du secteur agricole",
+                        ),
+                        (
+                            "autre",
+                            "Autre",
+                        ),
+                    ],
+                    widget=InlineRadioSelect,
+                )
+                departement = forms.ChoiceField(
+                    label="Votre département :",
+                    required=True,
+                    widget=SelectWithDisabledEmptyOption,
+                    choices=[("", "Sélectionnez un département")]
+                    + [
+                        (dept.code, f"{dept.code} {dept.nom}")
+                        for dept in ZoneGeographique.objects.departements()
+                    ],
+                )
+
+            collect_user_data_form = CollectUserDataForm()
+
         context_data.update(
             {
                 "skiplinks": [
@@ -163,6 +207,7 @@ class AideDetailView(DetailView):
                 ),
                 "sections": sections,
                 "sidemenu_data": {"items": sidemenu_items},
+                "collect_user_data_form": collect_user_data_form,
             }
         )
 

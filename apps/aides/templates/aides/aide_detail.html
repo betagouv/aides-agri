@@ -8,19 +8,39 @@
 {% endblock extra_css %}
 
 {% block extra_head_js %}
-<script nonce="{{ request.csp_nonce }}">
-document.onreadystatechange = evt => {
-  document.getElementById("button-print").onclick = () => window.print()
-}
-</script>
-<script type="module" nonce="{{ request.csp_nonce }}">
-  import { Application } from "stimulus"
-  import { ExternalLinks } from "external-links"
+  <script nonce="{{ request.csp_nonce }}">
+    document.onreadystatechange = () => {
+      if (document.readyState !== "complete") {
+        return
+      }
 
-  window.Stimulus ??= Application.start()
+      // Handle print button
+      document.getElementById("button-print").onclick = () => window.print()
+    }
 
-  Stimulus.register("external-links", ExternalLinks)
-</script>
+    const localStorageKey = "aides:aide:collect-user-data"
+    {% if collect_user_data_form %}
+    // if relevant, automatically open collect-user-data modal
+    if (localStorage[localStorageKey] === undefined) {
+      document.documentElement.addEventListener("dsfr.start", () => {
+        const modalElement = document.getElementById("fr-modal-collect-user-data")
+        window.dsfr(modalElement).modal.disclose()
+      })
+      localStorage[localStorageKey] = true
+    }
+    {% endif %}
+  </script>
+
+  <script type="module" nonce="{{ request.csp_nonce }}">
+    import { Application } from "stimulus"
+    import { ExternalLinks } from "external-links"
+    import { DsfrForm } from "dsfr-form"
+
+    window.Stimulus ??= Application.start()
+
+    Stimulus.register("dsfr-form", DsfrForm)
+    Stimulus.register("external-links", ExternalLinks)
+  </script>
 {% endblock extra_head_js %}
 
 {% block extra_head %}
@@ -32,6 +52,9 @@ document.onreadystatechange = evt => {
 
 {% block modals %}
   {% include "ui/modals/external_link_information.html" %}
+  {% if collect_user_data_form %}
+    {% include "aides/modals/collect-user-data.html" %}
+  {% endif %}
 {% endblock modals %}
 
 {% block other_notices %}
