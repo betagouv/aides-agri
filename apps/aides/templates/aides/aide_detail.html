@@ -147,9 +147,11 @@
                       data-external-link-href="{{ object.url_demarche }}"
                       data-external-link-tracking-page="Aide"
                       data-external-link-tracking-event="Lien démarche"
+                      data-external-link-tracking-details="profil={{ request.GET.profil }}"
                       data-action="click->matomo#trackEvent"
                       data-event-page="Aide"
                       data-event-name="Modale lien démarche"
+                      data-event-details="profil={{ request.GET.profil }}"
               >
                 Déposer mon dossier
               </button>
@@ -235,9 +237,11 @@
                               data-external-link-href="{{ object.url_descriptif }}"
                               data-external-link-tracking-page="Aide"
                               data-external-link-tracking-event="Lien descriptif"
+                              data-external-link-tracking-details="profil={{ request.GET.profil }}"
                               data-action="click->matomo#trackEvent"
                               data-event-page="Aide"
                               data-event-name="Modale lien descriptif"
+                              data-event-details="profil={{ request.GET.profil }}"
                       >
                         Voir plus de détail
                       </button>
@@ -279,6 +283,7 @@
              data-matomo-target="trackableContent"
              data-matomo-trackable-content-event-page="Aide"
              data-matomo-trackable-content-event-name="Lien démarche via Étapes"
+             data-matomo-trackable-content-event-details="profil={{ request.GET.profil }}"
         >
           {{ object.etapes|urlize|ui_md }}
         </div>
@@ -321,9 +326,11 @@
                     data-external-link-href="{{ object.url_demarche }}"
                     data-external-link-tracking-page="Aide"
                     data-external-link-tracking-event="Lien démarche"
+                    data-external-link-tracking-details="profil={{ request.GET.profil }}"
                     data-action="click->matomo#trackEvent"
                     data-event-page="Aide"
                     data-event-name="Modale lien démarche"
+                    data-event-details="profil={{ request.GET.profil }}"
             >
               Déposer mon dossier
             </button>
