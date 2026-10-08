@@ -461,15 +461,15 @@ wheels = [
 
 [[package]]
 name = "django-dsfr"
-version = "3.6.0"
+version = "3.6.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
     { name = "django-widget-tweaks" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e5/de/986bd8af0004fd2d8b571f14efae51c874c2d61b44bf5d5a3d259205cc99/django_dsfr-3.6.0.tar.gz", hash = "sha256:0922df74a6980a9d7f459469b804f3475535442ff48c128e507bbd8c9af946f5", size = 2750412, upload-time = "2026-08-10T15:00:12.381Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/8a/f7/bba0b053e4909ce5c064ad19a0ac9d192ad6b59e8569526ba183394b3438/django_dsfr-3.6.1.tar.gz", hash = "sha256:9d5888b6ab8d25a2ec0cd87ed3b2db3babe7200cc521c76bab8eef43a60b4397", size = 2750449, upload-time = "2026-09-30T13:05:55.561Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7f/bf/54be0978a75ace27c0ff416414dcea55fb4144d35c645fd4a0dd9d85d918/django_dsfr-3.6.0-py3-none-any.whl", hash = "sha256:310024a3ab70970ed7b209ce6e6a8885431e62de65c324778c41e325960ba768", size = 3497529, upload-time = "2026-08-10T15:00:10.585Z" },
+    { url = "https://files.pythonhosted.org/packages/f5/8f/77593ebcd8eb68e281ecc7f733cf0e3d3e0c56b1d12a6c8b67847710231c/django_dsfr-3.6.1-py3-none-any.whl", hash = "sha256:c59bb7db779d7a605f5be26c9d9f0dfe4a44073f861148df5a22c85bdb250067", size = 3497571, upload-time = "2026-09-30T13:05:53.668Z" },
 ]
 
 [package.optional-dependencies]
