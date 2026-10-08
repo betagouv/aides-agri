@@ -271,7 +271,7 @@ document.addEventListener("htmx:load", evt => {
               <div class="fr-grid-row fr-my-3v" data-controller="external-links">
                 {% for aide in aide_data.aides %}
                   <div class="fr-col fr-col-12 fr-mb-1w">
-                      {% include 'agri/blocks/results/aide.html' with aide=aide only %}
+                      {% include 'agri/blocks/results/aide.html' with aide=aide request=request only %}
                   </div>
                 {% endfor %}
                 {% if aide_data.count > 3 %}
