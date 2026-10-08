@@ -14,15 +14,16 @@ register(factories.TypeFactory, "type_aide")
 register(factories.ZoneGeographiqueFactory)
 register(
     factories.ZoneGeographiqueFactory,
-    "zone_geographique_departement_13",
-    type=ZoneGeographique.Type.DEPARTEMENT,
-    code="13",
-)
-register(
-    factories.ZoneGeographiqueFactory,
     "zone_geographique_region_paca",
     type=ZoneGeographique.Type.REGION,
     code="93",
+)
+register(
+    factories.ZoneGeographiqueFactory,
+    "zone_geographique_departement_13",
+    type=ZoneGeographique.Type.DEPARTEMENT,
+    code="13",
+    parent=LazyFixture("zone_geographique_region_paca"),
 )
 register(
     factories.OrganismeFactory,
@@ -71,4 +72,9 @@ register(
     factories.SpecificiteLocaleFactory,
     "specificite_locale",
     organisme=LazyFixture("organisme_with_departement"),
+)
+register(
+    factories.SpecificiteLocaleFactory,
+    "specificite_locale_region",
+    organisme=LazyFixture("organisme_with_region"),
 )

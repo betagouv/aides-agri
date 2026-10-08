@@ -108,6 +108,42 @@ def test_aide_detail_published_with_chosen_departement(
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize("organisme_with_region__parent", [LazyFixture("organisme")])
+@pytest.mark.parametrize(
+    "specificite_locale_region__aide", [LazyFixture("aide_published")]
+)
+def test_aide_detail_published_with_regional_specifics_no_departement_chosen(
+    client,
+    aide_published,
+    organisme_with_region,
+    zone_geographique_departement_13,
+    specificite_locale_region,
+):
+    # GIVEN:
+    # - An anonymous client
+    # - An Organisme having a regional child
+    # - A published Aide with a specificite_locale
+    aide = aide_published
+    assert aide.is_published
+    assert aide.organisme == organisme_with_region.parent
+    assert aide.specificites_locales.count() == 1
+    assert aide.specificites_locales.first().organisme.parent == aide.organisme
+
+    # WHEN calling the Aides public URL without setting a departement in querystring
+    res = client.get(reverse("aides:aide", args=[aide.pk, aide.slug]))
+
+    # THEN get a 200 and the related Organisme illustration
+    # AND a form is displayed to choose among available specificites_locales
+    assert res.status_code == 200
+    assert res.context["illustration_url"] == aide.organisme.get_illustration_url()
+    assert not res.context["specificites_locales"]
+    assert res.context["specificites_locales_departements"]
+    assert [0, zone_geographique_departement_13.code] == [
+        option["value"] for option in res.context["specificites_locales_departements"]
+    ]
+
+
+@pytest.mark.django_db
 def test_parent_aide_detail_published(client, aide_published_with_parent):
     # GIVEN a published Aide with a parent and an anonymous client
     aide = aide_published_with_parent

@@ -90,7 +90,7 @@ class AideDetailView(DetailView):
                     if zone_geo.is_departement:
                         specificites_locales_departements.add(zone_geo)
                     elif zone_geo.is_region:
-                        specificites_locales_departements.add(*zone_geo.children.all())
+                        specificites_locales_departements.add(*zone_geo.enfants.all())
             departements_options = [
                 {"text": f"{dept.code} {dept.nom}", "value": dept.code}
                 for dept in specificites_locales_departements
