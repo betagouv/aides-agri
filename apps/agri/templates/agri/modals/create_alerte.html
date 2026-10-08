@@ -19,6 +19,10 @@
                 hx-push-url="false"
                 hx-disabled-elt="find button[type=submit]"
                 data-controller="dsfr-form"
+                data-action="formdata->matomo#trackEvent"
+                data-event-page="Résultats"
+                data-event-name="Alerte créée"
+                data-event-details="profil={{ request.GET.profil }}"
           >
             {% csrf_token %}
             <div class="fr-modal__content">
