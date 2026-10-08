@@ -44,6 +44,12 @@ p:has(> strong) + p {
   article p, article ul, article > div {
     max-width: calc(100vw - 2rem);
   }
+
+  /* cancel the inline behavior of InlineRadioSelect since it's ugly on mobile */
+  #fr-modal-collect-user-data .fr-fieldset {
+    flex-direction: column;
+    align-content: flex-start;
+  }
 }
 
 @media print {
