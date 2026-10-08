@@ -105,7 +105,7 @@ document.addEventListener("htmx:load", evt => {
       <div class="fr-container fr-mb-3w">
         <div class="fr-grid-row">
           <div class="fr-col">
-            {% dsfr_alert type="info" is_collapsible=True title="En cours de recensement des aides" content=national_aides_only_disclaimer %}
+            {% dsfr_alert type="info" collapsible_attrs=ui_dsfr_alert_collapsible_attrs title="En cours de recensement des aides" content=national_aides_only_disclaimer %}
           </div>
         </div>
       </div>

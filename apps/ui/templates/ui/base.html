@@ -36,7 +36,7 @@
 
     {% block extra_head_js %}{% endblock extra_head_js %}
   </head>
-  <body hx-headers='{"x-csrftoken": "{{ csrf_token }}"}' data-controller="matomo">
+  <body hx-headers='{"x-csrftoken": "{{ csrf_token }}"}' data-controller="matomo alert">
   {% block body %}
     {% block skiplinks %}
       {% dsfr_skiplinks skiplinks %}
