@@ -16,6 +16,7 @@ export class ExternalLinks extends Controller {
       const href = target.dataset["externalLinkHref"]
       const trackingPage = target.dataset["externalLinkTrackingPage"]
       const trackingEvent = target.dataset["externalLinkTrackingEvent"]
+      const trackingDetails = target.dataset["externalLinkTrackingDetails"]
       document.getElementById("modal-external-link-domain").textContent = href.split("/")[2]
       const linkElement = document.getElementById("modal-external-link-href")
       linkElement.setAttribute("href", href)
@@ -24,6 +25,9 @@ export class ExternalLinks extends Controller {
       }
       if (trackingEvent) {
         linkElement.setAttribute("data-event-name", trackingEvent)
+      }
+      if (trackingDetails) {
+        linkElement.setAttribute("data-event-details", trackingDetails)
       }
       window.dsfr(document.getElementById("modal-external-link")).modal.disclose()
     })
