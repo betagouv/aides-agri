@@ -144,6 +144,51 @@ def test_aide_detail_published_with_regional_specifics_no_departement_chosen(
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize("organisme_with_region__parent", [LazyFixture("organisme")])
+@pytest.mark.parametrize(
+    "specificite_locale_region__aide", [LazyFixture("aide_published")]
+)
+def test_aide_detail_published_with_regional_specifics_and_chosen_departement(
+    client,
+    aide_published,
+    organisme_with_region,
+    zone_geographique_departement_13,
+    specificite_locale_region,
+):
+    # GIVEN:
+    # - An anonymous client
+    # - An Organisme having a regional child
+    # - A published Aide with a specificite_locale
+    aide = aide_published
+    assert aide.is_published
+    assert aide.organisme == organisme_with_region.parent
+    assert aide.specificites_locales.count() == 1
+    assert aide.specificites_locales.first().organisme.parent == aide.organisme
+    departement = zone_geographique_departement_13
+
+    # WHEN calling the Aides public URL without setting a departement in querystring
+    res = client.get(
+        reverse(
+            "aides:aide",
+            args=[aide.pk, aide.slug],
+            query={"departement": departement.code},
+        )
+    )
+
+    # THEN get a 200 and:
+    # - NOT the related Organisme illustration
+    # - BUT the related Organisme departemental child's illustration
+    # - AND the specificite_locale is displayed
+    assert res.status_code == 200
+    assert res.context["organisme_for_departement"] != aide.organisme
+    assert res.context["illustration_url"] != aide.organisme.get_illustration_url()
+    assert (
+        res.context["illustration_url"] == organisme_with_region.get_illustration_url()
+    )
+    assert res.context["specificites_locales"] == specificite_locale_region
+
+
+@pytest.mark.django_db
 def test_parent_aide_detail_published(client, aide_published_with_parent):
     # GIVEN a published Aide with a parent and an anonymous client
     aide = aide_published_with_parent

@@ -144,7 +144,10 @@ class Organisme(WithIllustration, models.Model):
         return self.children.exists()
 
     def get_child_for_departement(self, departement: "ZoneGeographique"):
-        return self.children.filter(zones_geographiques=departement).first()
+        return (
+            self.children.filter(zones_geographiques=departement).first()
+            or self.children.filter(zones_geographiques=departement.parent).first()
+        )
 
 
 class ThemeQuerySet(WithIllustrationQuerySet, models.QuerySet):
