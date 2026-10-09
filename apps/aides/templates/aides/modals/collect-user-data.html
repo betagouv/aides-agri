@@ -1,0 +1,39 @@
+<dialog class="fr-modal"
+        id="fr-modal-collect-user-data"
+        aria-labelledby="fr-modal-collect-user-data-title"
+>
+  <div class="fr-container fr-container--fluid fr-container-md">
+    <div class="fr-grid-row fr-grid-row--center">
+      <div class="fr-col-12 fr-col-md-8">
+        <div class="fr-modal__body">
+          <form method="get"
+                action=""
+                data-controller="dsfr-form userdata-to-matomo"
+                data-userdata-to-matomo-page-value="Aide"
+                data-userdata-to-matomo-fields-value='["departement","profil"]'
+                data-action="formdata->userdata-to-matomo#go"
+          >
+            <div class="fr-modal__header">
+              <button type="button" class="fr-btn--close fr-btn" aria-controls="fr-modal-collect-user-data">Fermer</button>
+            </div>
+            <div class="fr-modal__content">
+              <h1 id="fr-modal-collect-user-data-title" class="fr-modal__title">
+                <span class="fr-icon-arrow-right-line fr-icon--lg"></span>
+                Petite enquête (optionnelle)
+              </h1>
+              <p>Afin de nous aider à améliorer ce service, vous pouvez nous partager ces deux informations vous concernant. Vous ne verrez cette interruption qu’une seule fois.</p>
+
+              {{ collect_user_data_form }}
+            </div>
+            <div class="fr-modal__footer" id="fr-modal-collect-user-data-footer">
+              <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
+                <button type="submit" class="fr-btn">Envoyer</button>
+                <button type="button" class="fr-btn fr-btn--secondary" aria-controls="fr-modal-collect-user-data">Ignorer</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>

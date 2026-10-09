@@ -40,7 +40,7 @@ class CreateFeedbackOnThemesAndSujetsView(FeedbackFormMixin, CreateView):
 class CreateFeedbackOnAidesView(FeedbackFormMixin, CreateView):
     form_class = CreateFeedbackOnAidesForm
     success_partial_template_name = (
-        "aides_feedback/_partials/create_feedback_aides_ok.html"
+        "aides_feedback/_partials/update_feedback_on_aides_form.html"
     )
 
     def form_valid(self, form):

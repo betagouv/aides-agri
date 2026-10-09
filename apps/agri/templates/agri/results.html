@@ -230,8 +230,9 @@ document.addEventListener("htmx:load", evt => {
                           aria-controls="modal-create-alerte"
                           data-fr-opened="false"
                           data-action="click->matomo#trackEvent"
-                          data-event-page="Recommandation"
+                          data-event-page="Résultats"
                           data-event-name="Modale création d’alerte"
+                          data-event-details="profil={{ request.GET.profil }}"
                   >
                     Créer une alerte
                   </button>
@@ -240,8 +241,9 @@ document.addEventListener("htmx:load", evt => {
                           aria-controls="modal-send-by-mail"
                           data-fr-opened="false"
                           data-action="click->matomo#trackEvent"
-                          data-event-page="Recommandation"
+                          data-event-page="Résultats"
                           data-event-name="Modale envoi par mail"
+                          data-event-details="profil={{ request.GET.profil }}"
                   >
                     Recevoir par e-mail
                   </button>
@@ -249,8 +251,9 @@ document.addEventListener("htmx:load", evt => {
                           class="fr-btn fr-btn--tertiary fr-icon-file-pdf-line"
                           id="button-print"
                           data-action="click->matomo#trackEvent"
-                          data-event-page="Recommandation"
+                          data-event-page="Résultats"
                           data-event-name="Impression"
+                          data-event-details="profil={{ request.GET.profil }}"
                   >
                     Enregistrer en PDF
                   </button>
@@ -268,7 +271,7 @@ document.addEventListener("htmx:load", evt => {
               <div class="fr-grid-row fr-my-3v" data-controller="external-links">
                 {% for aide in aide_data.aides %}
                   <div class="fr-col fr-col-12 fr-mb-1w">
-                      {% include 'agri/blocks/results/aide.html' with aide=aide only %}
+                      {% include 'agri/blocks/results/aide.html' with aide=aide request=request only %}
                   </div>
                 {% endfor %}
                 {% if aide_data.count > 3 %}
