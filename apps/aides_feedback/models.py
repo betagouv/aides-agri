@@ -32,15 +32,15 @@ class FeedbackOnAides(Feedback):
         verbose_name_plural = "Retours utilisateurices sur les aides"
 
     class Notes(models.IntegerChoices):
-        PAS_DU_TOUT = 0, "Pas du tout"
-        UN_PEU = 25, "Un peu"
-        MOYEN = 50, "Moyen"
-        BEAUCOUP = 75, "Beaucoup"
-        PARFAIT = 100, "Parfait !"
+        PAS_DU_TOUT = 0, "1"
+        UN_PEU = 25, "2"
+        MOYEN = 50, "3"
+        BEAUCOUP = 75, "4"
+        PARFAIT = 100, "5"
 
     usefulness = models.PositiveSmallIntegerField(
         choices=Notes,
-        verbose_name="Cette page vous a-t-elle été utile ?",
+        verbose_name="Qu’avez-vous pensé des informations ?",
     )
     information_quality = models.PositiveSmallIntegerField(
         choices=Notes,

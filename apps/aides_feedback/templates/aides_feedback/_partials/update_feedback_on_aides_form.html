@@ -1,14 +1,17 @@
-<form method="post"
-      action="{% url 'aides_feedback:update-feedback-aides' pk=object.pk %}"
-      hx-boost="true"
-      hx-target="this"
-      hx-swap="beforeend show:none"
-      hx-push-url="false"
-      hx-disabled-elt="find button[type=submit]"
-      data-controller="dsfr-form"
->
-  {{ form }}
-  <div class="fr-mt-4w">
-    <button type="submit" class="fr-btn fr-btn--secondary">Envoyer</button>
-  </div>
-</form>
+<div id="update-feedback-on-aides" class="fr-col fr-col-12 fr-col-md-6 fr-col-offset-md-3">
+  <p class="fr-text-default--success">Merci ! Si vous le souhaitez, vous pouvez nous en dire plus :</p>
+  <form method="post"
+        action="{% url 'aides_feedback:update-feedback-aides' pk=object.pk %}"
+        hx-boost="true"
+        hx-target="this"
+        hx-swap="beforeend show:none"
+        hx-push-url="false"
+        hx-disabled-elt="find button[type=submit]"
+        data-controller="dsfr-form"
+  >
+    {{ form }}
+    <div class="fr-mt-4w">
+      <button type="submit" class="fr-btn">Envoyer</button>
+    </div>
+  </form>
+</div>
