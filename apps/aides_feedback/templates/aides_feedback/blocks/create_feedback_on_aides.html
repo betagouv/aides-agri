@@ -1,13 +1,24 @@
-<div id="aides-feedback" class="fr-background-alt--grey">
+<script nonce="{{ request.csp_nonce }}">
+  htmx.onLoad(elt => {
+    if (elt.id === "update-feedback-on-aides") {
+      document.getElementById("create-feedback-on-aides").querySelectorAll("input,button").forEach(formElt => {
+        formElt.disabled = true
+      })
+    }
+  })
+</script>
+<div id="aides-feedback" class="fr-background-alt--grey fr-pb-4w">
   <div class="fr-grid-row fr-grid-row--gutters">
     <div class="fr-col fr-col-12 fr-col-md-6 fr-col-offset-md-3">
-      <form hx-trigger="change"
+      <form hx-trigger="submit"
             hx-post="{% url 'aides_feedback:create-feedback-aides' %}"
             hx-target="#user-note-ok"
+            id="create-feedback-on-aides"
       >
-        {{ form }}
+        {{ form.usefulness.as_field_group }}
+        <button type="submit" class="fr-btn">Envoyer</button>
       </form>
     </div>
   </div>
-  <div id="user-note-ok" class="fr-grid-row fr-grid-row--gutters"></div>
+  <div id="user-note-ok" class="fr-grid-row fr-grid-row--gutters" aria-live="polite"></div>
 </div>
