@@ -344,6 +344,14 @@ class Aide(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Organisme instructeur",
     )
+    organisme_diffuseur = models.ForeignKey(
+        Organisme,
+        null=True,
+        blank=True,
+        related_name="aides_diffusees",
+        on_delete=models.CASCADE,
+        verbose_name="Organisme diffuseur",
+    )
     organismes_secondaires = models.ManyToManyField(
         Organisme,
         related_name="aides_secondaires",
