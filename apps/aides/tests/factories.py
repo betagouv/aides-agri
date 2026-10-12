@@ -94,6 +94,7 @@ class ZoneGeographiqueFactory(factory.django.DjangoModelFactory):
     nom = factory.Sequence(lambda n: f"Zone Geographique {n}")
     code = factory.Sequence(lambda n: str(n))
     parent = None
+    is_metropole = True
 
 
 class AideFactory(factory.django.DjangoModelFactory):

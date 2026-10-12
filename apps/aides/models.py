@@ -294,6 +294,7 @@ class ZoneGeographique(models.Model):
     nom = models.CharField(verbose_name="Nom")
     code = models.CharField(blank=True, verbose_name="Code")
     type = models.CharField(choices=Type, verbose_name="Type")
+    is_metropole = models.BooleanField(default=True, verbose_name="Est en Métropole")
     parent = models.ForeignKey(
         "ZoneGeographique",
         null=True,
@@ -480,6 +481,10 @@ class AideQuerySet(models.QuerySet):
 
     def by_departements(self, departements: list[ZoneGeographique]):
         q = models.Q(couverture_geographique=Aide.CouvertureGeographique.NATIONAL)
+        if any((dept.is_metropole for dept in departements)):
+            q = q | models.Q(
+                couverture_geographique=Aide.CouvertureGeographique.METROPOLE
+            )
         for departement in departements:
             q = q | models.Q(
                 zones_geographiques__in=[departement.pk, departement.parent_id]

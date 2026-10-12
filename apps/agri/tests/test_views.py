@@ -7,7 +7,7 @@ from django.urls import reverse
 from django_tasks import default_task_backend
 
 from agri.models import AboutPageQuote
-from aides.models import Aide, Theme
+from aides.models import Aide, Theme, ZoneGeographique
 
 from agri.models import Alerte
 
@@ -286,14 +286,15 @@ def test_results_filtered(
     aide_published_dept_13_type_1_sujet_urgence_filiere_1,
     aide_published_region_paca_type_2_sujet_non_urgence_filiere_2,
     aide_published_region_na_type_2_sujet_non_urgence_no_filiere,
+    aide_published_metropole_type_1_sujet_non_urgence_no_filiere,
 ):
     # GIVEN
     # 7 published Aides
-    assert Aide.objects.official_published_count() == 7
+    assert Aide.objects.official_published_count() == 8
     # 1 on a Sujet associated to an "urgence" Theme
     assert Theme.objects.published().get(pk=theme_published_urgence.pk).aides_count == 1
-    # 6 on a Sujet associated to a "non-urgence" Theme
-    assert Theme.objects.published().get(pk=theme_published.pk).aides_count == 6
+    # 7 on a Sujet associated to a "non-urgence" Theme
+    assert Theme.objects.published().get(pk=theme_published.pk).aides_count == 7
     # 1 on filiere_ok_2
     assert filiere_ok_2.aides.published().count() == 1
 
@@ -312,8 +313,8 @@ def test_results_filtered(
     assert response.status_code == 200
     # context holds a counter of results
     assert "aides_count" in response.context_data
-    # counter is 3 (7 published Aides - 1 that ended - 1 on other ZoneGeographiques - 1 on other filieres - 1 on other besoins)
-    assert response.context_data["aides_count"] == 3
+    # counter is 4 (8 published Aides - 1 that ended - 1 on other ZoneGeographiques - 1 on other filieres - 1 on other besoins)
+    assert response.context_data["aides_count"] == 4
     # context holds a list of Aides aggregated by Types
     assert "aides" in response.context_data
     # List of Types
@@ -325,7 +326,39 @@ def test_results_filtered(
     assert [
         len(aides_data_by_type["aides"])
         for aides_data_by_type in response.context_data["aides"].values()
-    ] == [2, 1]
+    ] == [3, 1]
+
+
+@pytest.mark.django_db
+def test_results_filtered_on_non_metropole_departement(
+    client,
+    aide_published_metropole_type_1_sujet_non_urgence_no_filiere,
+    zone_geographique_departement_972,
+):
+    # GIVEN
+    # 1 published Aide, with METROPOLE couverture_geographique
+    # and 1 non-metropole Departement
+    assert Aide.objects.official_published_count() == 1
+    assert (
+        Aide.objects.first().couverture_geographique
+        == Aide.CouvertureGeographique.METROPOLE
+    )
+    assert ZoneGeographique.objects.departements().count() == 1
+    assert not ZoneGeographique.objects.first().is_metropole
+
+    # WHEN requesting results page filtered on the non-metropole Departement
+    url = reverse(
+        "agri:results",
+        query={"departement": zone_geographique_departement_972.code},
+    )
+    response = client.get(url)
+
+    # THEN it's a 200
+    assert response.status_code == 200
+    # context holds a counter of results
+    assert "aides_count" in response.context_data
+    # counter is 0 because the Aide is not visible from non-metropole departement
+    assert response.context_data["aides_count"] == 0
 
 
 @pytest.mark.django_db

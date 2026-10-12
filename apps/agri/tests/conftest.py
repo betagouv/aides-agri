@@ -79,6 +79,22 @@ register(
     code="40",
     nom="Landes",
 )
+register(
+    aides_factories.ZoneGeographiqueFactory,
+    "zone_geographique_region_martinique",
+    type=aides_factories.models.ZoneGeographique.Type.REGION,
+    nom="Martinique",
+    is_metropole=False,
+)
+register(
+    aides_factories.ZoneGeographiqueFactory,
+    "zone_geographique_departement_972",
+    type=aides_factories.models.ZoneGeographique.Type.DEPARTEMENT,
+    parent=LazyFixture("zone_geographique_region_martinique"),
+    code="972",
+    nom="Martinique",
+    is_metropole=False,
+)
 
 register(aides_factories.BeneficiairesFactory)
 
@@ -94,6 +110,14 @@ register(
     with_given_sujet=LazyFixture("sujet_published"),
     organisme=LazyFixture("organisme_1"),
     date_fin=date_past,
+)
+register(
+    aides_factories.PublishedAideFactory,
+    "aide_published_metropole_type_1_sujet_non_urgence_no_filiere",
+    with_given_type=LazyFixture("type_aides_1"),
+    with_given_sujet=LazyFixture("sujet_published"),
+    organisme=LazyFixture("organisme_1"),
+    couverture_geographique=aides_factories.AideFactory._meta.model.CouvertureGeographique.METROPOLE,
 )
 register(
     aides_factories.PublishedAideFactory,
