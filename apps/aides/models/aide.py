@@ -151,6 +151,12 @@ class Aide(models.Model):
         RECURRENTE = "Récurrente"
         ANNUELLE = "Annuelle"
 
+    class CategorieEntreprise(models.TextChoices):
+        MIC = "Micro-entreprise"
+        PME = "TPE / PME"
+        ETI = "Entreprise de taille intermédiaire"
+        GE = "Grande entreprise"
+
     class EtatAvancementProjet(models.TextChoices):
         CONCEPTION = "Réflexion / Conception"
         REALISATION = "Mise en œuvre / Réalisation"
@@ -364,6 +370,12 @@ class Aide(models.Model):
     )
     eligibilite_effectif_max = models.PositiveIntegerField(
         null=True, blank=True, verbose_name="Éligibilité : effectif salarié maximum"
+    )
+    eligibilite_categorie_taille_entreprise = postgres_fields.ArrayField(
+        models.CharField(choices=CategorieEntreprise),
+        null=True,
+        blank=True,
+        verbose_name="Éligibilité : catégories de taille d'entreprise",
     )
     eligibilite_etape_avancement_projet = postgres_fields.ArrayField(
         models.CharField(choices=EtatAvancementProjet),
