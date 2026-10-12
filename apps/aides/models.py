@@ -294,6 +294,7 @@ class ZoneGeographique(models.Model):
     nom = models.CharField(verbose_name="Nom")
     code = models.CharField(blank=True, verbose_name="Code")
     type = models.CharField(choices=Type, verbose_name="Type")
+    is_metropole = models.BooleanField(default=True, verbose_name="Est en Métropole")
     parent = models.ForeignKey(
         "ZoneGeographique",
         null=True,
