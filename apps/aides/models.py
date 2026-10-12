@@ -481,6 +481,10 @@ class AideQuerySet(models.QuerySet):
 
     def by_departements(self, departements: list[ZoneGeographique]):
         q = models.Q(couverture_geographique=Aide.CouvertureGeographique.NATIONAL)
+        if any((dept.is_metropole for dept in departements)):
+            q = q | models.Q(
+                couverture_geographique=Aide.CouvertureGeographique.METROPOLE
+            )
         for departement in departements:
             q = q | models.Q(
                 zones_geographiques__in=[departement.pk, departement.parent_id]
