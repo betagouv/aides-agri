@@ -1,3 +1,7 @@
+#filters {
+	--ui-container-padding: 2rem;
+}
+
 #actions {
   gap: .5rem;
 }

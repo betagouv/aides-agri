@@ -5,13 +5,14 @@ export class Matomo extends Controller {
 
   trackEvent(evt) {
     var _paq = window._paq = window._paq || []
-    _paq.push(['trackEvent', evt.target.dataset.eventPage, evt.target.dataset.eventName])
+    _paq.push(['trackEvent', evt.target.dataset.eventPage, evt.target.dataset.eventName, evt.target.dataset.eventDetails])
   }
 
   trackableContentTargetConnected(elt) {
     elt.querySelectorAll("a[target=_blank]").forEach(link => {
       link.dataset.eventPage = elt.dataset.matomoTrackableContentEventPage
       link.dataset.eventName = elt.dataset.matomoTrackableContentEventName
+      link.dataset.eventDetails = elt.dataset.matomoTrackableContentEventDetails
       link.addEventListener("click", evt => this.trackEvent(evt))
     })
   }

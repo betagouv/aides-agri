@@ -2,6 +2,10 @@
   margin: 0 0 1rem;
 }
 
+.fr-select-rich .fr-select:hover {
+  background-color: var(--background-contrast-grey);
+}
+
 .fr-select-rich .fr-select {
   text-align: left;
   text-wrap: nowrap;
@@ -27,8 +31,8 @@
   pointer-events: all;
   transition: none;
   max-height: 30vh;
-  min-width: max(100%, 25rem);
-  max-width: min(100%, 25rem);
+  min-width: min(calc(100vw - var(--ui-container-padding, 0px)), max(100%, 25rem));
+  max-width: min(calc(100vw - var(--ui-container-padding, 0px)), min(100%, 25rem));
   overflow: hidden auto;
   background-color: var(--background-default-grey);
   border: 1px solid var(--border-default-grey);

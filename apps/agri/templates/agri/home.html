@@ -66,12 +66,15 @@ window.onload = (evt) => {
                     hx-target="this"
                     hx-swap="outerHTML"
                     hx-push-url="true"
-                    data-controller="dsfr-form"
+                    data-controller="dsfr-form userdata-to-matomo"
                     data-dsfr-form-select-rich-outlet="[data-controller=select-rich]"
+                    data-userdata-to-matomo-page-value="Accueil"
+                    data-userdata-to-matomo-fields-value='["departement","profil"]'
+                    data-action="formdata->userdata-to-matomo#go"
               >
                 <div class="fr-grid-row fr-grid-row--gutters">
                   <div class="fr-col fr-col-12 fr-col-md-6">
-                    {% dsfr_form_field form.departement %}
+                    {{ form.departement.as_field_group }}
                   </div>
                   <div class="fr-col fr-col-12 fr-col-md-6">
                     {% ui_select_rich_multi label="Vos filières :" name="filieres" required=True options=filieres_options show_values_on_button_label=True with_select_all_button=True %}
@@ -79,7 +82,7 @@ window.onload = (evt) => {
                 </div>
                 <div class="fr-grid-row fr-mt-3w">
                   <div class="fr-col">
-                    {% dsfr_form_field form.profil %}
+                    {{ form.profil.as_field_group }}
                   </div>
                 </div>
                 <div class="fr-grid-row fr-grid-row--right fr-mt-1w">
