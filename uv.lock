@@ -2,6 +2,10 @@ version = 1
 revision = 3
 requires-python = ">=3.14"
 
+[options]
+exclude-newer = "0001-01-01T00:00:00Z" # This has no effect and is included for backwards compatibility when using relative exclude-newer values.
+exclude-newer-span = "P7D"
+
 [[package]]
 name = "aides-agri"
 version = "0.1.0"
@@ -281,14 +285,14 @@ wheels = [
 
 [[package]]
 name = "datagouv-client"
-version = "0.5.0"
+version = "0.5.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "niquests" },
     { name = "tenacity" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c1/7e/3d2a1c107e2a11fa92d696226ff508512ebfc2b304b2d65523023566cb8c/datagouv_client-0.5.0-py3-none-any.whl", hash = "sha256:e8abd84e6f4684504ce01c18bfc301944e1cfef7b948f992c1ea73461a6a802c", size = 21286, upload-time = "2026-06-30T15:01:46.218Z" },
+    { url = "https://files.pythonhosted.org/packages/13/bb/c2d99a1f3ea06e586c992028b639bae59ecba203d20cb295a8eb6c1be75c/datagouv_client-0.5.1-py3-none-any.whl", hash = "sha256:c13765bba551b86f5c1ce2388b3c39d0a123cd57beda643fe730c69e38d46083", size = 20396, upload-time = "2026-10-05T09:42:53.034Z" },
 ]
 
 [[package]]
