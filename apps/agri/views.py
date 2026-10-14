@@ -659,7 +659,7 @@ class CreateAlerteView(ResultsMixin, View):
                     base_url=f"{self.request.scheme}://{self.request.headers['host']}",
                 )
             register_email_into_brevo_crm.enqueue(
-                email, "Site Aides Agri, création d’alerte"
+                email=email, source="Site Aides Agri, création d’alerte"
             )
             return render(
                 request,
