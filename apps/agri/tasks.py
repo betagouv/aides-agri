@@ -1,6 +1,8 @@
 import datetime
 import logging
 
+from brevo import Brevo
+from django.conf import settings
 from django.core.mail import send_mail
 from django.http.request import QueryDict
 from django.template.loader import render_to_string
@@ -156,4 +158,17 @@ def maybe_send_daily_alerte(alerte_id: int, timedelta_seconds: int, base_url: st
                 },
             )
         ),
+    )
+
+
+@task()
+def register_email_into_brevo_crm(email: str, source: str):
+    if not settings.BREVO_CRM_API_KEY:
+        return
+    client = Brevo(api_key=settings.BREVO_CRM_API_KEY)
+    # We don't care about the response:
+    # - if added or updated, it's a 20x
+    # - if an error occurs, an exception is raised by Brevo SDK, so this task will be marked as failed
+    client.contacts.create_contact(
+        email=email, updateEnabled=True, attributes={"SOURCE_COLLECTE_OPTIN": source}
     )

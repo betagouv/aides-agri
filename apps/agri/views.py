@@ -32,7 +32,11 @@ from ui.widgets import SelectWithDisabledEmptyOption
 
 from .models import AboutPageQuote, Alerte
 
-from .tasks import send_results_by_mail, send_create_alerte_confirmation_mail
+from .tasks import (
+    send_results_by_mail,
+    send_create_alerte_confirmation_mail,
+    register_email_into_brevo_crm,
+)
 
 
 class HomeView(TemplateView):
@@ -130,6 +134,7 @@ class HomeView(TemplateView):
                 }
             )
         else:
+
             class HomePageForm(DsfrBaseForm):
                 departement = forms.ChoiceField(
                     label="Votre département :",
@@ -653,6 +658,9 @@ class CreateAlerteView(ResultsMixin, View):
                     alerte_id=alerte.pk,
                     base_url=f"{self.request.scheme}://{self.request.headers['host']}",
                 )
+            register_email_into_brevo_crm.enqueue(
+                email, "Site Aides Agri, création d’alerte"
+            )
             return render(
                 request,
                 "agri/_partials/create_alerte_ok.html",

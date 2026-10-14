@@ -28,8 +28,10 @@ Dans ce diagramme :
 ### Envoi d’e-mail : Brevo
 
 * Description : Service d’e-mailing hébergé en France ;
-* Utilisation par Aides Agri : envoi d’e-mails transactionnels ;
-* Mode d’interaction : API HTTPS.
+* Utilisation par Aides Agri :
+  * Envoi d’e-mails transactionnels ;
+  * CRM (Customer Relationship Management) pour la recherche utilisateurs (enquête annuelle, tests utilisateurs, etc.) ;
+* Modes d’interaction : API HTTPS.
 
 ### Suivi de l’usage du site : instance Matomo de la DINUM
 
@@ -129,6 +131,7 @@ Scalingo étant un PaaS, le déploiement est fiabilisé via une procédure _blue
 | Sentry       | `SENTRY_UI_PUBLIC_KEY`                  | Clé de connexion à Sentry pour la remontée de plantages Javascript navigateur                                                                                   | Vide                                                                                  |
 | Matomo       | `MATOMO_SITE_ID`                        | Identifiant de site pour la remontée de statistiques d’usages sur Matomo                                                                                        | Vide                                                                                  |
 | Brevo        | `BREVO_API_KEY`                         | Clé de sécurité pour l’API de Brevo                                                                                                                             | Vide                                                                                  |
+| Brevo        | `BREVO_CRM_API_KEY`                     | Clé de sécurité pour l’API de Brevo sur le périmètre du CRM (ajout de contacts)                                                                                 | Vide                                                                                  |
 | Application  | `ENVIRONMENT`                           | Nom de l’environnement du produit (dev, interne, prod, etc.) il se situe.                                                                                       | Obligatoire                                                                           |
 | data.gouv.fr | `DATAGOUV_ENVIRONMENT`                  | Nom de l’environnement data.gouv.fr avec lequel on souhaite interagir (`demo` ou `prod`)                                                                        | `demo`                                                                                |
 | data.gouv.fr | `DATAGOUV_API_TOKEN`                    | Jeton d’authentification sur l’API data.gouv.fr                                                                                                                 | Vide                                                                                  |

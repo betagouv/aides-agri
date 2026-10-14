@@ -9,7 +9,7 @@ from agri.tasks import send_results_by_mail
 
 @pytest.mark.django_db
 @override_settings(TASKS={"default": {"BACKEND": "django_tasks_db.DatabaseBackend"}})
-def test_obfuscate_send_results_by_mail_pii():
+def test_obfuscate_tasks_pii():
     # GIVEN a DBTaskResult for task send_results_by_mail
     db_task_result = DBTaskResult.objects.create(
         backend_name=send_results_by_mail.get_backend().alias,
@@ -34,7 +34,7 @@ def test_obfuscate_send_results_by_mail_pii():
 
 @pytest.mark.django_db
 @override_settings(TASKS={"default": {"BACKEND": "django_tasks_db.DatabaseBackend"}})
-def test_does_not_obfuscate_send_results_by_mail_pii_when_failed():
+def test_does_not_obfuscate_tasks_pii_when_failed():
     # GIVEN a DBTaskResult for task send_results_by_mail
     db_task_result = DBTaskResult.objects.create(
         backend_name=send_results_by_mail.get_backend().alias,
