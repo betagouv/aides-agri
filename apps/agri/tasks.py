@@ -170,5 +170,8 @@ def register_email_into_brevo_crm(email: str, source: str):
     # - if added or updated, it's a 20x
     # - if an error occurs, an exception is raised by Brevo SDK, so this task will be marked as failed
     client.contacts.create_contact(
-        email=email, update_enabled=True, attributes={"SOURCE_COLLECTE_OPTIN": source}
+        email=email,
+        update_enabled=True,
+        email_blacklisted=False,
+        attributes={"SOURCE_COLLECTE_OPTIN": source},
     )
