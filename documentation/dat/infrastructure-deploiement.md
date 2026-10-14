@@ -28,8 +28,10 @@ Dans ce diagramme :
 ### Envoi d’e-mail : Brevo
 
 * Description : Service d’e-mailing hébergé en France ;
-* Utilisation par Aides Agri : envoi d’e-mails transactionnels ;
-* Mode d’interaction : API HTTPS.
+* Utilisation par Aides Agri :
+  * Envoi d’e-mails transactionnels ;
+  * CRM (Customer Relationship Management) pour la recherche utilisateurs (enquête annuelle, tests utilisateurs, etc.) ;
+* Modes d’interaction : API HTTPS.
 
 ### Suivi de l’usage du site : instance Matomo de la DINUM
 

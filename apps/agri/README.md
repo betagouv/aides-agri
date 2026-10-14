@@ -6,7 +6,8 @@ Ce module porte le parcours utilisateur proposé aux exploitantes et exploitants
 
 ## Dépendances externes
 
-* La bibliothèque [django-admin-ordering](https://pypi.org/project/django-admin-ordering/) est utilisée pour gérer l’ordre des citations sur la page "À propos".
+* La bibliothèque [django-admin-ordering](https://pypi.org/project/django-admin-ordering/) est utilisée pour gérer l’ordre des citations sur la page "À propos" ;
+* La bibliothèque [brevo-python](https://pypi.org/project/brevo-python/) est utilisée pour envoyer vers le prestataire Brevo les adresses courriel des personnes ayant accepté d'être contactées dans le cadre de la recherche utilisateurs.
 
 ## Dépendances internes
 
