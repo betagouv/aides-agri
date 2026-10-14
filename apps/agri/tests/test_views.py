@@ -6,10 +6,9 @@ from django.test.utils import override_settings
 from django.urls import reverse
 from django_tasks import default_task_backend
 
-from agri.models import AboutPageQuote
 from aides.models import Aide, Theme, ZoneGeographique
 
-from agri.models import Alerte
+from agri.models import AboutPageQuote, Alerte
 
 
 @pytest.mark.django_db
@@ -521,6 +520,55 @@ def test_create_alerte_invalid_mail(client):
     assert response.status_code == 200
     assert response.context["invalid_email"] is True
     assert response.context.template.name == "agri/modals/create_alerte.html"
+
+
+@pytest.mark.django_db
+@override_settings(
+    TASKS={"default": {"BACKEND": "django_tasks.backends.dummy.DummyBackend"}}
+)
+def test_create_alerte_with_crm_optin(client, mocker):
+    # GIVEN no task enqueued
+    assert len(default_task_backend.results) == 0
+
+    # WHEN POSTing to "create an Alerte" with a valid e-mail address and the CRM opt-in checked
+    url = reverse("agri:alerte-create")
+    response = client.post(
+        url,
+        data={"email": "name@domain.tld", "optin-user-research": "on"},
+        headers={"host": "localhost"},
+    )
+
+    # THEN the register_email_into_brevo_crm tasks is enqueued
+    assert response.status_code == 200
+    assert len(default_task_backend.results) == 2
+    assert (
+        default_task_backend.results[0].task.name
+        == "send_create_alerte_confirmation_mail"
+    )
+    assert default_task_backend.results[1].task.name == "register_email_into_brevo_crm"
+
+
+@pytest.mark.django_db
+@override_settings(
+    TASKS={"default": {"BACKEND": "django_tasks.backends.dummy.DummyBackend"}}
+)
+def test_create_alerte_with_no_crm_optin(client, mocker):
+    # GIVEN no task enqueued
+    assert len(default_task_backend.results) == 0
+
+    # WHEN POSTing to "create an Alerte" with a valid e-mail address and the CRM opt-in NOT checked
+    url = reverse("agri:alerte-create")
+    response = client.post(
+        url, data={"email": "name@domain.tld"}, headers={"host": "localhost"}
+    )
+
+    # THEN the register_email_into_brevo_crm tasks is enqueued
+    assert response.status_code == 200
+    assert len(default_task_backend.results) == 1
+    assert (
+        default_task_backend.results[0].task.name
+        == "send_create_alerte_confirmation_mail"
+    )
 
 
 @pytest.mark.django_db

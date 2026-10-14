@@ -658,9 +658,10 @@ class CreateAlerteView(ResultsMixin, View):
                     alerte_id=alerte.pk,
                     base_url=f"{self.request.scheme}://{self.request.headers['host']}",
                 )
-            register_email_into_brevo_crm.enqueue(
-                email=email, source="Site Aides Agri, création d’alerte"
-            )
+            if request.POST.get("optin-user-research", None):
+                register_email_into_brevo_crm.enqueue(
+                    email=email, source="Site Aides Agri, création d’alerte"
+                )
             return render(
                 request,
                 "agri/_partials/create_alerte_ok.html",
