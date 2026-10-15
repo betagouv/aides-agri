@@ -2,11 +2,13 @@
   width: 100%;
 }
 
-#aide_form:has(.field-is_derivable img[alt="True"]):has(.field-parent) {
+#aide_form:has(.field-is_derivable img[alt="True"]):has(.field-parent),
+#result_list tr:has(.field-derivatives > a):has(.field-ancestors > a) {
   --header-bg: var(--secondary);
 }
 
-#aide_form:has(.field-is_derivable img[alt="True"]) {
+#aide_form:has(.field-is_derivable img[alt="True"]),
+#result_list tr:has(.field-derivatives > a) {
   --header-bg: #5D4190;
 }
 
@@ -21,4 +23,17 @@
 .select2-container--admin-autocomplete .select2-selection--multiple .select2-selection__rendered {
     flex-direction: column;
     align-items: flex-start;
+}
+
+/* list */
+#result_list tr:has(.field-derivatives > a) .field-nom::after {
+  content: "Fiche mère";
+  border-radius: 4px;
+  margin-left: 10px;
+  padding: 4px 8px;
+  background-color: var(--header-bg);
+}
+
+#result_list td.field-ancestors, #result_list th.column-ancestors {
+  display: none;
 }

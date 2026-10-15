@@ -6,7 +6,6 @@ from admin_extra_buttons.buttons import StandardButton
 from admin_extra_buttons.handlers import ButtonHandler
 from django.contrib import admin
 from django.contrib.admin.utils import flatten_fieldsets
-from django.contrib.admin.views.main import ChangeList
 from django import forms
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.core.exceptions import ValidationError
@@ -88,6 +87,50 @@ class IsOngoingListFilter(admin.SimpleListFilter):
             return queryset
 
 
+class IsParentFilter(admin.SimpleListFilter):
+    title = "Est une fiche mère"
+
+    parameter_name = "is_parent"
+    VALUE_TRUE = "1"
+    VALUE_FALSE = "0"
+
+    def lookups(self, request, model_admin) -> list[tuple[str, str]]:
+        return [
+            (self.__class__.VALUE_TRUE, "Oui"),
+            (self.__class__.VALUE_FALSE, "Non"),
+        ]
+
+    def queryset(self, request, queryset: AideQuerySet) -> AideQuerySet:
+        if self.value() == self.__class__.VALUE_TRUE:
+            return queryset.exclude(children=None)
+        elif self.value() == self.__class__.VALUE_FALSE:
+            return queryset.filter(children=None)
+        else:
+            return queryset
+
+
+class IsChildFilter(admin.SimpleListFilter):
+    title = "Est une fiche fille"
+
+    parameter_name = "is_child"
+    VALUE_TRUE = "1"
+    VALUE_FALSE = "0"
+
+    def lookups(self, request, model_admin) -> list[tuple[str, str]]:
+        return [
+            (self.__class__.VALUE_TRUE, "Oui"),
+            (self.__class__.VALUE_FALSE, "Non"),
+        ]
+
+    def queryset(self, request, queryset: AideQuerySet) -> AideQuerySet:
+        if self.value() == self.__class__.VALUE_TRUE:
+            return queryset.exclude(parent=None)
+        elif self.value() == self.__class__.VALUE_FALSE:
+            return queryset.filter(parent=None)
+        else:
+            return queryset
+
+
 class SpecificiteLocaleInlineAdmin(admin.TabularInline):
     model = SpecificiteLocale
     fields = ("organisme", "specificites")
@@ -155,6 +198,8 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         "is_published",
         IsOngoingListFilter,
         "status",
+        IsParentFilter,
+        IsChildFilter,
         "sujets",
         "sujets__themes",
         "types",
@@ -292,19 +337,8 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         TextField: {"widget": EasyMDEWidget},
     }
 
-    class AideChangeList(ChangeList):
-        def get_queryset(self, request, only_parents=True, **kwargs):
-            qs = (
-                super()
-                .get_queryset(request, **kwargs)
-                .annotate(children_count=Count("children"))
-            )
-            if only_parents and "parent__id__exact" not in request.GET:
-                qs = qs.filter(parent_id=None)
-            return qs
-
-    def get_changelist(self, request, **kwargs):
-        return AideAdmin.AideChangeList
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(children_count=Count("children"))
 
     def is_ongoing(self, obj):
         return obj.is_ongoing
@@ -618,7 +652,7 @@ class AideAdmin(ExtraButtonsMixin, ConcurrentModelAdmin, VersionAdmin):
         export_aides_to_csv_and_send_by_mail.enqueue(
             list(
                 self.get_changelist_instance(request)
-                .get_queryset(request, only_parents=False)
+                .get_queryset(request)
                 .values_list("pk", flat=True)
                 .iterator(chunk_size=20)
             ),
