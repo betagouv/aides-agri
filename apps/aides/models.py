@@ -930,7 +930,10 @@ class Aide(models.Model):
             Aide.Status.TODO,
             Aide.Status.CANDIDATE,
             Aide.Status.BLOCKED,
-        ) and (not self.is_derivable or self.children.published_validated().exists())
+        ) and (
+            not self.is_derivable
+            or (self.pk and self.children.published_validated().exists())
+        )
 
     def _compute_slug(self):
         if self.organisme_instructeur:
