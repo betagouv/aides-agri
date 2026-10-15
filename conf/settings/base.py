@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     "django_tasks_db",
     "pgtrigger",
     "phonenumber_field",
+    "rest_framework",
+    "rest_framework.authtoken",
     "reversion",
     "importmap",
     "two_factor",
@@ -68,6 +70,7 @@ INSTALLED_APPS = [
     "agri",
     "aides",
     "aides_feedback",
+    "aides_integration",
     "pac",
     "conf.apps.AidesAgriAdminConfig",
 ]
