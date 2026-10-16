@@ -10,7 +10,7 @@ from django import forms
 from django.contrib.admin.templatetags.admin_urls import admin_urlname
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.db.models import TextField, Q, Count
+from django.db.models import TextField, Q, Count, QuerySet
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -21,7 +21,7 @@ from reversion.admin import VersionAdmin
 
 from admin_concurrency.admin import ConcurrentModelAdmin
 
-from ..models import Aide, AideQuerySet, Sujet, SpecificiteLocale, Organisme
+from ..models import Aide, Sujet, SpecificiteLocale, Organisme
 from ._common import ArrayFieldCheckboxSelectMultiple
 
 
@@ -78,7 +78,7 @@ class IsOngoingListFilter(admin.SimpleListFilter):
             (self.__class__.VALUE_FALSE, "Non"),
         ]
 
-    def queryset(self, request, queryset: AideQuerySet) -> AideQuerySet:
+    def queryset(self, request, queryset):
         if self.value() == self.__class__.VALUE_TRUE:
             return queryset.only_open()
         elif self.value() == self.__class__.VALUE_FALSE:
@@ -100,7 +100,7 @@ class IsParentFilter(admin.SimpleListFilter):
             (self.__class__.VALUE_FALSE, "Non"),
         ]
 
-    def queryset(self, request, queryset: AideQuerySet) -> AideQuerySet:
+    def queryset(self, request, queryset: QuerySet) -> QuerySet:
         if self.value() == self.__class__.VALUE_TRUE:
             return queryset.exclude(children=None)
         elif self.value() == self.__class__.VALUE_FALSE:
@@ -122,7 +122,7 @@ class IsChildFilter(admin.SimpleListFilter):
             (self.__class__.VALUE_FALSE, "Non"),
         ]
 
-    def queryset(self, request, queryset: AideQuerySet) -> AideQuerySet:
+    def queryset(self, request, queryset: QuerySet) -> QuerySet:
         if self.value() == self.__class__.VALUE_TRUE:
             return queryset.exclude(parent=None)
         elif self.value() == self.__class__.VALUE_FALSE:

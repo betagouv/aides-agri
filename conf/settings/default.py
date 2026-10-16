@@ -8,6 +8,7 @@ from .apps.datagouv import *  # noqa
 from .apps.dsfr import *  # noqa
 from .apps.matomo import *  # noqa
 from .apps.phonenumber import *  # noqa
+from .apps.rest_framework import *  # noqa
 from .apps.sentry import *  # noqa
 
 from .apps.aides import *  # noqa
