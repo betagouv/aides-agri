@@ -33,7 +33,7 @@ jobs:
       - name: Compile-then-vendor JS dependencies that don't
         run: |
           echo 'export * as Sentry from "@sentry/browser"' | ./node_modules/.bin/esbuild --bundle --minify --format=esm --outfile=static/vendor/sentry.js
-      - uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d  # 7.2.0
+      - uses: stefanzweifel/git-auto-commit-action@d0b01107b5db882071f96de5dd4b54961ea93f4c  # 7.2.1
         with:
           file_pattern: 'static/vendor/*.*'
           commit_message: 'chore(deps): vendor dependencies'
