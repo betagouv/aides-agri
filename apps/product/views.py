@@ -33,11 +33,12 @@ class StatistiquesPageView(TemplateView):
             datetime.date(2026, 7, 1),
             datetime.date(2026, 8, 1),
             datetime.date(2026, 9, 1),
+            datetime.date(2026, 10, 1),
         ]
         all_months_codes = [month_date.strftime("%m/%Y") for month_date in all_dates]
         context_data.update(
             {
-                "date_updated": datetime.date(2026, 10, 1),
+                "date_updated": datetime.date(2026, 11, 2),
                 "stats": {
                     "Le produit Aides Agri est-il utilisable ?": [
                         {
@@ -49,7 +50,9 @@ class StatistiquesPageView(TemplateView):
                             "latest_month": all_dates[-1],
                             "data": {
                                 "x": [all_months_codes],
-                                "y": [[62, 88, 99, 110, 135, 195, 290, 333, 344, 395]],
+                                "y": [
+                                    [62, 88, 99, 110, 135, 195, 290, 333, 344, 395, 410]
+                                ],
                                 "name": ["Nombre", "Mois"],
                             },
                         },
@@ -62,7 +65,7 @@ class StatistiquesPageView(TemplateView):
                             "latest_month": all_dates[-1],
                             "data": {
                                 "x": [all_months_codes],
-                                "y": [[49, 45, 57, 62, 45, 41, 34, 35, 29, 30]],
+                                "y": [[49, 45, 57, 62, 45, 41, 34, 35, 29, 30, 30]],
                                 "name": ["Pourcentage", "Mois"],
                             },
                             "unit": "%",
@@ -90,6 +93,7 @@ class StatistiquesPageView(TemplateView):
                                         11_723,
                                         11_511,
                                         28_772,
+                                        58_646,
                                     ]
                                 ],
                                 "name": ["Nombre", "Mois"],
@@ -105,7 +109,19 @@ class StatistiquesPageView(TemplateView):
                             "data": {
                                 "x": [all_months_codes],
                                 "y": [
-                                    [130, 155, 110, 119, 96, 168, 183, 166, 154, 131]
+                                    [
+                                        130,
+                                        155,
+                                        110,
+                                        119,
+                                        96,
+                                        168,
+                                        183,
+                                        166,
+                                        154,
+                                        131,
+                                        120,
+                                    ]
                                 ],
                                 "name": ["Secondes", "Mois"],
                             },
@@ -133,6 +149,7 @@ class StatistiquesPageView(TemplateView):
                                         12_793,
                                         12_227,
                                         19_367,
+                                        54_718,
                                     ]
                                 ],
                                 "name": ["Nombre", "Mois"],
@@ -157,8 +174,9 @@ class StatistiquesPageView(TemplateView):
                                     2.4,
                                     1.85,
                                     1.58,
+                                    1.85,
                                 ],
-                                "y_line": [25, 12, 3, 0, 27, 25, 13, 25, 53],
+                                "y_line": [25, 12, 3, 0, 27, 25, 13, 25, 53, 163],
                                 "name_bar": "Note moyenne (sur 5)",
                                 "name_line": "Nombre de notes",
                             },
@@ -183,8 +201,9 @@ class StatistiquesPageView(TemplateView):
                                     2.54,
                                     2.20,
                                     2.95,
+                                    1.95,
                                 ],
-                                "y_line": [13, 13, 10, 2, 47, 54, 28, 54, 83],
+                                "y_line": [13, 13, 10, 2, 47, 54, 28, 54, 83, 219],
                                 "name_bar": "Note moyenne (sur 5)",
                                 "name_line": "Nombre de notes",
                             },
