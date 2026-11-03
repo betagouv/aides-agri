@@ -6,7 +6,6 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.db import transaction
 from django.http.request import QueryDict
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import redirect, render
@@ -637,27 +636,17 @@ class CreateAlerteView(ResultsMixin, View):
         email = self.request.POST.get("email").strip()
         try:
             validate_email(email)
-            for existing in Alerte.objects.filter(
-                email=email, departement=self.departement
-            ):
-                if (
-                    set(existing.filieres.all()) == set(self.filieres)
-                    and set(existing.themes.all()) == set(self.themes)
-                    and set(existing.sujets.all()) == set(self.sujets)
-                ):
-                    existing.delete()
-            with transaction.atomic():
-                alerte = Alerte.objects.create(
-                    email=email,
-                    departement=self.departement,
-                )
-                alerte.filieres.set(self.filieres)
-                alerte.sujets.set(self.sujets)
-                alerte.themes.set(self.themes)
-                send_create_alerte_confirmation_mail.enqueue(
-                    alerte_id=alerte.pk,
-                    base_url=f"{self.request.scheme}://{self.request.headers['host']}",
-                )
+            alerte = Alerte.objects.create(
+                email=email,
+                departement=self.departement,
+                filieres=self.filieres,
+                themes=self.themes,
+                sujets=self.sujets,
+            )
+            send_create_alerte_confirmation_mail.enqueue(
+                alerte_id=alerte.pk,
+                base_url=f"{self.request.scheme}://{self.request.headers['host']}",
+            )
             if request.POST.get("optin-user-research", None):
                 register_email_into_brevo_crm.enqueue(
                     email=email, source="Site Aides Agri, création d’alerte"

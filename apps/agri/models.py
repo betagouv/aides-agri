@@ -1,5 +1,5 @@
 from admin_ordering.models import OrderableModel
-from django.db import models
+from django.db import models, transaction
 from django.utils.crypto import get_random_string
 
 from aides.models import Filiere, Sujet, Theme, ZoneGeographique
@@ -23,6 +23,32 @@ class AboutPageQuote(OrderableModel):
 class AlerteQuerySet(models.QuerySet):
     def by_token(self, token: str) -> models.QuerySet["Alerte"]:
         return self.filter(token=token)
+
+    @transaction.atomic
+    def create(
+        self,
+        email: str = None,
+        departement: ZoneGeographique = None,
+        filieres: models.QuerySet[Filiere] = None,
+        themes: models.QuerySet[Theme] = None,
+        sujets: models.QuerySet[Sujet] = None,
+        **kwargs,
+    ):
+        filieres = set(filieres) if filieres else set()
+        themes = set(themes) if themes else set()
+        sujets = set(sujets) if sujets else set()
+        for existing in Alerte.objects.filter(email=email, departement=departement):
+            if (
+                set(existing.filieres.all()) == filieres
+                and set(existing.themes.all()) == themes
+                and set(existing.sujets.all()) == sujets
+            ):
+                existing.delete()
+        alerte = super().create(email=email, departement=departement)
+        alerte.filieres.set(filieres)
+        alerte.sujets.set(sujets)
+        alerte.themes.set(themes)
+        return alerte
 
 
 class Alerte(models.Model):
