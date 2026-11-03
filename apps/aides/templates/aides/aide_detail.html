@@ -83,8 +83,11 @@
             {% dsfr_badge label=type_aide.nom extra_classes="fr-badge--icon-left fr-badge--sm fr-icon-"|add:type_aide.icon_name|add:"-fill" %}
           {% endfor %}
           {% dsfr_tag label=organisme_for_departement.nom extra_classes="fr-tag--sm" %}
-          {% for sujet in object.sujets.all %}
-            {% dsfr_tag label=sujet.nom_court extra_classes="fr-tag--sm" %}
+          {% for sujet in object.sujets.published_with_urgent_themes %}
+            {% dsfr_tag label=sujet.nom_court extra_classes="fr-tag--sm fr-tag--icon-left fr-icon-"|add:sujet.icon_name %}
+          {% endfor %}
+          {% for theme in object.themes.published_non_urgence %}
+            {% dsfr_tag label=theme.nom_court extra_classes="fr-tag--sm fr-tag--icon-left fr-icon-"|add:theme.icon_name %}
           {% endfor %}
         </div>
       </div>
