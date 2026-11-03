@@ -888,6 +888,10 @@ class Aide(models.Model):
             else False
         )
 
+    @property
+    def themes(self) -> models.QuerySet:
+        return Theme.objects.filter(sujets__in=self.sujets.all())
+
     def compute_priority(self):
         priority = 0
         priority += self.importance * 20
