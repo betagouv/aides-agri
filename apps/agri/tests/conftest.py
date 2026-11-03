@@ -184,4 +184,8 @@ register(agri_factories.AboutPageQuoteFactory, "quote_2")
 register(agri_factories.AboutPageQuoteFactory, "quote_3")
 
 register(agri_factories.AlerteFactory)
-register(agri_factories.AlerteFactory, "alerte_2")
+register(
+    agri_factories.AlerteFactory,
+    "alerte_2",
+    departement=LazyFixture("zone_geographique_departement_13"),
+)

@@ -1,4 +1,5 @@
 import pytest
+from pytest_factoryboy import LazyFixture
 
 from django.contrib.messages import get_messages
 from django.contrib.messages.constants import SUCCESS, ERROR
@@ -484,6 +485,50 @@ def test_create_alerte_view(
     assert alerte.departement == zone_geographique_departement_13
     assert set(alerte.sujets.all()) == {sujet_published}
     assert set(alerte.filieres.all()) == {filiere_ok_1}
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "alerte__email,alerte__departement,alerte__with_filieres,alerte__with_sujets,alerte__with_themes",
+    [["test@example.com", LazyFixture("zone_geographique_departement_13"), 2, 2, 2]],
+)
+def test_create_alerte_view_identical_to_existing_one(client, alerte):
+    # GIVEN one existing Alerte in DB
+    assert Alerte.objects.count() == 1
+    existing = Alerte.objects.first()
+    existing_filieres = set(existing.filieres.all())
+    existing_sujets = set(existing.sujets.all())
+    existing_themes = set(existing.themes.all())
+    assert len(existing_filieres) == 2
+    assert len(existing_sujets) == 2
+    assert len(existing_themes) == 2
+
+    # WHEN POSTing to create one with the exact same parameters
+    url = reverse(
+        "agri:alerte-create",
+        query={
+            "departement": existing.departement.code,
+            "filieres": list(existing.filieres.values_list("pk", flat=True)),
+            "sujets": list(existing.sujets.values_list("pk", flat=True)),
+            "themes": list(existing.themes.values_list("pk", flat=True)),
+        },
+    )
+    response = client.post(
+        url, data={"email": existing.email}, headers={"host": "localhost"}
+    )
+
+    # THEN
+    # it's a 200
+    # and there is still only one Alerte in DB
+    assert response.status_code == 200
+    assert 'class="fr-alert fr-alert--success"' in response.text
+    assert Alerte.objects.count() == 1
+    alerte = Alerte.objects.first()
+    assert alerte.email == existing.email
+    assert alerte.departement == existing.departement
+    assert set(alerte.filieres.all()) == existing_filieres
+    assert set(alerte.sujets.all()) == existing_sujets
+    assert set(alerte.themes.all()) == existing_themes
 
 
 @pytest.mark.django_db
