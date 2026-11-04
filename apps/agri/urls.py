@@ -5,7 +5,6 @@ from .views import (
     AboutView,
     HomeView,
     ResultsView,
-    SendResultsByMailView,
     CreateAlerteView,
     ListAlertesView,
 )
@@ -20,11 +19,6 @@ urlpatterns = [
         "aides-less",
         TemplateView.as_view(template_name="agri/_partials/results_less.html"),
         name="results-less",
-    ),
-    path(
-        "envoyer-les-resultats-par-courriel",
-        SendResultsByMailView.as_view(),
-        name="send-results-by-mail",
     ),
     path("creer-une-alerte", CreateAlerteView.as_view(), name="alerte-create"),
     path(
