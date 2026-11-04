@@ -17,6 +17,13 @@ class AlerteFactory(factory.django.DjangoModelFactory):
     departement = None
 
     @factory.post_generation
+    def override_date_creation(obj, create, value, **kwargs):
+        if not create or not value:
+            return
+        obj.date_creation = value
+        obj.save()
+
+    @factory.post_generation
     def with_filieres(obj, create, value: int, **kwargs):
         if not create or not value:
             return
