@@ -1,7 +1,7 @@
 {
   "jobs": [
     {
-      "command": "0 6 * * * sh deployment/scalingo/bin/aides_daily_tasks.sh"
+      "command": "0 6 * * * sh deployment/scalingo/bin/daily_tasks.sh"
     },
     {
       "command": "5 5 * * 1 python manage.py aides_export_to_datagouv"

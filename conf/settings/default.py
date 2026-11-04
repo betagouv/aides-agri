@@ -10,5 +10,6 @@ from .apps.matomo import *  # noqa
 from .apps.phonenumber import *  # noqa
 from .apps.sentry import *  # noqa
 
+from .apps.agri import *  # noqa
 from .apps.aides import *  # noqa
 from .apps.ui import *  # noqa
