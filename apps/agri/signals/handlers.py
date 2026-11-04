@@ -4,7 +4,7 @@ from django_tasks_db.backend import DatabaseBackend
 from django_tasks import TaskResultStatus
 from django_tasks.signals import task_finished
 
-from ..tasks import send_results_by_mail, register_email_into_brevo_crm
+from ..tasks import register_email_into_brevo_crm
 
 
 @receiver(task_finished)
@@ -15,7 +15,7 @@ def obfuscate_tasks_pii(
         (
             isinstance(sender, DatabaseBackend),
             hasattr(task_result, "db_result"),
-            task_result.task in (send_results_by_mail, register_email_into_brevo_crm),
+            task_result.task in (register_email_into_brevo_crm,),
             task_result.status == TaskResultStatus.SUCCESSFUL,
         )
     ):

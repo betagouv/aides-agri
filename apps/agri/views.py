@@ -32,7 +32,6 @@ from ui.widgets import SelectWithDisabledEmptyOption
 from .models import AboutPageQuote, Alerte
 
 from .tasks import (
-    send_results_by_mail,
     send_create_alerte_confirmation_mail,
     register_email_into_brevo_crm,
 )
@@ -602,31 +601,6 @@ class ResultsView(ResultsMixin, ListView):
             )
 
         return context_data
-
-
-class SendResultsByMailView(ResultsMixin, View):
-    def post(self, request, *args, **kwargs):
-        email = self.request.POST.get("email")
-        try:
-            validate_email(email)
-            send_results_by_mail.enqueue(
-                email=email,
-                base_url=f"{self.request.scheme}://{self.request.headers['host']}",
-                departement_code=self.departement_code,
-                themes_ids=self.themes_ids,
-                sujets_ids=self.sujets_ids,
-                filieres_ids=self.filieres_ids,
-                aides_ids=[a.pk for a in self.get_results()],
-            )
-            return render(request, "agri/_partials/send-results-by-mail-ok.html")
-        except ValidationError:
-            response = render(
-                request,
-                "agri/modals/send_results_by_mail.html",
-                context={"invalid_email": True},
-            )
-            response.setdefault("Hx-Reselect", "form")
-            return response
 
 
 class CreateAlerteView(ResultsMixin, View):
