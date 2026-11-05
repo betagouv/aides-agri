@@ -101,7 +101,7 @@ document.addEventListener("htmx:load", evt => {
       <input type="hidden" name="profil" value="{{ profil }}">
 
       {% if national_aides_only_disclaimer %}
-      <div class="fr-container fr-mb-3w">
+      <div class="fr-container fr-mb-3w" id="national-aides-only-disclaimer">
         <div class="fr-grid-row">
           <div class="fr-col">
             {% dsfr_alert type="info" collapsible_attrs=ui_dsfr_alert_collapsible_attrs title="En cours de recensement des aides" content=national_aides_only_disclaimer %}
@@ -110,7 +110,7 @@ document.addEventListener("htmx:load", evt => {
       </div>
       {% endif %}
 
-      <div class="fr-background-alt--grey fr-pt-2w">
+      <div class="fr-background-alt--grey fr-pt-2w" id="filters-formfields">
         <div class="fr-container">
           <div class="fr-grid-row">
             <div class="fr-col fr-col-12 fr-col-md-6">

@@ -120,7 +120,10 @@
   .fr-breadcrumb,
   .fr-alert,
   .fr-btn,
-  #aides-feedback {
+  #aides-feedback,
+	#national-aides-only-disclaimer,
+	#filters-formfields,
+	#signalement-aides {
     display: none;
   }
 }
