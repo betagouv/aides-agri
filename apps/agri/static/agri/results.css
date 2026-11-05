@@ -91,6 +91,10 @@
   text-align: center;
 }
 
+#aides-feedback legend {
+	text-wrap: balance;
+}
+
 .back-to-top {
   text-align: right;
 }
@@ -116,7 +120,10 @@
   .fr-breadcrumb,
   .fr-alert,
   .fr-btn,
-  #aides-feedback {
+  #aides-feedback,
+	#national-aides-only-disclaimer,
+	#filters-formfields,
+	#signalement-aides {
     display: none;
   }
 }

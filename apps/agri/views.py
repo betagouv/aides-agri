@@ -26,7 +26,9 @@ from aides.models import (
 from aides_feedback.forms import (
     CreateFeedbackOnAidesForm,
     FeedbackOnThemesAndSujetsForm,
+    ChoiceWithSideLabelsField,
 )
+from aides_feedback.models import FeedbackOnAides
 from ui.widgets import SelectWithDisabledEmptyOption
 
 from .models import AboutPageQuote, Alerte
@@ -338,6 +340,16 @@ class ResultsMixin:
         )
 
 
+class CreateFeedbackOnResultsForm(CreateFeedbackOnAidesForm):
+    usefulness = ChoiceWithSideLabelsField(
+        label="Ces informations vous permettent-elles d’y voir plus clair sur votre situation ?",
+        choices=FeedbackOnAides.usefulness.field.choices,
+        widget=InlineRadioSelect(attrs={"class": "fr-sr-only"}),
+        before_label="Pas du tout",
+        after_label="Tout à fait",
+    )
+
+
 class ResultsView(ResultsMixin, ListView):
     template_name = "agri/results.html"
 
@@ -595,7 +607,7 @@ class ResultsView(ResultsMixin, ListView):
                     "only_closed": self.only_closed,
                     "order_by": self.order_by,
                     "open_besoins_chooser": open_besoins_chooser,
-                    "create_feedback_on_aides_form": CreateFeedbackOnAidesForm(),
+                    "create_feedback_on_aides_form": CreateFeedbackOnResultsForm(),
                     "feedback_themes_sujets_form": FeedbackOnThemesAndSujetsForm(),
                 }
             )
