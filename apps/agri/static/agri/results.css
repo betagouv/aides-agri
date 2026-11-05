@@ -91,6 +91,10 @@
   text-align: center;
 }
 
+#aides-feedback legend {
+	text-wrap: balance;
+}
+
 .back-to-top {
   text-align: right;
 }
