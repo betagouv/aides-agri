@@ -75,6 +75,20 @@ Aucune fonctionnalité ne requiert d’authentification.
     * Via la dépendance [django-axes](https://pypi.org/project/django-axes) ;
     * En désactivant, [comme recommandé dans la documentation pour les sites soumis au RGPD (en anglais)](https://django-axes.readthedocs.io/en/latest/3_usage.html#data-privacy-and-gdpr), le traçage et le stockage des adresses IP sources de tentatives d’authentification.
 
+#### Pour les API
+
+* Le système d’authentification par jeton simple de [django-rest-framework](https://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication) est utilisé :
+    * Chaque partenaire qui souhaite utiliser l’API pour déverser ses aides dans le système Aides Agri se voit fournir un jeton :
+    * Généré par un administrateur via l’interface d’administration ;
+    * Et envoyé de manière sécurisée via le logiciel [VaultWarden Send](https://vaultwarden.com/fr/support/envoyer-quelque-chose-en-toute-securite/) hébergé par la DINUM sur https://vaultwarden.incubateur.net/.
+    * Le jeton doit ensuite être stocké chez le partenaire de manière sécurisée et utilisé en variable d’environnement de son applicatif qui contient l’appel à l’API Aides Agri ;
+    * Si un jeton est soupçonné de compromission, il peut être invalidé en un clic dans l’interface d’administration puis renouvelé et renvoyé selon la même procédure.
+* Chaque partenaire, identifié par son jeton d’API, n’a accès qu’aux aides qui ont été déposées par lui-même dans le système Aides Agri ;
+* Toutes les écritures faites via l’API se font dans une table de la base de données qui n’est qu’une table tampon :
+    * Les aides déposées par ce biais ne sont jamais publiées directement sur Aides Agri ;
+    * Un système de gestion des versions est mis en place sur toutes les écritures faites par le biais de l’API : les modifications sont journalisées et il est possible de revenir à une version antérieure ;
+    * Les suppressions sont faites selon le principe du *soft-delete*, toutes les données restent en base mais marquées comme supprimées.
+
 ## Politique liée à la découverte de vulnérabilités
 
 * Un fichier [SECURITY.md](../../SECURITY.md) existe à la racine du dépôt Git ;
