@@ -14,6 +14,7 @@ dependencies = [
     { name = "django-admin-extra-buttons" },
     { name = "django-admin-ordering" },
     { name = "django-anymail" },
+    { name = "django-auto-admin-fieldsets" },
     { name = "django-axes" },
     { name = "django-csp" },
     { name = "django-dsfr", extra = ["markdown"] },
@@ -24,8 +25,10 @@ dependencies = [
     { name = "django-tasks" },
     { name = "django-tasks-db" },
     { name = "django-two-factor-auth", extra = ["phonenumberslite"] },
+    { name = "djangorestframework" },
     { name = "gunicorn" },
     { name = "markdown" },
+    { name = "markdownify" },
     { name = "mjml-python" },
     { name = "psycopg", extra = ["binary"] },
     { name = "qrcode" },
@@ -57,6 +60,7 @@ requires-dist = [
     { name = "django-admin-extra-buttons", specifier = "~=2.2" },
     { name = "django-admin-ordering" },
     { name = "django-anymail", extras = ["brevo"], specifier = "~=15.2" },
+    { name = "django-auto-admin-fieldsets", specifier = "~=0.3" },
     { name = "django-axes", specifier = "~=9.0" },
     { name = "django-csp", specifier = "~=4.0" },
     { name = "django-dsfr", extras = ["markdown"], specifier = "~=3.6" },
@@ -67,8 +71,10 @@ requires-dist = [
     { name = "django-tasks", specifier = "~=0.12" },
     { name = "django-tasks-db", specifier = "~=0.13" },
     { name = "django-two-factor-auth", extras = ["phonenumberslite"], specifier = "~=1.18" },
+    { name = "djangorestframework", specifier = "~=3.18" },
     { name = "gunicorn", specifier = "~=26.2" },
     { name = "markdown", specifier = "~=3.11" },
+    { name = "markdownify", specifier = "~=1.2" },
     { name = "mjml-python", specifier = "~=1.4" },
     { name = "psycopg", extras = ["binary"], specifier = "~=3.3" },
     { name = "qrcode", specifier = "~=7.4" },
@@ -120,6 +126,19 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/6b/90/f5fce14e95fccf53b58e8e2c47cd84d40d105d64073ae1ac75166db150e0/asgiref-3.13.0.tar.gz", hash = "sha256:034cc8cbf72d00553b4be256703ac545120b4e50af13b49dec99da899aeeecb4", size = 52941, upload-time = "2026-10-23T08:13:14.715Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/2e/b0/ec211e1f7966247cb6469158d856bac9aa4c2fe13621bd6a352e4f850453/asgiref-3.13.0-py3-none-any.whl", hash = "sha256:f9596a2434512686473d50f96ff6207fbba49ae1a785dfac614df4aeb085674d", size = 27593, upload-time = "2026-10-23T08:13:13.394Z" },
+]
+
+[[package]]
+name = "beautifulsoup4"
+version = "4.15.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "soupsieve" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/43/65/318323f98dbee45d42dff61d8f047181bc6f2268a9068cfad035a46be5af/beautifulsoup4-4.15.0.tar.gz", hash = "sha256:288e3ca7d54b06f2ac191970bc275c1939cb46d450b255bf6718b04aa37ab4f7", size = 632571, upload-time = "2026-06-07T16:44:20.453Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/88/c6/92fcd42f1ba33e1184263f25bfabf3d27c383410470f169e4b8163bf9c17/beautifulsoup4-4.15.0-py3-none-any.whl", hash = "sha256:d6f88de62e1d4e38ecb1077eb9724cd0eff29d2a08ca16a401e9b9e93f117cf9", size = 109924, upload-time = "2026-06-07T16:44:21.566Z" },
 ]
 
 [[package]]
@@ -421,6 +440,15 @@ wheels = [
 ]
 
 [[package]]
+name = "django-auto-admin-fieldsets"
+version = "0.3.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e2/b8/ccff57e030e2b6684b37b51d52401a330008115c7dd8d17fb3303f851807/django_auto_admin_fieldsets-0.3.0.tar.gz", hash = "sha256:db916626edd233de1eeda876d6aab6f93eac6d0a1c34f87491d3d03543802ca2", size = 4938, upload-time = "2026-02-16T08:20:12.369Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9d/1b/f6bb7972b7580495d3f01e9a45ee021683eea22a787c33873a056462f9ef/django_auto_admin_fieldsets-0.3.0-py3-none-any.whl", hash = "sha256:8e24f4757d6bd056c2392b044ab0cdb21d813f69e33caa981dda26ffe703db91", size = 5562, upload-time = "2026-02-16T08:20:11.419Z" },
+]
+
+[[package]]
 name = "django-axes"
 version = "9.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -666,6 +694,18 @@ wheels = [
 ]
 
 [[package]]
+name = "djangorestframework"
+version = "3.18.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8d/b2/1cee76b188301f7d03169ca77fab2b3d3ec5d01b3469189f944af2d7f11a/djangorestframework-3.18.3.tar.gz", hash = "sha256:446a9b352e7eff630421ab3f2328bd2401b109a9470afa4a31189994911ed030", size = 923563, upload-time = "2026-10-06T21:33:51.521Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c4/dd/de5f4543765bec94e036a5e9593a42f8fa7efec8de78eb56b9ca834385f3/djangorestframework-3.18.3-py3-none-any.whl", hash = "sha256:8544bb674846731b1e3c9b309236ee1dc412905a0aa725be2ec193ca950a7d12", size = 903986, upload-time = "2026-10-06T21:33:49.917Z" },
+]
+
+[[package]]
 name = "factory-boy"
 version = "3.3.3"
 source = { registry = "https://pypi.org/simple" }
@@ -823,6 +863,19 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/f4/32/0b4d0297064244f04af4331b65de16237cc3cce07474171ee14222a28981/markdown-3.11.2.tar.gz", hash = "sha256:87bf5d90f2d2882e2c02fcda182c2800456b985bff38913867c49706481514b0", size = 491445, upload-time = "2026-10-19T19:41:42.687Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/fe/66/bcab3b677b71ad286b4e607e3427499537c76e13ad2e22584ba7a7d9882c/markdown-3.11.2-py3-none-any.whl", hash = "sha256:f80390747a2a0ff2ba54da074ce4f862f72a6685f608cd2637b646a6d83993f5", size = 114266, upload-time = "2026-10-19T19:41:41.244Z" },
+]
+
+[[package]]
+name = "markdownify"
+version = "1.2.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "beautifulsoup4" },
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/92/ab/d1297139c0e2ceb151ae564c8c4f57ac0155d8f1f8b4cbd5d6523c82ea36/markdownify-1.2.3.tar.gz", hash = "sha256:1a176f05522c8a2cb1dd3ab9d307dcdadbed5c26ae717855bfc42b3b6d38d937", size = 18852, upload-time = "2026-06-30T20:27:39.06Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/04/10/fa543d484e8b1199243fe20eedd02cc5af050edebce98a7293a5773df592/markdownify-1.2.3-py3-none-any.whl", hash = "sha256:a189a0bedfd14009030fde5f85bb6f77c56897cb839b5c25315dd7d4e3e290ba", size = 15732, upload-time = "2026-06-30T20:27:38.094Z" },
 ]
 
 [[package]]
@@ -1282,6 +1335,24 @@ wheels = [
 [package.optional-dependencies]
 django = [
     { name = "django" },
+]
+
+[[package]]
+name = "six"
+version = "1.17.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81", size = 34031, upload-time = "2024-12-04T17:35:28.174Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274", size = 11050, upload-time = "2024-12-04T17:35:26.475Z" },
+]
+
+[[package]]
+name = "soupsieve"
+version = "4.0.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/01/7c/a64eedae0b7776cb9602d2da9cb8f8caae8e1b4c1da5e8e87bf1e68121ec/soupsieve-4.0.1.tar.gz", hash = "sha256:7621e3c5f6b371ed2c5eabaac5de300ac3d66d05e6d7f34783e31b63c4f90c75", size = 153302, upload-time = "2026-11-04T16:36:27.749Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2c/5c/4f68370847b561a389dd9a2d7eb3d19fd8cbb8acbae543a0c6b8d0d9700b/soupsieve-4.0.1-py3-none-any.whl", hash = "sha256:2e68cf7dd5a0f29d81f9d485275ccf294e6475f615e211895d91cb81f8614f04", size = 50688, upload-time = "2026-11-04T16:36:26.158Z" },
 ]
 
 [[package]]

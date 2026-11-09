@@ -2,5 +2,6 @@
 @gouvfr/dsfr-chart/dist/DSFRChart/DSFRChart.css
 @hotwired/stimulus/dist/stimulus.js
 htmx.org/dist/htmx.js
+diff/dist/diff.min.js
 easymde/dist/easymde.min.css
 easymde/dist/easymde.min.js
