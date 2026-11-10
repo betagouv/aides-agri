@@ -5,7 +5,7 @@ version = "0.1.0"
 dependencies = [
   "brevo-python~=5.1",
   "datagouv-client ~=0.5",
-  "django ~=5.2",
+  "django~=6.1",
   "django-admin-extra-buttons~=2.2",
   "django-admin-ordering",
   "django-anymail[brevo]~=15.2",
