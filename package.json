@@ -15,7 +15,7 @@
     "htmx.org": "^2"
   },
   "devDependencies": {
-    "@lhci/cli": "^0.15",
+    "@lhci/cli": "^0.16",
     "@testing-library/cypress": "^10",
     "esbuild": "^0.28"
   }
