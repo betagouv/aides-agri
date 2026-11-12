@@ -8,13 +8,6 @@ from agri.models import Alerte
 from agri import tasks
 
 
-@pytest.fixture(autouse=True)
-def use_real_tasks_backend(settings):
-    settings.TASKS = {
-        "default": {"BACKEND": "django_tasks.backends.immediate.ImmediateBackend"}
-    }
-
-
 @pytest.mark.django_db
 def test_maybe_send_daily_alerte_positive(
     aide_published_nationale_type_1_sujet_non_urgence_no_filiere_ended, alerte, mocker
