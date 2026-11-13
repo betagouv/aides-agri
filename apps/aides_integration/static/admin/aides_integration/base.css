@@ -1,0 +1,14 @@
+.excludelink::after {
+  content: "👎";
+  margin-left: 5px;
+}
+
+.insertlink::after {
+  content: "👍";
+  margin-left: 5px;
+}
+
+.editlink::after {
+  content: "✍";
+  margin-left: 5px;
+}

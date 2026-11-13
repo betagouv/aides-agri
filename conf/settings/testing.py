@@ -10,6 +10,7 @@ LOGGING = {}
 STORAGES["staticfiles"]["BACKEND"] = (  # noqa: F405
     "django.contrib.staticfiles.storage.StaticFilesStorage"
 )
+TASKS = {"default": {"BACKEND": "django_tasks.backends.immediate.ImmediateBackend"}}
 
 # Apps specific
 AGRI_PATH_DATA = "tests/data"

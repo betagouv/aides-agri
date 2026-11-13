@@ -1,0 +1,51 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static admin_urls %}
+
+{% block extrastyle %}
+  <link rel="stylesheet" href="{% static 'admin/aides_integration/diff.css' %}">
+{% endblock %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <script src="{% static 'vendor/diff.min.js' %}"></script>
+  <script src="{% static 'admin/aides_integration/diff.js' %}"></script>
+  <script nonce="{{ request.csp_nonce }}">
+  document.onreadystatechange = (evt) => {
+    if (document.readyState !== "complete") {
+      return
+    }
+    document.querySelectorAll("[data-fieldname]").forEach(elt => {
+      makediff(elt.dataset.fieldname)
+    })
+  }
+  </script>
+{% endblock extrahead %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+&rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+&rsaquo; <a href="{% url opts|admin_urlname:'change' original.pk %}">{{ original }}</a>
+&rsaquo; Changements de la dernière version
+</div>
+{% endblock %}
+
+{% block content %}
+  <table style="margin-block: 20px;">
+    <tr>
+      <th>Champ</th>
+      <th class="hidden">Ancienne valeur</th>
+      <th class="hidden">Nouvelle valeur</th>
+      <th>Différentiel</th>
+    </tr>
+    {% for field, values in fields_for_diff.items %}
+      <tr data-fieldname="{{ field }}">
+        <td>{{ field }}</td>
+        <td class="hidden" id="old-{{ field }}">{{ values|first|safe }}</td>
+        <td class="hidden" id="new-{{ field }}">{{ values|last|safe }}</td>
+        <td id="diff-{{ field }}"> </td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

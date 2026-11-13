@@ -11,6 +11,7 @@
     "@gouvfr/dsfr-chart": "^2",
     "@hotwired/stimulus": "^3",
     "@sentry/browser": "^10",
+    "diff": "^9",
     "easymde": "^2",
     "htmx.org": "^2"
   },
