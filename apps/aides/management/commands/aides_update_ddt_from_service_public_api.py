@@ -6,6 +6,9 @@ from django.core.management.base import BaseCommand
 from ...models import Organisme
 
 
+URL = "https://api-lannuaire.service-public.gouv.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=nom%20like%20%22direction%20d%C3%A9partementale%20des%20territoires%22&limit=100&select=id,nom,adresse,telephone,site_internet,adresse_courriel,plage_ouverture,siren"
+
+
 def extract_url(data: dict) -> str:
     d = json.loads(data["site_internet"])
     return d[0]["valeur"] if d else ""
@@ -49,11 +52,7 @@ def extract_horaires(data: dict) -> str:
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        r = requests.get(
-            "https://api-lannuaire.service-public.gouv.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=nom%20like%20%22direction%20d%C3%A9partementale%20des%20territoires%22&limit=100&select=id,nom,adresse,telephone,site_internet,adresse_courriel,plage_ouverture,siren",
-            headers={"User-Agent": "AidesAgri/1.0"},
-            timeout=5,
-        )
+        r = requests.get(URL, headers={"User-Agent": "AidesAgri/1.0"}, timeout=5)
         results = r.json()["results"]
         ddt_by_id = {ddt["id"]: ddt for ddt in results}
         qs = Organisme.objects.filter(id_annuaire_service_public__in=ddt_by_id.keys())

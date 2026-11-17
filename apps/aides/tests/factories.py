@@ -7,6 +7,7 @@ class OrganismeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Organisme
 
+    id_annuaire_service_public = ""
     parent = None
     nom = factory.Sequence(lambda n: f"Organisme {n}")
     illustration = b""
