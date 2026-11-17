@@ -42,7 +42,7 @@ makemigrations: (manage "makemigrations")
 
 # Run Django tests
 test:
-    DJANGO_SETTINGS_MODULE=conf.settings.testing uv run pytest --cov
+    DJANGO_SETTINGS_MODULE=conf.settings.testing uv run pytest --cov ./apps --cov ./conf
 
 # Start Django for end-to-end tests
 runserver-for-e2e-tests:
