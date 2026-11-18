@@ -6,6 +6,7 @@ from aides import models
 class OrganismeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Organisme
+        skip_postgeneration_save = True
 
     id_annuaire_service_public = ""
     parent = None
