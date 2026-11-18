@@ -1,8 +1,9 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 import pytest
 from django.core.management import call_command
 from django.test.utils import override_settings
+from django.utils.timezone import now
 
 from agri.management.commands import agri_alarm_on_too_many_alertes
 from agri.models import Alerte
@@ -15,10 +16,7 @@ def test_agri_alarm_on_too_many_alertes(alerte, alerte_2, mocker):
     # AND both of them are less than a day old
     assert Alerte.objects.count() == 2
     assert (
-        Alerte.objects.filter(
-            date_creation__gte=datetime.now() - timedelta(days=1)
-        ).count()
-        == 2
+        Alerte.objects.filter(date_creation__gte=now() - timedelta(days=1)).count() == 2
     )
 
     # WHEN
@@ -37,10 +35,7 @@ def test_agri_alarm_on_too_many_alertes_negative(alerte, alerte_2, mocker):
     # AND one of them if more than a day old
     assert Alerte.objects.count() == 2
     assert (
-        Alerte.objects.filter(
-            date_creation__gte=datetime.now() - timedelta(days=1)
-        ).count()
-        == 1
+        Alerte.objects.filter(date_creation__gte=now() - timedelta(days=1)).count() == 1
     )
 
     # WHEN
