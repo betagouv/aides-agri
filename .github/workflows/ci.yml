@@ -48,6 +48,7 @@ jobs:
         run: uv run --no-sync manage.py collectstatic
         env:
           DJANGO_SETTINGS_MODULE: conf.settings.testing
+          DJANGO_ADMIN_URL_PATH: chemin_admin_super_secret
           SECRET_KEY: notsecret
       - name: Run Ruff
         run: uv run --no-sync ruff check --output-format=github .
@@ -55,11 +56,13 @@ jobs:
         run: uv run --no-sync manage.py makemigrations --check --dry-run
         env:
           DJANGO_SETTINGS_MODULE: conf.settings.testing
+          DJANGO_ADMIN_URL_PATH: chemin_admin_super_secret
           SECRET_KEY: notsecret
       - name: Run tests
         run: uv run --no-sync pytest --cov ./apps --cov ./conf --cov-report=xml
         env:
           DJANGO_SETTINGS_MODULE: conf.settings.testing
+          DJANGO_ADMIN_URL_PATH: chemin_admin_super_secret
           SECRET_KEY: notsecret
       - name: Codecov
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5  # v7.1.1
@@ -78,6 +81,7 @@ jobs:
           uv run --no-sync manage.py loaddata conf/fixtures/dsfr_config.json aides.json
         env:
           DJANGO_SETTINGS_MODULE: conf.settings.testing
+          DJANGO_ADMIN_URL_PATH: chemin_admin_super_secret
           SECRET_KEY: notsecret
       - name: Run website for E2E tests
         if: steps.didSomeHTMLChange.outputs.src == 'true'
@@ -85,6 +89,7 @@ jobs:
           uv run --no-sync manage.py runserver --noreload --insecure --settings conf.settings.testing &
         env:
           DJANGO_SETTINGS_MODULE: conf.settings.testing
+          DJANGO_ADMIN_URL_PATH: chemin_admin_super_secret
           SECRET_KEY: notsecret
       - name: Setup Javascript runtime
         if: steps.didSomeHTMLChange.outputs.src == 'true'

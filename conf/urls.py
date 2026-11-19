@@ -27,7 +27,7 @@ from aides.sitemap import AidesSitemap
 sitemaps = {"aides": AidesSitemap, "agri": AgriSitemap}
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path(f"{settings.ADMIN_URL_PATH}/", admin.site.urls),
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="django-sitemap"),
     path("", include("agri.urls")),
     path("", include("aides.urls")),
