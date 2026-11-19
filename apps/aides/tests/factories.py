@@ -12,6 +12,7 @@ class OrganismeFactory(factory.django.DjangoModelFactory):
     nom = factory.Sequence(lambda n: f"Organisme {n}")
     illustration = b""
     is_masa = False
+    secteurs = []
 
     @factory.post_generation
     def with_illustration(obj, create, value, **kwargs):
