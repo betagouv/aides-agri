@@ -73,7 +73,7 @@ requires-dist = [
     { name = "psycopg", extras = ["binary"], specifier = "~=3.3" },
     { name = "qrcode", specifier = "~=7.4" },
     { name = "requests", specifier = "~=2.34" },
-    { name = "sentry-sdk", extras = ["django"], specifier = "~=2.74" },
+    { name = "sentry-sdk", extras = ["django"], specifier = "~=2.75" },
     { name = "whitenoise", specifier = "~=6.8" },
 ]
 
