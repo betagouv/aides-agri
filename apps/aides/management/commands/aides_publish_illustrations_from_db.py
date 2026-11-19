@@ -1,6 +1,7 @@
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from ...models import WithIllustration
+from ...models.references import WithIllustration
 
 
 class Command(BaseCommand):
@@ -9,5 +10,7 @@ class Command(BaseCommand):
             for obj in model.objects.all().only("has_illustration", "illustration"):
                 if not obj.illustration:
                     continue
-                with open(f"webroot/{obj.get_illustration_url()}", "wb") as f:
+                with open(
+                    f"{settings.WEBROOT_PATH}/{obj.get_illustration_url()}", "wb"
+                ) as f:
                     f.write(obj.illustration)

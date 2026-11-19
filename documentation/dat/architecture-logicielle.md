@@ -22,14 +22,14 @@ Il s’agit d’un **monolithe modulaire** :
 
 Le projet Django est situé dans le répertoire `conf`. Il comprend, en plus des classiques points d’entrées WSGI/ASGI et définition des URLs :
 * Les réglages :
-  * Les réglages Django de base sont dans `settings/base.py` ;
-  * Les réglages Django des apps installées (réutilisables ou spécifiques) sont dans `settings/apps/*` ;
-  * Un assemblage par défaut des settings est disponible dans `settings/default.py` ;
-  * Puis un assemblage spécifique à chaque contexte d’exécution est disponible :
-    * `settings/devel.py` pour le développement local ;
-    * `settings/testing.py` pour l’exécution des tests, que ce soit en local ou dans la CI ;
-    * `settings/scalingo.py` pour l’exécution déployée chez Scalingo, quel que soit l’environnement ;
-    * Le choix de l’assemblage se fait via la variable d’environnement `DJANGO_SETTINGS_MODULE` ;
+    * Les réglages Django de base sont dans `settings/base.py` ;
+    * Les réglages Django des apps installées (réutilisables ou spécifiques) sont dans `settings/apps/*` ;
+    * Un assemblage par défaut des settings est disponible dans `settings/default.py` ;
+    * Puis un assemblage spécifique à chaque contexte d’exécution est disponible :
+        * `settings/devel.py` pour le développement local ;
+        * `settings/testing.py` pour l’exécution des tests, que ce soit en local ou dans la CI ;
+        * `settings/scalingo.py` pour l’exécution déployée chez Scalingo, quel que soit l’environnement ;
+        * Le choix de l’assemblage se fait via la variable d’environnement `DJANGO_SETTINGS_MODULE` ;
 * Une spécialisation de l’admin Django pour forcer la double-authentification.
 
 ### Les apps spécifiques
@@ -43,12 +43,11 @@ Les apps spécifiques sont rangées dans le répertoire `/apps/`. C’est rendu 
 
 #### Les apps métier
 
-* `aides` : implémente les entités et les logiques métier liées aux dispositifs d’aide publics à l’agriculture
-  * [Documentation spécifique](../../apps/aides/README.md)
-* `agri` : implémente le parcours utilisateur destiné aux exploitantes et exploitants agricoles afin de les aiguiller vers les aides pertinentes pour leur situation et leur besoin
-  * [Documentation spécifique](../../apps/agri/README.md)
-* `aides_feedback` : implémente de quoi permettre à nos utilisatrices et utilisateurs de donner leur avis sur le parcours qui leur est proposé ainsi que sur les contenus qui leur sont présentés
-* `pac` : implémente une représentation en base de données relationnelle du Plan Stratégique National de la PAC 2023-2027 ; c’est un outil à usage interne technique uniquement
+* `aides` : implémente les entités et les logiques métier liées aux dispositifs d’aide publics à l’agriculture :
+    * [Documentation spécifique](../../apps/aides/README.md).
+* `agri` : implémente le parcours utilisateur destiné aux exploitantes et exploitants agricoles afin de les aiguiller vers les aides pertinentes pour leur situation et leur besoin ;
+    * [Documentation spécifique](../../apps/agri/README.md).
+* `aides_feedback` : implémente de quoi permettre aux utilisatrices et utilisateurs du service Aides Agri de donner leur avis sur le parcours qui leur est proposé ainsi que sur les contenus qui leur sont présentés
 * `product` : implémente les aspects périphériques du site web, comme les pages légales ; cette app Django pourrait être amenée à être extraite de cette base de code pour la rendre réutilisable au sein d’un modèle de base de code Django pour beta.gouv.fr
 
 ### Diagramme des dépendances entre les apps Django spécifiques
@@ -73,9 +72,9 @@ Afin de gérer l’exécution de tâches déclenchées via l’interface web, ma
 * Basé sur le plugin [django-tasks](https://pypi.org/project/django-tasks/), et plus précisément son extension utilisant une base de données comme backend de stockage des messages, [django-tasks-db](https://pypi.org/project/django-tasks-db/) ;
 * Cette brique logicielle intégrée dans la base de code Django se comporte comme un système Pub/Sub qui gérerait les deux côtés de la communication (publication de messages et consommation des messages, les messages étant stockés dans la base de données relationnelle) ;
 * La distinction entre publication et consommation se faisant via le déploiement et l’infrastructure (cf [le diagramme d’infrastructure haut niveau](infrastructure-deploiement.md)) :
-  * Les tâches étant déclenchées depuis l’interface web, ce sont les instances `web` de Django qui publient les messages ;
-  * Une instance Django dédiée (séparée des instances `web` pour que les tâches de longue durée n’impactent pas les performances web), nommée `worker`, et unique pour éviter de manière facile les problèmes de consommation concurrente des messages ;
-  * Évidemment, si une tâche de longue durée a elle-même besoin de déléguer l’exécution d’une tâche en arrière-plan, elle peut solliciter le worker selon le même principe.
+    * Les tâches étant déclenchées depuis l’interface web, ce sont les instances `web` de Django qui publient les messages ;
+    * Une instance Django dédiée (séparée des instances `web` pour que les tâches de longue durée n’impactent pas les performances web), nommée `worker`, et unique pour éviter de manière facile les problèmes de consommation concurrente des messages ;
+    * Évidemment, si une tâche de longue durée a elle-même besoin de déléguer l’exécution d’une tâche en arrière-plan, elle peut solliciter le worker selon le même principe.
 
 ```mermaid
 flowchart TB
@@ -90,7 +89,7 @@ flowchart TB
         django-worker[["django-worker (loop)"]]-->django-worker-check[Recherche de tâches]
         django-worker-check-->django-worker-found{Tâche trouvée ?}
         django-worker-found-- Oui -->django-worker-run[Exécution]
-        django-worker-found-- Non -->A{ shape: dbl-circ }
+        django-worker-found-- Non -->return@{ shape: dbl-circ, label: Fin }
     end
     subgraph PostgreSQL
         db-table[(django_tasks_database_dbtaskresult)]
@@ -128,8 +127,8 @@ L’app Django `ui` contient une page de présentation des composants web réuti
 La fonctionnalité de gestion des fichiers statiques de Django est exploitée :
 * Les fichiers statiques étant rangés dans le répertoire `static/` de chaque app Django (native, tierce-partie ou spécifique), la commande Django `collectstatic` permet de tous les regrouper dans un répertoire dédié (`/staticfiles/`) ;
 * Le paquet externe [whitenoise](https://pypi.org/project/whitenoise) est utilisé pour :
-  * Au moment du `collectstatic`, compresser les fichiers et leur assigner un nom unique permettant le cache-busting systématique ;
-  * Via un middleware inclus très tôt dans la pile des middlewares Django, servir les fichiers statiques directement sans passer par un stockage dédié ni nécessiter de configuration sur le reverse proxy de l’hébergeur.
+    * Au moment du `collectstatic`, compresser les fichiers et leur assigner un nom unique permettant le cache-busting systématique ;
+    * Via un middleware inclus très tôt dans la pile des middlewares Django, servir les fichiers statiques directement sans passer par un stockage dédié ni nécessiter de configuration sur le reverse proxy de l’hébergeur.
 
 ### Les dépendances logicielles "front-end"
 

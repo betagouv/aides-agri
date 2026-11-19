@@ -12,6 +12,7 @@ class AboutPageQuoteFactory(factory.django.DjangoModelFactory):
 class AlerteFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Alerte
+        skip_postgeneration_save = True
 
     email = ""
     departement = None

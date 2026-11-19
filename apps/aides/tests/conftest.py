@@ -11,6 +11,8 @@ register(factories.ThemeFactory, "theme_2")
 register(factories.SujetFactory)
 register(factories.SujetFactory, "sujet_2")
 register(factories.TypeFactory, "type_aide")
+register(factories.FiliereFactory)
+register(factories.BeneficiairesFactory)
 register(factories.ZoneGeographiqueFactory)
 register(
     factories.ZoneGeographiqueFactory,

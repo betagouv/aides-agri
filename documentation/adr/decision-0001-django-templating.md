@@ -42,9 +42,9 @@ Cette application générera ses pages web sur le serveur via des templates Djan
 * Les performances web seront directement dépendantes des temps de réponse de l’application sur le serveur : plus facilement mesurables, plus simplement améliorables, etc. ;
 * Les utilisateurs bénéficieront des fonctionnalités natives de leur navigateur : navigation, formulaires, accessibilité ;
 * Le nombre de dépendances Javascript sera très réduit, ce qui a trois sous-conséquences positives :
-  * Le risque de dépendre d’une bibliothèque non maintenu sera faible ;
-  * La surface d’exposition à une cyber-attaque de supply-chain sera faible ;
-  * Le fardeau de la mise à jour des dépendances sera léger ;
+    * Le risque de dépendre d’une bibliothèque non maintenu sera faible ;
+    * La surface d’exposition à une cyber-attaque de supply-chain sera faible ;
+    * Le fardeau de la mise à jour des dépendances sera léger ;
 
 ### Négatives
 

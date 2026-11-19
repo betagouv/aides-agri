@@ -6,7 +6,15 @@ from django.urls import reverse
 from django_otp import middleware as django_otp_middleware
 from pytest_factoryboy import LazyFixture
 
-from aides.models import Aide, Theme, SpecificiteLocale
+from aides.models import (
+    Aide,
+    Theme,
+    SpecificiteLocale,
+    Filiere,
+    Beneficiaires,
+    Organisme,
+    Type,
+)
 
 
 def test_aide_admin(admin_client, aide, monkeypatch):
@@ -352,3 +360,91 @@ def test_themes_csv_export(admin_client, monkeypatch, theme):
         assert len(row) == 6
         if i == 1:
             assert row[0] == theme.nom_court
+
+
+def test_types_csv_export(admin_client, monkeypatch, type_aide):
+    # we don't care about 2FA here, let's skip it
+    monkeypatch.setattr(django_otp_middleware, "is_verified", lambda u: True)
+
+    # GIVEN one Type
+    assert Type.objects.count() == 1
+
+    # WHEN requesting a CSV export
+    url = reverse("admin:aides_type_export_to_csv")
+    res = admin_client.get(url, headers={"host": "localhost"})
+
+    # THEN it's a 200 and it returns a CSV file download
+    assert res.status_code == 200
+    assert res.headers["Content-Disposition"].startswith("attachment; filename=")
+    assert res.headers["Content-Disposition"].endswith('.csv"')
+    csvreader = csv.reader(io.StringIO(res.text))
+    for i, row in enumerate(csvreader):
+        assert len(row) == 4
+        if i == 1:
+            assert row[0] == type_aide.nom
+
+
+def test_filieres_csv_export(admin_client, monkeypatch, filiere):
+    # we don't care about 2FA here, let's skip it
+    monkeypatch.setattr(django_otp_middleware, "is_verified", lambda u: True)
+
+    # GIVEN one Filiere
+    assert Filiere.objects.count() == 1
+
+    # WHEN requesting a CSV export
+    url = reverse("admin:aides_filiere_export_to_csv")
+    res = admin_client.get(url, headers={"host": "localhost"})
+
+    # THEN it's a 200 and it returns a CSV file download
+    assert res.status_code == 200
+    assert res.headers["Content-Disposition"].startswith("attachment; filename=")
+    assert res.headers["Content-Disposition"].endswith('.csv"')
+    csvreader = csv.reader(io.StringIO(res.text))
+    for i, row in enumerate(csvreader):
+        assert len(row) == 4
+        if i == 1:
+            assert row[0] == filiere.nom
+
+
+def test_beneficiaires_csv_export(admin_client, monkeypatch, beneficiaires):
+    # we don't care about 2FA here, let's skip it
+    monkeypatch.setattr(django_otp_middleware, "is_verified", lambda u: True)
+
+    # GIVEN one Beneficiaires
+    assert Beneficiaires.objects.count() == 1
+
+    # WHEN requesting a CSV export
+    url = reverse("admin:aides_beneficiaires_export_to_csv")
+    res = admin_client.get(url, headers={"host": "localhost"})
+
+    # THEN it's a 200 and it returns a CSV file download
+    assert res.status_code == 200
+    assert res.headers["Content-Disposition"].startswith("attachment; filename=")
+    assert res.headers["Content-Disposition"].endswith('.csv"')
+    csvreader = csv.reader(io.StringIO(res.text))
+    for i, row in enumerate(csvreader):
+        assert len(row) == 3
+        if i == 1:
+            assert row[0] == beneficiaires.nom
+
+
+def test_organismes_csv_export(admin_client, monkeypatch, organisme):
+    # we don't care about 2FA here, let's skip it
+    monkeypatch.setattr(django_otp_middleware, "is_verified", lambda u: True)
+
+    # GIVEN one Organisme
+    assert Organisme.objects.count() == 1
+
+    # WHEN requesting a CSV export
+    url = reverse("admin:aides_organisme_export_to_csv")
+    res = admin_client.get(url, headers={"host": "localhost"})
+
+    # THEN it's a 200 and it returns a CSV file download
+    assert res.status_code == 200
+    assert res.headers["Content-Disposition"].startswith("attachment; filename=")
+    assert res.headers["Content-Disposition"].endswith('.csv"')
+    csvreader = csv.reader(io.StringIO(res.text))
+    for i, row in enumerate(csvreader):
+        assert len(row) == 10
+        if i == 1:
+            assert row[0] == organisme.nom

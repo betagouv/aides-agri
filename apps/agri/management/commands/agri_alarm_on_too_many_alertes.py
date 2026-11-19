@@ -1,15 +1,16 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django.conf import settings
 from django.core.mail import send_mail
 from django.core.management.base import BaseCommand
+from django.utils.timezone import now
 
 from ...models import Alerte
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        since = datetime.now() - timedelta(days=1)
+        since = now() - timedelta(days=1)
         alertes_created_since = Alerte.objects.filter(date_creation__gte=since).count()
         if alertes_created_since > settings.AGRI_HIGH_DAILY_ALERTES_COUNT:
             send_mail(

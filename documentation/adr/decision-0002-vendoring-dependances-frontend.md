@@ -20,18 +20,18 @@ L’une des conséquences positives de cette décision est le faible nombre de d
 
 La plupart des sites web générant leurs pages côté serveur utilisent l’une des deux stratégies opposées suivantes :
 * Déclarer les dépendances Javascript dans un `package.json`, verrouiller leurs versions dans un `package-lock.json`, les installer via `npm install` dans un répertoire `node_modules/`, et constuire un _bundle_ en compilant, via Webpack ou Vite, un fichier JS qui réalise des `import` des bibliothèques :
-  * Avantages :
-    * Les dépendances sont listées de manière claire ;
-    * Un outil de mise à jour automatisée des dépendances peut maintenir la pile technique à niveau à moindre coût et sans charge mentale.
-  * Inconvénients :
-    * Le processus de construction du _bundle_, réalisé en CI/CD, est effectué même si les dépendances n’ont pas changé et oblige à sortir des sentiers battus (par exemple, pour un déploiement chez Scalingo, deux `buildpacks` sont nécessaires : un pour l’application serveur, l’autre pour le `bundle` client).
+    * Avantages :
+        * Les dépendances sont listées de manière claire ;
+        * Un outil de mise à jour automatisée des dépendances peut maintenir la pile technique à niveau à moindre coût et sans charge mentale.
+    * Inconvénients :
+        * Le processus de construction du _bundle_, réalisé en CI/CD, est effectué même si les dépendances n’ont pas changé et oblige à sortir des sentiers battus (par exemple, pour un déploiement chez Scalingo, deux `buildpacks` sont nécessaires : un pour l’application serveur, l’autre pour le `bundle` client).
 * Injecter les dépendances Javascript pré-compilées via un CDN :
-  * Avantages :
-    * Pas de phase de construction.
-  * Inconvénients :
-    * Oblige à assouplir la CSP pour y inclure des exceptions concernant les CDN ;
-    * Rend dépendant des CDN et donc de leurs performances et résilience ;
-    * Disperse les dépendances Javascript dans la codebase et rend donc plus difficile leur bonne compréhension et leur maintien à jour.
+    * Avantages :
+        * Pas de phase de construction.
+    * Inconvénients :
+        * Oblige à assouplir la CSP pour y inclure des exceptions concernant les CDN ;
+        * Rend dépendant des CDN et donc de leurs performances et résilience ;
+        * Disperse les dépendances Javascript dans la codebase et rend donc plus difficile leur bonne compréhension et leur maintien à jour.
 
 ## Décision
 

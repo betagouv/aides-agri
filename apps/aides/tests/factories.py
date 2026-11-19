@@ -6,11 +6,14 @@ from aides import models
 class OrganismeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Organisme
+        skip_postgeneration_save = True
 
+    id_annuaire_service_public = ""
     parent = None
     nom = factory.Sequence(lambda n: f"Organisme {n}")
     illustration = b""
     is_masa = False
+    secteurs = []
 
     @factory.post_generation
     def with_illustration(obj, create, value, **kwargs):
