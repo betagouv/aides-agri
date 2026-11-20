@@ -4,7 +4,7 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.views import redirect_to_login
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import resolve_url
-from django.urls import reverse
+from django.urls import reverse, path
 from django.utils.http import url_has_allowed_host_and_scheme
 from two_factor.admin import AdminSiteOTPRequiredMixin
 
@@ -47,3 +47,10 @@ class AidesAgriAdminSite(AdminSiteOTPRequiredMixin, admin.AdminSite):
         extra_context.update(**get_feedback_on_aides_stats())
 
         return super().index(request, extra_context=extra_context)
+
+    def get_urls(self):
+        from aides_workflow.admin import workflow_view
+
+        urls = super().get_urls()
+        urls.insert(-1, path("workflow", workflow_view, name="workflow"))
+        return urls
