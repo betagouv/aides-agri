@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     "agri",
     "aides",
     "aides_feedback",
+    "aides_workflow",
     "conf.apps.AidesAgriAdminConfig",
 ]
 

@@ -1,0 +1,23 @@
+{% extends 'admin/base_site.html' %}{% load admin_list admin_urls i18n static %}
+{% block breadcrumbs %}
+  <div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+    &rsaquo;
+    <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_label|capfirst|escape }}</a>
+    &rsaquo;
+    Confirmation
+    {{ title|default_if_none:"Confirmation" }}
+  </div>
+{% endblock breadcrumbs %}
+
+{% block content %}
+  <h1>{% translate 'Warning' %}</h1>
+  <h2>{{ message }}</h2>
+  <div class="delete-confirmation">
+    <form method="post">
+      {% csrf_token %}
+      <input type="submit" value="Confirmer">
+      <a class="cancel-link" href="{{ request.META.HTTP_REFERER }}">Annuler</a>
+    </form>
+  </div>
+{% endblock content %}
