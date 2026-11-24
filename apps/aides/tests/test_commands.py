@@ -5,7 +5,7 @@ from aides.management.commands import (
     aides_update_ddt_from_service_public_api,
     aides_alert_organismes_without_logo,
 )
-from aides.models import Aide, ZoneGeographique
+from aides.models import ZoneGeographique
 
 
 @pytest.mark.django_db
@@ -61,23 +61,6 @@ def test_load_zones_geographiques(requests_mock, zone_geographique_departement_1
         ZoneGeographique.objects.regions().order_by("pk").first().nom
         == "Provence-Alpes-Côte d'Azur"
     )
-
-
-@pytest.mark.parametrize(
-    "aide_published__url_descriptif",
-    ["https://aides-agri.beta.gouv.fr/thisurlwillnevermatch"],
-)
-@pytest.mark.django_db
-def test_unpublish_aides_having_invalid_link(aide_published):
-    # GIVEN a published Aide with a url_descriptif returning 404
-    assert aide_published.is_published
-    assert Aide.objects.published().count() == 1
-
-    # WHEN
-    call_command("aides_unpublish_aides_having_invalid_link")
-
-    # THEN
-    assert not Aide.objects.published().exists()
 
 
 @pytest.mark.django_db

@@ -63,6 +63,7 @@ graph TD;
     aides-->admin_concurrency;
     aides-->aides_feedback;
     aides-->ui;
+    aides_workflow-->aides;
     product-->ui;
 ```
 
