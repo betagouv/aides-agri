@@ -35,7 +35,9 @@ class Anomaly(models.Model):
     faulty_url_field = models.CharField(
         choices=FaultyUrlField, verbose_name="Champ concerné dans l’aide"
     )
-    faulty_url = models.URLField(verbose_name="Lien concerné, à re-tester à la main")
+    faulty_url = models.URLField(
+        max_length=2000, verbose_name="Lien concerné, à re-tester à la main"
+    )
     http_status_code = models.IntegerField(
         verbose_name="Statut HTTP de l’URL concernée"
     )
