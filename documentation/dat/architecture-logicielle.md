@@ -47,6 +47,10 @@ Les apps spécifiques sont rangées dans le répertoire `/apps/`. C’est rendu 
     * [Documentation spécifique](../../apps/aides/README.md).
 * `agri` : implémente le parcours utilisateur destiné aux exploitantes et exploitants agricoles afin de les aiguiller vers les aides pertinentes pour leur situation et leur besoin ;
     * [Documentation spécifique](../../apps/agri/README.md).
+* `aides_integration` : implémente les structures de données nécessaires à l’intégration semi-automatisée des aides depuis des sources externes, ainsi que toutes les logiques de collecte des aides depuis des sources externes et d’insertion/modification des aides dans Aides Agri à partir des aides collectées ;
+    * [Documentation spécifique](../../apps/aides_integration/README.md).
+* `aides_workflow` : implémente tout ce qui permet les actions humaines nécessaires à l’intégration semi-automatisée des aides collectées, ainsi qu’à l’assurance-qualité des données des aides ;
+    * [Documentation spécifique](../../apps/aides_workflow/README.md).
 * `aides_feedback` : implémente de quoi permettre aux utilisatrices et utilisateurs du service Aides Agri de donner leur avis sur le parcours qui leur est proposé ainsi que sur les contenus qui leur sont présentés
 * `product` : implémente les aspects périphériques du site web, comme les pages légales ; cette app Django pourrait être amenée à être extraite de cette base de code pour la rendre réutilisable au sein d’un modèle de base de code Django pour beta.gouv.fr
 
@@ -58,6 +62,9 @@ Les apps spécifiques sont rangées dans le répertoire `/apps/`. C’est rendu 
 ```mermaid
 graph TD;
     agri-->aides;
+    aides_feedback-->aides;
+    aides_integration-->aides;
+    aides_workflow-->aides;
     agri-->aides_feedback;
     agri-->ui;
     aides-->admin_concurrency;
