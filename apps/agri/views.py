@@ -212,6 +212,10 @@ class AboutView(TemplateView):
                 "sidemenu_data": {
                     "items": [
                         {"label": "Notre démarche", "link": "#demarche"},
+                        {
+                            "label": "Communiquer sur Aides Agri",
+                            "link": "#kit-de-com",
+                        },
                         # {
                         #     "label": "Vous voulez en savoir plus ? Webinaires et replay",
                         #     "link": "#en-savoir-plus",

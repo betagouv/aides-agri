@@ -82,27 +82,33 @@
           <h3 class="fr-h5 fr-mb-1w">Inscrivez-vous à l’un de nos webinaires</h3>
           <a class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-calendar-2-line" href="">Voir les prochaines dates</a>
         </section>
+        {% endcomment %}
         <section id="kit-de-com" class="fr-mt-5w">
           <h2 class="fr-h3 fr-text-action-high--blue-france fr-mb-2w">
-            Vous souhaitez contribuer à la diffusion d’Aides Agri ?
+            Vous souhaitez communiquer sur Aides Agri ?
           </h2>
           <h3 class="fr-h5 fr-mb-1w">Téléchargez notre kit de communication</h3>
           <ul class="fr-links-group fr-grid-row fr-grid-row--gutters fr-pl-7v">
             <li class="fr-col fr-col-12 fr-col-md-6">
-              <a href="" class="fr-link fr-link--download" download="true">Intitulé du fichier à télécharger</a>
+              <a href="https://fichiers.numerique.gouv.fr/explorer/items/files/cabbab3f-cb17-4ba9-a48f-128177fd3099"
+                 class="fr-link"
+                 target="_blank"
+                 data-action="click->matomo#trackEvent"
+                 data-event-page="À propos"
+                 data-event-name="Lien mode d’emploi kit de com"
+              >Voir le mode d’emploi du kit de communication</a>
             </li>
             <li class="fr-col fr-col-12 fr-col-md-6">
-              <a href="" class="fr-link fr-link--download" download="true">Intitulé du fichier à télécharger</a>
-            </li>
-            <li class="fr-col fr-col-12 fr-col-md-6">
-              <a href="" class="fr-link fr-link--download" download="true">Intitulé du fichier à télécharger</a>
-            </li>
-            <li class="fr-col fr-col-12 fr-col-md-6">
-              <a href="" class="fr-link fr-link--download" download="true">Intitulé du fichier à télécharger</a>
+              <a href="https://fichiers.numerique.gouv.fr/api/v1.0/items/921d029c-2c90-409e-88e4-e63327fe493b/export/"
+                 class="fr-link fr-link--download"
+                 download="true"
+                 data-action="click->matomo#trackEvent"
+                 data-event-page="À propos"
+                 data-event-name="Téléchargement kit de com"
+              >Télécharger le kit de communication<span class="fr-link__detail">Zip – 16,9 Mo</span></a>
             </li>
           </ul>
         </section>
-        {% endcomment %}
         {% if quotes %}
         <section id="ils-parlent-de-nous" class="fr-mt-5w">
           <h2 class="fr-h3 fr-text-action-high--blue-france fr-mb-2w">Ils parlent de nous</h2>
